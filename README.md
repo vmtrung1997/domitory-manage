@@ -1,2 +1,2 @@
 # domitory-manage
-Project for 
+Project for graduation
