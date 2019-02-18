@@ -1,8 +1,15 @@
 var express = require('express'),
     bodyParser = require('body-parser'),
     morgan = require('morgan');
+    path = require('path');
+	mongoose = require('mongoose');
+
+mongoose.connect('mongodb://127.0.0.1:27017/KTX', { useNewUrlParser: true })
 
 var app = express();
+global.appRoot = path.resolve(__dirname)
+
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
@@ -13,7 +20,5 @@ app.get('/', (_, res) => {
     })
 });
 
-var port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`server runing on port ${port}`);
-})
+
+module.exports = app
