@@ -1,0 +1,36 @@
+.AppContent {
+    padding: 46px 0 0;
+    margin: 0 auto;
+}
+
+
+.AppContainer {
+    max-width: 1190px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+
+.three-col .AppContent-main.content-main {
+  float: none;
+  margin: 0;
+}
+
+.content-main {
+    border-radius: 0;
+    position: relative;
+    width: auto;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+    overflow-y: scroll;
+}
+
+body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    position: relative;
+}

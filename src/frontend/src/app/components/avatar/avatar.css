@@ -1,0 +1,6 @@
+body{
+	background: blue;
+}
+.img-circle{
+	border-radius: 50%;
+}
