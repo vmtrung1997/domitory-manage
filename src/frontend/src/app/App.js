@@ -1,28 +1,16 @@
 import React, { Component } from 'react';
-import Input from './components/input/Input'
-import Checkbox from './components/checkbox/Checkbox'
+import { createStore } from 'redux'
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
+
+import './App.css'
+import Button from './components/button/button'
+
 class App extends Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      input: ''
-    }
-  }
-  getVal = (val) => {
-    this.setState({
-      input: val
-    })
-  }
   render() {
     return (
-      <div>
-      <Input type={'text'} getValue={this.getVal} placeholder={'light'} />
-
-
-      <Checkbox label={'Checkbox'}>
-      </Checkbox>
-
-      </div>
+    	<div>
+     		heelo
+     	</div>
     );
   }
 }
