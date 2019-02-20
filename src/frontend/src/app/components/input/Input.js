@@ -10,7 +10,7 @@ class Input extends Component {
     const type = this.props.type
     return (
       <React.Fragment>
-        <input onChange={this.onChange} type={type} className="input-control" placeholder={placeholder}/>
+        <input onChange={this.onChange} defaultValue={this.props.defaultValue} type={type} className="input-control" placeholder={placeholder}/>
       </React.Fragment>
     );
   }

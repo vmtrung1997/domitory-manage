@@ -6,7 +6,7 @@
     padding-left: 35px;
     margin-bottom: 12px;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 16px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -27,15 +27,15 @@
     position: absolute;
     padding: auto 0;
     left: 0;
-    height: 25px;
-    width: 25px;
+    height: 20px;
+    width: 20px;
     background-color: #eee;
   }
   
   /* On mouse-over, add a grey background color */
   .container-checkbox:hover input ~ .checkmark {
     background-color: #ccc;
-    outline: 2px solid #1ab394;
+    /* border: 2px solid #1ab394; */
   }
   
   /* When the checkbox is checked, add a blue background */
@@ -57,8 +57,8 @@
   
   /* Style the checkmark/indicator */
   .container-checkbox .checkmark:after {
-    left: 9px;
-    top: 5px;
+    left: 6px;
+    top: 2px;
     width: 5px;
     height: 10px;
     border: solid white;
