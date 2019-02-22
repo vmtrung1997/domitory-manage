@@ -13,6 +13,7 @@
     transition-delay: 0s, 0s;
     width: 100%;
     max-width: 800px;
+    font-size: 14px;
     outline: transparent;
     margin-bottom: 15px;
 }
