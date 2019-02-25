@@ -12,6 +12,8 @@ class Input extends Component {
     width: '100%',
     fontSize: '14px',
     placeholder: '',
+    padding: '6px 12px',
+    borderRadius: '1px',
     getValue: () => {}
   }
   onChange = (event) => {
@@ -21,7 +23,7 @@ class Input extends Component {
     return (
       <React.Fragment>
         <input 
-          style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`}}
+          style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
           onChange={this.onChange} 
           defaultValue={this.props.defaultValue} 
           type={this.props.type} 

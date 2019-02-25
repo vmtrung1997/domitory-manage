@@ -1,0 +1,26 @@
+.logo{
+	height: 130px;
+	width: 130px;
+}
+
+body{
+	margin: 0;
+	background: #f3f3f4;
+}
+
+a{
+	text-decoration: none;
+	color: #52A9CF;
+}
+
+.header-sgin-admin{
+	background: white;
+	display: flex;
+	justify-content: center;
+	font-size: 40px;
+	color: #52A9CF;
+	font-weight: bold;
+	text-align: center;
+	line-height: 130px;
+	height: 130px;
+}
