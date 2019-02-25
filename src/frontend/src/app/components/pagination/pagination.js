@@ -12,7 +12,7 @@ class Pagination extends Component{
 		}
 	}
 	componentDidMount = () => {
-		if(this.props.page != undefined){
+		if(this.props.page !== undefined){
 			this.setState({
 				focus: this.props.page,
 				input: this.props.page
