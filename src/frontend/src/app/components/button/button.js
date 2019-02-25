@@ -6,7 +6,16 @@ class Button extends Component{
 	render(){
 		const value = this.props.content
 		return(
-			<button  style={{margin: `${this.props.margin}px`, height: `${this.props.height}px`, width: `${this.props.width}px`, borderRadius: `${this.props.radius}px`, color: `${this.props.color}`, background: `${this.props.background}`}}
+			<button  
+				style={{
+					fontSize: `${this.props.fontSize}`,
+					margin: `${this.props.margin}`,
+					height: `${this.props.height}`,
+					width: `${this.props.width}`,
+					borderRadius: `${this.props.radius}`,
+					color: `${this.props.color}`,
+					background: `${this.props.background}`,
+					padding: `${this.props.padding}`}}
 				className={"bt " + this.props.type + " " + this.props.size}
 				onClick={e => this.props.onClick({key: this.props.keyButton})}
 			>
