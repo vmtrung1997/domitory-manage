@@ -7,6 +7,7 @@ import Footer from "../../components/footer/Footer";
 
 export default class Layout extends React.Component{
   render() {
+    const { children } = this.props;
     return(
       <div className={"layout"}>
         <div className={'layout-sub'}>
@@ -18,7 +19,7 @@ export default class Layout extends React.Component{
         <div className={'layout-main'}>
           <Header/>
           <Content>
-            <div>content</div>
+            {children}
           </Content>
           <Footer/>
         </div>
