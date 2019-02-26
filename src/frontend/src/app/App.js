@@ -14,6 +14,7 @@ class App extends Component {
                 <Switch>
                     <Route path="/admin/" component={Admin} />
                     <Route path="/signin-admin/" component={SignInAdmin} />
+                    <Route component={NotFound} />
                 </Switch>
             </Router>
         );

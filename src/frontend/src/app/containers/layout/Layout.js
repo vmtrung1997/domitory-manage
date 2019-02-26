@@ -13,7 +13,10 @@ export default class Layout extends React.Component{
       <div className={"layout"}>
         <div className={'layout-sub'}>
           <Navigation
-          menuList={[{key:0, link: '#', label: 'Sinh viên', icon: 'fab fa-apple'},{key: 1, link: '#', label: 'Sinh viên', icon: 'fab fa-apple'},{key: 2, link: '#', label: 'Sinh viên', icon: 'fab fa-apple'}]}
+          menuList={[
+            {key:0, link: '#', label: 'Sinh viên',icon: 'fab fa-apple'},
+            {key: 1, link: '#', label: 'Sinh viên', icon: 'fab fa-apple'},
+            {key: 2, link: '#', label: 'Sinh viên', icon: 'fab fa-apple'}]}
           />
         </div>
 
