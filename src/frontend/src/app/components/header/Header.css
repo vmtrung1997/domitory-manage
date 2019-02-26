@@ -1,0 +1,20 @@
+.header{
+    border-bottom: 1px solid #e7eaec !important;
+    overflow: hidden;
+    background-color: white;
+    padding: 15px;
+}
+
+.header-right{
+    float: right;
+}
+
+.header a{
+    text-decoration: none;
+    color: #999c9e;
+    font-weight: bold;
+}
+
+.logout{
+    margin-right: 15px;
+}
