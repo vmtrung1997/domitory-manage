@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './Checkbox.css'
 
 class Checkbox extends Component {
+  static propTypes = {
+    name: PropTypes.string,
+    label: PropTypes.string
+  }
+  static defaultProps = {
+    check: false
+  }
   constructor(props){
     super(props)
     this.state = {

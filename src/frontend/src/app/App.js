@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
-//import { createStore } from 'redux'
-//import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
-import Navigation from './components/navigation/Navigation';
-import Layout from './containers/layout/Layout';
-
+import { createStore } from 'redux';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import './App.css'
+import SignInAdmin from './containers/admin/signinAdmin'
 
 class App extends Component {
-  render() {
-    return (
-    	<div>
-        <Layout/>
-     	</div>
-    );
-  }
+
+	render() {
+  	return (
+  		<Router>
+        <Switch>
+          <Route exact path="/signin/admin" component={SignInAdmin} />
+        </Switch>
+      </Router>
+  	);
+	}
 }
 
 export default App;
