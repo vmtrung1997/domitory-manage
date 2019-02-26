@@ -11,8 +11,16 @@ class Pagination extends Component{
 			input: 1,
 		}
 	}
+	static defaultProps = {
+	    pages: 1,
+	    color: 'bt-success',
+	    margin: '2px',
+	    clickPage: () => { return {page: 1}},
+	    chkPre: () => { return {page: 1}},
+	    chkNext: () => { return {page: 1}},
+	}
 	componentDidMount = () => {
-		if(this.props.page != undefined){
+		if(this.props.page !== undefined){
 			this.setState({
 				focus: this.props.page,
 				input: this.props.page

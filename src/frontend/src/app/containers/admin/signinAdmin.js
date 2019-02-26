@@ -11,10 +11,10 @@ class SignInAdmin extends Component{
 			<React.Fragment>
 				<div className="header-sgin-admin">
 					<a href="#"><img className="logo" src={logo_HCMUS} /></a>
-					<span style={{marginLeft: "50px"}}> Chào mừng đến với ký túc xá Trần Hưng Đạo </span>
+					<span> Chào mừng đến với ký túc xá Trần Hưng Đạo </span>
 				</div>
 				<div style={{textAlign: "center", marginTop: "50px"}}>
-					<div style={{fontSize: '40px', fontWeight: "bold", margin:"20px", color: "#aaa9a9"}}> ĐĂNG NHẬP </div>
+					<div className="lb-tille"> ĐĂNG NHẬP </div>
 					<div>
 						<Input width="250px" placeholder="Tài khoản" fontSize="20px" padding="8px 18px" borderRadius="6px"/>
 					</div>
