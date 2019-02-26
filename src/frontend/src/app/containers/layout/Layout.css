@@ -4,13 +4,19 @@
 
 .layout-sub{
     width: 20%;
+	height: 100vh;
+	background-color: #2f4050;
+	position: fixed;
 }
 
 .layout-main{
+	position: absolute;
+	right: 0;
     width: 80%;
+    height: 1000px;
 }
 
 body{
-    background-color: #2f4050;
+    
     margin: 0;
 }
