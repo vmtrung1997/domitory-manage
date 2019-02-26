@@ -1,18 +1,37 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './Input.css'
 
 class Input extends Component {
+  static propTypes = {
+    defaultValue: PropTypes.string,
+    placeholder: PropTypes.string
+  }
+  static defaultProps = {
+    type: 'text',
+    width: '100%',
+    fontSize: '14px',
+    placeholder: '',
+    padding: '6px 12px',
+    borderRadius: '1px',
+    getValue: () => {}
+  }
   onChange = (event) => {
     this.props.getValue(event.target.value);
   }
   render() {
-    const placeholder = this.props.placeholder
-    const type = this.props.type
     return (
       <React.Fragment>
-        <input onChange={this.onChange} defaultValue={this.props.defaultValue} type={type} className="input-control" placeholder={placeholder}/>
+        <input 
+          style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
+          onChange={this.onChange} 
+          defaultValue={this.props.defaultValue} 
+          type={this.props.type} 
+          className="input-control" 
+          placeholder={this.props.placeholder} />
       </React.Fragment>
     );
   }
 }
+
 export default Input;

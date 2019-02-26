@@ -1,7 +1,17 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './RadioButton.css'
 
 class RadioButton extends Component {
+  static propTypes = {
+    label: PropTypes.string,
+  }
+  static defaultProps = {
+    check: false,
+    name: '',
+    value: '',
+    isRadioChk: () => {}
+  }
   constructor(props){
     super(props)
     this.state = {
@@ -18,11 +28,12 @@ class RadioButton extends Component {
     return (
     <React.Fragment>
         <label className="container-radio">{label}
-          <input type="radio" defaultChecked={this.state.check} onChange={this.handleChangeChk} value={this.state.value} name={this.props.name}/>
+          <input type="radio" defaultChecked={this.state.check} onChange={this.handleChangeChk} value={this.props.value} name={this.props.name}/>
           <span className="checkmark-radio"></span>
         </label>
     </React.Fragment>
     )    
   }
 }
+
 export default RadioButton;
