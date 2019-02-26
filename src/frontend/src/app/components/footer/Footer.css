@@ -1,0 +1,10 @@
+.footer{
+    background-color: white;
+    padding: 15px;
+    border-top: 1px solid #e7eaec !important;
+}
+
+.footer span{
+    color: #999c9e;
+    font-weight: bold;
+}

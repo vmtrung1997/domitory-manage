@@ -1,0 +1,47 @@
+.menu-button.active{
+    border-left: 4px solid #19aa8d;
+    background: #293846;
+}
+
+.menu-button.active a{
+    color: white;
+}
+
+.mb_link:hover{
+    background-color: #293846;
+    color: white;
+}
+.mb_nav-label{
+}
+
+.mb_link{
+    color: #a7b1c2;
+    font-weight: 600;
+    padding: 14px 20px 14px 25px;
+    text-decoration: none;
+    display: block;
+}
+
+li{
+    list-style: none;
+}
+
+.mb_icon{
+    margin-right: 6px;
+}
+
+.img-circle{
+    border-radius: 50%;
+    width: 40%;
+    max-width: 100px;
+}
+
+.center{
+    display: flex;
+    margin: 0 auto;
+}
+
+.mb-avt{
+    position: relative;
+    width: 50%;
+}
