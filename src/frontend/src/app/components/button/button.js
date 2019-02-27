@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 import './button.css';
 
 class Button extends Component{
+	static defaultProps = {
+	    firstIcon: '',
+	    lastIcon: '',
+	    type: 'bt-default',
+	    onClick: () => {}
+	}
 	render(){
 		const value = this.props.content
 		return(

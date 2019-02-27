@@ -1,0 +1,40 @@
+.HeaderHomepage{
+    position: fixed;
+    height: 90px;
+    width: 100%;
+    background: blue;
+    align-items: center;
+    display: flex;
+}
+
+.logoHeader{
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 90px;
+    width: 90px;
+    display: inline-block;
+    background-color: aqua
+}
+.menuHeader{
+    margin-left: 20px;
+    background: red;
+    
+}
+
+.HeaderHomepage .menu{
+    padding-right: 10px;
+}
+
+.menu{
+    padding-right: 10px;
+    display: inline-block;
+}
+
+.search{
+    position: fixed;
+    height: 30px;
+    width: 60px;
+    left: 70%;
+    background-color: black;
+}
