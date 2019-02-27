@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
-import Button from './../components/button/button'
+import './notfound.css'
+import Button from './../../components/button/button'
 
 class NotFound extends Component{
 	render(){

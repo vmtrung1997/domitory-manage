@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './Select.css'
+import './select.css'
 
 class Select extends Component {
 	static propTypes = {

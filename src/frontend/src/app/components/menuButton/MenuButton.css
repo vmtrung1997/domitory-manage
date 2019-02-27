@@ -18,8 +18,11 @@
     color: #a7b1c2;
     font-weight: 600;
     padding: 14px 20px 14px 25px;
-    text-decoration: none;
     display: block;
+}
+
+a:hover{
+  text-decoration: none;
 }
 
 li{
@@ -38,7 +41,7 @@ li{
 
 .center{
     display: flex;
-    margin: 0 auto;
+    margin: 40px auto 10px auto;
 }
 
 .mb-avt{
