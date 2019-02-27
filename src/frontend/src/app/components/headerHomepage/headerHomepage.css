@@ -2,19 +2,24 @@
     position: fixed;
     height: 90px;
     width: 100%;
-    background: blue;
+    z-index:10;
+    background: white;
     align-items: center;
-    display: flex;
+    -webkit-box-shadow: 0px 13px 5px -8px rgba(0,0,0,0.49);
+    -moz-box-shadow: 0px 13px 5px -8px rgba(0,0,0,0.49);
+    box-shadow: 0px 13px 5px -8px rgba(0,0,0,0.49)
 }
+
+
 
 .logoHeader{
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
-    height: 90px;
-    width: 90px;
-    display: inline-block;
-    background-color: aqua
+    height: 100px;
+    width: 100px;
+    margin-top: -15px;
+    
 }
 .menuHeader{
     margin-left: 20px;
@@ -23,12 +28,12 @@
 }
 
 .HeaderHomepage .menu{
-    padding-right: 10px;
+    
 }
 
 .menu{
-    padding-right: 10px;
-    display: inline-block;
+   
+    margin-top: 30px;
 }
 
 .search{
@@ -38,3 +43,20 @@
     left: 70%;
     background-color: black;
 }
+
+.menu-item{
+    font-size: 14px;
+    margin-left: 2px;
+   
+}
+
+img {
+
+    -webkit-box-shadow: 0px 13px 5px -8px rgba(0,0,0,0.49);
+    -moz-box-shadow: 0px 13px 5px -8px rgba(0,0,0,0.49);
+    box-shadow: 0px 13px 5px -8px rgba(0,0,0,0.49)
+  }
+
+  .form-rounded{
+    border-radius: 1rem;
+  }

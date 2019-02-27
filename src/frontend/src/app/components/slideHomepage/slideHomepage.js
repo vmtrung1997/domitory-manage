@@ -2,9 +2,9 @@ import React from 'react';
 import { Fade } from 'react-slideshow-image';
 
 const fadeImages = [
-  './images/01_ataulfohouse_apaloosa.jpg',
-  './images/26_ataulfohouse_apaloosa.jpg',
-  './images/26_ataulfohouse_apaloosa.jpg',
+  '/images/01_ataulfohouse_apaloosa.jpg',
+  '/images/26_ataulfohouse_apaloosa.jpg',
+  '/images/26_ataulfohouse_apaloosa.jpg',
 ];
 
 
