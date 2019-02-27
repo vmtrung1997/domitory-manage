@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 
-import './admin.css'
-import SignInAdmin from './signinAdmin'
-import Layout from './../layout/Layout'
-import InfoStudent from './infoStudent'
+import SignInAdmin from './signIn/signinAdmin'
+import Layout from './layout/layout'
+import InforStudent from './inforStudent/inforStudent'
 
 class Admin extends Component{
 	constructor(props) {
@@ -14,7 +13,7 @@ class Admin extends Component{
 		return(
 			<Layout>
                 <Route path={`${this.props.match.url}/signin`} component={SignInAdmin} />
-                <Route path={`${this.props.match.url}/student`} component={InfoStudent} />
+                <Route path={`${this.props.match.url}/student`} component={InforStudent} />
 	        </Layout>
   		)
 	}

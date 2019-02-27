@@ -3,7 +3,9 @@ import React, { Component } from 'react'
 class InfoStudent extends Component{
 	render(){
 		return(
-			<div> a </div>
+			<div>
+				ád
+			</div>
 		)
 	}
 }

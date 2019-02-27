@@ -49,8 +49,8 @@ router.post('/login', (req, res) => {
 	})
 });
 
-router.post('/me_access', (req, res) => {
-	var reToken = req.body.refresh_token;
+router.get('/me_access', (req, res) => {
+	var reToken = req.headers['x-refresh-token'];
 	ReToken.findOne({ token: reToken }, null, function (err, result) {
 		if (err) console.log(err);
 		if (result) {
@@ -68,18 +68,6 @@ router.post('/me_access', (req, res) => {
 			})
 		} else {
 			res.status(401).end('end')
-		}
-	})
-})
-
-router.get('/deleteRefreshToken', (req, res) => {
-	var reToken = req.body.refresh_token;
-	ReToken.findOneAndDelete({ token: reToken }, null, function (err, result) {
-		if (result) {
-			res.status(201);
-		} else {
-			console.log(err);
-			res.statusC(500);
 		}
 	})
 })
