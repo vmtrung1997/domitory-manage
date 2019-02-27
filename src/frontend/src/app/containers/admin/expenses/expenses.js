@@ -58,24 +58,24 @@ class Expenses extends Component {
 		return (
 			<React.Fragment>
 				<div className={'m-t-60 p-10'}>
-					<Row className={'m-b-10 justify-content-md-center'}>
+					<Row className={'m-b-10'}>
 						<Col sm={4}><FormControl placeholder="Tháng/năm" /></Col>
 						<Col sm={4}><FormControl placeholder="Phòng" /></Col>
-						<Col sm={4}><Button variant="success">Tìm kiếm</Button></Col>
+						<Col sm={4}><Button variant="primary">Tìm kiếm</Button></Col>
 					</Row>
-					<Row className={'m-b-10 justify-content-md-center'}>
+					<Row className={'m-b-10'}>
 						<Col md={"auto"}><Example /></Col>
 					</Row>
 					<Row>
 						<Table striped hover responsive size="lg">
 							<thead >
 								<tr>
-									<td>STT</td>
-									<td>Tháng/Năm</td>
-									<td>Phòng</td>
-									<td className={'table-header'}>Chỉ số điện</td>
-									<td className={'table-header'}>Chỉ số nước</td>
-									<td className={'table-header'}>Số tiền</td>
+									<th>STT</th>
+									<th>Tháng/Năm</th>
+									<th>Phòng</th>
+									<th className={'table-header'}>Chỉ số điện</th>
+									<th className={'table-header'}>Chỉ số nước</th>
+									<th className={'table-header'}>Số tiền</th>
 								</tr>
 							</thead>
 							<tbody>
