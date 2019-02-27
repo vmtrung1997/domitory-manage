@@ -3,10 +3,13 @@
     overflow: hidden;
     background-color: white;
     padding: 15px;
+    position: fixed;
+    width: 80%;
 }
 
 .header-right{
     float: right;
+    margin-right: 30px;
 }
 
 .header a{
@@ -16,5 +19,5 @@
 }
 
 .logout{
-    margin-right: 15px;
+    margin-right: 2px;
 }

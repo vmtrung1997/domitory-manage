@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import './admin.css'
 import SignInAdmin from './signinAdmin'
 import Layout from './../layout/Layout'
+import InfoStudent from './infoStudent'
 
 class Admin extends Component{
 	constructor(props) {
@@ -13,6 +14,7 @@ class Admin extends Component{
 		return(
 			<Layout>
                 <Route path={`${this.props.match.url}/signin`} component={SignInAdmin} />
+                <Route path={`${this.props.match.url}/student`} component={InfoStudent} />
 	        </Layout>
   		)
 	}
