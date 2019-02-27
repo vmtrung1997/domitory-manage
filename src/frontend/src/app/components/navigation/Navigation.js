@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MenuButton, { MenuButtonHeader } from './../menuButton/MenuButton.js'
-import './Navigation.css';
+import MenuButton, { MenuButtonHeader } from './../menuButton/menuButton.js'
+import './navigation.css';
 
 export default class Navigation extends React.Component{
   static propTypes = {

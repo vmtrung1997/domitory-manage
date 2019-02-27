@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import './App.css'
 import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
-import SignInAdmin from './containers/admin/signinAdmin'
+import SignInAdmin from './containers/admin/signIn/signinAdmin'
 
 class App extends Component {
 	render() {

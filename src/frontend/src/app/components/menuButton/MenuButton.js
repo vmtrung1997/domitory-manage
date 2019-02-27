@@ -1,11 +1,11 @@
 import React from 'react';
-import './MenuButton.css';
+import './menuButton.css';
 
 export default class MenuButton extends React.Component {
   render() {
-    const { icon, label, link, key } = this.props;
+    const { icon, label, link, ikey } = this.props;
     return(
-      <li className={'menu-button'} key={key}>
+      <li className={'menu-button'} key={ ikey}>
         <a href={link} className={"mb_link"}>
           {icon &&
             <i className={icon + " mb_icon"}/>
