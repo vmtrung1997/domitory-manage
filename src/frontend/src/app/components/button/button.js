@@ -4,30 +4,42 @@ import './button.css';
 
 class Button extends Component{
 	static defaultProps = {
-	    firstIcon: '',
-	    lastIcon: '',
-	    type: 'bt-default',
-	    onClick: () => {}
-	}
+		size: 'sm',
+		color: 'primary',
+		variant: 'default',
+		onClick: () => {}
+	};
+
+	static propTypes = {
+		size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg']),
+		color: PropTypes.oneOf(['default', 'primary', 'success', 'info', 'warning', 'danger']),
+		variant: PropTypes.oneOf(['default', 'outline', 'rounded']),
+		// content of button
+		children: PropTypes.any.isRequired,
+		// if true button is disable
+		disable: PropTypes.bool,
+		// style if you want custom
+		style: PropTypes.object,
+		// is true button will fullwidth
+		fullWidth: PropTypes.bool,
+	};
 	render(){
-		const value = this.props.content
+		const { children, size, color, variant, disable, style, fullWidth } = this.props;
+		let classDisabled = '';
+    let classFullWidth = '';
+		if(disable){
+      classDisabled = 'disable'
+		}
+    if(fullWidth){
+      classFullWidth = 'fullWidth'
+    }
 		return(
 			<button  
-				style={{
-					fontSize: `${this.props.fontSize}`,
-					margin: `${this.props.margin}`,
-					height: `${this.props.height}`,
-					width: `${this.props.width}`,
-					borderRadius: `${this.props.radius}`,
-					color: `${this.props.color}`,
-					background: `${this.props.background}`,
-					padding: `${this.props.padding}`}}
-				className={"bt " + this.props.type + " " + this.props.size}
+				style={style}
+				className={'btn btn-' + size + ' btn-' + color + ' btn-' + variant + ' ' + classDisabled + ' ' + classFullWidth}
 				onClick={e => this.props.onClick({key: this.props.keyButton})}
 			>
-				<i className={this.props.firstIcon}></i>
-				{value}
-				<i className={this.props.lastIcon}></i>
+				{children}
 			</button>
 		);
 	}
@@ -35,9 +47,9 @@ class Button extends Component{
 
 export default Button;
 
-Button.propTypes = {
-  type: PropTypes.oneOf(['bt-outline', 'bt-primary', 'bt-warning', 'bt-danger', 'bt-circle', 'bt-info', 'bt-default', 'bt-success']),
-};
+// Button.propTypes = {
+//   type: PropTypes.oneOf(['bt-outline', 'bt-primary', 'bt-warning', 'bt-danger', 'bt-circle', 'bt-info', 'bt-default', 'bt-success']),
+// };
 
 // handle = () => {
 // 		console.log(1);

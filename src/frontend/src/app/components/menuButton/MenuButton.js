@@ -1,11 +1,11 @@
 import React from 'react';
-import './MenuButton.css';
+import './menuButton.css';
 
 export default class MenuButton extends React.Component {
   render() {
-    const { icon, label, link, key } = this.props;
+    const { icon, label, link, ikey } = this.props;
     return(
-      <li className={'menu-button'} key={key}>
+      <li className={'menu-button'} key={ ikey}>
         <a href={link} className={"mb_link"}>
           {icon &&
             <i className={icon + " mb_icon"}/>
@@ -24,10 +24,12 @@ export default class MenuButton extends React.Component {
 export const MenuButtonHeader = (props) => {
   const { avt, name, role } = props;
   return(
-    <li>
-      <img alt="image" className="img-circle center" src="https://akns-images.eonline.com/eol_images/Entire_Site/20181026/rs_600x600-181126230834-e-asia-iu-things-to-know-thumbnail.jpg?fit=around|700:700&crop=700:700;center,top&output-quality=90"/>
-    </li>
+    <div style={{color: 'white', textAlign: 'center'}}>
+      <img alt="avatar" className="img-circle center" src={avt}/>
+      <div style={{fontWeight: 'bold'}}> {name} </div>
+      <div style={{fontSize: '14px'}}> {role} </div>
+    </div>
   );
 };
 
-//<img alt="image" className="img-circle" src="https://img.kpopmap.com/2018/09/iu-tour-cover.jpg"/>
+//<img alt="avatar" className="img-circle" src="https://img.kpopmap.com/2018/09/iu-tour-cover.jpg"/>
