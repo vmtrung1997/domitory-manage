@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
-import { createStore } from 'redux';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import './App.css'
-import SignInAdmin from './containers/admin/signinAdmin'
-import NotFound from './containers/notfound'
-
+import Layout from './containers/layout/Layout'
+import DienNuocInfo from './containers/dienNuoc/DienNuocInfo'
 class App extends Component {
 
 	render() {
   	return (
-  		<Router>
-        <Switch>
-          <Route exact path="/signin/admin" component={SignInAdmin} />
-          <Route component={NotFound} />
-        </Switch>
-      </Router>
+      <Layout>
+        <DienNuocInfo />
+      </Layout>
   	);
 	}
 }
