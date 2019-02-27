@@ -1,19 +1,22 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 
-import SignInAdmin from './signIn/signinAdmin'
 import Layout from './layout/layout'
 import InforStudent from './inforStudent/inforStudent'
+import Activity from './activity/activity'
 
 class Admin extends Component{
 	constructor(props) {
 	    super(props);
+	    this.state = {
+			title: '',
+		}
 	}
 	render(){
 		return(
-			<Layout>
-                <Route path={`${this.props.match.url}/signin`} component={SignInAdmin} />
+			<Layout title={this.state.title}>
                 <Route path={`${this.props.match.url}/student`} component={InforStudent} />
+                <Route path={`${this.props.match.url}/activity`} component={Activity} />
 	        </Layout>
   		)
 	}
