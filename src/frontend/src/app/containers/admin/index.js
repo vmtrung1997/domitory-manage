@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import SignInAdmin from './signIn/signinAdmin'
 import Layout from './layout/layout'
 import InforStudent from './inforStudent/inforStudent'
-
+import Expense from './expenses/expenses'
 class Admin extends Component{
 	constructor(props) {
 	    super(props);
@@ -14,6 +14,7 @@ class Admin extends Component{
 			<Layout>
                 <Route path={`${this.props.match.url}/signin`} component={SignInAdmin} />
                 <Route path={`${this.props.match.url}/student`} component={InforStudent} />
+				<Route path={`${this.props.match.url}/expense`} component={Expense} />
 	        </Layout>
   		)
 	}

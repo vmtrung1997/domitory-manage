@@ -23,16 +23,16 @@ class Example extends React.Component {
     render() {
       return (
         <>
-          <Button variant="primary" onClick={this.handleShow}>
-            Launch demo modal
+          <Button variant="success" onClick={this.handleShow}>
+            Thêm
           </Button>
   
           <Modal show={this.state.show} onHide={this.handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>Thêm thông tin</Modal.Title>
+              <Modal.Title>Thêm chi phí</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <Row className={'m-b-10'}>
+            <Row className={'m-b-10 justify-content-md-center'}>
 						<Col sm={4}><FormControl placeholder="Tháng/năm" /></Col>
 						<Col sm={4}><FormControl placeholder="Phòng" /></Col>
 						<Col sm={4}><Button variant="success">Tìm kiếm</Button></Col>
