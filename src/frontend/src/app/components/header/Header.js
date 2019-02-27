@@ -7,8 +7,8 @@ export default class Header extends React.Component{
       <div className={"header"}>
         <div className={"header-right"}>
           <a href="#">
-            <span className={"logout"}> Đăng xuất </span>
             <i className="fas fa-sign-out-alt" style={{color:'#999c9e'}}/>
+            <span className={"logout"}> Đăng xuất </span>
           </a>
         </div>
       </div>
