@@ -26,13 +26,13 @@ class Button extends Component{
 	render(){
 		const { children, size, color, variant, disable, style, fullWidth } = this.props;
 		let classDisabled = '';
-    let classFullWidth = '';
+    	let classFullWidth = '';
 		if(disable){
-      classDisabled = 'disable'
+      		classDisabled = 'disable'
 		}
-    if(fullWidth){
-      classFullWidth = 'fullWidth'
-    }
+    	if(fullWidth){
+      		classFullWidth = 'fullWidth'
+    	}
 		return(
 			<button  
 				style={style}

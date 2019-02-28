@@ -5,8 +5,8 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import './App.css'
 import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
-import SignInAdmin from './containers/admin/signinAdmin'
-//import Homepage from './containers/student/homepage'
+import SignInAdmin from './containers/admin/signIn/signinAdmin'
+import Homepage from './containers/student/homepage'
 
 class App extends Component {
 	render() {
@@ -14,6 +14,7 @@ class App extends Component {
       		<Router>
                 <Switch>
                     <Route path="/admin/" component={Admin} />
+                    <Route path="/homepage/" component = {Homepage} />
                     <Route path="/signin-admin/" component={SignInAdmin} />
                     <Route component={NotFound} />
                 </Switch>

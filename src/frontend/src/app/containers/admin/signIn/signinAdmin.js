@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 
-import Input from './../../components/input/Input'
-import Button from './../../components/button/button'
-import './admin.css'
-import logo_HCMUS from './../../../utils/image/logo_HCMUS.jpg'
+import Input from '../../../components/input/input'
+import Button from './../../../components/button/button'
+import './signIn.css'
+import logo_HCMUS from './../../../../utils/image/logo_HCMUS.jpg'
 
 class SignInAdmin extends Component{
 	render(){
