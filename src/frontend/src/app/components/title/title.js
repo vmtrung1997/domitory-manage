@@ -5,8 +5,8 @@ export default class Title extends React.Component {
   render() {
     const { children } = this.props;
     return(
-      <div className={'title'}>
-        <h3 >
+      <div>
+        <h3 className={'title'}>
           {children}
         </h3>
       </div>
