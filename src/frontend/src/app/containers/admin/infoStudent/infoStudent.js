@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, Table } from 'react-bootstrap';
-import Input from './../../../components/input/Input';
+import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import './infoStudent.css';
 
@@ -41,7 +41,7 @@ class InfoStudent extends Component{
           </Row>
         </div>
         <div className={'is-body'}>
-          <Table responsive hover bordered size="sm">
+            <Table responsive hover bordered size="sm">
             <thead>
             <tr>
               <th>#</th>
