@@ -3,9 +3,9 @@ import { Container, Col, Row } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import './newsHomepage.css'
 const fadeImages = [
-    './images/01_ataulfohouse_apaloosa.jpg',
-    './images/26_ataulfohouse_apaloosa.jpg',
-    './images/26_ataulfohouse_apaloosa.jpg',
+    '/images/01_ataulfohouse_apaloosa.jpg',
+    '/images/26_ataulfohouse_apaloosa.jpg',
+    '/images/26_ataulfohouse_apaloosa.jpg',
 ];
 
 
@@ -65,6 +65,7 @@ class NewsHomepage extends React.Component {
 
             </Container>
 
+   
         )
 
     }
