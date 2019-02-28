@@ -3,11 +3,11 @@ import './title.css'
 
 export default class Title extends React.Component {
   render() {
-    const { value } = this.props;
+    const { children } = this.props;
     return(
       <div>
         <h1 className={'title'}>
-          {value}
+          {children}
         </h1>
       </div>
     );
