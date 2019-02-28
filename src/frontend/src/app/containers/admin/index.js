@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import './admin.css'
 import SignInAdmin from './signinAdmin'
 import Layout from './../layout/Layout'
-import InfoStudent from './infoStudent'
+import InfoStudent from './infoStudent/infoStudent'
 
 class Admin extends Component{
 	constructor(props) {
