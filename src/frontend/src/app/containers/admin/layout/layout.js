@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Header from '../../../components/header/header';
-import Navigation from './../../../components/navigation/navigation';
+import Navigation from '../../../components/navigation/navigation';
 import Content from '../../../components/content/content';
 import Footer from '../../../components/footer/footer';
 import './layout.css';
