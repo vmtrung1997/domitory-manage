@@ -9,7 +9,7 @@ class Activity extends Component{
 		console.log(this.props.title)
 		return(
 			<React.Fragment>
-				<Title> Hoạt động sinh viên {this.props.route.title} </Title>
+				<Title> Hoạt động sinh viên </Title>
 				<div>
 					<Button>Thêm</Button>
 					<Button>Xóa</Button>

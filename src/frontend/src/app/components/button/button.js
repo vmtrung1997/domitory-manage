@@ -50,8 +50,6 @@ export default Button;
 // Button.propTypes = {
 //   type: PropTypes.oneOf(['bt-outline', 'bt-primary', 'bt-warning', 'bt-danger', 'bt-circle', 'bt-info', 'bt-default', 'bt-success']),
 // };
-
-
 //   render() {
 //     return (
 //     	<div>
