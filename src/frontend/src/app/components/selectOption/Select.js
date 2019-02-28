@@ -5,10 +5,10 @@ import './select.css'
 class Select extends Component {
 	static propTypes = {
     options: PropTypes.array.isRequired,
-    defaultValue: PropTypes.object.isRequired,
   }
   static defaultProps = {
-    selected: () => {}
+		selected: () => {},
+		value: () => { return this.props.options[0].value}
   }
 	onHandleChange = (event) => {
 		event.persist();

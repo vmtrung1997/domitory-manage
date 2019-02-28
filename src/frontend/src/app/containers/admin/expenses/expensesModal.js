@@ -1,5 +1,8 @@
 import React from 'react'
-import { Table, Button, Row, Col, FormControl, Modal, Form } from 'react-bootstrap'
+import { Table, Row, Col, FormControl, Modal, Form } from 'react-bootstrap'
+import Input from '../../../components/input/input'
+import Button from '../../../components/button/button'
+import Select from '../../../components/selectOption/select'
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -8,8 +11,11 @@ class Example extends React.Component {
     this.handleClose = this.handleClose.bind(this);
 
     this.state = {
-      show: false,
+      table: [],
+      soDien: 1,
+      soNuoc: 1
     };
+
   }
 
   handleClose() {
@@ -20,33 +26,38 @@ class Example extends React.Component {
     this.setState({ show: true });
   }
 
+  addRow = () => {
+
+  }
   render() {
+    var options = [{ value: 1, label: '101' }, { value: 2, label: '102' }]
     return (
       <>
-        <Button variant="success" onClick={this.handleShow}>
-          Thêm
+        <Button color={"success"} onClick={this.handleShow}>
+          Ghi bảng ghi
           </Button>
 
-        <Modal show={this.state.show} onHide={this.handleClose}>
+        <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <Modal.Header closeButton>
             <Modal.Title>Thêm chi phí</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Row className={'m-b-10'}>
-              <Col sm={4}>
-                <Form.Control as="select">
-                  <option>101</option>
-                  <option>102</option>
-                  <option>103</option>
-                  <option>104</option>
-                  <option>105</option>
-                </Form.Control>
+              <Col md={4}>
+                <Col md={12}><label>Phòng</label></Col>
+                <Col md={12}><Select options={options} value={options[1].value} /></Col>
               </Col>
-              <Col sm={4}><FormControl placeholder="Số điện" /></Col>
-              <Col sm={4}><FormControl placeholder="Số nước" /></Col>
+              <Col md={4}>
+                <Col md={12}><label>Số điện</label></Col>
+                <Col md={12}><Input /></Col>
+              </Col>
+              <Col md={4}>
+                <Col md={12}><label>Số nước</label></Col>
+                <Col md={12}><Input /></Col>
+              </Col>
             </Row>
             <Row className={'m-b-10'}>
-              <Col sm={4}><Button variant="success">Thêm</Button></Col>
+              <Col md={4}><Button color={'warning'} size={'md'} onClick={this.addRow}>Thêm</Button></Col>
             </Row>
             <Row>
               <Col>
@@ -66,10 +77,10 @@ class Example extends React.Component {
             </Row>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleClose}>
+            <Button variant="default" color="default" onClick={this.handleClose}>
               Đóng
               </Button>
-            <Button variant="primary" onClick={this.handleClose}>
+            <Button variant="default" onClick={this.handleClose}>
               Xác nhận
               </Button>
           </Modal.Footer>
