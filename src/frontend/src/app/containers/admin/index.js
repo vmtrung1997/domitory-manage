@@ -9,13 +9,10 @@ import Activity from './activity/activity'
 class Admin extends Component{
 	constructor(props) {
 	    super(props);
-	    this.state = {
-			title: '',
-		}
 	}
 	render(){
 		return(
-			<Layout title={this.state.title}>
+			<Layout>
                 <Route path={`${this.props.match.url}/student`} component={InforStudent} />
 				<Route path={`${this.props.match.url}/expense`} component={Expense} />
                 <Route path={`${this.props.match.url}/activity`} component={Activity} />
