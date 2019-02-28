@@ -5,10 +5,10 @@ export default class Title extends React.Component {
   render() {
     const { children } = this.props;
     return(
-      <div>
-        <h1 className={'title'}>
+      <div className={'title'}>
+        <h3 >
           {children}
-        </h1>
+        </h3>
       </div>
     );
   }
