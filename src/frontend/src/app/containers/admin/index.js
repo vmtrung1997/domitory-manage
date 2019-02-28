@@ -16,7 +16,6 @@ class Admin extends Component{
 	render(){
 		return(
 			<Layout>
-                <Route path={`${this.props.match.url}/signin`} component={SignInAdmin} />
                 <Route path={`${this.props.match.url}/student`} component={InfoStudent} />
 				<Route path={`${this.props.match.url}/expense`} component={Expense} />
                 <Route path={`${this.props.match.url}/activity`} component={Activity} />
