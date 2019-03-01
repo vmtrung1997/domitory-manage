@@ -1,73 +1,125 @@
 import React from 'react'
-import { Table, Button, Row, Col, FormControl, Modal } from 'react-bootstrap'
+import { Table, Row, Col, FormControl, Modal, Form } from 'react-bootstrap'
+import Input from '../../../components/input/input'
+import Button from '../../../components/button/button'
+import Select from '../../../components/selectOption/select'
 class Example extends React.Component {
-    constructor(props, context) {
-      super(props, context);
-  
-      this.handleShow = this.handleShow.bind(this);
-      this.handleClose = this.handleClose.bind(this);
-  
-      this.state = {
-        show: false,
-      };
-    }
-  
-    handleClose() {
-      this.setState({ show: false });
-    }
-  
-    handleShow() {
-      this.setState({ show: true });
-    }
-  
-    render() {
+  constructor(props, context) {
+    super(props, context);
+
+    this.handleShow = this.handleShow.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+
+    this.state = {
+      table: [],
+      phong: 101,
+      soDien: 0,
+      soNuoc: 0
+    };
+  }
+
+  handleClose() {
+    this.setState({ show: false });
+  }
+
+  handleShow() {
+    this.setState({ show: true });
+  }
+  selected = (value) => {
+    this.setState({phong: value})
+  }
+  onSoDienChange = (value) => {
+    this.setState({soDien: value})
+  }
+  onSoNuocChange = (value) => {
+    this.setState({soNuoc: value})
+  }
+  addRow = () => {
+    var row = {phong: this.state.phong, soDien: this.state.soDien, soNuoc: this.state.soNuoc}
+    var table = this.state.table;
+    table.push(row);
+    this.setState({
+      table: table,
+      soDien: 0,
+      soNuoc: 0
+    })
+    this.setState({soDien: 0})
+  }
+
+  render() {
+    var options = [{ value: 101, label: '101' }, { value: 102, label: '102' }]
+    var date = new Date();
+    console.log(date.getMonth() + " " + date.getFullYear());
+    var table = this.state.table.length?this.state.table.map((row, index) => {
       return (
-        <>
-          <Button variant="success" onClick={this.handleShow}>
-            Thêm
+        <tr key={index}>
+          <td>{date.getMonth() + "/" + date.getFullYear()}</td>
+          <td>{row.phong}</td>
+          <td>{row.soDien}</td>
+          <td>{row.soNuoc}</td>
+        </tr>
+      )
+    }):[];
+    return (
+      <>
+        <Button onClick={this.handleShow}>
+          Bảng ghi
           </Button>
-  
-          <Modal show={this.state.show} onHide={this.handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Thêm chi phí</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-            <Row className={'m-b-10 justify-content-md-center'}>
-						<Col sm={4}><FormControl placeholder="Tháng/năm" /></Col>
-						<Col sm={4}><FormControl placeholder="Phòng" /></Col>
-						<Col sm={4}><Button variant="success">Tìm kiếm</Button></Col>
-					</Row>
-					<Row className={'m-b-10'}>
-						<Button variant="success">Thêm bảng</Button>
-					</Row>
-					<Row>
+
+        <Modal show={this.state.show} onHide={this.handleClose} size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>Thêm chi phí</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <div className={'p-10'}>
+            <Row className={'m-b-10'}>
+              <Col md={3}>
+                <Col md={12}><label>Phòng</label></Col>
+                <Col md={12}><Select options={options} value={options[0].value} selected={this.selected} /></Col>
+              </Col>
+              <Col md={3}>
+                <Col md={12}><label>Số điện</label></Col>
+                <Col md={12}><Input type="number" value={this.state.soDien} getValue={this.onSoDienChange}/></Col>
+              </Col>
+              <Col md={3}>
+                <Col md={12}><label>Số nước</label></Col>
+                <Col md={12}><Input type="number" value={this.state.soNuoc} getValue={this.onSoNuocChange}/></Col>
+              </Col>
+              <Col md={3}>
+              <Col md={12}>&nbsp;</Col>
+              <Col md={12}><Button color={'warning'} size={'md'} onClick={this.addRow}>Thêm</Button></Col></Col>
+            </Row>
+            <Row>
+              <Col>
                 <Table striped hover responsive size="lg">
                   <thead>
                     <tr>
-                      <td>Tháng/Năm</td>
-                      <td>Phòng</td>
-                      <td>Chỉ số điện</td>
-                      <td>Chỉ số nước</td>
-                      <td>Số tiền</td>
+                      <th>Tháng/Năm</th>
+                      <th>Phòng</th>
+                      <th>Chỉ số điện</th>
+                      <th>Chỉ số nước</th>
                     </tr>
                   </thead>
                   <tbody>
+                    {table}
                   </tbody>
                 </Table>
-              </Row>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={this.handleClose}>
-                Đóng
+              </Col>
+            </Row>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="default" color="default" onClick={this.handleClose}>
+              Đóng
               </Button>
-              <Button variant="primary" onClick={this.handleClose}>
-                Xác nhận
+            <Button variant="default" onClick={this.handleClose}>
+              Xác nhận
               </Button>
-            </Modal.Footer>
-          </Modal>
-        </>
-      );
-    }
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
   }
-  
-  export default Example;
+}
+
+export default Example;

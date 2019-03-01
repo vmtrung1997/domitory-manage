@@ -4,7 +4,7 @@ import './input.css'
 
 class Input extends Component {
   static propTypes = {
-    defaultValue: PropTypes.string,
+    value: PropTypes.any,
     placeholder: PropTypes.string
   }
   static defaultProps = {
@@ -25,7 +25,7 @@ class Input extends Component {
         <input 
           style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
           onChange={this.onChange} 
-          defaultValue={this.props.defaultValue} 
+          value={this.props.value}
           type={this.props.type} 
           className="input-control" 
           placeholder={this.props.placeholder} />

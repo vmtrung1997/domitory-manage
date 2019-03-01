@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Button, Row, Col, FormControl } from 'react-bootstrap'
+import { Table, Row, Col } from 'react-bootstrap'
+import Button from '../../../components/button/button'
+import Select from '../../../components/selectOption/select'
 import Example from './expensesModal'
+import Title from '../../../components/title/title'
 class Expenses extends Component {
 	static propTypes = {
 		label: PropTypes.string,
@@ -55,34 +58,63 @@ class Expenses extends Component {
 				</tr>
 			)
 		})
+		var month = [...Array(13)].map((_, i) => {return i ===0? {value: i, label: 'Tất cả'}: {value: i, label: i}});
+		var year = [...Array(4)].map((_, i) => {return i===0?{value: i, label: 'Tất cả'}: {value: i+2017, label: i+2017}});
+		var phong = [...Array(7)].map((_, i) => {return i===0?{value: i, label: 'Tất cả'}: {value: i+100, label: i+100}});
+		var trangThai = [
+			{value: 0, label: 'Tất cả'},
+			{value: 1, label: 'Đã thanh toán'},
+			{value: 2, label: 'Chưa thanh toán'}]
 		return (
 			<React.Fragment>
-				<div className={'m-t-60 p-10'}>
-					<Row className={'m-b-10 justify-content-md-center'}>
-						<Col sm={4}><FormControl placeholder="Tháng/năm" /></Col>
-						<Col sm={4}><FormControl placeholder="Phòng" /></Col>
-						<Col sm={4}><Button variant="success">Tìm kiếm</Button></Col>
+				<div className={'p-10'}>
+				<Title>
+          Thông tin sinh viên
+        </Title>
+				<div className={'content-body'}>
+					<Row className={'m-b-10'}>
+						<Col md={3}><Example /></Col>
 					</Row>
-					<Row className={'m-b-10 justify-content-md-center'}>
-						<Col md={"auto"}><Example /></Col>
+					<Row className={'m-b-10'}>
+						<Col md={2} xs={12}>
+							Tháng
+							<Select options={month} value={month[4].value} />
+						</Col>
+						<Col md={2} xs={12}>
+							Năm
+							<Select options={year} />
+						</Col>
+						<Col md={2} xs={12}>
+							Phòng
+							<Select options={phong} />
+						</Col>
+						<Col md={4} xs={12}>
+							Trạng thái
+							<Select options={trangThai} />
+						</Col>
+						<Col md={2}>
+							&nbsp;
+							<Col md={12}><Button><i className="fas fa-search"/></Button></Col>
+						</Col>
 					</Row>
-					<Row>
-						<Table striped hover responsive size="lg">
+
+					
+						<Table bordered hover responsive size="sm">
 							<thead >
 								<tr>
-									<td>STT</td>
-									<td>Tháng/Năm</td>
-									<td>Phòng</td>
-									<td className={'table-header'}>Chỉ số điện</td>
-									<td className={'table-header'}>Chỉ số nước</td>
-									<td className={'table-header'}>Số tiền</td>
+									<th>STT</th>
+									<th>Tháng/Năm</th>
+									<th>Phòng</th>
+									<th className={'table-header'}>Chỉ số điện</th>
+									<th className={'table-header'}>Chỉ số nước</th>
+									<th className={'table-header'}>Số tiền</th>
 								</tr>
 							</thead>
 							<tbody>
 								{table}
 							</tbody>
 						</Table>
-					</Row>
+				</div>
 				</div>
 			</React.Fragment>
 		)
