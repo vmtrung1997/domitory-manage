@@ -12,10 +12,10 @@ class Example extends React.Component {
 
     this.state = {
       table: [],
-      soDien: 1,
-      soNuoc: 1
+      phong: 101,
+      soDien: 0,
+      soNuoc: 0
     };
-
   }
 
   handleClose() {
@@ -25,16 +25,45 @@ class Example extends React.Component {
   handleShow() {
     this.setState({ show: true });
   }
-
-  addRow = () => {
-
+  selected = (value) => {
+    this.setState({phong: value})
   }
+  onSoDienChange = (value) => {
+    this.setState({soDien: value})
+  }
+  onSoNuocChange = (value) => {
+    this.setState({soNuoc: value})
+  }
+  addRow = () => {
+    var row = {phong: this.state.phong, soDien: this.state.soDien, soNuoc: this.state.soNuoc}
+    var table = this.state.table;
+    table.push(row);
+    this.setState({
+      table: table,
+      soDien: 0,
+      soNuoc: 0
+    })
+    this.setState({soDien: 0})
+  }
+
   render() {
-    var options = [{ value: 1, label: '101' }, { value: 2, label: '102' }]
+    var options = [{ value: 101, label: '101' }, { value: 102, label: '102' }]
+    var date = new Date();
+    console.log(date.getMonth() + " " + date.getFullYear());
+    var table = this.state.table.length?this.state.table.map((row, index) => {
+      return (
+        <tr key={index}>
+          <td>{date.getMonth() + "/" + date.getFullYear()}</td>
+          <td>{row.phong}</td>
+          <td>{row.soDien}</td>
+          <td>{row.soNuoc}</td>
+        </tr>
+      )
+    }):[];
     return (
       <>
-        <Button color={"success"} onClick={this.handleShow}>
-          Ghi bảng ghi
+        <Button onClick={this.handleShow}>
+          Bảng ghi
           </Button>
 
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
@@ -42,22 +71,23 @@ class Example extends React.Component {
             <Modal.Title>Thêm chi phí</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+          <div className={'p-10'}>
             <Row className={'m-b-10'}>
-              <Col md={4}>
+              <Col md={3}>
                 <Col md={12}><label>Phòng</label></Col>
-                <Col md={12}><Select options={options} value={options[1].value} /></Col>
+                <Col md={12}><Select options={options} value={options[0].value} selected={this.selected} /></Col>
               </Col>
-              <Col md={4}>
+              <Col md={3}>
                 <Col md={12}><label>Số điện</label></Col>
-                <Col md={12}><Input /></Col>
+                <Col md={12}><Input type="number" value={this.state.soDien} getValue={this.onSoDienChange}/></Col>
               </Col>
-              <Col md={4}>
+              <Col md={3}>
                 <Col md={12}><label>Số nước</label></Col>
-                <Col md={12}><Input /></Col>
+                <Col md={12}><Input type="number" value={this.state.soNuoc} getValue={this.onSoNuocChange}/></Col>
               </Col>
-            </Row>
-            <Row className={'m-b-10'}>
-              <Col md={4}><Button color={'warning'} size={'md'} onClick={this.addRow}>Thêm</Button></Col>
+              <Col md={3}>
+              <Col md={12}>&nbsp;</Col>
+              <Col md={12}><Button color={'warning'} size={'md'} onClick={this.addRow}>Thêm</Button></Col></Col>
             </Row>
             <Row>
               <Col>
@@ -71,10 +101,12 @@ class Example extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
+                    {table}
                   </tbody>
                 </Table>
               </Col>
             </Row>
+            </div>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="default" color="default" onClick={this.handleClose}>
