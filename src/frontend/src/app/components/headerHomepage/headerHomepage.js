@@ -8,39 +8,38 @@ class HeaderHomepage extends Component {
             <React.Fragment>
 
                 <div className='HeaderHomepage'>
-                    <div className='menu'>
-                        <Row>
+            
+<div className = 'header-list'>
+                    <Row>
                         <Col sm={1}></Col>
- 
-                                <Col sm={1}>
-                                    <div className="menu-item">
-                                        <i className="far fa-clock"></i>
+                        <Col sm={1} className='menu-item menu'>
+                                <i className="far fa-clock"></i>&nbsp;
                                         <span >Trang chủ</span>
-                                    </div>
-                                </Col>
-                                <Col sm={1}>
-                                    <div className="menu-item">
-                                        <i className="far fa-bell"></i>
+           
+                        </Col>
+                        <Col sm={1}  className="menu-item menu">
+                         
+                                <i className="far fa-bell"></i>&nbsp;
                                         <span>Tin tức</span>
-                                    </div>
-                                </Col>
-                                <Col sm={1}>
-                                    <div className="menu-item">
-                                        <i className="fas fa-info"></i>
+
+                        </Col>
+                        <Col sm={1}  className="menu-item menu">
+                         
+                                <i className="fas fa-info"></i>&nbsp;
                                         <span className="menu-item">Giới thiệu</span>
-                                    </div>
+        
 
-                                </Col>
-
-                            <Col sm={1}></Col>
-                            <Col sm={1}>
-                                <div className='logoHeader'>
-                                    <img style = {{  width: '100px', height: '100px',borderRadius: '50%'}} src='/images/Logo-KHTN.jpg'></img>
-                                </div>
-                            </Col>
-                            <Col sm={2}></Col>
-                            <Col sm={2}>
-                                <InputGroup className="mb-3 ">
+                        </Col>
+                        <Col sm={1}></Col>
+                        <Col sm={1}>
+                            <div className='logoHeader'>
+                                <img style={{ width: '100px', height: '100px', borderRadius: '50%' }} src='/images/Logo-KHTN.jpg'></img>
+                            </div>
+                        </Col>
+                        <Col sm={2}></Col>
+                        <Col sm={2}>
+                            <div className='right-content'>
+                                <InputGroup className="">
                                     <FormControl className='form-rounded'
                                         placeholder=""
                                         aria-label=""
@@ -50,15 +49,19 @@ class HeaderHomepage extends Component {
                                         <InputGroup.Text className='form-rounded' id="basic-addon2"><i class="fas fa-search"></i></InputGroup.Text>
                                     </InputGroup.Append>
                                 </InputGroup>
-                            </Col>
-                            <Col sm = {2}>
+                            </div>
+                        </Col>
+                        <Col sm={2}>
+                            <div className='right-content'>
                                 <Button variant="primary" className='form-rounded menu-item'>
 
                                     <span>Đăng nhập</span></Button>
-                            </Col>
+                            </div>
+                        </Col>
 
-                        </Row>
+                    </Row>
                     </div>
+
                 </div>
 
             </React.Fragment>
