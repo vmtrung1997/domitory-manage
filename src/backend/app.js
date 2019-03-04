@@ -16,10 +16,10 @@ app.use(bodyParser.json());
 
 var verifyAccessToken = require('./public/repos/authRepo').verifyAccessToken;
 
-app.use('/api/user', require('./public/apiController/taiKhoanController'));
-app.use('/api/manager', verifyAccessToken, require('./public/apiController/quanLyController'));
-app.use('/api/student', verifyAccessToken, require('./public/apiController/sinhVienController'));
-app.use('/api/logout', verifyAccessToken, require('./public/apiController/logOutController'));
+app.use('/api/user', require('./public/routes/user'));
+app.use('/api/manager', verifyAccessToken, require('./public/routes/manager'));
+app.use('/api/student', verifyAccessToken, require('./public/routes/student'));
+app.use('/api/logout', verifyAccessToken, require('./public/routes/logout'));
 
 app.get('/', (_, res) => {
     res.json({
