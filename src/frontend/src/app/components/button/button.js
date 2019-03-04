@@ -26,13 +26,13 @@ class Button extends Component{
 	render(){
 		const { children, size, color, variant, disable, style, fullWidth } = this.props;
 		let classDisabled = '';
-    let classFullWidth = '';
+    	let classFullWidth = '';
 		if(disable){
-      classDisabled = 'disable'
+      		classDisabled = 'disable'
 		}
-    if(fullWidth){
-      classFullWidth = 'fullWidth'
-    }
+    	if(fullWidth){
+      		classFullWidth = 'fullWidth'
+    	}
 		return(
 			<button  
 				style={style}
@@ -50,10 +50,6 @@ export default Button;
 // Button.propTypes = {
 //   type: PropTypes.oneOf(['bt-outline', 'bt-primary', 'bt-warning', 'bt-danger', 'bt-circle', 'bt-info', 'bt-default', 'bt-success']),
 // };
-
-// handle = () => {
-// 		console.log(1);
-// 	}
 //   render() {
 //     return (
 //     	<div>

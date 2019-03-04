@@ -6,14 +6,14 @@ import Button from './../../components/button/button'
 class NotFound extends Component{
 	render(){
 		return(
-			<div style={{textAlign: 'center'}}>
-				<div style={{fontSize: '40px', color: '#FF7963', fontWeigth: 'bold'}}> <h1> 404 </h1> </div>
+			<div className="pg-notfound">
+				<span style={{fontSize: '100px', color: '#FF7963', fontWeigth: 'bold'}}> 404 </span>
 				<h1> Page not found </h1>
 				<Button 
-					type="bt-warning"
-					padding="10px 20px"
-					width="200px"
-					content="Quay về trang chủ">
+					color = 'warning'
+					style = {{padding: '10px 20px', width: '200px', fontSize: '16px'}}
+				>
+					Quay về trang chủ
 				</Button>
 			</div>
 		)

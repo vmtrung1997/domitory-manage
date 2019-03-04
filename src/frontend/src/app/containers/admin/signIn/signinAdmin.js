@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import Input from './../../../components/input/input'
+import Input from '../../../components/input/input'
 import Button from './../../../components/button/button'
 import './signIn.css'
 import logo_HCMUS from './../../../../utils/image/logo_HCMUS.jpg'
