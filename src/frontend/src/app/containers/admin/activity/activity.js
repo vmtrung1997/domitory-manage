@@ -70,16 +70,24 @@ class Activity extends Component{
 				<Title> Hoạt động sinh viên </Title>
 				<div className='header-optimize'>
 					<div>
-						<Button color='default' style={{margin: '5px'}} onClick={() => this.isCheckTable(true)}>
+						<Button 
+							color='default' 
+							style={{margin: '3px', border: '1px solid #bababa'}} 
+							onClick={() => this.isCheckTable(true)}
+						>
 							<i className="fas fa-list-ul"></i>
 						</Button>
-						<Button color='default' onClick={() => this.isCheckTable(false)}>
+						<Button 
+							color='default' 
+							style={{border: '1px solid #bababa'}} 
+							onClick={() => this.isCheckTable(false)}
+						>
 							<i className="fas fa-table"></i>
 						</Button>
 					</div>
 					<div className='bts-header'>
-						<Button className='bt-header'>Thêm</Button>
-						<Button className='bt-header'>Báo cáo</Button>
+						<Button className='bt-header' color='success'>Thêm</Button>
+						<Button className='bt-header' color='success'>Báo cáo</Button>
 					</div>
 				</div>
 				{ this.state.isTable ? 
