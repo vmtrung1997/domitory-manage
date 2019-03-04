@@ -4,6 +4,9 @@ import Slide from '../../components/slideHomepage/slideHomepage'
 import News from '../../components/news/newsHomepage'
 import Info from '../../components/introHomepage/info'
 class Homepage extends Component {
+    constructor(props){
+        super(props);
+    }
     render() {
         return (
             <React.Fragment>

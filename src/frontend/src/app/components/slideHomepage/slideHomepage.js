@@ -19,10 +19,10 @@ const Slideshow = () => {
   return (
     <Fade {...fadeProperties}>
 
-      {fadeImages.map(img => {
+      {fadeImages.map((img,idx) => {
         console.log(img);
         return (
-          <React.Fragment>
+          <React.Fragment key={idx}>
             <div className="each-fade">
               <div className="image-container">
                 <img style = {{height: "600px", width: "100%"}} src={img} />
