@@ -7,6 +7,7 @@ class Button extends Component{
 		size: 'sm',
 		color: 'primary',
 		variant: 'default',
+		className: '',
 		onClick: () => {}
 	};
 
@@ -24,7 +25,7 @@ class Button extends Component{
 		fullWidth: PropTypes.bool,
 	};
 	render(){
-		const { children, size, color, variant, disable, style, fullWidth } = this.props;
+		const { children, size, color, variant, disable, style, fullWidth, className } = this.props;
 		let classDisabled = '';
     	let classFullWidth = '';
 		if(disable){
@@ -36,7 +37,7 @@ class Button extends Component{
 		return(
 			<button  
 				style={style}
-				className={'btn btn-' + size + ' btn-' + color + ' btn-' + variant + ' ' + classDisabled + ' ' + classFullWidth}
+				className={'btn btn-' + size + ' btn-' + color + ' btn-' + variant + ' ' + classDisabled + ' ' + classFullWidth + ' ' + className}
 				onClick={e => this.props.onClick({key: this.props.keyButton})}
 			>
 				{children}
