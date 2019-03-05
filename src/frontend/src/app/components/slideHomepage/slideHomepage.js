@@ -1,4 +1,5 @@
 import React from 'react';
+import { Carousel } from 'react-bootstrap'
 import { Fade } from 'react-slideshow-image';
 
 const fadeImages = [
@@ -8,33 +9,49 @@ const fadeImages = [
 ];
 
 
-const fadeProperties = {
-  duration: 5000,
-  transitionDuration: 500,
-  infinite: true,
-  indicators: true
-}
-
 const Slideshow = () => {
   return (
-    <Fade {...fadeProperties}>
+    <React.Fragment>
+      <Carousel>
+        <Carousel.Item>
+          <img style = {{height: '650px'}}
+            className="d-block w-100"
+            src={fadeImages[0]}
+            alt="First slide"
+          />
+          <Carousel.Caption>
+            <h3>First slide label</h3>
+            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+        <Carousel.Item>
+          <img 
+            className="d-block w-100"
+            src={fadeImages[1]}
+            alt="Third slide"
+          />
 
-      {fadeImages.map((img,idx) => {
-        console.log(img);
-        return (
-          <React.Fragment key={idx}>
-            <div className="each-fade">
-              <div className="image-container">
-                <img style = {{height: "600px", width: "100%"}} src={img} />
-              </div>
-            </div>
-          </React.Fragment>
-        )
-      })}
+          <Carousel.Caption>
+            <h3>Second slide label</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={fadeImages[2]}
+            alt="Third slide"
+          />
 
-
-    </Fade>
+          <Carousel.Caption>
+            <h3>Third slide label</h3>
+            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+      </Carousel>;
+    </React.Fragment>
   )
+
 }
 
 export default Slideshow;

@@ -7,13 +7,16 @@ class Homepage extends Component {
     constructor(props){
         super(props);
     }
+    getScroll = (event) => {
+        
+    }
     render() {
         return (
             <React.Fragment>
-                <Header></Header>
+                <Header getScroll={this.getScroll}></Header>
                 <Slide></Slide>
-                <News></News>
-                <Info></Info>
+                <News id="new"></News>
+                <Info id="info"></Info>
             </React.Fragment>
         )
     }
