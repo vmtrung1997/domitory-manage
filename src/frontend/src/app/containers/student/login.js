@@ -1,5 +1,8 @@
 import React from 'react'
 import { Modal, Alert,Button, InputGroup, FormControl, Container } from 'react-bootstrap'
+
+import './login.css'
+
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -46,13 +49,13 @@ class Example extends React.Component {
   render() {
     return (
       <>
-        <Modal show={this.state.show} onHide={this.handleClose}>
+        <Modal show={this.state.show} onHide={this.handleClose} dialogClassName='title-modal'>
           <Modal.Header closeButton>
-          
+      
           </Modal.Header>
           <Container>
             <Modal.Body style={{ textAlign: 'center' }}>
-            <div style = {{marginBottom: '20px'}}><h2>Đăng Nhập</h2></div>
+            <div style = {{paddingBottom: '10px'}}><h2>Đăng Nhập</h2></div>
               <InputGroup className="mb-3">
                 <InputGroup.Prepend>
                   <InputGroup.Text id="basic-addon1"><i className="far fa-user"></i></InputGroup.Text>

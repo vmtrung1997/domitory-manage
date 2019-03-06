@@ -43,7 +43,7 @@ class HeaderHomepage extends Component {
     render() {
         let isLogin;
         if (!this.state.username) {
-            isLogin = <Button onClick={this.Login} variant="primary" className='form-rounded menu-item'>
+            isLogin = <Button onClick={this.Login} variant="primary" className='form-rounded menu-item btn-menu'>
                 <span>Đăng nhập</span></Button>
         }
         else {
@@ -71,40 +71,41 @@ class HeaderHomepage extends Component {
             </ButtonToolbar>;
         }
         return (
+            
             <div>
                 {this.state.showLoginModal && <Login dataLogin={this.dataLogin} hideLogin={this.hideLogin}></Login>}
                 <div className='HeaderHomepage'>
                     <div className='option'>
                         <div>
-                            <i className="far fa-clock"></i>&nbsp;
-                            <button onClick={this.getScroll} value="1">Trang chủ</button>
+                            <Button className="outline btn-menu" variant="light" onClick={this.getScroll} value="1">
+                        TRANG CHỦ</Button>
                         </div>
                         <div>
-                            <i className="far fa-clock"></i>&nbsp;
-                            <span onClick={this.getScroll} value="2">Tin tuc</span>
+                          
+                            <Button className="outline btn-menu" variant="light" onClick={this.getScroll} value="2">
+                           TIN TỨC</Button>
                         </div>
-                        <div>
-                            <i className="far fa-clock"></i>&nbsp;
-                            <span onClick={this.getScroll} value="3">Gioi thieu  </span>
+                        <div> 
+                           
+                            <Button className="outline btn-menu" variant="light" onClick={this.getScroll} value="3">
+                            THÔNG TIN</Button>
                         </div>
                     </div>
                     <div className='logoHeader'>
-                        <img style={{ width: '100px', height: '100px', borderRadius: '50%' }} src='/images/Logo-KHTN.jpg'></img>
+                        <img className = 'img-header' style={{ width: '100px', height: '100px', borderRadius: '50%' }} src='/images/Logo-KHTN.jpg'></img>
                     </div>
                     <div className='option'>
                         <div className='right-content'>
                             <InputGroup className="">
-                                <FormControl className='form-rounded'
-                                    placeholder=""
+                                <FormControl className='form-rounded btn-menu'
+                                    placeholder="Tìm kiếm..."
                                     aria-label=""
                                     aria-describedby="basic-addon2"
                                 />
-                                <InputGroup.Append>
-                                    <InputGroup.Text className='form-rounded' id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                                </InputGroup.Append>
+                              
                             </InputGroup>
                         </div>
-                        <div className='right-content'>
+                        <div className='right-content '>
 
                             {isLogin}
                         </div>

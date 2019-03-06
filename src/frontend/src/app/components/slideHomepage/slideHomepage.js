@@ -14,7 +14,7 @@ const Slideshow = () => {
     <React.Fragment>
       <Carousel>
         <Carousel.Item>
-          <img style = {{height: '650px'}}
+          <img style = {{height: '600px'}}
             className="d-block w-100"
             src={fadeImages[0]}
             alt="First slide"
@@ -25,7 +25,7 @@ const Slideshow = () => {
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item>
-          <img 
+        <img style = {{height: '600px'}}
             className="d-block w-100"
             src={fadeImages[1]}
             alt="Third slide"
@@ -37,7 +37,7 @@ const Slideshow = () => {
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item>
-          <img
+        <img style = {{height: '650px'}}
             className="d-block w-100"
             src={fadeImages[2]}
             alt="Third slide"
