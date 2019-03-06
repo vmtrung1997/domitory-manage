@@ -7,6 +7,8 @@ import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
 import SignInAdmin from './containers/admin/signIn/signinAdmin'
 import Homepage from './containers/student/homepage'
+import News from './containers/student/news/news'
+import NewsDetail from './containers/student/newscontent/newsContent'
 
 const checkAuth = () => {
 
