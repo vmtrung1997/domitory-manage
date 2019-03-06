@@ -1,11 +1,11 @@
-var app = require('../app');
+var app = require('./../../app');
 var http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = process.env.PORT || '5000';
+var port = process.env.PORT || '4000';
 app.set('port', port);
 
 /**
@@ -20,10 +20,10 @@ var server = http.createServer(app);
 
 server.listen(port);
 
-
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
     next();
 });
+

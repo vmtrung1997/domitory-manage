@@ -16,6 +16,12 @@ app.use(bodyParser.json());
 
 var verifyAccessToken = require('./public/repos/authRepo').verifyAccessToken;
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.use('/api/user', require('./public/apiController/taiKhoanController'));
 app.use('/api/manager', verifyAccessToken, require('./public/apiController/quanLyController'));
 app.use('/api/student', verifyAccessToken, require('./public/apiController/sinhVienController'));
@@ -27,7 +33,14 @@ app.get('/', (_, res) => {
     })
 });
 
-var port = process.env.PORT || 4000;
-app.listen(port, () => {
-    console.log(`server runing on port ${port}`);
+app.use((req, res, next) => {
+  res.sendStatus(404)
 })
+
+app.use((err, req, res, next) => {
+  res.status(500)
+  res.send(err)
+})
+
+
+module.exports = app
