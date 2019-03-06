@@ -23,7 +23,7 @@ class InfoActivityTable extends Component{
 			)
 		})
 		return(
-			<Table striped bordered hover responsive size="lg" className="table-activity">
+			<Table striped bordered hover responsive className="table-activity">
 				<thead >
 					<tr>
 						<td>STT</td>

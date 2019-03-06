@@ -17,7 +17,7 @@ class Input extends Component {
     getValue: () => {}
   }
   onChange = (event) => {
-    this.props.getValue(event.target.value);
+    this.props.getValue(event.target);
   }
   render() {
     return (
@@ -25,6 +25,7 @@ class Input extends Component {
         <input 
           style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
           onChange={this.onChange} 
+          name={this.props.name}
           value={this.props.value}
           type={this.props.type} 
           className="input-control" 

@@ -17,6 +17,9 @@
     color: #999c9e;
     font-weight: bold;
 }
+.header a:hover{
+    color: #5D6B77;
+}
 
 .logout{
     margin-right: 20px;
