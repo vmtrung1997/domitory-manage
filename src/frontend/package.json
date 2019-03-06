@@ -7,6 +7,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.7.2",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
+    "autoscroll-react": "^3.2.0",
     "bootstrap": "^4.3.1",
     "react": "^16.8.2",
     "react-bootstrap": "^1.0.0-beta.5",
@@ -15,7 +16,9 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",
+    "react-scroll-to-component": "^1.0.2",
     "react-slideshow-image": "^1.1.2",
+    "really-smooth-scroll": "^2.1.1",
     "redux": "^4.0.1",
     "styled-components": "^4.1.3"
   },
