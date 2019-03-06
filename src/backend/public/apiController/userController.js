@@ -1,5 +1,3 @@
-const express = require('express');
-const router = express.Router();
 const ObjectId = require('mongoose').mongo.ObjectId;
 const md5 = require('md5');
 
@@ -8,7 +6,7 @@ const User = require('../models/TaiKhoan');
 const ReToken = require('../models/refreshToken');
 var auth = require('../repos/authRepo');
 
-router.post('/register', (req, res) => {
+exports.register = (req, res) => {
 	var userObject = req.body;
 	userObject.password = md5(userObject.password);
 	var user = new User(userObject);
@@ -18,17 +16,17 @@ router.post('/register', (req, res) => {
 		console.log(err);
 		res.status(500);
 	})
-})
+}
 
-router.post('/login', (req, res) => {
-	User.findOne({ username: req.body.username, password: md5(req.body.password) }, function (error, result) {
+exports.login = (req, res) => {
+	User.findOne({ username: req.body.username, password: req.body.password }, function (error, result) {
 		if (result) {
 			var userEntity = result;
 			var acToken = auth.generateAccessToken(userEntity);
 			var reToken = auth.generateRefreshToken();
 			auth.updateRefreshToken(result._id, reToken)
 				.then(() => {
-					res.status(201).json({
+					res.status(200).json({
 						status: 'success',
 						user: userEntity,
 						access_token: acToken,
@@ -47,9 +45,9 @@ router.post('/login', (req, res) => {
 			})
 		}
 	})
-});
+};
 
-router.get('/me_access', (req, res) => {
+exports.me_access = (req, res) => {
 	var reToken = req.headers['x-refresh-token'];
 	ReToken.findOne({ token: reToken }, null, function (err, result) {
 		if (err) console.log(err);
@@ -58,7 +56,7 @@ router.get('/me_access', (req, res) => {
 			User.findOne({ '_id': id }, function (err, userEntity) {
 				if (userEntity) {
 					var acToken = auth.generateAccessToken(userEntity);
-					res.status(201).json({
+					res.status(200).json({
 						auth: true,
 						user: userEntity,
 						access_token: acToken,
@@ -70,6 +68,4 @@ router.get('/me_access', (req, res) => {
 			res.status(401).end('end')
 		}
 	})
-})
-
-module.exports = router;
+}
