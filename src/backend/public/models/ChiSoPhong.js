@@ -5,7 +5,9 @@ var chiSoPhongSchema = new Schema({
     phong: String,
     dien: Number,
     nuoc: Number,
-    thangNam: Date
+    thang: Number,
+    nam: Number, 
+    status: {type: String, enum: ['0', '1']}
 });
 const model = mongoose.model('ChiSoPhong', chiSoPhongSchema, 'ChiSoPhong');
 module.exports = model;

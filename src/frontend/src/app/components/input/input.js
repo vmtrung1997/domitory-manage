@@ -24,6 +24,7 @@ class Input extends Component {
       <React.Fragment>
         <input 
           style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
+          name={this.props.name}
           onChange={this.onChange} 
           name={this.props.name}
           value={this.props.value}

@@ -17,3 +17,7 @@ thead {
 .table-bordered {
     border: 1px solid #EBEBEB;
 }
+.content-header{
+    display: flex;
+    justify-content: space-between;
+}
