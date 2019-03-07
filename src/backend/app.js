@@ -17,15 +17,16 @@ app.use(bodyParser.json());
 var verifyAccessToken = require('./public/repos/authRepo').verifyAccessToken;
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "*");
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    next();
 });
 
 app.use('/api/user', require('./public/routes/user'));
 app.use('/api/manager', verifyAccessToken, require('./public/routes/manager'));
 app.use('/api/student', verifyAccessToken, require('./public/routes/student'));
-app.use('/api/logout', verifyAccessToken, require('./public/routes/logout'));
+app.use('/api/logout', require('./public/routes/logout'));
 
 app.get('/', (_, res) => {
     res.json({

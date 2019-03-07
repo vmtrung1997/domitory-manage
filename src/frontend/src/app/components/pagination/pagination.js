@@ -12,6 +12,7 @@ class Pagination extends Component{
 		}
 	}
 	static defaultProps = {
+		page: 1,
 	    pages: 1,
 	    color: 'bt-success',
 	    margin: '2px',

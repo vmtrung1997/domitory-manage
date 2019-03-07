@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import md5 from 'md5'
+import React, { Component } from 'react';
+import md5 from 'md5';
 import axios from 'axios';
 
 import Input from '../../../components/input/input'
@@ -12,7 +12,8 @@ class SignInAdmin extends Component{
 		super(props)
 		this.state = {
 			username: '',
-			password: ''
+			password: '',
+			isNotify: false,
 		}
 	}
 	getValue = (obj) => {
@@ -23,12 +24,17 @@ class SignInAdmin extends Component{
 		}
 	}
 	login = () => {
-		console.log(this.state)
 		axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
 	      	.then(res => {
-	    	    console.log(res);
-	    	    console.log(res.data);
-	    })
+	    	    localStorage.setItem('secret', JSON.stringify(res.data));
+	    	    let { from } = this.props.location.state || { from: { pathname: "/admin" } }
+				this.props.history.push(from)
+			})
+			.catch( err => {
+				this.setState({
+					isNotify: true
+				})
+			})
 	}
 	render(){
 		return(
@@ -39,6 +45,9 @@ class SignInAdmin extends Component{
 				</div>
 				<div className='form-login'>
 					<div className='lb-tille'> ĐĂNG NHẬP </div>
+					{this.state.isNotify ? (
+						<div className='notify'> ! Bạn nhập sai tài khoản hoặc mật khẩu </div>
+					):(<React.Fragment/>)}
 					<div>
 						<Input 
 							width='250px' placeholder='Tài khoản' fontSize='20px' padding='8px 18px' borderRadius='6px' 
@@ -49,6 +58,7 @@ class SignInAdmin extends Component{
 						<Input 
 							width='250px' placeholder='Mật khẩu'  fontSize='20px' padding='8px 18px'  borderRadius='6px' type='password'
 							getValue={this.getValue} name={'password'}
+							onKeyPress={ (e) => {if(e.key === 'Enter') this.login()}}
 						/>
 					</div>
 					<div style={{margin: '10px'}}> 
