@@ -62,11 +62,9 @@ class Expenses extends Component {
 			{ value: 2, label: 'Chưa thanh toán' }]
 		return (
 			<React.Fragment>
-				<div className={'p-10'}>
-					<Title>
-						Chi phí
-        </Title>
-					<div className={'content-body'}>
+				<Title> Chi phí </Title>
+				<div className={'content-body'}>
+					<div>
 						<Row className={'m-b-10'}>
 						<Col md={2} xs={12}><Button color={'warning'}>
 								Chi phí tổng hợp
