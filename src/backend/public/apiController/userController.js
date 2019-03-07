@@ -28,7 +28,6 @@ exports.login = (req, res) => {
 				.then(() => {
 					res.status(200).json({
 						status: 'success',
-						user: userEntity,
 						access_token: acToken,
 						refresh_token: reToken
 					})

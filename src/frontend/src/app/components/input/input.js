@@ -14,7 +14,8 @@ class Input extends Component {
     placeholder: '',
     padding: '6px 12px',
     borderRadius: '1px',
-    getValue: () => {}
+    getValue: () => {},
+    onKeyPress: () => {},
   }
   onChange = (event) => {
     this.props.getValue(event.target);
@@ -30,7 +31,9 @@ class Input extends Component {
           value={this.props.value}
           type={this.props.type} 
           className="input-control" 
-          placeholder={this.props.placeholder} />
+          placeholder={this.props.placeholder}
+          onKeyPress={this.props.onKeyPress}
+        />
       </React.Fragment>
     );
   }
