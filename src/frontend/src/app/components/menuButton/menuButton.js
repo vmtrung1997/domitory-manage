@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from "react-router-dom";
+
 import './menuButton.css';
 
 export default class MenuButton extends React.Component {
@@ -6,7 +8,7 @@ export default class MenuButton extends React.Component {
     const { icon, label, link, ikey } = this.props;
     return(
       <li className={'menu-button'} key={ ikey}>
-        <a href={link} className={"mb_link"}>
+        <Link to={link} className={"mb_link"}>
           {icon &&
             <i className={icon + " mb_icon"}/>
           }
@@ -15,7 +17,7 @@ export default class MenuButton extends React.Component {
               {label}
             </span>
           }
-        </a>
+        </Link>
       </li>
     )
   }

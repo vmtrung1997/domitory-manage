@@ -28,12 +28,10 @@ class Example extends React.Component {
   selected = (value) => {
     this.setState({phong: value})
   }
-  onSoDienChange = (value) => {
-    this.setState({soDien: value})
+  onChange = (target) => {
+    this.setState({[target.name]: target.value})
   }
-  onSoNuocChange = (value) => {
-    this.setState({soNuoc: value})
-  }
+  
   addRow = () => {
     var row = {phong: this.state.phong, soDien: this.state.soDien, soNuoc: this.state.soNuoc}
     var table = this.state.table;
@@ -64,7 +62,7 @@ class Example extends React.Component {
       <>
         <Button onClick={this.handleShow}>
           Bảng ghi
-          </Button>
+        </Button>
 
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <Modal.Header closeButton>
@@ -79,11 +77,11 @@ class Example extends React.Component {
               </Col>
               <Col md={3}>
                 <Col md={12}><label>Số điện</label></Col>
-                <Col md={12}><Input type="number" value={this.state.soDien} getValue={this.onSoDienChange}/></Col>
+                <Col md={12}><Input type="number" value={this.state.soDien} getValue={this.onChange} name={'soDien'}/></Col>
               </Col>
               <Col md={3}>
                 <Col md={12}><label>Số nước</label></Col>
-                <Col md={12}><Input type="number" value={this.state.soNuoc} getValue={this.onSoNuocChange}/></Col>
+                <Col md={12}><Input type="number" value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'}/></Col>
               </Col>
               <Col md={3}>
               <Col md={12}>&nbsp;</Col>
@@ -111,7 +109,7 @@ class Example extends React.Component {
           <Modal.Footer>
             <Button variant="default" color="default" onClick={this.handleClose}>
               Đóng
-              </Button>
+            </Button>
             <Button variant="default" onClick={this.handleClose}>
               Xác nhận
               </Button>

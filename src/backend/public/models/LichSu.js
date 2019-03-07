@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var lichSuSchema = new Schema({
     idSV: String,
-    gioVao: Date
+    thoiGian: Date
 });
 const model = mongoose.model('KetQuaHD', lichSuSchema, 'KetQuaHD');
 module.exports = model;

@@ -17,13 +17,14 @@ class Input extends Component {
     getValue: () => {}
   }
   onChange = (event) => {
-    this.props.getValue(event.target.value);
+    this.props.getValue(event.target);
   }
   render() {
     return (
       <React.Fragment>
         <input 
           style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
+          name={this.props.name}
           onChange={this.onChange} 
           value={this.props.value}
           type={this.props.type} 
