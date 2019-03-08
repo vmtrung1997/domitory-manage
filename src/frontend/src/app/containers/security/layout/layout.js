@@ -10,21 +10,17 @@ import jwt_decode from 'jwt-decode';
 export default class Layout extends React.Component{
   render() {
     const { children } = this.props;
-    var rule = ''
-    var name = ''
     const secret = JSON.parse(localStorage.getItem('secret'))
-    if(secret)
-    {
-      const user = jwt_decode(secret.access_token).user
-      name = user.hoTen
-      switch(user.loai){
-        case 'SA':
-          rule = 'Super Admin'
-          break
-        case 'BV':
-          rule = 'Bảo Vệ'
-          break
-      }
+    const user = jwt_decode(secret.access_token).user
+    var rule = ''
+
+    switch(user.loai){
+      case 'SA':
+        rule = 'Super Admin'
+        break
+      case 'BV':
+        rule = 'Bảo Vệ'
+        break
     }
 
     return(
@@ -32,7 +28,7 @@ export default class Layout extends React.Component{
         <div className={'layout-sub'}>
           <Navigation
             owner= {{avt: 'https://akns-images.eonline.com/eol_images/Entire_Site/20181026/rs_600x600-181126230834-e-asia-iu-things-to-know-thumbnail.jpg?fit=around|700:700&crop=700:700;center,top&output-quality=90',
-                    name: `${name}`,
+                    name: `${user.hoTen}`,
                     role: `${rule}` }}
             menuList={[
               {key: 0, link: '/admin/student', label: 'Sinh viên',icon: 'fas fa-user-graduate'},
