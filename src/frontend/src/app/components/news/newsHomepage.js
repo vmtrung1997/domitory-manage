@@ -57,7 +57,7 @@ class NewsHomepage extends React.Component {
                         </div>
                     </Col>
                 </Row>
-                <Link to='#' style={{textDecoration: 'none'}}>
+                <Link to='/news' style={{textDecoration: 'none'}}>
                     <div className='news-show-all'>
                         <span>Xem tất cả >></span>
                     </div>

@@ -1,0 +1,37 @@
+.menu-student{
+   
+    min-height: 100vh;
+    background-color: #E4E4E4;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    /* padding-top: 120px; */
+}
+
+.menu-student-avatar{
+    width: 100px;
+    height: 100px;
+   
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.menu-student-header{
+    margin-left: auto;
+    margin-right: auto;
+    /* margin-top: 20px; */
+}
+
+.menu-student-content{
+    /* margin-top: 45px; */
+}
+
+.list-group-item-action:hover{
+    background-color: #2680EB !important;
+    color: #ffffff !important;
+}
+
+.menu-student-name{
+    margin-top: 20px;
+    font-size: 25px;
+}

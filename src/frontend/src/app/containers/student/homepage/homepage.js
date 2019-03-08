@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import Header from '../../components/headerHomepage/headerHomepage'
-import Slide from '../../components/slideHomepage/slideHomepage'
-import News from '../../components/news/newsHomepage'
-import Info from '../../components/introHomepage/info'
+import Slide from '../../../components/slideHomepage/slideHomepage'
+import News from '../../../components/news/newsHomepage'
+import Info from '../../../components/introHomepage/info'
 import autoscroll from 'autoscroll-react'
-
-const ReallySmoothScroll = require('really-smooth-scroll');
+import { Route } from 'react-router-dom'
+import ReallySmoothScroll from 'really-smooth-scroll';
 
 
 ReallySmoothScroll.shim();
@@ -15,6 +14,7 @@ class Homepage extends Component {
     }
 
     componentDidMount() {
+        console.log('a');
        // autoscroll(Info, { isScrolledDownThreshold: 150 /*default*/ })
     }
 
@@ -39,10 +39,9 @@ class Homepage extends Component {
     render() {
         return (
             <React.Fragment>
-                <Header getScroll={this.getScroll}></Header>
                 <Slide></Slide>
                 <News id="new"></News>
-                <Info id="info"></Info>
+                <Info id="info"></Info>          
             </React.Fragment>
         )
     }

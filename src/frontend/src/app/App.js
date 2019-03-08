@@ -6,7 +6,7 @@ import './App.css'
 import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
 import SignInAdmin from './containers/admin/signIn/signinAdmin'
-import Homepage from './containers/student/homepage'
+import Student from './containers/student'
 import News from './containers/student/news/news'
 import NewsDetail from './containers/student/newscontent/newsContent'
 
@@ -43,7 +43,7 @@ class App extends Component {
                 <Switch>
                     <AuthRoute path="/admin/" component={Admin} />
                     <Route path="/signin-admin" component={SignInAdmin} />
-                    <Route path="/" component={Homepage} />
+                    <Route path="/" component={Student} />
                     <Route component={NotFound} />
                 </Switch>
             </Router>
