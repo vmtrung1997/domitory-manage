@@ -46,3 +46,10 @@ li{
     position: relative;
     width: 50%;
 }
+.focus{
+    border-right: 5px solid #1ABB9C;
+    background: #293846;
+}
+.focus a{
+    color: white;
+}

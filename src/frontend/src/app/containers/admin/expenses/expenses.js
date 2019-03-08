@@ -3,25 +3,20 @@ import PropTypes from 'prop-types';
 import { Table, Row, Col } from 'react-bootstrap'
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
-import Example from './expensesModal'
+import ModalExpense from './expensesModal'
 import Title from '../../../components/title/title'
+import Input from '../../../components/input/input'
 class Expenses extends Component {
 	static propTypes = {
 		label: PropTypes.string,
 	}
-	static defaultProps = {
-		check: false,
-		name: '',
-		value: '',
-		isRadioChk: () => { }
-	}
 	constructor(props) {
 		super(props)
 		this.state = {
-			check: this.props.check
+			txtUsername: '',
+			txtPassword: '',
 		}
 	}
-
 	render() {
 		const data = [
 			{
@@ -67,13 +62,17 @@ class Expenses extends Component {
 			{ value: 2, label: 'Chưa thanh toán' }]
 		return (
 			<React.Fragment>
-				<div className={'p-10'}>
-					<Title>
-						Thông tin sinh viên
-        </Title>
-					<div className={'content-body'}>
+				<Title> Chi phí </Title>
+				<div className={'content-body'}>
+					<div>
 						<Row className={'m-b-10'}>
-							<Col md={3}><Example /></Col>
+						<Col md={2} xs={12}><Button color={'warning'}>
+								Chi phí tổng hợp
+							</Button></Col>
+							<Col md={3} xs={12}><Button>
+								Chi phí chưa thanh toán
+							</Button></Col>
+							<Col md={{size: 6, offset: '5'}} xs={12}><ModalExpense /></Col>
 						</Row>
 						<Row className={'m-b-10'}>
 							<Col md={2} xs={12}>

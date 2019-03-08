@@ -43,6 +43,12 @@ a{
 	padding-top: 30px;
 	margin: 30px auto
 }
+.notify{
+	color: red;
+	font-size: 20px;
+	padding-bottom: 5px;
+}
+
 @media only screen and (max-width: 500px) {
 	.lb-tille{
 		font-size: 20px;

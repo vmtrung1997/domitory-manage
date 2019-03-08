@@ -25,6 +25,7 @@ export default class Navigation extends React.Component{
   render() {
     const { menuList } = this.state;
     console.log('==menu', menuList)
+    console.log(window.location.pathname)
     return(
       <div className={"nav-wrapper"}>
         <ul>
@@ -40,6 +41,7 @@ export default class Navigation extends React.Component{
                 link={e.link}
                 label={e.label}
                 icon={e.icon}
+                path={window.location.pathname}
               />
             )
           })}
