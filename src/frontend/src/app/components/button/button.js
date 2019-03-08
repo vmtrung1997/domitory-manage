@@ -19,7 +19,7 @@ class Button extends Component{
 		// if true button is disable
 		disable: PropTypes.bool,
 		// style if you want custom
-		style: PropTypes.object,
+    style: PropTypes.object,
 		// is true button will fullwidth
 		fullWidth: PropTypes.bool,
 	};
