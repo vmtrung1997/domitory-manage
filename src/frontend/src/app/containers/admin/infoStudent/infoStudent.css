@@ -1,0 +1,21 @@
+
+.is-manipulation{
+    float: right;
+    margin-bottom: 5px;
+}
+
+.is-manipulation button{
+    width: 60px;
+}
+
+.is-header{
+
+}
+
+.is-pagination{
+    float: right;
+}
+
+.is-btnSearch{
+    margin-top: 29px;
+}

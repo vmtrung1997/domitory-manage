@@ -14,7 +14,7 @@ class Pagination extends Component{
 	static defaultProps = {
 		page: 1,
 	    pages: 1,
-	    color: 'bt-success',
+	    color: 'success',
 	    margin: '2px',
 	    clickPage: () => { return {page: 1}},
 	    chkPre: () => { return {page: 1}},
@@ -88,9 +88,13 @@ class Pagination extends Component{
 					type = `${this.props.color} bt-outline`
 
 				arrButton.push(
-					<Button margin={this.props.margin} keyButton={i} content={i} 
-						color={this.props.color} type={`${type}`}  onClick={this.clickPage}
-						size={this.props.size}/>
+					<Button
+						keyButton={i}
+						color={this.props.color}
+						style={{size: `${this.props.size}`, margin: `${this.props.margin}`}}
+					>
+						{i}
+					</Button>
 				)
 			}
 		} else {
@@ -103,13 +107,19 @@ class Pagination extends Component{
 
 		return(
 			<React.Fragment>
-				<Button margin={this.props.margin} firstIcon={"fas fa-chevron-left"} 
-					color={this.props.color} type={`${this.props.color} bt-outline`} onClick={this.chkPre}
-					size={this.props.size}/>
+				<Button
+					color={this.props.color}  onClick={this.chkPre}
+					style={{size: `${this.props.size}`, margin: `${this.props.margin}`}}
+				>
+					<i className='fas fa-chevron-left'></i>
+				</Button>
 				{arrButton}
-				<Button margin={this.props.margin} firstIcon={"fas fa-chevron-right"}
-					color={this.props.color} type={`${this.props.color} bt-outline`} onClick={this.chkNext}
-					size={this.props.size}/>
+        <Button
+          color={this.props.color}  onClick={this.chkNext}
+          style={{size: `${this.props.size}`, margin: `${this.props.margin}`}}
+        >
+          <i className='fas fa-chevron-right'></i>
+        </Button>
 			</React.Fragment>
 		);
 	}
