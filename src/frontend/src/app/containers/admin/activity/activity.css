@@ -1,0 +1,24 @@
+.infor-activity{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+.header-optimize{
+	display: flex;
+	justify-content: space-between;
+	border-style: solid none;
+	border-color: #e7eaec; 
+    border-width: 4px 0 1px;
+	margin-top: 30px;
+    padding: 14px 15px 7px;
+}
+.bt-header{
+	font-size: 16px !important;
+	width: 100px;
+	margin: auto 5px; 
+	border-radius: 20px !important;
+}
+.bts-header{
+	display: flex;
+	align-items: center;
+}

@@ -1,7 +1,31 @@
 .form-acivity{
-	border: 1px solid #4C4A49;
-	padding: 10px;
+	border-color: #bababa;
+	border-style: solid;
+	border-width: 5px 1px 1px 1px; 
 	margin: 5px;
 	border-radius: 5px;
-	width: 400px;
+	width: 500px;
+	background: white;
+	color: #686B6D;
+}
+.gr-bt{
+	display: flex;
+	justify-content: space-evenly;
+}
+.title-activity{
+	border-bottom: 1px solid #e7eaec;
+	font-weight: bold;
+	font-size: 18px;
+	display: flex;
+	justify-content: space-between;
+}
+.icon-activity{
+	color: #9a9c9d;
+	font-size: 13px;
+}
+.icon-activity i{
+	margin-left: 10px;
+}
+.content-activity{
+	padding: 10px 20px;
 }
