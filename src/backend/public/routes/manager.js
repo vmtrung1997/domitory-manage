@@ -1,8 +1,12 @@
 var router = require('express').Router();
-var quanLyController = require('../apiController/expenseController')
+var expenseController = require('../apiController/expenseController')
 
 
 
-router.get('/expense', quanLyController.quan_ly_dien_nuoc);
+router.get('/expense', expenseController.quan_ly_dien_nuoc);
+
+router.post('/expense/get_expense_table', expenseController.select_expense_table);
+
+router.get('/expense/refresh', expenseController.refresh_data);
 
 module.exports = router;

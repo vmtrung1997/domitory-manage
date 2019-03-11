@@ -10,11 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.0",
     "md5": "^2.2.1",
     "moment": "^2.24.0",
     "mongoose": "^5.4.13",
+    "mongoose-paginate-v2": "^1.0.23",
     "morgan": "^1.9.1",
     "path": "^0.12.7",
     "rand-token": "^0.4.0"

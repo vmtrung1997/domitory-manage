@@ -1,4 +1,4 @@
 module.exports = {
     SECRET : 'ABCDEF',
-    AC_LIFETIME : 6000,
+    AC_LIFETIME : 60000,
 }
