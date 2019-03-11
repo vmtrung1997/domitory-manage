@@ -7,41 +7,67 @@ import './App.css'
 import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
 import SignInAdmin from './containers/admin/signIn/signinAdmin'
-import Homepage from './containers/student/homepage'
+import Student from './containers/student'
 import News from './containers/student/news/news'
 import NewsDetail from './containers/student/newscontent/newsContent'
+import Security from './containers/security'
 
-const checkAdmin = () => {
+var isAdmin = false
+var isSecurity = false
+var isStudent = false
+const checkAuth = () => {
     const secret = JSON.parse(localStorage.getItem('secret'))
     if(secret){
         const decode = jwt_decode(secret.access_token)
-        if( decode.user.loai === 'SA' )
-            return true
-        else 
-            return false
-    } else {
-        return false
-    }
-}
-const AdminRoute = ({ component: Component, ...rest }) => (
-    <Route
-        {...rest}
-        render = {props =>
-            checkAdmin() ? (
-                <Component {...props} />
-            ) : (
-                <Redirect to={{ pathname: "/signin-admin", state: { from: props.location }}} />
-            )
+        switch(decode.user.loai)
+        {
+            case 'SA':
+                isAdmin = true
+                break
+            case 'SV':
+                isStudent = true
+                break
+            case 'BV':
+                isSecurity = true
+                break
         }
-    />
-)
+    }
+    console.log(isAdmin, isSecurity, isStudent)
+}
+const AdminRoute = ({ component: Component, ...rest }) => {
+    checkAuth()
+    return(
+        <Route
+            {...rest}
+            render = {props => 
+                isAdmin ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect to={{ pathname: "/signin-admin", state: { from: props.location }}} />
+                )
+            }
+        />
+    )
+}
+const SecurityRoute = ({ component: Component, ...rest }) => {
+    checkAuth()
+    return(
+        <Route
+            {...rest}
+            render = {props =>
+                isSecurity ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect to={{ pathname: "/signin-admin", state: { from: props.location }}} />
+                )
+            }
+        />
+    )
+}
 
 class App extends Component {
     constructor(props){
         super(props)
-        this.state = {
-            isAdmin: false,
-        }
     }
 
 	render() {
@@ -49,8 +75,9 @@ class App extends Component {
       		<Router>
                 <Switch>
                     <AdminRoute path="/admin" component={Admin} />
+                    <SecurityRoute path='/security' component={Security} />
                     <Route path="/signin-admin" component={SignInAdmin} />
-                    <Route path="/" component={Homepage} />
+                    <Route path="/" component={Student} />
                     <Route component={NotFound} />
                 </Switch>
             </Router>

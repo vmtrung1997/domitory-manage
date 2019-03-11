@@ -19,7 +19,10 @@ class Expenses extends Component {
 		}
 	}
 	searchTable = (object) => {
-		search(object);
+		search({options: {
+			page: 1,
+			limit: 10
+		}});
 	}
 	render() {
 		var today = new Date();
@@ -35,11 +38,9 @@ class Expenses extends Component {
 			console.log(month[4].value)
 		return (
 			<React.Fragment>
-				<div className={'p-10'}>
-					<Title>
-						Chi phí
-        </Title>
-					<div className={'content-body'}>
+				<Title> Chi phí </Title>
+				<div className={'content-body'}>
+					<div>
 						<Row className={'m-b-10'}>
 							<Col md={2} xs={12}>
 								Tháng

@@ -4,10 +4,19 @@ import { Link } from "react-router-dom";
 import './menuButton.css';
 
 export default class MenuButton extends React.Component {
+  constructor(props){
+    super(props)
+  }
+
+
   render() {
-    const { icon, label, link, ikey } = this.props;
+    const { icon, label, link, ikey, path } = this.props;
+    var focus = ''
+    if(path === this.props.link){
+      focus = 'focus'
+    }
     return(
-      <li className={'menu-button'} key={ ikey}>
+      <li className={`menu-button ${focus}`} key={ ikey} onClick={this.click}>
         <Link to={link} className={"mb_link"}>
           {icon &&
             <i className={icon + " mb_icon"}/>
@@ -26,10 +35,10 @@ export default class MenuButton extends React.Component {
 export const MenuButtonHeader = (props) => {
   const { avt, name, role } = props;
   return(
-    <div style={{color: 'white', textAlign: 'center'}}>
+    <div style={{color: 'white', textAlign: 'center', marginTop: '-15px'}}>
       <img alt="avatar" className="img-circle center" src={avt}/>
       <div style={{fontWeight: 'bold'}}> {name} </div>
-      <div style={{fontSize: '14px'}}> {role} </div>
+      <div style={{fontSize: '14px', marginBottom: '5px'}}> {role} </div>
     </div>
   );
 };

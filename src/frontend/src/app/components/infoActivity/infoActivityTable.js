@@ -23,16 +23,16 @@ class InfoActivityTable extends Component{
 			)
 		})
 		return(
-			<Table striped bordered hover responsive className="table-activity">
+			<Table bordered hover responsive size="sm" className="table-activity">
 				<thead >
 					<tr>
-						<td>STT</td>
-						<td>Hoạt động</td>
-						<td>Thời gian</td>
-						<td>Địa điểm</td>
-						<td>Tham gia</td>
-						<td>Hình thức</td>
-						<td>Tình trạng</td>
+						<th>STT</th>
+						<th>Hoạt động</th>
+						<th>Thời gian</th>
+						<th>Địa điểm</th>
+						<th>Tham gia</th>
+						<th>Hình thức</th>
+						<th>Tình trạng</th>
 					</tr>
 				</thead>
 				<tbody>

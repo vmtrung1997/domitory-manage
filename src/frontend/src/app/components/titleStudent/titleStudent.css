@@ -1,0 +1,14 @@
+.title-header{
+    font-size: 30px;
+    color: #2680EB;
+}
+
+.title-header-line{
+    width: 50%;
+    height: 1px;
+    background-color: #2680EB;
+    -webkit-box-shadow: 7px 10px 23px -5px rgba(0,0,0,0.75);
+    -moz-box-shadow: 7px 10px 23px -5px rgba(0,0,0,0.75);
+    box-shadow: 7px 10px 23px -5px rgba(0,0,0,0.75);
+
+}

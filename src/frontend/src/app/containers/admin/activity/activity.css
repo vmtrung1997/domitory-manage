@@ -6,11 +6,11 @@
 .header-optimize{
 	display: flex;
 	justify-content: space-between;
-	margin-top: 10px;
 	border-style: solid none;
-	border-width: 1px;
-	border-color: #e7eaec;
-	padding: 5px; 
+	border-color: #e7eaec; 
+    border-width: 4px 0 1px;
+	margin-top: 30px;
+    padding: 14px 15px 7px;
 }
 .bt-header{
 	font-size: 16px !important;

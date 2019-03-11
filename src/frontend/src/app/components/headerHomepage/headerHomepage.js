@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Modal, Col, Row, Form, Button, InputGroup, FormControl, Dropdown, SplitButton, ButtonToolbar } from 'react-bootstrap'
-import Login from './../../containers/student/login'
+import Login from './../../containers/student/modalLogin/login'
 
 import './headerHomepage.css'
 
