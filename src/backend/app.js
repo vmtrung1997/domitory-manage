@@ -2,7 +2,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
     path = require('path'),
-	mongoose = require('mongoose');
+	  mongoose = require('mongoose');
 
 mongoose.connect('mongodb://admin:123abc@ds149875.mlab.com:49875/kytucxa', { useNewUrlParser: true })
 mongoose.set('useCreateIndex', true);
