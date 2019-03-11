@@ -10,12 +10,18 @@ class Activity extends Component{
 	constructor(props){
 		super(props)
 		this.state = {
-			isTable: true
+			isTable: true,
+			show: false
 		}
 	}
 	isCheckTable = (val) => {
 		this.setState({
 			isTable: val
+		})
+	}
+	handleShow = () => {
+		this.setState({
+			show: true
 		})
 	}
 	render(){	
@@ -86,7 +92,7 @@ class Activity extends Component{
 						</Button>
 					</div>
 					<div className='bts-header'>
-						<Button className='bt-header' color='success'>Thêm</Button>
+						<Button className='bt-header' color='success' onClick={this.handleShow}>Thêm</Button>
 						<Button className='bt-header' color='success'>Báo cáo</Button>
 					</div>
 				</div>
