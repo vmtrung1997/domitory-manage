@@ -15,6 +15,7 @@
     "md5": "^2.2.1",
     "moment": "^2.24.0",
     "mongoose": "^5.4.13",
+    "mongoose-paginate-v2": "^1.0.23",
     "morgan": "^1.9.1",
     "path": "^0.12.7",
     "rand-token": "^0.4.0"

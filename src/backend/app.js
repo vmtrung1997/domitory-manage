@@ -5,6 +5,9 @@ var express = require('express'),
 	mongoose = require('mongoose');
 
 mongoose.connect('mongodb://admin:123abc@ds149875.mlab.com:49875/kytucxa', { useNewUrlParser: true })
+
+require('./public/models/Phong')
+require('./public/models/ChiPhiPhong')
 mongoose.set('useCreateIndex', true);
 
 var app = express();

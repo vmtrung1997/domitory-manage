@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Row, Col } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
 import ModalExpense from './expensesModal'
 import Title from '../../../components/title/title'
-import Input from '../../../components/input/input'
+import ExpenseTable from '../expenses/expenseTable'
+import {search} from '../expenses/expensesAction'
 class Expenses extends Component {
 	static propTypes = {
 		label: PropTypes.string,
@@ -13,53 +14,25 @@ class Expenses extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			txtUsername: '',
-			txtPassword: '',
+			table: [],
+			phong: []
 		}
 	}
+	searchTable = (object) => {
+		search(object);
+	}
 	render() {
-		const data = [
-			{
-				phong: '101',
-				thang: '1/2019',
-				soDien: '30',
-				soNuoc: '5',
-				tien: '10000000'
-			},
-			{
-				phong: '101',
-				thang: '1/2019',
-				soDien: '30',
-				soNuoc: '5',
-				tien: '10000000'
-			},
-			{
-				phong: '101',
-				thang: '1/2019',
-				soDien: '30',
-				soNuoc: '5',
-				tien: '10000000'
-			}
-		]
-		const table = data.map((row, index) => {
-			return (
-				<tr key={index}>
-					<td>{index + 1}</td>
-					<td>{row.thang}</td>
-					<td>{row.phong}</td>
-					<td>{row.soDien}</td>
-					<td>{row.soNuoc}</td>
-					<td>{row.tien}</td>
-				</tr>
-			)
-		})
+		var today = new Date();
+		console.log(today.getFullYear());
+		
 		var month = [...Array(13)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i, label: i } });
 		var year = [...Array(4)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 2017, label: i + 2017 } });
-		var phong = [...Array(7)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 100, label: i + 100 } });
+		var phong = [] // [...Array(7)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 100, label: i + 100 } });
 		var trangThai = [
 			{ value: 0, label: 'Tất cả' },
 			{ value: 1, label: 'Đã thanh toán' },
 			{ value: 2, label: 'Chưa thanh toán' }]
+			console.log(month[4].value)
 		return (
 			<React.Fragment>
 				<div className={'p-10'}>
@@ -68,22 +41,13 @@ class Expenses extends Component {
         </Title>
 					<div className={'content-body'}>
 						<Row className={'m-b-10'}>
-						<Col md={2} xs={12}><Button color={'warning'}>
-								Chi phí tổng hợp
-							</Button></Col>
-							<Col md={3} xs={12}><Button>
-								Chi phí chưa thanh toán
-							</Button></Col>
-							<Col md={{size: 6, offset: '5'}} xs={12}><ModalExpense /></Col>
-						</Row>
-						<Row className={'m-b-10'}>
 							<Col md={2} xs={12}>
 								Tháng
-              <Select options={month} value={month[4].value} />
+              <Select options={month} value={today.getMonth()} />
 							</Col>
 							<Col md={2} xs={12}>
 								Năm
-              <Select options={year} />
+              <Select options={year} value={today.getFullYear()}/>
 							</Col>
 							<Col md={2} xs={12}>
 								Phòng
@@ -95,24 +59,16 @@ class Expenses extends Component {
 							</Col>
 							<Col md={2}>
 								&nbsp;
-              <Col md={12}><Button><i className="fas fa-search" /></Button></Col>
+              <Col md={12}><Button onClick={this.searchTable}><i className="fas fa-search" /></Button></Col>
 							</Col>
 						</Row>
-						<Table bordered hover responsive size="sm">
-							<thead >
-								<tr>
-									<th>STT</th>
-									<th>Tháng/Năm</th>
-									<th>Phòng</th>
-									<th className={'table-header'}>Chỉ số điện</th>
-									<th className={'table-header'}>Chỉ số nước</th>
-									<th className={'table-header'}>Số tiền</th>
-								</tr>
-							</thead>
-							<tbody>
-								{table}
-							</tbody>
-						</Table>
+						<div className="float-right m-b-10">
+						<Button color={'success'}>
+								Báo cáo
+							</Button>
+							<ModalExpense />
+						</div>
+						<ExpenseTable />
 					</div>
 				</div>
 			</React.Fragment>
