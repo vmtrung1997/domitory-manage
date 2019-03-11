@@ -10,6 +10,7 @@ import SignInAdmin from './containers/admin/signIn/signinAdmin'
 import Student from './containers/student'
 import News from './containers/student/news/news'
 import NewsDetail from './containers/student/newscontent/newsContent'
+import Security from './containers/security'
 
 var isAdmin = false
 var isSecurity = false

@@ -18,6 +18,9 @@
     margin-top: 60px;
 }
 
+.float-right{
+    float: right;
+}
 .content-body{
     margin-top: 30px;
     background-color: #ffffff;
