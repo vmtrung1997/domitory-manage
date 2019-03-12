@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/core": "^10.0.8",
     "@fortawesome/fontawesome-svg-core": "^1.2.15",
     "@fortawesome/free-regular-svg-icons": "^5.7.2",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
-    "axios": "^0.18.0",
     "autoscroll-react": "^3.2.0",
+    "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
     "jwt-decode": "^2.2.0",
     "md5": "^2.2.1",
@@ -22,6 +23,7 @@
     "react-scripts": "^2.1.8",
     "react-scroll-to-component": "^1.0.2",
     "react-slideshow-image": "^1.1.2",
+    "react-spinners": "^0.5.3",
     "really-smooth-scroll": "^2.1.1",
     "redux": "^4.0.1",
     "styled-components": "^4.1.3"
