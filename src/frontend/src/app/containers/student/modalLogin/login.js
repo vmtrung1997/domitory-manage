@@ -5,8 +5,11 @@ import Input from '../../../components/input/input'
 import './login.css'
 import axios from 'axios'
 import jwt_decode from 'jwt-decode';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import * as UserAction from '../../../actions/userAction'
 
-class Example extends React.Component {
+class StudentLogin extends React.Component {
   constructor(props, context) {
     super(props, context);
 
@@ -47,12 +50,14 @@ class Example extends React.Component {
           localStorage.setItem('secret', JSON.stringify(res.data));
 
           const decode = jwt_decode(res.data.access_token);
-          var id = decode.user._id;
-          console.log(decode);
+          var id = decode.user.userEntity._id;
           axios.defaults.headers['x-access-token'] = res.data.access_token;
+          console.log(id);
     
-          axios.get(`http://localhost:4000/api/student/get-info`, {id: id}).then(res => {
-            // console.log(res);
+          axios.post(`http://localhost:4000/api/student/get-info`, {id: id}).then(res => {
+            console.log(res.data.data);
+            this.props.getUserAction(res.data.data);
+            this.props.hideLogin(false);
             // let { from } = self.props.location.state || { from: { pathname: "/dashboard" } }
             // self.props.history.push(from)
           })
@@ -101,4 +106,17 @@ class Example extends React.Component {
     );
   }
 };
-export default Example;
+
+var mapStateToProps = (state) => {
+  return {
+      state: state
+  };
+}
+var mapDispatchToProps = (dispatch) => {
+  return {
+      getUserAction: bindActionCreators(UserAction.GET_USER_INFO, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StudentLogin);
+

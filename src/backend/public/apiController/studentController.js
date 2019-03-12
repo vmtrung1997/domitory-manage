@@ -1,6 +1,6 @@
 const ObjectId = require('mongoose').mongo.ObjectId;
 const md5 = require('md5');
-const Student = require('../models/SinhVien')
+const Profile = require('../models/Profile')
 
 const User = require('../models/TaiKhoan');
 const ReToken = require('../models/refreshToken');
@@ -15,19 +15,22 @@ exports.a = (req, res) => {
 
 exports.getInfo = (req, res) => {
 	var id = req.body.id;
-	console.log(req.body.username);
-	Student.findOne({idTaiKhoan: id}, function(err, result){
+	Profile.findOne({idTaiKhoan: id}, function(err, result){
 			if(result){
 				console.log(result);
+				res.status(200).json({
+					status: 'success',
+					data: result
+				})
 			}
 			else{
-				console.log('Khong co du lieu');
+				res.json({
+					status: 'fail',
+					data: 'no data'
+				})
 			}
 	});
-	res.status(200).json({
-		status: 'success',
-
-	})
+	
 }
   //   User.findOne({ username: req.body.username, password: req.body.password }, function (error, result) {
 	// 	if (result) {
