@@ -17,7 +17,7 @@ export default class Layout extends React.Component{
     {
       const user = jwt_decode(secret.access_token).user
       name = user.hoTen
-      switch(user.loai){
+      switch(user.userEntity.loai){
         case 'SA':
           rule = 'Super Admin'
           break
