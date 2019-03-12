@@ -1,28 +1,23 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const ChiPhiPhong = require('../models/ChiPhiPhong')
-
+const phongRepo = require('../repos/phongRepo')
 exports.quan_ly_dien_nuoc = (req, res, next) => {
 	res.json({
 		msg: 'from quan ly dien nuoc'
 	})
 };
-// param: req.body.search{
-// 	thang
-// 	nam
-// 	phong
-// 	status
-// }
+exports.get_data = (req, res) => {
+	phongRepo.get_room().then(result => {
+		res.json({
+			status: 'success',
+			result: result
+		})
+	})
+}
 exports.select_expense_table = (req, res) => {
 	var search = req.body.search
 	var options = req.body.options
 	options.populate = 'idPhong'
-	// paginate({
-	// 	populate: 'tenPhong'
-	// }, options).then(result => {
-	// 	res.status(200).json({
-	// 		res: result
-	// 	})
-	// })
 	ChiPhiPhong.paginate({thang: 9, nam: 2015}, options).then
 	(value => {
 		res.json({

@@ -3,6 +3,7 @@ const md5 = require('md5');
 
 
 const User = require('../models/TaiKhoan');
+const Profile = require('../models/Profile')
 const ReToken = require('../models/refreshToken');
 var auth = require('../repos/authRepo');
 
@@ -22,21 +23,25 @@ exports.login = (req, res) => {
 	User.findOne({ username: req.body.username, password: req.body.password }, function (error, result) {
 		if (result) {
 			var userEntity = result;
-			var acToken = auth.generateAccessToken(userEntity);
-			var reToken = auth.generateRefreshToken();
-			auth.updateRefreshToken(result._id, reToken)
-				.then(() => {
-					res.status(200).json({
-						status: 'success',
-						access_token: acToken,
-						refresh_token: reToken
+			Profile.findOne({idTaiKhoan: userEntity._id},(err,prof) => {
+				var userObj = {userEntity, hoTen: prof.hoTen}
+				var acToken = auth.generateAccessToken(userObj);
+				var reToken = auth.generateRefreshToken();
+				auth.updateRefreshToken(result._id, reToken)
+					.then(() => {
+						res.status(200).json({
+							status: 'success',
+							access_token: acToken,
+							refresh_token: reToken
+						})
+					}).catch(err => {
+						res.status(500).json({
+							status: 'fail',
+							msg: err
+						})
 					})
-				}).catch(err => {
-					res.status(500).json({
-						status: 'fail',
-						msg: err
-					})
-				})
+			})
+			
 		} else {
 			res.status(401).json({
 				status: 'fail',
