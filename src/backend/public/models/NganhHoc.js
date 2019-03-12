@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var nghanhHocSchema = new Schema({
-    tenNghanh: String,
+var nganhHocSchema = new Schema({
+    tenNganh: String,
 });
-const model = mongoose.model('NghanhHoc', nghanhHocSchema, 'NghanhHoc');
+const model = mongoose.model('NganhHoc', nganhHocSchema, 'NganhHoc');
 module.exports = model;
