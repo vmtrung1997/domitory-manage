@@ -24,10 +24,12 @@ class SignInAdmin extends Component{
 		}
 	}
 	login = () => {
+    console.log('==state',this.state)
 		axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
 	      	.then(res => {
+	      		console.log('==res', res);
 	    	    localStorage.setItem('secret', JSON.stringify(res.data));
-	    	    let { from } = this.props.location.state || { from: { pathname: "/admin" } }
+	    	    let { from } = this.props.location.state || { from: { pathname: "/admin/student" } }
 				this.props.history.push(from)
 			})
 			.catch( err => {
@@ -37,6 +39,7 @@ class SignInAdmin extends Component{
 			})
 	}
 	render(){
+
 		return(
 			<React.Fragment>
 				<div className='header-sgin-admin'>

@@ -37,7 +37,7 @@ class Button extends Component{
 		return(
 			<button  
 				style={style}
-				className={'btn btn-' + size + ' btn-' + color + ' btn-' + variant + ' ' + classDisabled + ' ' + classFullWidth + ' ' + className}
+				className={'bt bt-' + size + ' bt-' + color + ' bt-' + variant + ' ' + classDisabled + ' ' + classFullWidth + ' ' + className}
 				onClick={e => this.props.onClick({key: this.props.keyButton})}
 			>
 				{children}

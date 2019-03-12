@@ -11,6 +11,7 @@ exports.register = (req, res) => {
 	userObject.password = md5(userObject.password);
 	var user = new User(userObject);
 	user.save().then(() => {
+    console.log(req.body);
 		res.status(201).json(req.body);
 	}).catch(err => {
 		console.log(err);
@@ -26,14 +27,16 @@ exports.login = (req, res) => {
 			var reToken = auth.generateRefreshToken();
 			auth.updateRefreshToken(result._id, reToken)
 				.then(() => {
+					console.log('==login sucess', req.body);
 					res.status(200).json({
 						status: 'success',
 						access_token: acToken,
 						refresh_token: reToken
 					})
+					console.log('==access token', acToken)
 				}).catch(err => {
 					res.status(500).json({
-						status: 'fail',
+						status: 'fail 500',
 						msg: err
 					})
 				})

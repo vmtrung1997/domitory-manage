@@ -75,7 +75,7 @@ class App extends Component {
       		<Router>
                 <Switch>
                     <AdminRoute path="/admin" component={Admin} />
-                    <SecurityRoute path='/security' component={Security} />
+                    {/*<SecurityRoute path='/security' component={Security} />*/}
                     <Route path="/signin-admin" component={SignInAdmin} />
                     <Route path="/" component={Student} />
                     <Route component={NotFound} />

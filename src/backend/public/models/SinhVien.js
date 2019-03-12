@@ -1,13 +1,14 @@
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate-v2');
 var Schema = mongoose.Schema;
 
 var sinhVienSchema = new Schema({
-    idTaiKhoan: String,
+    idTaiKhoan: {type: Schema.Types.String, ref: 'TaiKhoan'},
     MSSV: String,
     maThe: String,
-    nganhHoc: String,
+    nganh: {type: Schema.Types.String, ref: 'Nganh'},
     truong: String,
-    idPhong: String,
+    phong: {type: Schema.Types.String, ref: 'Phong'},
     moTa: String,
     trangThai: String,
     sdtNguoiThan: String,
@@ -15,5 +16,7 @@ var sinhVienSchema = new Schema({
     ngayHetHan: Date,
     danToc: String
 });
+sinhVienSchema.plugin(mongoosePaginate);
+
 const model = mongoose.model('SinhVien', sinhVienSchema, 'SinhVien');
 module.exports = model;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Table, Pagination } from 'react-bootstrap';
+import { Row, Col, Table, Pagination, Modal } from 'react-bootstrap';
 import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
@@ -8,14 +8,32 @@ import CheckBox from './../../../components/checkbox/checkbox';
 import { withRouter } from 'react-router-dom';
 import './infoStudent.css';
 import './../../../style.css'
+import Select from "../../../components/selectOption/select";
 
 class InfoStudent extends Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      listPhong: [{value: 0, label: 101}, {value: 1, label: 102}, {value: 2, label: 103}],
+      showAddPopup: false,
+    }
+  }
+
+  handleCloseAddPopup = () => {
+    this.setState({ showAddPopup: false });
+  }
+
+  handleShowAddPopup = () => {
+    this.setState({ showAddPopup: true });
+  }
 
   onViewDetail(){
     console.log('==fine')
     this.props.history.push('/admin/id');
   }
+
   render(){
+    const { listPhong } = this.state;
     return(
       <div>
         <Title>
@@ -35,7 +53,7 @@ class InfoStudent extends Component{
               </Col>
               <Col md={3}>
                 Phòng
-                <Input/>
+                <Select options={listPhong} value={listPhong[0]} selected={this.selected} />
               </Col>
               <Col md={1} className={'is-btnSearch'}>
                 <Button
@@ -46,14 +64,48 @@ class InfoStudent extends Component{
               </Col>
             </Row>
           </div>
-          <div className={'is-manipulation'}>
-              <Button color={'warning'}>
-                <i className="fas fa-plus"/>
+
+          <Row>
+            <Col md={6} className={''}>
+              <div className={'is-manipulation'}>
+                <Button >
+                  <i className="fas fa-file-import"/>
+                </Button>
+                <Button>
+                  <i className="fas fa-file-export"/>
+                </Button>
+              </div>
+            </Col>
+
+            <Col md={6} >
+              <div className={'is-manipulation'} style={{float: 'right'}}>
+                <Button color={'warning'} onClick={this.handleShowAddPopup}>
+                  <i className="fas fa-plus"/>
+                </Button>
+                <Button color={'danger'}>
+                  <i className="fas fa-trash-alt"/>
+                </Button>
+              </div>
+            </Col>
+          </Row>
+
+          {/*modal popup add student*/}
+          <Modal show={this.state.showAddPopup} onHide={this.handleCloseAddPopup}>
+            <Modal.Header closeButton>
+              <Modal.Title>Thêm sinh viên</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+            <Modal.Footer>
+              <Button variant="outline" onClick={this.handleCloseAddPopup}>
+                Close
               </Button>
-              <Button color={'danger'}>
-                <i className="fas fa-trash-alt"/>
+              <Button variant="primary" onClick={this.handleCloseAddPopup}>
+                Save Changes
               </Button>
-          </div>
+            </Modal.Footer>
+          </Modal>
+          {/*end modal*/}
+
           <div className={'is-body'}>
             <Table responsive hover bordered size="sm">
               <thead>
@@ -120,7 +172,7 @@ class InfoStudent extends Component{
               </tbody>
             </Table>
             <Row>
-              <Col md={3}>
+              <Col md={3} className={'page-input'}>
                 <label style={{marginRight:'3px'}}>Page</label>
                 <Input width={'50px'}/>
               </Col>
