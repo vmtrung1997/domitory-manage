@@ -3,8 +3,8 @@
 
 
 require('../models/TaiKhoan');
-require('../models/Nganh');
-const Student = require('../models/SinhVien');
+//require('../models/NganhHoc');
+const Student = require('../models/Profile');
 const ReToken = require('../models/refreshToken');
 let auth = require('../repos/authRepo');
 
@@ -24,7 +24,7 @@ exports.getListStudent = (req, res) => {
   const ten = req.body.ten;
   const phong = req.body.phong;
   var options = req.body.options;
-  options.populate = ['idTaiKhoan','nganh'];
+  options.populate = ['idTaiKhoan'];
   Student.paginate({}, options)
     .then(result => {
       res.status(200).json(result);
