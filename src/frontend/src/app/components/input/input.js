@@ -6,6 +6,7 @@ class Input extends Component {
   static propTypes = {
     value: PropTypes.any,
     placeholder: PropTypes.string
+
   }
   static defaultProps = {
     type: 'text',
@@ -14,6 +15,7 @@ class Input extends Component {
     placeholder: '',
     padding: '6px 12px',
     borderRadius: '1px',
+    readOnly: false,
     getValue: () => {},
     onKeyPress: () => {},
   }
@@ -31,6 +33,7 @@ class Input extends Component {
           value={this.props.value}
           type={this.props.type} 
           className="input-control" 
+          readOnly = {this.props.readOnly}
           placeholder={this.props.placeholder}
           onKeyPress={this.props.onKeyPress}
         />

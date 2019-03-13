@@ -57,7 +57,6 @@ class HeaderHomepage extends Component {
     
     render() {
         var {state} = this.props;
-        console.log(state);
         var userProfile = state;
         let isLogin;
         const secret = JSON.parse(localStorage.getItem('secret'))
@@ -102,13 +101,11 @@ class HeaderHomepage extends Component {
                             <Button className="outline btn-menu" variant="light" onClick={this.getScroll} value="1">
                         TRANG CHỦ</Button>
                         </div>
-                        <div>
-                          
+                        <div>                          
                             <Button className="outline btn-menu" variant="light" onClick={this.getScroll} value="2">
                            TIN TỨC</Button>
                         </div>
-                        <div> 
-                           
+                        <div>                            
                             <Button className="outline btn-menu" variant="light" onClick={this.getScroll} value="3">
                             THÔNG TIN</Button>
                         </div>
@@ -140,7 +137,7 @@ class HeaderHomepage extends Component {
 }
 var mapStateToProps = (state) => {
     return {
-        state: state.userProfile
+        state: state
     };
 }
 export default connect(mapStateToProps,null) (HeaderHomepage);

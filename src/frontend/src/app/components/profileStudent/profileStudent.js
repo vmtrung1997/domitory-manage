@@ -1,31 +1,30 @@
 import React from 'react'
-import { ListGroup, Image, InputGroup, Button, FormControl, Row, Col, Dropdown, DropdownButton } from 'react-bootstrap'
+import {InputGroup, FormControl, Row, Col, Button } from 'react-bootstrap'
 import './profileStudent.css'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import MyInput from '../input/input'
-import MyDatePicker from '../datePicker/datePicker'
 import MySelectOption from '../selectOption/select'
 import InputDatetimePicker from './../../components/inputDatetimePicker/inputDatimePicker'
 import './../titleStudent/titleStudent.css'
 import {connect} from 'react-redux'
 
-const fadeImages = [
-    '/images/01_ataulfohouse_apaloosa.jpg',
-    '/images/26_ataulfohouse_apaloosa.jpg',
-    '/images/26_ataulfohouse_apaloosa.jpg',
-];
 
 class ProfileStudent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            startDate: new Date()
+            startDate: new Date(),
+            readOnly: true,
+            isDisable: true
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
-
+    editProfile = () =>{
+        this.setState({readOnly: false})
+        this.setState({isDisable: !this.state.isDisable});
+    }
 
     handleChange(date) {
         this.setState({
@@ -38,8 +37,12 @@ class ProfileStudent extends React.Component {
     render() {
         var {state} = this.props;
         var profile = state.userProfile;
-        console.log(profile);
-        const nganh = [{ value: 1, label: 'CNTT' }, { value: 2, label: 'Sinh hoc' }, { value: 3, label: 'Toan hoc' }]
+        var specialized = state.specialized;
+        const nganh = [];
+        specialized.map(function(item,i){
+            nganh.push({value: item.tenNganh, label: item.tenNganh});
+        })
+       
         return (
             <React.Fragment>
                 <div className='title-header'>
@@ -55,12 +58,12 @@ class ProfileStudent extends React.Component {
                                         <Col>
                                     
                                             Mã thẻ
-                                            <MyInput value = {profile.maThe} borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value = {profile.maThe} borderRadius="3px" />
                                         </Col>
                                         <Col>
                                            
                                             Email
-                                            <MyInput value = {profile.email} borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value = {profile.email} borderRadius="3px" />
                                         </Col>
                                     </Row>
                                 </div>
@@ -70,12 +73,12 @@ class ProfileStudent extends React.Component {
                                         <Col>
                                           
                                             Họ tên
-                                            <MyInput value = {profile.hoTen} borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value = {profile.hoTen} borderRadius="3px" />
                                         </Col>
                                         <Col>
                                            
                                             Địa chỉ
-                                            <MyInput value = {profile.diaChi} borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value = {profile.diaChi} borderRadius="3px" />
                                         </Col>
                                     </Row>
                                 </div>
@@ -84,7 +87,7 @@ class ProfileStudent extends React.Component {
                                         <Col>
                                             Ngày sinh
                                             <InputGroup className="mb-3">
-                                                <FormControl value = {profile.ngaySinh} className={'input-picker'} aria-describedby="basic-addon1" />
+                                                <FormControl readOnly = {this.state.readOnly} value = {profile.ngaySinh} className={'input-picker'} aria-describedby="basic-addon1" />
                                                 <DatePicker
                                                     customInput={<InputDatetimePicker />}
                                                 
@@ -94,7 +97,7 @@ class ProfileStudent extends React.Component {
 
                                         <Col>
                                             Số điện thoại
-                                            <MyInput value = {profile.sdt} borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value = {profile.sdt} borderRadius="3px" />
                                         </Col>
                                     </Row>
                                 </div>
@@ -102,11 +105,13 @@ class ProfileStudent extends React.Component {
                                     <Row>
                                         <Col>
                                             Ngành học
-                                            <MySelectOption value={profile.nganhHoc} options={nganh} />
+                                            <MySelectOption  value={profile.nganhHoc.tenNganh} 
+                                            options={nganh} 
+                                            />
                                         </Col>
                                         <Col>
                                             Số điện thoại người thân
-                                            <MyInput value={profile.sdtNguoiThan} borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value={profile.sdtNguoiThan} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -115,11 +120,11 @@ class ProfileStudent extends React.Component {
                                     <Row>
                                         <Col>
                                             Trường
-                                            <MyInput value={profile.truong} borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value={profile.truong.tenTruong} borderRadius="3px" />
                                         </Col>
                                         <Col>
                                             Ngày vào
-                                            <MyInput value={profile.ngayVaoO} borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value={profile.ngayVaoO} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -128,11 +133,11 @@ class ProfileStudent extends React.Component {
                                     <Row>
                                         <Col>
                                             Phòng
-                                            <MyInput value={profile.idPhongHoc}  borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value={profile.idPhong.tenPhong}  borderRadius="3px" />
                                         </Col>
                                         <Col>
                                             Ngày hết hạn
-                                            <MyInput value={profile.ngayHetHan} borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value={profile.ngayHetHan} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -141,15 +146,27 @@ class ProfileStudent extends React.Component {
                                     <Row>
                                         <Col>
                                             Trạng thái
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} borderRadius="3px" />
                                         </Col>
                                         <Col>
                                             Dân tộc
-                                            <MyInput  value={profile.danToc} borderRadius="3px" />
+                                            <MyInput readOnly = {this.state.readOnly} value={profile.danToc} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
                                 </div>
+                                <Row>
+                                <div className='profile-panel-button'>
+                               
+                                    <Button disabled = {!this.state.isDisable} onClick = {this.editProfile}>Chỉnh sửa</Button>
+                                    
+                               
+                                </div>
+                                <div className='profile-panel-button'>
+                               <Button disabled = {this.state.isDisable} variant="success" onClick = {this.editProfile}>Lưu</Button>
+                          
+                           </div>
+                                </Row>
                             </div>
                         </Col>
 

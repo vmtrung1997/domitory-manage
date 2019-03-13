@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { createStore } from 'redux';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import jwt_decode from 'jwt-decode';
 
@@ -8,8 +7,6 @@ import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
 import SignInAdmin from './containers/admin/signIn/signinAdmin'
 import Student from './containers/student'
-import News from './containers/student/news/news'
-import NewsDetail from './containers/student/newscontent/newsContent'
 import Security from './containers/security'
 
 var isAdmin = false
@@ -63,10 +60,6 @@ const SecurityRoute = ({ component: Component, ...rest }) => {
 
 
 class App extends Component {
-    constructor(props){
-        super(props)
-    }
-
 	render() {
       	return (
       		<Router>
