@@ -39,8 +39,9 @@ class Activity extends Component{
         	})
         	.then( res => {
         		localStorage.setItem('secret', JSON.stringify(res.data))
+        		console.log(res.data.access_token)
         		axios.get(`/manager/activity/get_activity?page=${this.state.page}`,{
-					headers: { 'x-access-token': res.access_token}
+					headers: { 'x-access-token': res.data.access_token}
 				})
 				.then(res => {
 	    	    	this.setState({data: res.data.rs.docs})

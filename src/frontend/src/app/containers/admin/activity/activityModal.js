@@ -12,6 +12,15 @@ class ActivityModal extends Component{
 		handleClose: () => {},
 		handleSave: () => {},
 	}
+  getValue = (e) => {
+    console.log()
+  }
+  handleSave = () => {
+    console.log(1)
+
+    this.props.handleSave()
+  }
+
 	render(){
 		var today = new Date()
 		return(
@@ -22,7 +31,7 @@ class ActivityModal extends Component{
           		<Modal.Body>
           			<div>
           				<span> Hoạt động </span>
-          				<Input/>
+          				<Input getValue={this.getValue} name="name"/>
           			</div>
           			<div>
           				<span> Địa điểm </span>
@@ -50,7 +59,7 @@ class ActivityModal extends Component{
 	            	<Button variant="default" color="default" onClick={this.props.handleClose}>
 	            		Đóng
 	            	</Button>
-	            	<Button variant="default" onClick={this.props.handleSave}>
+	            	<Button variant="default" onClick={this.handleSave}>
 	            		Xác nhận
 	              	</Button>
         		</Modal.Footer>
