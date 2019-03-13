@@ -19,7 +19,8 @@ const checkAuth = () => {
     const secret = JSON.parse(localStorage.getItem('secret'))
     if(secret){
         const decode = jwt_decode(secret.access_token)
-        switch(decode.user.loai)
+        console.log(decode)
+        switch(decode.user.userEntity.loai)
         {
             case 'SA':
                 isAdmin = true
@@ -32,7 +33,6 @@ const checkAuth = () => {
                 break
         }
     }
-    console.log(isAdmin, isSecurity, isStudent)
 }
 const AdminRoute = ({ component: Component, ...rest }) => {
     checkAuth()

@@ -2,8 +2,8 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
     path = require('path'),
-  mongoose = require('mongoose'),
-  cors = require('cors')
+    mongoose = require('mongoose'),
+    cors = require('cors')
 
 mongoose.connect('mongodb://admin:123abc@ds149875.mlab.com:49875/kytucxa', { useNewUrlParser: true })
 
@@ -20,14 +20,6 @@ app.use(bodyParser.json());
 app.use(cors())
 var verifyAccessToken = require('./public/repos/authRepo').verifyAccessToken;
 
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "*");
-//     res.header("Access-Control-Expose-Headers", "Content-Length");
-//     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE,OPTIONS");
-//     res.header("Access-Control-Allow-Credentials", "true")
-//     next();
-// });
 
 app.use('/api/user', require('./public/routes/user'));
 app.use('/api/manager', verifyAccessToken, require('./public/routes/manager'));

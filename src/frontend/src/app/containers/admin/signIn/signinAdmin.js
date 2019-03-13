@@ -51,13 +51,13 @@ class SignInAdmin extends Component{
 					{this.state.isNotify ? (
 						<div className='notify'> ! Bạn nhập sai tài khoản hoặc mật khẩu </div>
 					):(<React.Fragment/>)}
-					<div>
+					<div style={{display: 'flex', justifyContent: 'center'}}>
 						<Input 
 							width='250px' placeholder='Tài khoản' fontSize='20px' padding='8px 18px' borderRadius='6px' 
 							getValue={this.getValue} name={'username'}
 						/>
 					</div>
-					<div>
+					<div style={{display: 'flex', justifyContent: 'center'}}>
 						<Input 
 							width='250px' placeholder='Mật khẩu'  fontSize='20px' padding='8px 18px'  borderRadius='6px' type='password'
 							getValue={this.getValue} name={'password'}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Modal, Col, Row, Form, Button, InputGroup, FormControl, Dropdown, SplitButton, ButtonToolbar } from 'react-bootstrap'
 import Login from './../../containers/student/modalLogin/login'
-
+import { connect } from 'react-redux'
 import './headerHomepage.css'
 
 class HeaderHomepage extends Component {
@@ -9,7 +9,7 @@ class HeaderHomepage extends Component {
         super(props);
         this.state = {
             showLoginModal: false,
-            username: ''
+            isLogin: false,
         }
     }
 
@@ -18,7 +18,6 @@ class HeaderHomepage extends Component {
     }
 
     hideLogin = (show) => {
-        console.log(show);
         this.setState({
             showLoginModal: show
         })
@@ -41,23 +40,27 @@ class HeaderHomepage extends Component {
         this.props.getScroll(event.target.value);
     }
     render() {
+        var {state} = this.props;
+        var userProfile = state;
+        console.log(userProfile.idTaiKhoan);
         let isLogin;
-        if (!this.state.username) {
+        if (userProfile.idTaiKhoan === undefined ) {
             isLogin = <Button onClick={this.Login} variant="primary" className='form-rounded menu-item btn-menu'>
                 <span>Đăng nhập</span></Button>
         }
         else {
+            var name = userProfile.hoTen.split(" ");
+            name = name[name.length-1];
             isLogin = <ButtonToolbar>
                 {['Primary'].map(
                     variant => (
                         <SplitButton
 
-                            title={`Chao ${this.state.username}`}
+                            title={`Chào ${name}`}
                             variant="link"
                             id={`dropdown-split-variants-${variant}`}
                             key={variant}
-                            onSelect={this.handleSelect}
-                        
+                            onSelect={this.handleSelect} 
 
                         >
                             <Dropdown.Item eventKey="1"><i className="fas fa-user-circle"></i><span className = 'list-menu-sub'>Trang cá nhân</span></Dropdown.Item>
@@ -116,5 +119,9 @@ class HeaderHomepage extends Component {
         )
     }
 }
-
-export default HeaderHomepage
+var mapStateToProps = (state) => {
+    return {
+        state: state.userProfile
+    };
+}
+export default connect(mapStateToProps,null) (HeaderHomepage);
