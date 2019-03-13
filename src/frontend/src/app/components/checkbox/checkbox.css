@@ -3,10 +3,8 @@
 .container-checkbox {
     display: block;
     position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -57,10 +55,10 @@
   
   /* Style the checkmark/indicator */
   .container-checkbox .checkmark:after {
-    left: 6px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
+    left: 7px;
+    top: 1px;
+    width: 6px;
+    height: 15px;
     border: solid white;
     border-width: 0 3px 3px 0;
     -webkit-transform: rotate(45deg);
