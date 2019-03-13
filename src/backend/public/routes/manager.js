@@ -1,5 +1,6 @@
 var router = require('express').Router();
-var expenseController = require('../apiController/expenseController')
+var expenseController = require('./../apiController/expenseController')
+var activityController = require('./../apiController/activityController')
 
 var infoStudent = require('../apiController/infoStudentController');
 
@@ -11,6 +12,8 @@ router.post('/expense/get_expense_table', expenseController.select_expense_table
 router.get('/expense/get_expense_data', expenseController.get_data);
 
 router.get('/expense/refresh', expenseController.refresh_data);
+
+router.get('/activity/get_activity', activityController.get_activity);
 
 router.post('/infoStudent/get', infoStudent.getListStudent);
 

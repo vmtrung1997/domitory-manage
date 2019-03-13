@@ -51,6 +51,7 @@ class Expenses extends Component {
 			{ value: 'vanilla', label: 'Vanilla' }
 		];
 		var selectedOption = null;
+
 		var month = [...Array(13)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i, label: i } });
 		var year = [...Array(4)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 2017, label: i + 2017 } });
 		var phong = [] // [...Array(7)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 100, label: i + 100 } });
@@ -58,7 +59,6 @@ class Expenses extends Component {
 			{ value: 0, label: 'Tất cả' },
 			{ value: 1, label: 'Đã thanh toán' },
 			{ value: 2, label: 'Chưa thanh toán' }]
-			console.log(month[4].value)
 		return (
 			<React.Fragment>
 				<Title> Chi phí </Title>

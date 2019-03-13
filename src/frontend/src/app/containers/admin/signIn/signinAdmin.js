@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import md5 from 'md5';
 import axios from 'axios';
 
+import Loader from './../../../components/loader/loader'
 import Input from '../../../components/input/input'
 import Button from './../../../components/button/button'
 import './signIn.css'
 import logo_HCMUS from './../../../../utils/image/logo_HCMUS.jpg'
+
+
 
 class SignInAdmin extends Component{
 	constructor(props){
@@ -14,6 +17,7 @@ class SignInAdmin extends Component{
 			username: '',
 			password: '',
 			isNotify: false,
+			loading: false,
 		}
 	}
 	getValue = (obj) => {
@@ -24,10 +28,9 @@ class SignInAdmin extends Component{
 		}
 	}
 	login = () => {
-    console.log('==state',this.state)
+		this.setState({ loading: true})
 		axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
 	      	.then(res => {
-	      		console.log('==res', res);
 	    	    localStorage.setItem('secret', JSON.stringify(res.data));
 	    	    let { from } = this.props.location.state || { from: { pathname: "/admin/student" } }
 				this.props.history.push(from)
@@ -36,10 +39,11 @@ class SignInAdmin extends Component{
 				this.setState({
 					isNotify: true
 				})
+			}).then( () => {
+				this.setState({ loading: false})
 			})
 	}
 	render(){
-
 		return(
 			<React.Fragment>
 				<div className='header-sgin-admin'>
@@ -73,6 +77,7 @@ class SignInAdmin extends Component{
 							Đăng nhập
 						</Button>
 					</div>
+					<Loader loading={this.state.loading}/>
 					<a href='#'> Bạn quên mật khẩu ?</a>
 				</div>
 			</React.Fragment>
