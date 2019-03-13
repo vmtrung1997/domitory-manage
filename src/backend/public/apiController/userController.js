@@ -12,6 +12,7 @@ exports.register = (req, res) => {
 	userObject.password = md5(userObject.password);
 	var user = new User(userObject);
 	user.save().then(() => {
+		console.log('==register: success')
 		res.status(201).json(req.body);
 	}).catch(err => {
 		console.log(err);
@@ -29,6 +30,7 @@ exports.login = (req, res) => {
 				var reToken = auth.generateRefreshToken();
 				auth.updateRefreshToken(result._id, reToken)
 					.then(() => {
+						console.log('==login: success')
 						res.status(200).json({
 							status: 'success',
 							access_token: acToken,
@@ -60,6 +62,7 @@ exports.me_access = (req, res) => {
 			User.findOne({ '_id': id }, function (err, userEntity) {
 				if (userEntity) {
 					var acToken = auth.generateAccessToken(userEntity);
+					console.log('==refresh_token: success')
 					res.status(200).json({
 						auth: true,
 						user: userEntity,
