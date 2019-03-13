@@ -15,16 +15,30 @@ exports.get_data = (req, res) => {
 	})
 }
 exports.select_expense_table = (req, res) => {
-	var search = req.body.search
-	var options = req.body.options
-	options.populate = 'idPhong'
-	ChiPhiPhong.paginate({thang: 9, nam: 2015}, options).then
-	(value => {
+	var search = req.body;
+	var options = req.body.options;
+	options.populate = {path: 'idPhong', select: 'tenPhong', sort: 'thang nam'}
+	var searchObj = {};
+	if (search.month !== 0){
+		searchObj.thang = search.month;
+	}
+	if (search.year !== 0){
+		searchObj.nam = search.year
+	}
+	if (search.status !== 2)
+		searchObj.trangThai = search.status
+
+	if (search.room !== 0 && search.room.value !== 0) 
+		searchObj.idPhong = search.room.value
+	
+	console.log('==searchObj: ', searchObj);
+	console.log('==options: ', options)
+	ChiPhiPhong.paginate(searchObj, options).then(value => {
+		console.log(value);
 		res.json({
 			rs: value
 		})
 	}).catch(err => { console.log(err) })
-
 };
 
 function update_data(item, cb){

@@ -15,23 +15,42 @@ class Expenses extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			dataTable: [],
-			phong: []
+			dataTable: {docs: []},
+			rooms: [],
+			roomSelected: 0,
+			monthSelected: 0,
+			yearSelected: 0,
+			status: 2,
+			options:{
+					page: 1,
+					limit: 10
+			}
 		}
 	}
 	componentDidMount() {
+		var self = this;
+		var month = 9;
+		var year = 2015;
+		this.setState({monthSelected: month, yearSelected: year})
 		getData().then(result => {
 			if (result.data) {
-				console.log(result.data);
+				var roomOptions = result.data.result.map(room => ({value: room._id, label: room.tenPhong}))
+				roomOptions.unshift({value: 0, label: 'Tất cả'});
+				self.setState({rooms: roomOptions});
+				self.searchTable();
 			}
 		})
 	}
 	
-	searchTable = (object) => {
-		search({options: {
-			page: 1,
-			limit: 10
-		}}).then(result => {
+	searchTable = () => {
+		var options = {
+			month: parseInt(this.state.monthSelected),
+			year: parseInt(this.state.yearSelected),
+			room: this.state.roomSelected,
+			status: parseInt(this.state.status),
+			options: this.state.options
+		}
+		search(options).then(result => {
 			if (result.data){
 				this.setState({dataTable: result.data.rs})
 			}
@@ -39,26 +58,30 @@ class Expenses extends Component {
 			console.log(error)
 		});
 	}
-	handleChange = (selectedOption) => {
-    console.log(`Option selected:`, selectedOption);
-  }
+	roomSelected = selectedOption => {
+		this.setState({roomSelected: selectedOption})
+	}
+	monthSelected = value => {
+		this.setState({monthSelected: value})
+	}
+	yearSelected = value => {
+		this.setState({yearSelected: value})
+	}
+	statusSelected = value => {
+		this.setState({statusSelected: value})
+	}
+	pageChange = value => {
+		console.log(value);
+		this.setState({options: {page: value}})
+		this.searchTable()
+	}
 	render() {
-		var today = new Date();
-		console.log(today.getFullYear());
-		const options = [
-			{ value: 'chocolate', label: 'Chocolate' },
-			{ value: 'strawberry', label: 'Strawberry' },
-			{ value: 'vanilla', label: 'Vanilla' }
-		];
-		var selectedOption = null;
 		var month = [...Array(13)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i, label: i } });
-		var year = [...Array(4)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 2017, label: i + 2017 } });
-		var phong = [] // [...Array(7)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 100, label: i + 100 } });
+		var year = [...Array(4)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 2014, label: i + 2014 } });
 		var trangThai = [
-			{ value: 0, label: 'Tất cả' },
+			{ value: 2, label: 'Tất cả' },
 			{ value: 1, label: 'Đã thanh toán' },
-			{ value: 2, label: 'Chưa thanh toán' }]
-			console.log(month[4].value)
+			{ value: 0, label: 'Chưa thanh toán' }]
 		return (
 			<React.Fragment>
 				<Title> Chi phí </Title>
@@ -67,22 +90,24 @@ class Expenses extends Component {
 						<Row className={'m-b-10'}>
 							<Col md={2} xs={12}>
 								Tháng
-              <Select options={month} value={today.getMonth()} />
+              <Select options={month} value={this.state.monthSelected}  selected={this.monthSelected}/>
 							</Col>
 							<Col md={2} xs={12}>
 								Năm
-              <Select options={year} value={today.getFullYear()}/>
+              <Select options={year} value={this.state.yearSelected} selected={this.yearSelected}/>
 							</Col>
 							<Col md={2} xs={12}>
 								Phòng
 								<SSelect
-									value={selectedOption}
-									onChange={this.handleChange}
-									options={options}/>
+									placeholder={''}
+									isSearchable={true}
+									value={this.state.roomSelected}
+									onChange={this.roomSelected}
+									options={this.state.rooms}/>
 							</Col>
 							<Col md={4} xs={12}>
 								Trạng thái
-              <Select options={trangThai} />
+              <Select options={trangThai} selected={this.statusSelected}/>
 							</Col>
 							<Col md={2}>
 								&nbsp;
@@ -95,7 +120,7 @@ class Expenses extends Component {
 							</Button>
 							<ModalExpense />
 						</div>
-						<ExpenseTable />
+						<ExpenseTable table={this.state.dataTable} pageChange={this.pageChange}/>
 					</div>
 				</div>
 			</React.Fragment>

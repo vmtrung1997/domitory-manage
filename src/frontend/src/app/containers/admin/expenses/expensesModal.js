@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Row, Col, FormControl, Modal, Form } from 'react-bootstrap'
+import { Table, Row, Col, Modal } from 'react-bootstrap'
 import Input from '../../../components/input/input'
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
@@ -47,7 +47,6 @@ class Example extends React.Component {
   render() {
     var options = [{ value: 101, label: '101' }, { value: 102, label: '102' }]
     var date = new Date();
-    console.log(date.getMonth() + " " + date.getFullYear());
     var table = this.state.table.length?this.state.table.map((row, index) => {
       return (
         <tr key={index}>

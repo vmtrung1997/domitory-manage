@@ -3,7 +3,7 @@ var mongoosePaginate = require('mongoose-paginate-v2');
 var Schema = mongoose.Schema;
 
 var chiPhiPhongSchema = new Schema({
-    idPhong: {type: Schema.Types.ObjectId, ref: 'Phong'},
+    idPhong: {type: Schema.Types.String, ref: 'Phong'},
     thang: Number,
     nam: Number,
     soDien: Number,
@@ -15,7 +15,7 @@ var chiPhiPhongSchema = new Schema({
     tienRac: Number,
     tongTien: Number,
     tongTienChu: Number,
-    trangThai: {type: String, enum: ['0', '1']}
+    trangThai: {type: Number, enum: [0, 1]}
 });
 
 chiPhiPhongSchema.plugin(mongoosePaginate);

@@ -4,8 +4,7 @@ import './input.css'
 
 class Input extends Component {
   static propTypes = {
-    value: PropTypes.any,
-    placeholder: PropTypes.string
+    value: PropTypes.any
   }
   static defaultProps = {
     type: 'text',
