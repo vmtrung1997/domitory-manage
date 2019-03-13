@@ -12,7 +12,7 @@ class InfoActivity extends Component{
 	    name: PropTypes.string,
 	    time: PropTypes.string,
 	    location: PropTypes.string,
-	    rule: PropTypes.string,
+	    rule: PropTypes.bool,
 	    status: PropTypes.string,
 	    par: PropTypes.number,
 	    unPar: PropTypes.number,
@@ -21,12 +21,13 @@ class InfoActivity extends Component{
 	    name: '',
 	    time: '',
 	    location: '',
-	    rule: 'không bắt buộc',
+	    rule: false,
 	    status: 'Chưa tổ chức',
 	    par: 0,
 	}
 
 	render(){
+		console.log(this.props)
 		return(
 			<div className="form-acivity">
 				<div className='title-activity' style={{padding: '10px 20px'}}> 
@@ -44,7 +45,7 @@ class InfoActivity extends Component{
 					<div>
 						<span> Thời gian: {this.props.time} </span>
 					</div>
-					<div> Hoạt động: {this.props.rule} </div>
+					<div> Hoạt động: {this.props.rule ? (<span> Bắt buộc </span>):( <span>Không bắt buộc </span>)} </div>
 					<div> 
 						<span> Tham gia: </span>
 						<input style={{width: '40px', textAlign: 'center'}} value={this.props.par}/>

@@ -39,7 +39,7 @@ class Student extends Component {
     render() {
         return (
             <React.Fragment>
-                {/* <Header getScroll={this.getScroll}></Header> */}
+                <Header getScroll={this.getScroll}></Header>
 				<Route exact path={`/news`} component={News} />
 				<Route exact path={`/news/detail/:id`} component={NewsContent} />
 				<Route exact path={`/`} component={Homepage} />

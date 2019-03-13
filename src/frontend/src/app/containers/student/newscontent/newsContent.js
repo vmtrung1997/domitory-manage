@@ -6,7 +6,7 @@ class NewsDetail extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <Header></Header>
+                {/* <Header></Header> */}
                 <NewsContent></NewsContent>
             </React.Fragment>
         )
