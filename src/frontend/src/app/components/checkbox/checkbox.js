@@ -8,7 +8,7 @@ class Checkbox extends Component {
     label: PropTypes.string
   }
   static defaultProps = {
-    check: false
+    check: false,
   }
   constructor(props){
     super(props)
@@ -26,7 +26,7 @@ class Checkbox extends Component {
     var label = this.props.label;
     return (
     <React.Fragment>
-      <div>
+      <div style={this.props.style}>
         <label className="container-checkbox">{label}
           <input type="checkbox" defaultChecked={this.state.check} onChange={this.handleChangeChk} value={this.state.check}/>
           <span className="checkmark"></span>
