@@ -12,7 +12,8 @@ class Example extends React.Component {
 
     this.state = {
       table: [],
-      phong: 101,
+      rooms: this.props.rooms,
+      room: 0,
       soDien: 0,
       soNuoc: 0
     };
@@ -45,7 +46,7 @@ class Example extends React.Component {
   }
 
   render() {
-    var options = [{ value: 101, label: '101' }, { value: 102, label: '102' }]
+    var options = this.props.rooms
     var date = new Date();
     var table = this.state.table.length?this.state.table.map((row, index) => {
       return (
@@ -72,7 +73,7 @@ class Example extends React.Component {
             <Row className={'m-b-10'}>
               <Col md={3}>
                 <Col md={12}><label>Phòng</label></Col>
-                <Col md={12}><Select options={options} value={options[0].value} selected={this.selected} /></Col>
+                <Col md={12}><Select options={options} selected={this.selected} /></Col>
               </Col>
               <Col md={3}>
                 <Col md={12}><label>Số điện</label></Col>

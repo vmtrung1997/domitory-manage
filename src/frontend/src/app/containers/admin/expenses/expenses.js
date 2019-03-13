@@ -59,16 +59,16 @@ class Expenses extends Component {
 		});
 	}
 	roomSelected = selectedOption => {
-		this.setState({roomSelected: selectedOption})
+		this.setState({roomSelected: selectedOption, options: {page: 1}})
 	}
 	monthSelected = value => {
-		this.setState({monthSelected: value})
+		this.setState({monthSelected: value, options: {page: 1}})
 	}
 	yearSelected = value => {
-		this.setState({yearSelected: value})
+		this.setState({yearSelected: value, options: {page: 1}})
 	}
 	statusSelected = value => {
-		this.setState({statusSelected: value})
+		this.setState({statusSelected: value, options: {page: 1}})
 	}
 	pageChange = value => {
 		console.log(value);
@@ -118,7 +118,7 @@ class Expenses extends Component {
 						<Button color={'success'}>
 								Báo cáo
 							</Button>
-							<ModalExpense />
+							<ModalExpense rooms={this.state.rooms}/>
 						</div>
 						<ExpenseTable table={this.state.dataTable} pageChange={this.pageChange}/>
 					</div>
