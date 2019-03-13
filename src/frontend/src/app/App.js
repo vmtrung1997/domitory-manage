@@ -19,8 +19,7 @@ const checkAuth = () => {
     const secret = JSON.parse(localStorage.getItem('secret'))
     if(secret){
         const decode = jwt_decode(secret.access_token)
-        console.log(decode)
-        switch(decode.user.userEntity.loai)
+        switch(decode.user.loai)
         {
             case 'SA':
                 isAdmin = true
