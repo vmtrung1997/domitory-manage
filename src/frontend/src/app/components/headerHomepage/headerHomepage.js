@@ -3,6 +3,8 @@ import { Modal, Col, Row, Form, Button, InputGroup, FormControl, Dropdown, Split
 import Login from './../../containers/student/modalLogin/login'
 import { connect } from 'react-redux'
 import './headerHomepage.css'
+import {Link} from 'react-router-dom'
+import axios from 'axios'
 
 class HeaderHomepage extends Component {
     constructor(props) {
@@ -39,35 +41,52 @@ class HeaderHomepage extends Component {
     getScroll = (event) => {
         this.props.getScroll(event.target.value);
     }
+
+    logOut = () => {
+        const secret = JSON.parse(localStorage.getItem('secret'))
+
+        axios.get(`http://localhost:4000/api/logout`, {
+            headers: {
+                'x-refresh-token': secret.refresh_token
+            }
+        })
+
+        localStorage.removeItem('secret');
+        this.setState({ isLogin : false})
+    }
+    
     render() {
         var {state} = this.props;
+        console.log(state);
         var userProfile = state;
-        console.log(userProfile.idTaiKhoan);
         let isLogin;
-        if (userProfile.idTaiKhoan === undefined ) {
+        const secret = JSON.parse(localStorage.getItem('secret'))
+        if(secret && !this.state.isLogin){
+            this.setState({isLogin: true})
+        }
+        if (!secret && !this.state.isLogin ) {
             isLogin = <Button onClick={this.Login} variant="primary" className='form-rounded menu-item btn-menu'>
                 <span>Đăng nhập</span></Button>
         }
         else {
-            var name = userProfile.hoTen.split(" ");
-            name = name[name.length-1];
+            // var name = userProfile.hoTen.split(" ");
+            // name = name[name.length-1];
             isLogin = <ButtonToolbar>
                 {['Primary'].map(
                     variant => (
                         <SplitButton
 
-                            title={`Chào ${name}`}
+                            title={`Chào $`}
                             variant="link"
                             id={`dropdown-split-variants-${variant}`}
                             key={variant}
                             onSelect={this.handleSelect} 
-
                         >
-                            <Dropdown.Item eventKey="1"><i className="fas fa-user-circle"></i><span className = 'list-menu-sub'>Trang cá nhân</span></Dropdown.Item>
+                            <Dropdown.Item eventKey="1"><Link to = "/dashboard#profile"><i className="fas fa-user-circle"></i><span className = 'list-menu-sub'>Trang cá nhân</span></Link></Dropdown.Item>
                             <Dropdown.Item eventKey="2"><i className="fas fa-snowboarding"></i><span className ='list-menu-sub'>Hoạt động</span></Dropdown.Item>
                             <Dropdown.Item eventKey="3"><i className="fas fa-file-invoice"></i><span className ='list-menu-sub'>Điện nước</span></Dropdown.Item>
                             <Dropdown.Divider />
-                            <Dropdown.Item eventKey="4"><i className="fas fa-sign-out-alt"></i><span className ='list-menu-sub'>Thoát</span></Dropdown.Item>
+                            <Dropdown.Item onClick = {this.logOut} eventKey="4"><i className="fas fa-sign-out-alt"></i><span className ='list-menu-sub'>Thoát</span></Dropdown.Item>
                         </SplitButton>
                     ),
                 )}

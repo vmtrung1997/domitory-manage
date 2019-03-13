@@ -52,10 +52,8 @@ class StudentLogin extends React.Component {
           const decode = jwt_decode(res.data.access_token);
           var id = decode.user.userEntity._id;
           axios.defaults.headers['x-access-token'] = res.data.access_token;
-          console.log(id);
     
-          axios.post(`http://localhost:4000/api/student/get-info`, {id: id}).then(res => {
-            console.log(res.data.data);
+          axios.post(`http://localhost:4000/api/student/get-info`, {id: id}).then(res => {        
             this.props.getUserAction(res.data.data);
             this.props.hideLogin(false);
             // let { from } = self.props.location.state || { from: { pathname: "/dashboard" } }

@@ -15,7 +15,9 @@ exports.a = (req, res) => {
 
 exports.getInfo = (req, res) => {
 	var id = req.body.id;
-	Profile.findOne({idTaiKhoan: id}, function(err, result){
+	Profile.findOne({idTaiKhoan: id})
+	.populate(['idPhong', 'nganhHoc', 'truong'])
+	.exec().then((err, result) => {
 			if(result){
 				console.log(result);
 				res.status(200).json({

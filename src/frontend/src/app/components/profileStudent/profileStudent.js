@@ -8,7 +8,7 @@ import MyDatePicker from '../datePicker/datePicker'
 import MySelectOption from '../selectOption/select'
 import InputDatetimePicker from './../../components/inputDatetimePicker/inputDatimePicker'
 import './../titleStudent/titleStudent.css'
-
+import {connect} from 'react-redux'
 
 const fadeImages = [
     '/images/01_ataulfohouse_apaloosa.jpg',
@@ -36,6 +36,9 @@ class ProfileStudent extends React.Component {
 
 
     render() {
+        var {state} = this.props;
+        var profile = state.userProfile;
+        console.log(profile);
         const nganh = [{ value: 1, label: 'CNTT' }, { value: 2, label: 'Sinh hoc' }, { value: 3, label: 'Toan hoc' }]
         return (
             <React.Fragment>
@@ -50,24 +53,14 @@ class ProfileStudent extends React.Component {
                                 <div className='profile-panel-content-row'>
                                     <Row>
                                         <Col>
-                                            {/* <InputGroup className="mb-3">
-                                                <InputGroup.Prepend>
-                                                    <InputGroup.Text>Mã thẻ</InputGroup.Text>
-                                                </InputGroup.Prepend>
-                                                <FormControl aria-describedby="basic-addon1" />
-                                            </InputGroup> */}
+                                    
                                             Mã thẻ
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput value = {profile.maThe} borderRadius="3px" />
                                         </Col>
                                         <Col>
-                                            {/* <InputGroup className="mb-3">
-                                                <InputGroup.Prepend>
-                                                    <InputGroup.Text>Email</InputGroup.Text>
-                                                </InputGroup.Prepend>
-                                                <FormControl aria-describedby="basic-addon1" />
-                                            </InputGroup> */}
+                                           
                                             Email
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput value = {profile.email} borderRadius="3px" />
                                         </Col>
                                     </Row>
                                 </div>
@@ -75,24 +68,14 @@ class ProfileStudent extends React.Component {
                                 <div className='profile-panel-content-row'>
                                     <Row>
                                         <Col>
-                                            {/* <InputGroup className="mb-3">
-                                                <InputGroup.Prepend>
-                                                    <InputGroup.Text>Họ tên</InputGroup.Text>
-                                                </InputGroup.Prepend>
-                                                <FormControl aria-describedby="basic-addon1" />
-                                            </InputGroup> */}
+                                          
                                             Họ tên
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput value = {profile.hoTen} borderRadius="3px" />
                                         </Col>
                                         <Col>
-                                            {/* <InputGroup className="mb-3">
-                                                <InputGroup.Prepend>
-                                                    <InputGroup.Text>Địa chỉ</InputGroup.Text>
-                                                </InputGroup.Prepend>
-                                                <FormControl aria-describedby="basic-addon1" />
-                                            </InputGroup> */}
+                                           
                                             Địa chỉ
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput value = {profile.diaChi} borderRadius="3px" />
                                         </Col>
                                     </Row>
                                 </div>
@@ -101,17 +84,17 @@ class ProfileStudent extends React.Component {
                                         <Col>
                                             Ngày sinh
                                             <InputGroup className="mb-3">
-                                                <FormControl className={'input-picker'} aria-describedby="basic-addon1" />
+                                                <FormControl value = {profile.ngaySinh} className={'input-picker'} aria-describedby="basic-addon1" />
                                                 <DatePicker
                                                     customInput={<InputDatetimePicker />}
-                                                    //selected={this.state.startDate}
+                                                
                                                     onChange={this.handleChange} />
                                             </InputGroup>
                                         </Col>
 
                                         <Col>
                                             Số điện thoại
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput value = {profile.sdt} borderRadius="3px" />
                                         </Col>
                                     </Row>
                                 </div>
@@ -119,11 +102,11 @@ class ProfileStudent extends React.Component {
                                     <Row>
                                         <Col>
                                             Ngành học
-                                            <MySelectOption value={nganh[0]} options={nganh} />
+                                            <MySelectOption value={profile.nganhHoc} options={nganh} />
                                         </Col>
                                         <Col>
                                             Số điện thoại người thân
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput value={profile.sdtNguoiThan} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -132,11 +115,11 @@ class ProfileStudent extends React.Component {
                                     <Row>
                                         <Col>
                                             Trường
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput value={profile.truong} borderRadius="3px" />
                                         </Col>
                                         <Col>
                                             Ngày vào
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput value={profile.ngayVaoO} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -145,11 +128,11 @@ class ProfileStudent extends React.Component {
                                     <Row>
                                         <Col>
                                             Phòng
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput value={profile.idPhongHoc}  borderRadius="3px" />
                                         </Col>
                                         <Col>
                                             Ngày hết hạn
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput value={profile.ngayHetHan} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -162,7 +145,7 @@ class ProfileStudent extends React.Component {
                                         </Col>
                                         <Col>
                                             Dân tộc
-                                            <MyInput borderRadius="3px" />
+                                            <MyInput  value={profile.danToc} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -179,6 +162,10 @@ class ProfileStudent extends React.Component {
     }
 }
 
+var mapStateToProps = (state) => {
+    return {
+        state: state
+    };
+  }
 
-
-export default ProfileStudent
+  export default connect(mapStateToProps, null)(ProfileStudent);

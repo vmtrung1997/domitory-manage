@@ -14,7 +14,7 @@ import Security from './containers/security'
 
 var isAdmin = false
 var isSecurity = false
-var isStudent = false
+
 const checkAuth = () => {
     const secret = JSON.parse(localStorage.getItem('secret'))
     if(secret){
@@ -24,9 +24,6 @@ const checkAuth = () => {
         {
             case 'SA':
                 isAdmin = true
-                break
-            case 'SV':
-                isStudent = true
                 break
             case 'BV':
                 isSecurity = true
@@ -65,6 +62,7 @@ const SecurityRoute = ({ component: Component, ...rest }) => {
     )
 }
 
+
 class App extends Component {
     constructor(props){
         super(props)
@@ -76,8 +74,8 @@ class App extends Component {
                 <Switch>
                     <AdminRoute path="/admin" component={Admin} />
                     <SecurityRoute path='/security' component={Security} />
+                    <Route path='/' component = {Student}/>
                     <Route path="/signin-admin" component={SignInAdmin} />
-                    <Route path="/" component={Student} />
                     <Route component={NotFound} />
                 </Switch>
             </Router>
