@@ -5,8 +5,8 @@ import { MoonLoader,FadeLoader
  } from 'react-spinners';
 
 const override = css`
-    z-index: 10;
-    position: absolute;
+    z-index: 1000;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;

@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import './input.css'
 
 class Input extends Component {
-  static propTypes = {
-    value: PropTypes.any
-  }
   static defaultProps = {
+    value: '',
     type: 'text',
     width: '100%',
     fontSize: '14px',
