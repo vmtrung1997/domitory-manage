@@ -7,6 +7,7 @@ import Button from './../../../components/button/button'
 import InfoActivity from './../../../components/infoActivity/infoActivity'
 import InfoActivityTable from './../../../components/infoActivity/infoActivityTable'
 import ActivityModal from './activityModal'
+import Loader from './../../../components/loader/loader'
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
 
@@ -21,9 +22,11 @@ class Activity extends Component{
 			data: []
 		}
 	}
+
 	componentDidMount = () => {
 		var secret = JSON.parse(localStorage.getItem('secret'))
 
+		this.setState({ loading: true})
 		axios.get(`/manager/activity/get_activity?page=${this.state.page}`,{
 			headers: { 'x-access-token': secret.access_token}
 		})
@@ -74,6 +77,7 @@ class Activity extends Component{
 		})
 		return(
 			<React.Fragment>
+				<Loader loading={this.state.loading}/>
 				<Title> Hoạt động sinh viên </Title>
         		<div className={'content-body'}>
 					<div className='header-optimize'>
