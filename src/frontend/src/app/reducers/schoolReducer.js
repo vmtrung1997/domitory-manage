@@ -3,9 +3,9 @@ const initialState = [{
 
 }]
 
-export default function Specialized(state = initialState, action) {
+export default function School(state = initialState, action) {
     switch (action.type) {
-        case 'GET_SPECIALIZED_INFO':
+        case 'GET_SCHOOL_INFO':
             return [
                 ...state,
                 {

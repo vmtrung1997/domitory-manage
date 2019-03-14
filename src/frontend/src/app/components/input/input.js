@@ -15,7 +15,7 @@ class Input extends Component {
     placeholder: '',
     padding: '6px 12px',
     borderRadius: '1px',
-    readOnly: false,
+    disabled: false,
     getValue: () => {},
     onKeyPress: () => {},
   }
@@ -30,10 +30,10 @@ class Input extends Component {
           name={this.props.name}
           onChange={this.onChange} 
           name={this.props.name}
-          value={this.props.value}
+          defaultValue={this.props.value}
           type={this.props.type} 
           className="input-control" 
-          readOnly = {this.props.readOnly}
+          disabled = {this.props.disabled}
           placeholder={this.props.placeholder}
           onKeyPress={this.props.onKeyPress}
         />
