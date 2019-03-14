@@ -3,7 +3,7 @@ import { Modal, Col, Row, Form, Button, InputGroup, FormControl, Dropdown, Split
 import Login from './../../containers/student/modalLogin/login'
 import { connect } from 'react-redux'
 import './headerHomepage.css'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 
 class HeaderHomepage extends Component {
@@ -52,19 +52,18 @@ class HeaderHomepage extends Component {
         })
 
         localStorage.removeItem('secret');
-        this.setState({ isLogin : false})
+        this.setState({ isLogin: false })
     }
-    
+
     render() {
-        var {state} = this.props;
-        console.log(state);
+        var { state } = this.props;
         var userProfile = state;
         let isLogin;
         const secret = JSON.parse(localStorage.getItem('secret'))
-        if(secret && !this.state.isLogin){
-            this.setState({isLogin: true})
+        if (secret && !this.state.isLogin) {
+            this.setState({ isLogin: true })
         }
-        if (!secret && !this.state.isLogin ) {
+        if (!secret && !this.state.isLogin) {
             isLogin = <Button onClick={this.Login} variant="primary" className='form-rounded menu-item btn-menu'>
                 <span>Đăng nhập</span></Button>
         }
@@ -80,41 +79,39 @@ class HeaderHomepage extends Component {
                             variant="link"
                             id={`dropdown-split-variants-${variant}`}
                             key={variant}
-                            onSelect={this.handleSelect} 
+                            onSelect={this.handleSelect}
                         >
-                            <Dropdown.Item eventKey="1"><Link to = "/dashboard#profile"><i className="fas fa-user-circle"></i><span className = 'list-menu-sub'>Trang cá nhân</span></Link></Dropdown.Item>
-                            <Dropdown.Item eventKey="2"><i className="fas fa-snowboarding"></i><span className ='list-menu-sub'>Hoạt động</span></Dropdown.Item>
-                            <Dropdown.Item eventKey="3"><i className="fas fa-file-invoice"></i><span className ='list-menu-sub'>Điện nước</span></Dropdown.Item>
+                            <Dropdown.Item eventKey="1"><Link to="/dashboard#profile"><i className="fas fa-user-circle"></i><span className='list-menu-sub'>Trang cá nhân</span></Link></Dropdown.Item>
+                            <Dropdown.Item eventKey="2"><i className="fas fa-snowboarding"></i><span className='list-menu-sub'>Hoạt động</span></Dropdown.Item>
+                            <Dropdown.Item eventKey="3"><i className="fas fa-file-invoice"></i><span className='list-menu-sub'>Điện nước</span></Dropdown.Item>
                             <Dropdown.Divider />
-                            <Dropdown.Item onClick = {this.logOut} eventKey="4"><i className="fas fa-sign-out-alt"></i><span className ='list-menu-sub'>Thoát</span></Dropdown.Item>
+                            <Dropdown.Item onClick={this.logOut} eventKey="4"><i className="fas fa-sign-out-alt"></i><span className='list-menu-sub'>Thoát</span></Dropdown.Item>
                         </SplitButton>
                     ),
                 )}
             </ButtonToolbar>;
         }
         return (
-            
+
             <div>
                 {this.state.showLoginModal && <Login dataLogin={this.dataLogin} hideLogin={this.hideLogin}></Login>}
                 <div className='HeaderHomepage'>
                     <div className='option'>
                         <div>
                             <Button className="outline btn-menu" variant="light" onClick={this.getScroll} value="1">
-                        TRANG CHỦ</Button>
+                                TRANG CHỦ</Button>
                         </div>
                         <div>
-                          
                             <Button className="outline btn-menu" variant="light" onClick={this.getScroll} value="2">
-                           TIN TỨC</Button>
+                                TIN TỨC</Button>
                         </div>
-                        <div> 
-                           
+                        <div>
                             <Button className="outline btn-menu" variant="light" onClick={this.getScroll} value="3">
-                            THÔNG TIN</Button>
+                                THÔNG TIN</Button>
                         </div>
                     </div>
                     <div className='logoHeader'>
-                        <img className = 'img-header' style={{ width: '100px', height: '100px', borderRadius: '50%' }} src='/images/Logo-KHTN.jpg'></img>
+                        <img className='img-header' style={{ width: '100px', height: '100px', borderRadius: '50%' }} src='/images/Logo-KHTN.jpg'></img>
                     </div>
                     <div className='option'>
                         <div className='right-content'>
@@ -124,7 +121,7 @@ class HeaderHomepage extends Component {
                                     aria-label=""
                                     aria-describedby="basic-addon2"
                                 />
-                              
+
                             </InputGroup>
                         </div>
                         <div className='right-content '>
@@ -140,7 +137,9 @@ class HeaderHomepage extends Component {
 }
 var mapStateToProps = (state) => {
     return {
-        state: state.userProfile
+        state: state
     };
 }
-export default connect(mapStateToProps,null) (HeaderHomepage);
+
+
+export default connect(mapStateToProps, null)(HeaderHomepage);
