@@ -19,6 +19,7 @@ const checkAuth = () => {
     const secret = JSON.parse(localStorage.getItem('secret'))
     if(secret){
         const decode = jwt_decode(secret.access_token)
+
         switch(decode.user.userEntity.loai)
         {
             case 'SA':
