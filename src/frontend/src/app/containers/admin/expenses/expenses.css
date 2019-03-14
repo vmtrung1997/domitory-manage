@@ -21,3 +21,15 @@ thead {
     display: flex;
     justify-content: space-between;
 }
+.link{
+    color: #007bff;
+    cursor: pointer;
+}
+.link:hover{
+    color: #0056b3;
+    text-decoration: underline;
+}
+.flex{
+    display: flex;
+    justify-content: flex-end;
+}

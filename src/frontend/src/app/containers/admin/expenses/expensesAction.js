@@ -1,26 +1,31 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:4000/api/manager'
-
 export const getData = () => {
-  const secret = localStorage.getItem('secret')
-  var secretObj = JSON.parse(secret);
-  axios.defaults.headers.common['x-access-token'] = secretObj.access_token
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
-    axios.get('/expense/get_expense_data').then(result => {
+    axios.get('/manager/expense/get_expense_data').then(result => {
       resolve(result);
     })
-    .catch(error => reject(error));
+    .catch(error =>{reject(error)});
 
   })
 }
-
 export const search = (searchConditions) => {
-  const secret = localStorage.getItem('secret')
-  var secretObj = JSON.parse(secret);
-  axios.defaults.headers.common['x-access-token'] = secretObj.access_token
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
-    axios.post('/expense/get_expense_table', searchConditions).then(result => { 
+    axios.post('/manager/expense/get_expense_table', searchConditions).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+export const add_expense = (table) => {
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/add_expense', table).then(result => { 
       resolve(result);
     })
     .catch(error => reject(error));

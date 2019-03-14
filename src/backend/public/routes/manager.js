@@ -11,6 +11,8 @@ router.post('/expense/get_expense_table', expenseController.select_expense_table
 
 router.get('/expense/get_expense_data', expenseController.get_data);
 
+router.post('/expense/add_expense', expenseController.add_data)
+
 router.get('/expense/refresh', expenseController.refresh_data);
 
 // Activity
