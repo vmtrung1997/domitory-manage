@@ -17,10 +17,11 @@ class Expenses extends Component {
 		this.state = {
 			dataTable: {docs: []},
 			rooms: [],
+			sendRoom: [],
 			roomSelected: 0,
 			monthSelected: 0,
 			yearSelected: 0,
-			status: 2,
+			statusSelected: 2,
 			options:{
 					page: 1,
 					limit: 10
@@ -29,9 +30,6 @@ class Expenses extends Component {
 	}
 	componentDidMount() {
 		var self = this;
-		var month = 9;
-		var year = 2015;
-		this.setState({monthSelected: month, yearSelected: year})
 		getData().then(result => {
 			if (result.data) {
 				var roomOptions = result.data.result.map(room => ({value: room._id, label: room.tenPhong}))
@@ -39,7 +37,7 @@ class Expenses extends Component {
 				self.setState({rooms: roomOptions});
 				self.searchTable();
 			}
-		})
+		}).catch(err => console.log(err))
 	}
 	
 	searchTable = () => {
@@ -47,9 +45,10 @@ class Expenses extends Component {
 			month: parseInt(this.state.monthSelected),
 			year: parseInt(this.state.yearSelected),
 			room: this.state.roomSelected,
-			status: parseInt(this.state.status),
+			status: parseInt(this.state.statusSelected),
 			options: this.state.options
 		}
+		console.log(options)
 		search(options).then(result => {
 			if (result.data){
 				this.setState({dataTable: result.data.rs})
@@ -68,10 +67,10 @@ class Expenses extends Component {
 		this.setState({yearSelected: value, options: {page: 1}})
 	}
 	statusSelected = value => {
+		console.log(value);
 		this.setState({statusSelected: value, options: {page: 1}})
 	}
 	pageChange = value => {
-		console.log(value);
 		this.setState({options: {page: value}})
 		this.searchTable()
 	}
@@ -118,7 +117,7 @@ class Expenses extends Component {
 						<Button color={'success'}>
 								Báo cáo
 							</Button>
-							<ModalExpense rooms={this.state.rooms}/>
+							<ModalExpense/>
 						</div>
 						<ExpenseTable table={this.state.dataTable} pageChange={this.pageChange}/>
 					</div>

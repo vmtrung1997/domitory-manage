@@ -3,7 +3,13 @@ import { Table, Row, Col, Modal } from 'react-bootstrap'
 import Input from '../../../components/input/input'
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
+import {getData, add_expense} from '../expenses/expensesAction'
 class Example extends React.Component {
+  static defaultProps = {
+    currentYear: 2015,
+    currentMonth: 1
+  }
+  
   constructor(props, context) {
     super(props, context);
 
@@ -11,53 +17,81 @@ class Example extends React.Component {
     this.handleClose = this.handleClose.bind(this);
 
     this.state = {
+      rooms: [],
       table: [],
-      rooms: this.props.rooms,
       room: 0,
+      month: this.props.currentMonth,
+      year: this.props.currentYear,
       soDien: 0,
       soNuoc: 0
     };
   }
-
+  componentDidMount(){
+    var self = this;
+    getData().then(result => {
+			if (result.data) {
+				var roomOptions = result.data.result.map(room => ({value: room._id, label: room.tenPhong}))
+				self.setState({rooms: roomOptions, room: roomOptions[0]});
+			}
+		}).catch(err => console.log(err))
+  }
   handleClose() {
-    this.setState({ show: false });
+    this.setState({ show: false, table: [], room: 1, month: this.props.currentMonth, year: this.props.currentYear,soDien:0,soNuoc:0 });
   }
 
   handleShow() {
     this.setState({ show: true });
   }
   selected = (value) => {
-    this.setState({phong: value})
+    var room = this.state.rooms.find(obj => obj.value === value)
+    this.setState({ room: room })
+  }
+  monthSelected = value =>{
+    this.setState({month: value})
+  }
+  yearSelected = value => {
+    this.setState({year: value});
   }
   onChange = (target) => {
-    this.setState({[target.name]: target.value})
+    this.setState({ [target.name]: target.value })
   }
-  
+
   addRow = () => {
-    var row = {phong: this.state.phong, soDien: this.state.soDien, soNuoc: this.state.soNuoc}
-    var table = this.state.table;
+    var {table,month, year, soDien, soNuoc, room} = this.state;
+    var row = {thang: month, nam: year, phong: room, soDien: parseInt(soDien), soNuoc: parseInt(soNuoc) }
     table.push(row);
     this.setState({
       table: table,
       soDien: 0,
       soNuoc: 0
     })
-    this.setState({soDien: 0})
+    this.setState({ soDien: 0, soNuoc:0 })
   }
-
+  handleSubmit = () => {
+    var {table} = this.state;
+    add_expense(table).then(result => {
+      alert(result);
+    }).catch(err => console.log(err))
+  }
+  onDeleteRow = (index) => {
+    var table = this.state.table
+    table.splice(index,1);
+    this.setState({table: table});
+  }
   render() {
-    var options = this.props.rooms
-    var date = new Date();
-    var table = this.state.table.length?this.state.table.map((row, index) => {
+    var monthOptions = [...Array(12)].map((_, i) =>  {return { value: i+1, label: i+1 }});
+    var yearOptions = [...Array(3)].map((_, i) => { return { value: i + 2015, label: i + 2015 } });
+    var table = this.state.table.length ? this.state.table.map((row,index) => {
       return (
         <tr key={index}>
-          <td>{date.getMonth() + "/" + date.getFullYear()}</td>
-          <td>{row.phong}</td>
+          <td>{row.thang + "/" + row.nam}</td>
+          <td>{row.phong.label}</td>
           <td>{row.soDien}</td>
           <td>{row.soNuoc}</td>
+          <td><i className="fas fa-times-circle" style={{cursor: 'pointer', fontSize: '1em', color: 'red'}} onClick={(event) => this.onDeleteRow(index)}></i></td>
         </tr>
       )
-    }):[];
+    }) : [];
     return (
       <>
         <Button onClick={this.handleShow}>
@@ -69,48 +103,58 @@ class Example extends React.Component {
             <Modal.Title>Thêm chi phí</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <div className={'p-10'}>
-            <Row className={'m-b-10'}>
-              <Col md={3}>
-                <Col md={12}><label>Phòng</label></Col>
-                <Col md={12}><Select options={options} selected={this.selected} /></Col>
-              </Col>
-              <Col md={3}>
-                <Col md={12}><label>Số điện</label></Col>
-                <Col md={12}><Input type="number" value={this.state.soDien} getValue={this.onChange} name={'soDien'}/></Col>
-              </Col>
-              <Col md={3}>
-                <Col md={12}><label>Số nước</label></Col>
-                <Col md={12}><Input type="number" value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'}/></Col>
-              </Col>
-              <Col md={3}>
-              <Col md={12}>&nbsp;</Col>
-              <Col md={12}><Button color={'warning'} size={'md'} onClick={this.addRow}>Thêm</Button></Col></Col>
-            </Row>
-            <Row>
-              <Col>
-                <Table striped hover responsive size="lg">
-                  <thead>
-                    <tr>
-                      <th>Tháng/Năm</th>
-                      <th>Phòng</th>
-                      <th>Chỉ số điện</th>
-                      <th>Chỉ số nước</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {table}
-                  </tbody>
-                </Table>
-              </Col>
-            </Row>
+            <div className={'p-10'}>
+              <Row className={'m-b-10'}>
+                <Col md={2}>
+                  Tháng
+                  <Select options={monthOptions} selected={this.monthSelected}/>
+                </Col>
+                <Col md={2}>
+                  Năm
+                  <Select options={yearOptions} selected={this.yearSelected}/>
+                </Col>
+                <Col md={2}>
+                  Phòng
+                  <Select options={this.state.rooms} selected={this.selected}/>
+                </Col>
+                <Col md={2}>
+                  Số điện
+                  <Input type="number" value={this.state.soDien} getValue={this.onChange} name={'soDien'} />
+                </Col>
+                <Col md={2}>
+                  Số nước
+                  <Input type="number" value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'} />
+                </Col>
+                <Col md={2}>
+                  &nbsp;
+                <Button color={'warning'} size={'md'} onClick={this.addRow}>Thêm</Button>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Table striped hover responsive size="lg">
+                    <thead>
+                      <tr>
+                        <th>Tháng/Năm</th>
+                        <th>Phòng</th>
+                        <th>Chỉ số điện</th>
+                        <th>Chỉ số nước</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {table}
+                    </tbody>
+                  </Table>
+                </Col>
+              </Row>
             </div>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="default" color="default" onClick={this.handleClose}>
               Đóng
             </Button>
-            <Button variant="default" onClick={this.handleClose}>
+            <Button variant="default" onClick={this.handleSubmit}>
               Xác nhận
               </Button>
           </Modal.Footer>

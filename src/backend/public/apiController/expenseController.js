@@ -1,5 +1,6 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const ChiPhiPhong = require('../models/ChiPhiPhong')
+const ChiPhiHienTai = require('../models/ChiSoHienTai')
 const phongRepo = require('../repos/phongRepo')
 exports.quan_ly_dien_nuoc = (req, res, next) => {
 	res.json({
@@ -17,20 +18,21 @@ exports.get_data = (req, res) => {
 exports.select_expense_table = (req, res) => {
 	var search = req.body;
 	var options = req.body.options;
-	options.populate = {path: 'idPhong', select: 'tenPhong', sort: 'thang nam'}
+	console.log(search);
+	options.populate = { path: 'idPhong', select: 'tenPhong', sort: 'thang nam' }
 	var searchObj = {};
-	if (search.month !== 0){
+	if (search.month !== 0) {
 		searchObj.thang = search.month;
 	}
-	if (search.year !== 0){
+	if (search.year !== 0) {
 		searchObj.nam = search.year
 	}
 	if (search.status !== 2)
 		searchObj.trangThai = search.status
 
-	if (search.room !== 0 && search.room.value !== 0) 
+	if (search.room !== 0 && search.room.value !== 0)
 		searchObj.idPhong = search.room.value
-	
+
 	console.log('==searchObj: ', searchObj);
 	console.log('==options: ', options)
 	ChiPhiPhong.paginate(searchObj, options).then(value => {
@@ -41,19 +43,62 @@ exports.select_expense_table = (req, res) => {
 	}).catch(err => { console.log(err) })
 };
 
-function update_data(item, cb){
+function update_data(item, cb) {
 	var id = new ObjectId(item._id);
 	var idPhong = new ObjectId(item.idPhong);
-	setTimeout( () => {
+	setTimeout(() => {
 		ChiPhiPhong.updateOne({ _id: id }, {
 			$set: {
 				'idPhong': idPhong
 			}
-		}, (_,err) => {
+		}, (_, err) => {
 			cb()
 		})
 	}, 100)
 }
+exports.add_data = (req, res) => {
+	var table = req.body
+	ChiPhiHienTai.find().then(vals => {
+		if (vals) {
+			var tableAdd = table.map(row => {
+				var obj = vals.find((val) => val.idPhong === row.phong.value)
+				if (obj)
+					return {
+						idPhong: row.phong.value,
+						thang: row.thang,
+						nam: row.nam,
+						soDien: row.soDien,
+						soNuoc: row.soNuoc,
+						soDienCu: obj.soDien,
+						soNuocCu: obj.soNuoc,
+						tienDien: '',
+						tienNuoc: '',
+						tienRac: '',
+						tongTien: '',
+						tongTienChu: '',
+						trangThai: 0
+					}
+			});
+			ChiPhiPhong.collection.insert(tableAdd, function (err, result) {
+				if (result) {
+					console.log(result);
+					res.status(201).json({
+						rs: 'success',
+						data: result
+					})
+				} else {
+					console.log(err);
+					res.end(400).json({
+						rs: 'fail',
+						msg: err
+					})
+				}
+			})
+		}
+	})
+	
+};
+
 exports.refresh_data = (req, res) => {
 	ChiPhiPhong.find().then(results => {
 		console.log(results[0])

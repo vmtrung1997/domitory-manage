@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import './input.css'
 
 class Input extends Component {
+  static propTypes = {
+    value: PropTypes.any
+  }
   static defaultProps = {
-    value: '',
     type: 'text',
     width: '100%',
     fontSize: '14px',
@@ -23,8 +25,7 @@ class Input extends Component {
         <input 
           style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
           name={this.props.name}
-          onChange={this.onChange} 
-          name={this.props.name}
+          onChange={this.onChange}
           value={this.props.value}
           type={this.props.type} 
           className="input-control" 

@@ -3,7 +3,7 @@ var mongoosePaginate = require('mongoose-paginate-v2');
 var Schema = mongoose.Schema;
 
 var chiSoHienTaiSchema = new Schema({
-    idPhong: {type: Schema.Types.ObjectId, ref: 'Phong'},
+    idPhong: {type: Schema.Types.String, ref: 'Phong'},
     thang: Number,
     nam: Number,
     soDien: Number,
