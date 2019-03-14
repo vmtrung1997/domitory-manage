@@ -4,6 +4,7 @@ exports.get_room = () => {
   return new Promise((resolve, reject) => {
     Phong.
     find().
+    sort({'tenPhong': 'asc'}).
     select(['_id', 'tenPhong']).
     then(result => {
       if (result)

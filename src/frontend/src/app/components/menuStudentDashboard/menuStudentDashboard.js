@@ -22,7 +22,7 @@ class MenuStudent extends React.Component {
         return (
             <React.Fragment >
                 <div className='student-dashboard'>
-                    <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
+                    <Tab.Container id="list-group-tabs-example" defaultActiveKey="#profile">
                         <Row>
                             <Col sm={3}>
                                 <div className='menu-student'>
