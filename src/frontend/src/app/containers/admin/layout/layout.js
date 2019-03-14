@@ -24,6 +24,8 @@ export default class Layout extends React.Component{
         case 'BV':
           rule = 'Bảo Vệ'
           break
+        default:
+          break
       }
     }
 

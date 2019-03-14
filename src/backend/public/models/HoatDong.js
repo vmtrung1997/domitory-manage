@@ -8,7 +8,8 @@ var hoatDongSchema = new Schema({
     ngay: Date,
     batBuoc: Boolean,
     soLuong: Number,
-    diem: Number
+    diem: Number,
+    moTa: String
 });
 hoatDongSchema.plugin(mongoosePaginate);
 
