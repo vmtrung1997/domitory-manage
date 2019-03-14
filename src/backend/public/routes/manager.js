@@ -14,4 +14,10 @@ router.get('/expense/refresh', expenseController.refresh_data);
 
 router.get('/activity/get_activity', activityController.get_activity);
 
+router.post('/activity/post', activityController.post_activity);
+
+router.post('/activity/delete', activityController.delete_activity);
+
+router.post('/activity/update', activityController.update_activity);
+
 module.exports = router;
