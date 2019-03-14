@@ -23,7 +23,7 @@ class InfoStudent extends Component{
       limit: 10,
       pageList: [1,2,3,4,5],
       infoList: [],
-      MSSV: '',
+      mssv: '',
       hoTen: '',
       phong: ''
     }
@@ -43,46 +43,71 @@ class InfoStudent extends Component{
   }
 
   componentWillMount(){
+    this.callServer();
+  }
+
+  callServer = () => {
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
       'x-access-token': secret.access_token
     };
+    const { mssv, hoTen } = this.state;
     const options = {
       page: this.state.page,
       limit: this.state.limit
     };
     axios.post(`/manager/infoStudent/get`,
-      { options: options }, { headers: headers }
+      { options: options,
+        MSSV: mssv,
+        hoTen: hoTen
+      }, { headers: headers }
     ).then(result => {
       console.log('==success: ', result);
       this.setState({
         infoList: result.data.docs
       })
     }).catch(err => {
+      console.log('==get info err: ', err)
       axios.get(`/user/me_access`,  {
         headers: { 'x-refresh-token': secret.refresh_token }
       }).then(res => {
-        console.log('==get info err: ', err)
+        console.log('==get token sucess: ', res)
         localStorage.setItem('secret', JSON.stringify(res.data));
-        headers = {'x-access-token': res.access_token};
-
-        axios.get(`/manager/infoStudent/get`,
-          {options: options}, {headers: headers}
-        ).then(result => {
+        headers = {'x-access-token': res.data.access_token};
+        console.log('==headers', headers);
+        axios({
+          method: 'get',
+          url: `/manager/infoStudent/get`,
+          headers: headers,
+          data: options
+        }).then(result => {
           console.log('==success: ', result);
           this.setState({
             infoList: result.data.docs
           })
+        }).catch(err => {
+          console.log('==get 2', err)
         })
+      }).catch(err => {
+        console.log('==get token err', err)
       })
 
     })
+  }
+  onChange = (event) => {
+    this.setState({
+      [event.name]: event.value
+    })
+  }
+
+  handleSearch = () => {
+    this.callServer();
   }
 
   render(){
     console.log('==state', this.state);
     let i = 1;
-    const { roomList, infoList, pageList, pageActive, MSSV, hoTen, Phong } = this.state;
+    const { roomList, infoList, pageList, pageActive, mssv, hoTen, Phong } = this.state;
     return(
       <div>
         <Title>
@@ -94,11 +119,11 @@ class InfoStudent extends Component{
             <Row>
               <Col md={3}>
                 MSSV
-                <Input value={MSSV} onChange={(text) => {this.setState({MSSV: text})}}/>
+                <Input getValue={this.onChange} name={'mssv'} />
               </Col>
               <Col md={5}>
                 Họ và tên
-                <Input/>
+                <Input getValue={this.onChange} name={'hoTen'} />
               </Col>
               <Col md={3}>
                 Phòng
@@ -107,6 +132,7 @@ class InfoStudent extends Component{
               <Col md={1} className={'is-btnSearch'}>
                 <Button
                   fullWidth
+                  onClick={() => this.handleSearch()}
                 >
                   <i className="fas fa-search"/>
                 </Button>

@@ -26,11 +26,13 @@ exports.getListStudent = (req, res) => {
     query.MSSV = params.MSSV;
   if(params.hoTen)
     query.hoTen = params.hoTen;
+  if(params.idPhong)
+    query.idPhong = params.idPhong;
   if(!params.options)
     res.status(400).json({'msg': 'missing options'});
 
   let options = params.options;
-  options.populate = ['idTaiKhoan', 'idPhong'];
+  options.populate = [ 'idTaiKhoan', 'idPhong' ];
   console.log('==query', query);
   Profile.paginate(query, options)
     .then(result => {

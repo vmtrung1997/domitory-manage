@@ -31,9 +31,9 @@ class Button extends Component{
 		if(disable){
       		classDisabled = 'disable'
 		}
-    	if(fullWidth){
-      		classFullWidth = 'fullWidth'
-    	}
+		if(fullWidth){
+				classFullWidth = 'fullWidth'
+		}
 		return(
 			<button  
 				style={style}
