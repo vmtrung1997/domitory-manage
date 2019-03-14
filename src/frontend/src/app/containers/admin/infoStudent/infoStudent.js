@@ -9,13 +9,23 @@ import { withRouter } from 'react-router-dom';
 import './infoStudent.css';
 import './../../../style.css'
 import Select from "../../../components/selectOption/select";
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:4000/api'
 
 class InfoStudent extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      listPhong: [{value: 0, label: 101}, {value: 1, label: 102}, {value: 2, label: 103}],
+      roomList: [{value: 0, label: 101}, {value: 1, label: 102}, {value: 2, label: 103}],
       showAddPopup: false,
+      pageActive: 1,
+      limit: 10,
+      pageList: [1,2,3,4,5],
+      infoList: [],
+      MSSV: '',
+      hoTen: '',
+      phong: ''
     }
   }
 
@@ -32,8 +42,47 @@ class InfoStudent extends Component{
     this.props.history.push('/admin/id');
   }
 
+  componentWillMount(){
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    let headers = {
+      'x-access-token': secret.access_token
+    };
+    const options = {
+      page: this.state.page,
+      limit: this.state.limit
+    };
+    axios.post(`/manager/infoStudent/get`,
+      { options: options }, { headers: headers }
+    ).then(result => {
+      console.log('==success: ', result);
+      this.setState({
+        infoList: result.data.docs
+      })
+    }).catch(err => {
+      axios.get(`/user/me_access`,  {
+        headers: { 'x-refresh-token': secret.refresh_token }
+      }).then(res => {
+        console.log('==get info err: ', err)
+        localStorage.setItem('secret', JSON.stringify(res.data));
+        headers = {'x-access-token': res.access_token};
+
+        axios.get(`/manager/infoStudent/get`,
+          {options: options}, {headers: headers}
+        ).then(result => {
+          console.log('==success: ', result);
+          this.setState({
+            infoList: result.data.docs
+          })
+        })
+      })
+
+    })
+  }
+
   render(){
-    const { listPhong } = this.state;
+    console.log('==state', this.state);
+    let i = 1;
+    const { roomList, infoList, pageList, pageActive, MSSV, hoTen, Phong } = this.state;
     return(
       <div>
         <Title>
@@ -45,7 +94,7 @@ class InfoStudent extends Component{
             <Row>
               <Col md={3}>
                 MSSV
-                <Input/>
+                <Input value={MSSV} onChange={(text) => {this.setState({MSSV: text})}}/>
               </Col>
               <Col md={5}>
                 Họ và tên
@@ -53,7 +102,7 @@ class InfoStudent extends Component{
               </Col>
               <Col md={3}>
                 Phòng
-                <Select options={listPhong} value={listPhong[0]} selected={this.selected} />
+                <Select options={roomList} value={roomList[0]} selected={this.selected} />
               </Col>
               <Col md={1} className={'is-btnSearch'}>
                 <Button
@@ -120,55 +169,23 @@ class InfoStudent extends Component{
               </thead>
               <tbody>
 
-              <tr onDoubleClick ={() => this.onViewDetail()}>
-                <td >1</td>
-                <td>1512519</td>
-                <td>Trần Lê Phương Thảo</td>
-                <td>A102</td>
-                <td style={{display: 'flex', justifyContent: 'center'}}>
-                  <Button color={'warning'} style={{marginRight: '15px'}}>
-                    <i className="fas fa-edit"/>
-                  </Button>
-                  <CheckBox/>
-                </td>
-              </tr>
+              {infoList && infoList.map(info => {
 
-              <tr>
-                <td>1</td>
-                <td>1512519</td>
-                <td>Trần Lê Phương Thảo</td>
-                <td>A102</td>
-                <td style={{display: 'flex', justifyContent: 'center'}}>
-                  <Button color={'warning'} style={{marginRight: '15px'}}>
-                    <i className="fas fa-edit"/>
-                  </Button>
-                  <CheckBox/>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>1512519</td>
-                <td>Trần Lê Phương Thảo</td>
-                <td>A102</td>
-                <td style={{display: 'flex', justifyContent: 'center'}}>
-                  <Button color={'warning'} style={{marginRight: '15px'}}>
-                    <i className="fas fa-edit"/>
-                  </Button>
-                  <CheckBox/>
-                </td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>1512519</td>
-                <td>Trần Lê Phương Thảo</td>
-                <td>A102</td>
-                <td style={{display: 'flex', justifyContent: 'center'}}>
-                  <Button color={'warning'} style={{marginRight: '15px'}}>
-                    <i className="fas fa-edit"/>
-                  </Button>
-                  <CheckBox/>
-                </td>
-              </tr>
+                return(
+                  <tr onDoubleClick ={() => this.onViewDetail()}>
+                    <td >{i++}</td>
+                    <td>{info.MSSV}</td>
+                    <td>{info.hoTen}</td>
+                    <td>{info.idPhong.tenPhong}</td>
+                    <td style={{display: 'flex', justifyContent: 'center'}}>
+                      <Button color={'warning'} style={{marginRight: '15px'}}>
+                        <i className="fas fa-edit"/>
+                      </Button>
+                      <CheckBox/>
+                    </td>
+                  </tr>
+                )
+              })}
               </tbody>
             </Table>
             <Row>
@@ -181,11 +198,16 @@ class InfoStudent extends Component{
                 <Pagination>
                   <Pagination.First />
                   <Pagination.Prev />
-                  <Pagination.Item>{1}</Pagination.Item>
-                  <Pagination.Item>{2}</Pagination.Item>
-                  <Pagination.Item active>{3}</Pagination.Item>
-                  <Pagination.Item >{4}</Pagination.Item>
-                  <Pagination.Item>{5}</Pagination.Item>
+                  {pageList && pageList.map(page => {
+                    if(pageActive === page)
+                      return(
+                        <Pagination.Item active>{page}</Pagination.Item>
+                      );
+                    else
+                      return(
+                        <Pagination.Item>{page}</Pagination.Item>
+                      )
+                  })}
                   <Pagination.Next />
                   <Pagination.Last />
                 </Pagination>
