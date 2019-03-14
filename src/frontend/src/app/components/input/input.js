@@ -26,9 +26,9 @@ class Input extends Component {
         <input 
           style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
           name={this.props.name}
-          onChange={this.onChange} 
+          onChange={this.onChange}
           name={this.props.name}
-          value={this.props.value}
+          defaultValue={this.props.value}
           type={this.props.type} 
           className="input-control" 
           placeholder={this.props.placeholder}
