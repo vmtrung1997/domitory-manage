@@ -5,11 +5,12 @@ import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import CheckBox from './../../../components/checkbox/checkbox';
 //import Pagination from './../../../components/pagination/pagination';
-import { withRouter } from 'react-router-dom';
+import {Route, withRouter} from 'react-router-dom';
 import './infoStudent.css';
 import './../../../style.css'
 import Select from "../../../components/selectOption/select";
 import axios from 'axios';
+import InfoStudentDetail from './infoStudentDetail';
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
 
@@ -19,6 +20,7 @@ class InfoStudent extends Component{
     this.state = {
       roomList: [{value: 0, label: 101}, {value: 1, label: 102}, {value: 2, label: 103}],
       showAddPopup: false,
+      showEditPopup: false,
       pageActive: 1,
       limit: 10,
       pageList: [1,2,3,4,5],
@@ -29,17 +31,37 @@ class InfoStudent extends Component{
     }
   }
 
-  handleCloseAddPopup = () => {
-    this.setState({ showAddPopup: false });
-  }
+  handleClosePopup = (type) => {
+    switch(type){
+      case 'add':
+        this.setState({ showAddPopup: false });
+        break;
+      case 'edit':
+        this.setState({ showEditPopup: false });
+        break;
+    }
+  };
 
-  handleShowAddPopup = () => {
-    this.setState({ showAddPopup: true });
-  }
+  handleShowPopup = (type) => {
+    switch(type){
+      case 'add':
+        this.setState({ showAddPopup: true });
+        break;
+      case 'edit':
+        this.setState({ showEditPopup: true });
+        break;
+    }
+  };
 
-  onViewDetail(){
-    console.log('==fine')
-    this.props.history.push('/admin/id');
+  onViewDetail = (info) => {
+    console.log('==fine', info)
+    this.props.history.push({
+      pathname: '/admin/id',
+      state: { info: info }
+    });
+    // return (
+    //   <Route path={`${this.props.match.url}/id`} component={InfoStudentDetail} />
+    // )
   }
 
   componentWillMount(){
@@ -52,13 +74,16 @@ class InfoStudent extends Component{
       'x-access-token': secret.access_token
     };
     const { mssv, hoTen } = this.state;
+    console.log('==state get', this.state)
     const options = {
-      page: this.state.page,
+      page: this.state.pageActive,
       limit: this.state.limit
     };
+
+    console.log('==api', options, headers)
     axios.post(`/manager/infoStudent/get`,
       { options: options,
-        MSSV: mssv,
+        mssv: mssv,
         hoTen: hoTen
       }, { headers: headers }
     ).then(result => {
@@ -66,31 +91,37 @@ class InfoStudent extends Component{
       this.setState({
         infoList: result.data.docs
       })
-    }).catch(err => {
-      console.log('==get info err: ', err)
-      axios.get(`/user/me_access`,  {
-        headers: { 'x-refresh-token': secret.refresh_token }
-      }).then(res => {
-        console.log('==get token sucess: ', res)
-        localStorage.setItem('secret', JSON.stringify(res.data));
-        headers = {'x-access-token': res.data.access_token};
-        console.log('==headers', headers);
-        axios({
-          method: 'get',
-          url: `/manager/infoStudent/get`,
-          headers: headers,
-          data: options
-        }).then(result => {
-          console.log('==success: ', result);
-          this.setState({
-            infoList: result.data.docs
+    }).catch((err) => {
+      let statusCode = err.response;
+
+      console.log('==get info err: ', err, statusCode)
+
+      if(statusCode === 401) {
+        axios.get(`/user/me_access`,  {
+          headers: { 'x-refresh-token': secret.refresh_token }
+        }).then(res => {
+          console.log('==get token sucess: ', res)
+          localStorage.setItem('secret', JSON.stringify(res.data));
+          headers = {'x-access-token': res.data.access_token};
+          console.log('==headers', headers);
+          axios({
+            method: 'get',
+            url: `/manager/infoStudent/get`,
+            headers: headers,
+            data: options
+          }).then(result => {
+            console.log('==success: ', result);
+            this.setState({
+              infoList: result.data.docs
+            })
+          }).catch(err => {
+            console.log('==get 2', err)
           })
         }).catch(err => {
-          console.log('==get 2', err)
+          console.log('==get token err', err)
         })
-      }).catch(err => {
-        console.log('==get token err', err)
-      })
+      }
+
 
     })
   }
@@ -154,7 +185,7 @@ class InfoStudent extends Component{
 
             <Col md={6} >
               <div className={'is-manipulation'} style={{float: 'right'}}>
-                <Button color={'warning'} onClick={this.handleShowAddPopup}>
+                <Button color={'warning'} onClick={() => this.handleShowPopup('add')}>
                   <i className="fas fa-plus"/>
                 </Button>
                 <Button color={'danger'}>
@@ -165,16 +196,33 @@ class InfoStudent extends Component{
           </Row>
 
           {/*modal popup add student*/}
-          <Modal show={this.state.showAddPopup} onHide={this.handleCloseAddPopup}>
+          <Modal show={this.state.showAddPopup} onHide={() =>this.handleClosePopup('add')}>
             <Modal.Header closeButton>
               <Modal.Title>Thêm sinh viên</Modal.Title>
             </Modal.Header>
             <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
             <Modal.Footer>
-              <Button variant="outline" onClick={this.handleCloseAddPopup}>
+              <Button variant="outline" onClick={() =>this.handleClosePopup('add')}>
                 Close
               </Button>
-              <Button variant="primary" onClick={this.handleCloseAddPopup}>
+              <Button  onClick={() =>this.handleClosePopup('add')}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {/*end modal*/}
+
+          {/*modal popup edit student*/}
+          <Modal show={this.state.showEditPopup} onHide={() =>this.handleClosePopup('edit')}>
+            <Modal.Header closeButton>
+              <Modal.Title>Thêm sinh viên</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+            <Modal.Footer>
+              <Button variant="outline" onClick={() =>this.handleClosePopup('edit')}>
+                Close
+              </Button>
+              <Button  onClick={() =>this.handleClosePopup('edit')}>
                 Save Changes
               </Button>
             </Modal.Footer>
@@ -198,13 +246,13 @@ class InfoStudent extends Component{
               {infoList && infoList.map(info => {
 
                 return(
-                  <tr onDoubleClick ={() => this.onViewDetail()}>
+                  <tr onDoubleClick ={() => this.onViewDetail(info)} key={i++}>
                     <td >{i++}</td>
                     <td>{info.MSSV}</td>
                     <td>{info.hoTen}</td>
                     <td>{info.idPhong.tenPhong}</td>
                     <td style={{display: 'flex', justifyContent: 'center'}}>
-                      <Button color={'warning'} style={{marginRight: '15px'}}>
+                      <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.handleShowPopup('edit')}>
                         <i className="fas fa-edit"/>
                       </Button>
                       <CheckBox/>

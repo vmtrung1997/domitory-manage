@@ -10,6 +10,23 @@ import './../../../style.css'
 
 class InfoStudentDetail extends Component{
   render(){
+    const { location: { state: { info }}} = this.props;
+    const {
+      hoTen,
+      MSSV,
+      diaChi,
+      maThe,
+      moTa,
+      danToc,
+      sdt,
+      email,
+      ngaySinh,
+      sdtNguoiThan,
+      gioiTinh,
+      idPhong: {tenPhong},
+      idTaiKhoan: {username}
+    } = info;
+
     return(
       <div>
         <Title>
@@ -35,13 +52,13 @@ class InfoStudentDetail extends Component{
                     Họ và tên:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input value={hoTen}/>
                   </Col>
                   <Col md={2}>
                     MSSV:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input value={MSSV} disable/>
                   </Col>
                 </Row>
 
@@ -50,13 +67,13 @@ class InfoStudentDetail extends Component{
                     Username:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input value={username}/>
                   </Col>
                   <Col md={2}>
                     Mã thẻ:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input value={maThe}/>
                   </Col>
                 </Row>
 
@@ -65,13 +82,13 @@ class InfoStudentDetail extends Component{
                     Ngày sinh:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input value={ngaySinh}/>
                   </Col>
                   <Col md={2}>
                     Giới tính:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input value={gioiTinh ? 'Name' : 'Nữ'}/>
                   </Col>
                 </Row>
 
@@ -81,13 +98,13 @@ class InfoStudentDetail extends Component{
                     Email:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input value={email}/>
                   </Col>
                   <Col md={2}>
                     Số điện thoại:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input value={sdt}/>
                   </Col>
                 </Row>
 
@@ -96,13 +113,13 @@ class InfoStudentDetail extends Component{
                     Dân tộc:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input value={danToc}/>
                   </Col>
                   <Col md={2}>
                     Sđt người thân:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input value={sdtNguoiThan}/>
                   </Col>
                 </Row>
 
@@ -123,6 +140,29 @@ class InfoStudentDetail extends Component{
 
                 <Row>
                   <Col md={2}>
+                    Điểm hoạt động:
+                  </Col>
+                  <Col md={4}>
+                    <Input/>
+                  </Col>
+                  <Col md={2}>
+                    Phòng:
+                  </Col>
+                  <Col md={4}>
+                    <Input value={tenPhong}/>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col md={2}>
+                    Địa chỉ:
+                  </Col>
+                  <Col md={10}>
+                    <Input value={diaChi}/>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={2}>
                     Ngành học:
                   </Col>
                   <Col md={10}>
@@ -137,20 +177,13 @@ class InfoStudentDetail extends Component{
                     <Input/>
                   </Col>
                 </Row>
-                <Row>
-                  <Col md={2}>
-                    Điểm H.Động:
-                  </Col>
-                  <Col md={10}>
-                    <Input/>
-                  </Col>
-                </Row>
+
                 <Row>
                   <Col md={2}>
                     Mô tả:
                   </Col>
                   <Col md={10}>
-                    <Input/>
+                    <Input value={moTa}/>
                   </Col>
                 </Row>
               </Col>

@@ -22,12 +22,12 @@ let auth = require('../repos/authRepo');
 exports.getListStudent = (req, res) => {
   let query = {};
   const params = req.body;
-  if(params.MSSV)
-    query.MSSV = params.MSSV;
   if(params.hoTen)
     query.hoTen = params.hoTen;
-  if(params.idPhong)
-    query.idPhong = params.idPhong;
+  if(params.mssv)
+    query.MSSV = params.mssv;
+  // if(params.idPhong)
+  //   query.idPhong = params.idPhong;
   if(!params.options)
     res.status(400).json({'msg': 'missing options'});
 
@@ -39,7 +39,8 @@ exports.getListStudent = (req, res) => {
       res.status(200).json(result);
     }).catch(err => {
     console.log('==fail', err);
-    res.status(400).json({
+
+    res.statusCode(400).json({
       err: 'get info student fail'
     })
   })
