@@ -15,7 +15,7 @@ exports.register = (req, res) => {
 		console.log('==register: success')
 		res.status(201).json(req.body);
 	}).catch(err => {
-		console.log(err);
+		console.log('==register: ', err);
 		res.status(500);
 	})
 }
@@ -56,18 +56,20 @@ exports.login = (req, res) => {
 exports.me_access = (req, res) => {
 	var reToken = req.headers['x-refresh-token'];
 	ReToken.findOne({ token: reToken }, null, function (err, result) {
-		if (err) console.log(err);
+		if (err) console.log('==refresh_token: ',err);
 		if (result) {
 			var id = new ObjectId(result.userid);
 			User.findOne({ '_id': id }, function (err, userEntity) {
 				if (userEntity) {
-					var acToken = auth.generateAccessToken(userEntity);
-					console.log('==refresh_token: success')
-					res.status(200).json({
-						auth: true,
-						user: userEntity,
-						access_token: acToken,
-						refresh_token: reToken
+					Profile.findOne({idTaiKhoan: userEntity._id},(err,prof) => {
+						var userObj = {userEntity, hoTen: prof.hoTen}
+						var acToken = auth.generateAccessToken(userObj);
+						console.log('==refresh_token: success')
+						res.status(200).json({
+							auth: true,
+							access_token: acToken,
+							refresh_token: reToken
+						})
 					})
 				}
 			})

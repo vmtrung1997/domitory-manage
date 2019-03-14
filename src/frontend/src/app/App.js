@@ -19,6 +19,7 @@ const checkAuth = () => {
     const secret = JSON.parse(localStorage.getItem('secret'))
     if(secret){
         const decode = jwt_decode(secret.access_token)
+
         switch(decode.user.userEntity.loai)
         {
             case 'SA':
@@ -73,8 +74,9 @@ class App extends Component {
                 <Switch>
                     <AdminRoute path="/admin" component={Admin} />
                     <SecurityRoute path='/security' component={Security} />
-                    <Route path='/' component = {Student}/>
+                    {/*<SecurityRoute path='/security' component={Security} />*/}
                     <Route path="/signin-admin" component={SignInAdmin} />
+                    <Route path='/' component = {Student}/>
                     <Route component={NotFound} />
                 </Switch>
             </Router>

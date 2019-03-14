@@ -1,11 +1,11 @@
 
 .is-manipulation{
-    float: right;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .is-manipulation button{
     width: 60px;
+    margin-right: 5px;
 }
 
 .is-header{
@@ -18,4 +18,9 @@
 
 .is-btnSearch{
     margin-top: 29px;
+}
+
+.page-input{
+    display: flex;
+    align-items: center;
 }
