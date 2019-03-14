@@ -18,8 +18,9 @@ exports.get_data = (req, res) => {
 exports.select_expense_table = (req, res) => {
 	var search = req.body;
 	var options = req.body.options;
-	console.log(search);
-	options.populate = { path: 'idPhong', select: 'tenPhong', sort: 'thang nam' }
+	// console.log(search);
+	options.populate = { path: 'idPhong', select: 'tenPhong', options: {sort: {tenPhong: 1}}} 
+	options.sort = 'nam thang idPhong'
 	var searchObj = {};
 	if (search.month !== 0) {
 		searchObj.thang = search.month;
@@ -32,11 +33,10 @@ exports.select_expense_table = (req, res) => {
 
 	if (search.room !== 0 && search.room.value !== 0)
 		searchObj.idPhong = search.room.value
-
-	console.log('==searchObj: ', searchObj);
-	console.log('==options: ', options)
+	// console.log('==searchObj: ', searchObj);
+	// console.log('==options: ', options)
 	ChiPhiPhong.paginate(searchObj, options).then(value => {
-		console.log(value);
+		// console.log(value);
 		res.json({
 			rs: value
 		})
@@ -81,13 +81,11 @@ exports.add_data = (req, res) => {
 			});
 			ChiPhiPhong.collection.insert(tableAdd, function (err, result) {
 				if (result) {
-					console.log(result);
 					res.status(201).json({
 						rs: 'success',
 						data: result
 					})
 				} else {
-					console.log(err);
 					res.end(400).json({
 						rs: 'fail',
 						msg: err

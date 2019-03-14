@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Slide from '../../../components/slideHomepage/slideHomepage'
 import News from '../../../components/news/newsHomepage'
 import Info from '../../../components/introHomepage/info'
-import autoscroll from 'autoscroll-react'
+//import autoscroll from 'autoscroll-react'
 import { Route } from 'react-router-dom'
 import ReallySmoothScroll from 'really-smooth-scroll';
 

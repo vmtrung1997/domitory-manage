@@ -4,7 +4,9 @@ import './input.css'
 
 class Input extends Component {
   static propTypes = {
-    value: PropTypes.any
+    value: PropTypes.any,
+    placeholder: PropTypes.string
+
   }
   static defaultProps = {
     type: 'text',
@@ -13,6 +15,7 @@ class Input extends Component {
     placeholder: '',
     padding: '6px 12px',
     borderRadius: '1px',
+    disabled: false,
     getValue: () => {},
     onKeyPress: () => {},
   }
@@ -26,9 +29,11 @@ class Input extends Component {
           style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
           name={this.props.name}
           onChange={this.onChange}
-          value={this.props.value}
+          name={this.props.name}
+          defaultValue={this.props.value}
           type={this.props.type} 
           className="input-control" 
+          disabled = {this.props.disabled}
           placeholder={this.props.placeholder}
           onKeyPress={this.props.onKeyPress}
         />

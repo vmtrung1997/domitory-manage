@@ -1,3 +1,13 @@
 .table-activity{
 	margin-top: 15px;
 }
+.bt-delete{
+	text-align: center;
+	cursor: pointer;
+	color: #DD4125
+}
+.lb-done{
+	font-weight: bold;
+	text-align: center;
+	color: #04C913;
+}

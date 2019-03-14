@@ -9,6 +9,7 @@ class Checkbox extends Component {
   }
   static defaultProps = {
     check: false,
+    isCheck: () => {}
   }
   constructor(props){
     super(props)

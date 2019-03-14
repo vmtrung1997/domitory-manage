@@ -30,13 +30,14 @@ class Example extends React.Component {
     var self = this;
     getData().then(result => {
 			if (result.data) {
-				var roomOptions = result.data.result.map(room => ({value: room._id, label: room.tenPhong}))
+        var roomOptions = result.data.result.map(room => ({value: room._id, label: room.tenPhong}))
+        console.log(roomOptions[0])
 				self.setState({rooms: roomOptions, room: roomOptions[0]});
 			}
 		}).catch(err => console.log(err))
   }
   handleClose() {
-    this.setState({ show: false, table: [], room: 1, month: this.props.currentMonth, year: this.props.currentYear,soDien:0,soNuoc:0 });
+    this.setState({ show: false, table: [], room: this.state.rooms[0], month: this.props.currentMonth, year: this.props.currentYear,soDien:0,soNuoc:0 });
   }
 
   handleShow() {
@@ -94,10 +95,9 @@ class Example extends React.Component {
     }) : [];
     return (
       <>
-        <Button onClick={this.handleShow}>
-          Bảng ghi
+        <Button color={'warning'} onClick={this.handleShow}>
+          <i className="fas fa-plus"/>
         </Button>
-
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <Modal.Header closeButton>
             <Modal.Title>Thêm chi phí</Modal.Title>
@@ -126,8 +126,8 @@ class Example extends React.Component {
                   <Input type="number" value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'} />
                 </Col>
                 <Col md={2}>
-                  &nbsp;
-                <Button color={'warning'} size={'md'} onClick={this.addRow}>Thêm</Button>
+                &nbsp;
+                <Col md={12}><Button color={'warning'} size={'md'} onClick={this.addRow}><i className="fas fa-plus"/></Button></Col>
                 </Col>
               </Row>
               <Row>

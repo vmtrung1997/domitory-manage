@@ -31,13 +31,13 @@ class Button extends Component{
 		if(disable){
       		classDisabled = 'disable'
 		}
-    	if(fullWidth){
-      		classFullWidth = 'fullWidth'
-    	}
+		if(fullWidth){
+				classFullWidth = 'fullWidth'
+		}
 		return(
 			<button  
 				style={style}
-				className={'btn btn-' + size + ' btn-' + color + ' btn-' + variant + ' ' + classDisabled + ' ' + classFullWidth + ' ' + className}
+				className={'bt bt-' + size + ' bt-' + color + ' bt-' + variant + ' ' + classDisabled + ' ' + classFullWidth + ' ' + className}
 				onClick={e => this.props.onClick({key: this.props.keyButton})}
 			>
 				{children}

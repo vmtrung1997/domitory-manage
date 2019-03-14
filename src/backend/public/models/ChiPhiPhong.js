@@ -14,7 +14,7 @@ var chiPhiPhongSchema = new Schema({
     tienNuoc: Number,
     tienRac: Number,
     tongTien: Number,
-    tongTienChu: Number,
+    tongTienChu: String,
     trangThai: {type: Number, enum: [0, 1]}
 });
 
