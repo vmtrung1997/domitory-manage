@@ -53,6 +53,7 @@ class Activity extends Component{
 		this.setState({ loading: true})		
 		this.getData()
 	}
+
 	isCheckTable = (val) => {
 		this.setState({ isTable: val })
 	}
