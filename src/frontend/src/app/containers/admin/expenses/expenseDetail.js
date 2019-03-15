@@ -2,6 +2,8 @@ import React from 'react'
 import { Row, Col, Modal } from 'react-bootstrap'
 import Button from '../../../components/button/button'
 import Input from '../../../components/input/input'
+import {remove_expense, update_expense} from './expensesAction'
+import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -9,23 +11,68 @@ class Example extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.state = {
       show: true,
+      disabled: true,
+      capNhat: false,
+      soDien: 0,
+      soNuoc: 0
     };
   }
   componentDidMount(){
-
+    var {expenseDetail} = this.props;
+    this.setState({exp: expenseDetail})
   }
   handleClose() {
-    this.setState({ show: false });
+    this.setState({ show: false, disabled: true, capNhat: false });
     this.props.show(false)
   }
-
   handleShow() {
     this.setState({ show: true });
   }
+  handleDelete = () => {
+    var self = this;
+    var {exp} = this.state;
+    if (!window.confirm("Bạn chắc chắn muốn xóa chi phí này"))
+      return;
+    remove_expense(exp).then(result => {
+      if (result.data){
+        ToastsStore.success("Xóa chi phí thành công");
+        self.props.retriveSearch(true);
+        self.handleClose();
+      } else {
+        ToastsStore.err("Xóa chi phí thất bại");
+      }
+    });
+  }
+  handleEdit = () => {
+    this.setState({capNhat: true, disabled: false})
+  }
+  handleUpdate = () => {
+    var self = this;
+    var {expenseDetail} = this.props;
+    expenseDetail.soDien = this.state.soDien;
+    expenseDetail.soNuoc = this.state.soNuoc;
+    console.log(expenseDetail);
+    update_expense(expenseDetail).then(result => {
+      if (result.data){
+        ToastsStore.success("Cập nhật chi phí thành công");
+        self.props.retriveSearch(true);
+        self.handleClose();
+      } else {
+        ToastsStore.err("Cập nhật chi phí thất bại");
+        self.handleClose();
+      }
+    })
+  }
+  handleChange = (target) => {
+    this.setState({
+      [target.name]: parseInt(target.value)
+    })
+  }
   render() {
     var exp = this.props.expenseDetail;
-    console.log(exp);
     return (
+      <React.Fragment>
+      <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore}/>
       <Modal show={this.state.show} onHide={this.handleClose} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Chi tiết</Modal.Title>
@@ -50,11 +97,11 @@ class Example extends React.Component {
           <Row>
             <Col>
             Số điện hiện tai
-            <Input disabled={true} value={exp.soDien}/>
+            <Input name={'soDien'} type={'number'} disabled={this.state.disabled} value={exp.soDien} getValue={this.handleChange}/>
             </Col>
             <Col>
             Số nước hiện tại
-            <Input disabled={true} value={exp.soNuoc}/></Col>
+            <Input name={'soNuoc'} type={'number'} disabled={this.state.disabled} value={exp.soNuoc} getValue={this.handleChange}/></Col>
           </Row>
           <Row>
             <Col>
@@ -79,17 +126,21 @@ class Example extends React.Component {
           <Button variant="default" color="default" onClick={this.handleClose}>
             Đóng
             </Button>
-          {exp.trangThai===0 && <Button variant="danger" onClick={this.handleClose}>
+          {exp.trangThai===0 && <Button color="danger" onClick={this.handleDelete}>
             Xóa
             </Button>}
-            {exp.trangThai===0 && <Button variant="warning" onClick={this.handleClose}>
+            {exp.trangThai===0 && !this.state.capNhat && <Button color="warning" onClick={this.handleEdit}>
             Chỉnh sửa
+            </Button>}
+            {exp.trangThai===0 && this.state.capNhat && <Button color="warning" onClick={this.handleUpdate}>
+            Cập nhật
             </Button>}
           { exp.trangThai===0 && <Button variant="default" onClick={this.handleClose}>
           Xác nhận thanh toán
         </Button>}
         </Modal.Footer>
       </Modal>
+      </React.Fragment>
     );
   }
 }
