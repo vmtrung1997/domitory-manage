@@ -3,6 +3,7 @@ var expenseController = require('./../apiController/expenseController')
 var activityController = require('./../apiController/activityController')
 
 var infoStudent = require('../apiController/infoStudentController');
+let repo = require('../repos/phongRepo');
 
 // Expense
 router.get('/expense', expenseController.quan_ly_dien_nuoc);
@@ -30,6 +31,10 @@ router.post('/activity/update', activityController.update_activity);
 
 // Info of student
 router.post('/infoStudent/get', infoStudent.getListStudent);
+
+router.post('/infoStudent/add', infoStudent.addStudent);
+
+router.get('/getElement/:name', repo.get_element);
 
 
 module.exports = router;
