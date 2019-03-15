@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from './../../../config'
+import { Pagination } from 'react-bootstrap'
 
 import './activity.css'
 import Title from './../../../components/title/title'
@@ -14,6 +15,7 @@ class Activity extends Component{
 		super(props)
 		this.state = {
 			page: 1,
+			curpage: 1,
 			isTable: true,
 			show: false,
 			loading: false,
@@ -76,11 +78,13 @@ class Activity extends Component{
 				/>
 			)
 		})
+		var pageList=[1,2,3]
+		var pageActive= 1
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
 				<Title> Hoạt động sinh viên </Title>
-        		<div className={'content-body'}>
+        		<div className={'content-body full'}>
 					<div className='header-optimize'>
 						<div>
 							<Button 
@@ -112,7 +116,27 @@ class Activity extends Component{
 						</div>
 
 					}
+
+					<div className={'is-pagination'}>
+	                	<Pagination>
+	                  		<Pagination.First />
+			                <Pagination.Prev />
+			                  {pageList && pageList.map(page => {
+			                    if(pageActive === page)
+			                      return(
+			                        <Pagination.Item active>{page}</Pagination.Item>
+			                      );
+			                    else
+			                      return(
+			                        <Pagination.Item>{page}</Pagination.Item>
+			                      )
+			                  })}
+			                <Pagination.Next />
+			                <Pagination.Last />
+	                	</Pagination>
+	                </div>
 				</div>
+
 			</React.Fragment>
 		)
 	}
