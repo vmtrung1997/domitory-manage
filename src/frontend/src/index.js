@@ -9,12 +9,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './app/App';
 import './app/style.css'
 import rootReducer from './app/reducers/index';
-import { requestMiddleware } from './app/middleware'
+import requestMiddleware from './app/middleware'
+
 
 //Create store
 const store = createStore(
 	rootReducer,
-	applyMiddleware(requestMiddleware())
+	applyMiddleware(requestMiddleware)
 );
 
 ReactDOM.render(

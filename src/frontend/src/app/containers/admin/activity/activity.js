@@ -8,6 +8,7 @@ import InfoActivity from './../../../components/infoActivity/infoActivity'
 import InfoActivityTable from './../../../components/infoActivity/infoActivityTable'
 import ActivityModal from './activityModal'
 import Loader from './../../../components/loader/loader'
+import refreshToken from './../../../../utils/refresh_token'
 
 class Activity extends Component{
 	constructor(props){
@@ -21,32 +22,21 @@ class Activity extends Component{
 		}
 	}
 
-	getData = () => {
+	getData = async () => {
+		await refreshToken()
 		var secret = JSON.parse(localStorage.getItem('secret'))
 		axios.get(`/manager/activity/get_activity?page=${this.state.page}`,{
 			headers: { 'x-access-token': secret.access_token}
 		})
       	.then(res => {    
-    	    this.setState({data: res.data.rs.docs})
+    	    this.setState({
+    	    	data: res.data.rs.docs,
+				loading: false,
+				show: false
+			})
 		})
-		.catch( err => {
-			axios.get(`/user/me_access`,  {
-            	headers: { 'x-refresh-token': secret.refresh_token }
-        	})
-        	.then( res => {
-        		localStorage.setItem('secret', JSON.stringify(res.data))
-        		axios.get(`/manager/activity/get_activity?page=${this.state.page}`,{
-					headers: { 'x-access-token': res.data.access_token}
-				})
-				.then(res => {
-	    	    	this.setState({data: res.data.rs.docs})
-				})
-        	})
-		})
-		.then( () => {this.setState({ 
-			loading: false,
-			show: false
-		})})
+		.catch( err => {})
+
 	}
 
 	componentDidMount = () => {

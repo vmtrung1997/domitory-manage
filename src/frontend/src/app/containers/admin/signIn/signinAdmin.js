@@ -32,7 +32,6 @@ class SignInAdmin extends Component{
 		this.setState({ loading: true})
 		axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
 			.then(res => {
-				console.log('==user', this.state);
 				localStorage.setItem('secret', JSON.stringify(res.data));
 				let { from } = this.props.location.state || { from: { pathname: "/admin/student" } }
 				this.props.history.push(from)
