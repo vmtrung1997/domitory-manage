@@ -15,6 +15,10 @@ router.post('/expense/add_expense', expenseController.add_data)
 
 router.get('/expense/refresh', expenseController.refresh_data);
 
+router.post('/expense/remove_expense', expenseController.remove_expense)
+
+router.post('/expense/update_expense', expenseController.update_expense)
+
 // Activity
 router.get('/activity/get_activity', activityController.get_activity);
 
