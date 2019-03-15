@@ -4,6 +4,7 @@ import Input from '../../../components/input/input'
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
 import {getData, add_expense} from '../expenses/expensesAction'
+import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 class Example extends React.Component {
   static defaultProps = {
     currentYear: 2015,
@@ -12,10 +13,8 @@ class Example extends React.Component {
   
   constructor(props, context) {
     super(props, context);
-
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
-
     this.state = {
       rooms: [],
       table: [],
@@ -31,10 +30,11 @@ class Example extends React.Component {
     getData().then(result => {
 			if (result.data) {
         var roomOptions = result.data.result.map(room => ({value: room._id, label: room.tenPhong}))
-        console.log(roomOptions[0])
-				self.setState({rooms: roomOptions, room: roomOptions[0]});
+        self.setState({rooms: roomOptions, room: roomOptions[0]});
 			}
-		}).catch(err => console.log(err))
+		}).catch(err => {
+      ToastsStore.err(err);
+    })
   }
   handleClose() {
     this.setState({ show: false, table: [], room: this.state.rooms[0], month: this.props.currentMonth, year: this.props.currentYear,soDien:0,soNuoc:0 });
@@ -69,10 +69,21 @@ class Example extends React.Component {
     this.setState({ soDien: 0, soNuoc:0 })
   }
   handleSubmit = () => {
+    var self = this;
     var {table} = this.state;
+    this.props.loading(true)
     add_expense(table).then(result => {
-      alert(result);
-    }).catch(err => console.log(err))
+      if (result.data){
+        self.props.loading(false)
+        ToastsStore.success("Thêm chi phí thành công");
+        self.handleClose();
+        self.props.retriveSearch(true);
+      }
+    }).catch(err => {
+      console.log(err)
+      ToastsStore.error("Thêm chi phí thất bại");
+      self.handleClose();
+    })
   }
   onDeleteRow = (index) => {
     var table = this.state.table
@@ -95,6 +106,7 @@ class Example extends React.Component {
     }) : [];
     return (
       <>
+        <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore}/>
         <Button color={'warning'} onClick={this.handleShow}>
           <i className="fas fa-plus"/>
         </Button>

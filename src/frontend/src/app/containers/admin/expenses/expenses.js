@@ -8,6 +8,7 @@ import Title from '../../../components/title/title'
 import ExpenseTable from '../expenses/expenseTable'
 import { search, getData } from '../expenses/expensesAction'
 import SSelect from 'react-select';
+import Loader from './../../../components/loader/loader'
 class Expenses extends Component {
 	static propTypes = {
 		label: PropTypes.string,
@@ -22,6 +23,7 @@ class Expenses extends Component {
 			monthSelected: 0,
 			yearSelected: 0,
 			statusSelected: 2,
+			loading: false,
 			options: {
 				page: 1,
 				limit: 10
@@ -41,6 +43,7 @@ class Expenses extends Component {
 	}
 
 	searchTable = () => {
+		this.handleLoading(true)
 		var options = {
 			month: parseInt(this.state.monthSelected),
 			year: parseInt(this.state.yearSelected),
@@ -51,7 +54,7 @@ class Expenses extends Component {
 		console.log(options)
 		search(options).then(result => {
 			if (result.data) {
-				this.setState({ dataTable: result.data.rs })
+				this.setState({ dataTable: result.data.rs, loading: false })
 			}
 		}).catch(error => {
 			console.log(error)
@@ -74,6 +77,9 @@ class Expenses extends Component {
 		this.setState({ options: { page: value } })
 		this.searchTable()
 	}
+	handleLoading = (value) => {
+		this.setState({loading: value});
+	}
 	render() {
 		var month = [...Array(13)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i, label: i } });
 		var year = [...Array(4)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 2014, label: i + 2014 } });
@@ -83,6 +89,7 @@ class Expenses extends Component {
 			{ value: 0, label: 'Chưa thanh toán' }]
 		return (
 			<React.Fragment>
+				<Loader loading={this.state.loading}/>
 				<Title> Chi phí </Title>
 				<div className={'content-body'}>
 					<div>
@@ -97,7 +104,7 @@ class Expenses extends Component {
 							</Col>
 							<Col md={4} xs={12}>
 								Phòng
-								<SSelect
+								<Select
 									placeholder={''}
 									isSearchable={true}
 									value={this.state.roomSelected}
@@ -117,9 +124,9 @@ class Expenses extends Component {
 							<Button>
 								<i className="fas fa-file-export" />
 							</Button>
-							<ModalExpense />
+							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)}/>
 						</div>
-						<ExpenseTable table={this.state.dataTable} pageChange={this.pageChange} />
+						<ExpenseTable table={this.state.dataTable} pageChange={this.pageChange} retriveSearch={() => this.pageChange(1)}/>
 					</div>
 				</div>
 			</React.Fragment>

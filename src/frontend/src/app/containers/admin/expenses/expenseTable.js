@@ -24,6 +24,9 @@ export default class ExpenseTable extends React.Component {
 	showDetail = (value) => {
 		this.setState({showDetail: value})
 	}
+	retriveSearch = (value) => {
+		this.props.retriveSearch(value);
+	}
 	render() {
 		// console.log('table', this.props.table)
 		const data = this.props.table.docs
@@ -53,7 +56,7 @@ export default class ExpenseTable extends React.Component {
 										onChange={this.handlePageChange} />:''
 		return (
 			<React.Fragment>
-				{this.state.showDetail && <ExpenseDetail expenseDetail={this.state.detail} show={this.showDetail}/>}
+				{this.state.showDetail && <ExpenseDetail expenseDetail={this.state.detail} show={this.showDetail} retriveSearch={this.retriveSearch}/>}
 				<Table bordered hover responsive size="sm">
 					<thead >
 						<tr>

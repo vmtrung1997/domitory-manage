@@ -94,9 +94,41 @@ exports.add_data = (req, res) => {
 			})
 		}
 	})
-	
 };
-
+exports.remove_expense = (req, res) => {
+	var exp = req.body;
+	var id = new ObjectId(exp._id);
+	ChiPhiPhong.deleteOne({_id: id}, (err) => {
+		if (err){
+			res.status(400).json({
+				rs: 'fail',
+				msg: err
+			})
+		} else {
+			res.status(201).json({
+				rs: 'success'
+			})
+		}
+	})
+}
+exports.update_expense = (req, res) => {
+	var exp = req.body;
+	var id = new ObjectId(exp._id);
+	console.log('==expense update id ',id);
+	console.log(exp);
+	ChiPhiPhong.updateOne({_id: id},exp, (err) => {
+		if (err){
+			res.status(400).json({
+				rs: 'fail',
+				msg: err
+			})
+		} else {
+			res.status(201).json({
+				rs: 'success'
+			})
+		}
+	})
+}
 exports.refresh_data = (req, res) => {
 	ChiPhiPhong.find().then(results => {
 		console.log(results[0])
