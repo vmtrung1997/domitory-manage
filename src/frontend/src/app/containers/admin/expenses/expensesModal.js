@@ -33,7 +33,8 @@ class Example extends React.Component {
         self.setState({rooms: roomOptions, room: roomOptions[0]});
 			}
 		}).catch(err => {
-      ToastsStore.err(err);
+      // ToastsStore.error(err);
+      console.log(err)
     })
   }
   handleClose() {
