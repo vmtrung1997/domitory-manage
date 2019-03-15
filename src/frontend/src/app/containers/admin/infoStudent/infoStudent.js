@@ -187,7 +187,7 @@ class InfoStudent extends Component{
   }
 
   handleSelectRoom = selectedOption => {
-    this.setState({ roomSelected: selectedOption, page: 1 })
+    this.setState({ roomSelected: selectedOption, pageActive: 1 })
   }
   handleSelectAddRoom = selectedOption => {
     this.setState({ roomAdded: selectedOption })
@@ -216,6 +216,13 @@ class InfoStudent extends Component{
       console.log('==add err', err);
       this.handleClosePopup('add');
     })
+  }
+
+  direcPage = (page) => {
+    this.setState({
+      pageActive: page
+    })
+    this.getData();
   }
 
   render(){
@@ -399,7 +406,7 @@ class InfoStudent extends Component{
                   {pageList && pageList.map(page => {
                     if(pageActive === page)
                       return(
-                        <Pagination.Item active>{page}</Pagination.Item>
+                        <Pagination.Item active onClick={()=>this.direcPage(page)}>{page}</Pagination.Item>
                       );
                     else
                       return(
