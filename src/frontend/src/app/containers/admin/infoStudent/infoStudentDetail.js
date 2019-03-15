@@ -58,7 +58,7 @@ class InfoStudentDetail extends Component{
                     MSSV:
                   </Col>
                   <Col md={4}>
-                    <Input value={MSSV} disable/>
+                    <Input value={MSSV} disabled/>
                   </Col>
                 </Row>
 
