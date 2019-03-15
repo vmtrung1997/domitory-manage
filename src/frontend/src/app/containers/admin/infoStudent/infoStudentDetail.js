@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col, Table } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import Input from './../../../components/input/input';
-import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
-import CheckBox from './../../../components/checkbox/checkbox';
-import Pagination from './../../../components/pagination/pagination';
 import './infoStudentDetail.css';
 import './../../../style.css'
 
@@ -43,7 +40,7 @@ class InfoStudentDetail extends Component{
             <Row>
               <Col md={2}>
                 <div className={'id-avt'}>
-                  <img src={'https://www.ticketbuynow.com/wp-content/uploads/2018/10/IU3.jpg'}/>
+                  <img alt="info_student" src={'https://www.ticketbuynow.com/wp-content/uploads/2018/10/IU3.jpg'}/>
                 </div>
               </Col>
               <Col md={10}>

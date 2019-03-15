@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import './select.css'
 
 class Select extends Component {
-	static propTypes = {
-    options: PropTypes.array.isRequired,
-  }
   static defaultProps = {
 		selected: () => {},
 		value: () => { return this.props.options[0].value}
@@ -13,10 +9,8 @@ class Select extends Component {
 	onHandleChange = (event) => {
 		event.persist();
 		this.props.selected(event.target.value);
-		console.log('==select: ',event.target)
 	}
 	render() {
-		console.log('==props options', this.props.options)
 		let options = this.props.options && this.props.options.map(_option => {
 			return <option key={_option.value} value={_option.value}>{_option.label}</option>
 		});

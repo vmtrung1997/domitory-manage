@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import md5 from 'md5';
 import axios from 'axios';
+import { Link } from 'react-router-dom'
 
 import Loader from './../../../components/loader/loader'
 import Input from '../../../components/input/input'
@@ -48,7 +49,7 @@ class SignInAdmin extends Component{
 		return(
 			<React.Fragment>
 				<div className='header-sgin-admin'>
-					<a href='#'><img className='logo' src={logo_HCMUS} /></a>
+					<Link to='/'><img alt="logo_hcmus" className='logo' src={logo_HCMUS} /></Link>
 					<span> Chào mừng đến với ký túc xá Trần Hưng Đạo </span>
 				</div>
 				<div className='form-login'>
@@ -79,7 +80,7 @@ class SignInAdmin extends Component{
 						</Button>
 					</div>
 					<Loader loading={this.state.loading}/>
-					<a href='#'> Bạn quên mật khẩu ?</a>
+					<Link to='/'> Bạn quên mật khẩu ?</Link>
 				</div>
 			</React.Fragment>
 		)

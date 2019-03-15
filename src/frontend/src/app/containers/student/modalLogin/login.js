@@ -1,11 +1,12 @@
 import React from 'react'
-import { Modal, Alert, Button, InputGroup, FormControl, Container } from 'react-bootstrap'
+import { Modal, Button, Container } from 'react-bootstrap'
 import md5 from 'md5';
+import axios from 'axios'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+
 import Input from '../../../components/input/input'
 import './login.css'
-import axios from 'axios'
-
-import { connect } from 'react-redux'
 
 class StudentLogin extends React.Component {
   constructor(props, context) {
@@ -41,7 +42,6 @@ class StudentLogin extends React.Component {
   }
 
   Login = () => {
-    var self = this;
     axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
       .then(res => {
         if (res.data) {
@@ -83,7 +83,7 @@ class StudentLogin extends React.Component {
               {this.state.wrongLogin && <p style={{ color: 'red' }}>*Tên tài khoản hoặc mật khẩu không đúng!</p>}
               <Button onClick={this.Login} variant="primary">Đăng nhập</Button>
               <div>
-                <a href='#'>Quên mật khẩu?</a>
+                <Link to='/'>Quên mật khẩu?</Link>
               </div>
             </Modal.Body>
           </Container>

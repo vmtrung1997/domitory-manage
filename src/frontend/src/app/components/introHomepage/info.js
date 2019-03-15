@@ -27,7 +27,7 @@ class InfoHomePage extends React.Component {
                         Hãy cùng tìm hiểu một số thông tin về KTX nhé!</p></div>
                         </Col>
                         <Col sm={5} className='info-image'>
-                        <img style={{ height: '400px', width: '100%' }} src={fadeImages[0]}></img>
+                        <img alt="info_KTX" style={{ height: '400px', width: '100%' }} src={fadeImages[0]}></img>
                         </Col>
                     </Row>
                     </Container>

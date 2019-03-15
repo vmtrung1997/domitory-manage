@@ -3,15 +3,11 @@ import Slide from '../../../components/slideHomepage/slideHomepage'
 import News from '../../../components/news/newsHomepage'
 import Info from '../../../components/introHomepage/info'
 //import autoscroll from 'autoscroll-react'
-import { Route } from 'react-router-dom'
 import ReallySmoothScroll from 'really-smooth-scroll';
 
 
 ReallySmoothScroll.shim();
 class Homepage extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     componentDidMount() {
         console.log('a');

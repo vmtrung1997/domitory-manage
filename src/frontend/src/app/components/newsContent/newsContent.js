@@ -45,7 +45,7 @@ class NewsContent extends React.Component {
                                 </div>
                                 <div className='news-list other-news-content'>
                                     <div className='news-content other-news-content'>
-                                        <img style={{ width: '30%' }} src={fadeImages[0]}></img>
+                                        <img alt="content" style={{ width: '30%' }} src={fadeImages[0]}></img>
                                         <div className='news-right-content'>
                                             <div className='news-right-content-header'>
                                                 <span>Sapiente aliquip hendrerit sed porttitor.</span>

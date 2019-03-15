@@ -25,6 +25,8 @@ const checkAuth = () => {
             case 'BV':
                 isSecurity = true
                 break
+            default:
+                break
         }
     }
 }

@@ -35,7 +35,7 @@ class NewsList extends React.Component {
                     </div>
                     <div className='news-list'>
                         <div className='news-content'>
-                            <img style={{ width: '30%' }} src={fadeImages[0]}></img>
+                            <img alt="newslist" style={{ width: '30%' }} src={fadeImages[0]}></img>
                             <div className='news-right-content'>
                                 <div className='news-right-content-header'>
                                     <span>Sapiente aliquip hendrerit sed porttitor.</span>
@@ -50,7 +50,7 @@ class NewsList extends React.Component {
                             </div>
                         </div>
                         <div className='news-content'>
-                            <img style={{ width: '30%' }} src={fadeImages[0]}></img>
+                            <img alt="newslist" style={{ width: '30%' }} src={fadeImages[0]}></img>
                             <div className='news-right-content'>
                                 <div className='news-right-content-header'>
                                     <span>Sapiente aliquip hendrerit sed porttitor.</span>
@@ -65,7 +65,7 @@ class NewsList extends React.Component {
                             </div>
                         </div>
                         <div className='news-content'>
-                            <img style={{ width: '30%' }} src={fadeImages[0]}></img>
+                            <img alt="newslist" style={{ width: '30%' }} src={fadeImages[0]}></img>
                             <div className='news-right-content'>
                                 <div className='news-right-content-header'>
                                     <span>Sapiente aliquip hendrerit sed porttitor.</span>

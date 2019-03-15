@@ -1,6 +1,6 @@
 import React from 'react';
 import ExpenseDetail from './expenseDetail'
-import { Table, Button } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 import Pagination from 'react-js-pagination'
 import './expenses.css'
 
