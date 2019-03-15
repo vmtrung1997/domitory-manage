@@ -13,9 +13,11 @@ class Select extends Component {
 	onHandleChange = (event) => {
 		event.persist();
 		this.props.selected(event.target.value);
+		console.log('==select: ',event.target)
 	}
 	render() {
-		let options = this.props.options.map(_option => {
+		console.log('==props options', this.props.options)
+		let options = this.props.options && this.props.options.map(_option => {
 			return <option key={_option.value} value={_option.value}>{_option.label}</option>
 		});
 		return (
