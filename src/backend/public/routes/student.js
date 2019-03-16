@@ -7,6 +7,8 @@ router.get('/get-specialized', studentController.getSpecialized);
 
 router.get('/get-school',studentController.getSchool);
 
+router.post('/get-bill',studentController.getBill);
+
 router.post('/update-info',studentController.updateInfo);
 
 router.get('/', studentController.a)

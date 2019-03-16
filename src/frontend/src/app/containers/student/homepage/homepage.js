@@ -7,7 +7,7 @@ import { Route } from 'react-router-dom'
 import ReallySmoothScroll from 'really-smooth-scroll';
 
 
-ReallySmoothScroll.shim();
+// ReallySmoothScroll.shim();
 class Homepage extends Component {
     constructor(props) {
         super(props);

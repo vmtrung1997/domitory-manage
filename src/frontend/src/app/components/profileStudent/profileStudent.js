@@ -1,21 +1,19 @@
 import React from 'react'
-import { InputGroup, FormControl, Row, Col, Button } from 'react-bootstrap'
+import { InputGroup, Row, Col, Button } from 'react-bootstrap'
 import './profileStudent.css'
-import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import MyInput from '../input/input'
 import MySelectOption from '../selectOption/select'
-import InputDatetimePicker from './../../components/inputDatetimePicker/inputDatimePicker'
 import './../titleStudent/titleStudent.css'
-import { connect } from 'react-redux'
+    import { connect } from 'react-redux'
 import axios from 'axios'
 import jwt_decode from 'jwt-decode';
 import { bindActionCreators } from 'redux'
 import * as UserAction from '../../actions/userAction'
-import * as SpecializedAction from '../../actions/SpecialAction'
-import * as SchoolAction from '../../actions/schoolAction'
-import { ToastMessage } from "react-toastr";
+import * as StudentAction from '../../actions/studentAction'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+
+
 class ProfileStudent extends React.Component {
     constructor(props) {
         super(props);
@@ -412,8 +410,8 @@ var mapStateToProps = (state) => {
 var mapDispatchToProps = (dispatch) => {
     return {
         getUserAction: bindActionCreators(UserAction.GET_USER_INFO, dispatch),
-        getSpecialized: bindActionCreators(SpecializedAction.GET_SPECIALIZED_INFO, dispatch),
-        getSchool: bindActionCreators(SchoolAction.GET_SCHOOL_INFO, dispatch),
+        getSpecialized: bindActionCreators(StudentAction.GET_SPECIALIZED_INFO, dispatch),
+        getSchool: bindActionCreators(StudentAction.GET_SCHOOL_INFO, dispatch),
     };
 }
 

@@ -3,6 +3,7 @@ const md5 = require('md5');
 const Profile = require('../models/Profile');
 const NganhHoc = require('../models/NganhHoc');
 const Truong = require('../models/Truong');
+const ChiPhiPhong = require('../models/ChiPhiPhong');
 require('../models/Phong')
 require('../models/NganhHoc')
 require('../models/Truong')
@@ -25,7 +26,6 @@ exports.getSpecialized = (req, res) => {
 
 exports.updateInfo = (req, res) => {
 
-	console.log(req.body);
 	Profile.findOneAndUpdate({ idTaiKhoan: req.body.data.idTaiKhoan },
 		{
 			MSSV: req.body.data.MSSV,
@@ -48,7 +48,7 @@ exports.updateInfo = (req, res) => {
 				res.status(400).json({
 					err: err
 				})
-			}else{
+			} else {
 				res.status(201).json({
 					res: 'success',
 					data: place,
@@ -56,6 +56,25 @@ exports.updateInfo = (req, res) => {
 			}
 		});
 
+}
+
+exports.getBill = (req, res) => {
+	//console.log(req.body.id);
+	ChiPhiPhong.find({idPhong: req.body.id}).sort({nam: -1, thang: -1}).then(result => {
+		if (result) {
+			console.log(result);
+			res.status(200).json({
+				status: 'success',
+				data: result
+			})
+		}
+		else {
+			res.status(400).json({
+				status: 'fail',
+				data: 'no data'
+			})
+		}
+	})
 }
 
 exports.getSchool = (req, res) => {
@@ -68,12 +87,11 @@ exports.getSchool = (req, res) => {
 }
 
 exports.getInfo = (req, res) => {
-	var id = req.body.id;
-	console.log(id);
+	var id = req.body.id;;
 	Profile.findOne({ idTaiKhoan: id }).populate([{ path: 'truong', select: 'tenTruong' }, { path: 'nganhHoc', select: 'tenNganh' }, { path: 'idPhong', select: 'tenPhong lau' }])
 		.then(result => {
 			if (result) {
-				console.log(result);
+
 				res.status(200).json({
 					status: 'success',
 					data: result
