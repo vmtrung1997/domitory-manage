@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import axios from './../../../config'
-import { Pagination } from 'react-bootstrap'
 
 import './activity.css'
 import Title from './../../../components/title/title'
@@ -10,13 +9,14 @@ import InfoActivityTable from './../../../components/infoActivity/infoActivityTa
 import ActivityModal from './activityModal'
 import Loader from './../../../components/loader/loader'
 import refreshToken from './../../../../utils/refresh_token'
+import MyPagination from './../../../components/pagination/pagination'
 
 class Activity extends Component{
 	constructor(props){
 		super(props)
 		this.state = {
+			totalPages: 1,
 			page: 1,
-			curpage: 1,
 			isTable: true,
 			show: false,
 			loading: false,
@@ -30,15 +30,15 @@ class Activity extends Component{
 		axios.get(`/manager/activity/get_activity?page=${this.state.page}`,{
 			headers: { 'x-access-token': secret.access_token}
 		})
-      	.then(res => {    
+      	.then(res => {  
     	    this.setState({
     	    	data: res.data.rs.docs,
 				loading: false,
-				show: false
+				show: false,
+				totalPages: res.data.rs.totalPages
 			})
 		})
 		.catch( err => {})
-
 	}
 	
 	componentDidMount = () => {
@@ -55,6 +55,10 @@ class Activity extends Component{
 	handleClose = () => {
 		this.setState({ show: false })
 	}
+	clickPage = (page) => {
+		this.setState({ page: page })
+		this.getData()
+	}
 
 	render(){	
 		const tmp = this.state.data.map((item , i) => {
@@ -69,8 +73,7 @@ class Activity extends Component{
 				/>
 			)
 		})
-		var pageList=[1,2,3]
-		var pageActive= 1
+
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
@@ -95,7 +98,7 @@ class Activity extends Component{
 						</div>
 						<div className='bts-header'>
 							<Button className='bt-header' color='success' onClick={this.handleShow}>Thêm</Button>
-							<ActivityModal show={this.state.show} handleClose={this.handleClose} handleSave={this.getData}/>
+							<ActivityModal show={this.state.show} handleClose={this.handleClose} handleSave={this.clickPage}/>
 							<Button className='bt-header' color='success'>Báo cáo</Button>
 						</div>
 					</div>
@@ -107,25 +110,9 @@ class Activity extends Component{
 						</div>
 
 					}
-
 					<div className={'is-pagination'}>
-	                	<Pagination>
-	                  		<Pagination.First />
-			                <Pagination.Prev />
-			                  {pageList && pageList.map(page => {
-			                    if(pageActive === page)
-			                      return(
-			                        <Pagination.Item active>{page}</Pagination.Item>
-			                      );
-			                    else
-			                      return(
-			                        <Pagination.Item>{page}</Pagination.Item>
-			                      )
-			                  })}
-			                <Pagination.Next />
-			                <Pagination.Last />
-	                	</Pagination>
-	                </div>
+						<MyPagination page={this.state.page} totalPages={this.state.totalPages} clickPage={this.clickPage}/>
+	            	</div>
 				</div>
 
 			</React.Fragment>

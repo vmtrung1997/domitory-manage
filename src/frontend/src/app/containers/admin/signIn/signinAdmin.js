@@ -71,7 +71,6 @@ class SignInAdmin extends Component{
 					</div>
 					<div style={{margin: '10px'}}> 
 						<Button 
-							color = 'success'
 							style = {{width:'250px', fontSize: '18px', padding:'8px auto', borderRadius:'4px'}}
 							onClick = {(e) => this.login()}
 						> 
