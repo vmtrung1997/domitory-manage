@@ -9,6 +9,12 @@ import './infoStudentDetail.css';
 import './../../../style.css'
 
 class InfoStudentDetail extends Component{
+  arrayBufferToBase64(buffer) {
+    var binary = '';
+    var bytes = [].slice.call(new Uint8Array(buffer));
+    bytes.forEach((b) => binary += String.fromCharCode(b));
+    return window.btoa(binary);
+  };
   render(){
     const { location: { state: { info }}} = this.props;
     const {
@@ -24,9 +30,18 @@ class InfoStudentDetail extends Component{
       sdtNguoiThan,
       gioiTinh,
       idPhong: {tenPhong},
-      idTaiKhoan: {username}
+      idTaiKhoan: {username},
+      img
     } = info;
-
+    console.log('img = ', img)
+    var imgFile = '';
+    if (img){
+      var base64Flag = 'data:image/jpeg;base64,';
+      var imageStr = this.arrayBufferToBase64(img.data.data);
+      var imgFile = base64Flag + imageStr;  
+    }
+    var birthDate = new Date(ngaySinh);
+    var stringDate = birthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     return(
       <div>
         <Title>
@@ -43,7 +58,7 @@ class InfoStudentDetail extends Component{
             <Row>
               <Col md={2}>
                 <div className={'id-avt'}>
-                  <img src={'https://www.ticketbuynow.com/wp-content/uploads/2018/10/IU3.jpg'}/>
+                  <img src={imgFile}/>
                 </div>
               </Col>
               <Col md={10}>
@@ -82,7 +97,7 @@ class InfoStudentDetail extends Component{
                     Ngày sinh:
                   </Col>
                   <Col md={4}>
-                    <Input value={ngaySinh}/>
+                    <Input value={stringDate}/>
                   </Col>
                   <Col md={2}>
                     Giới tính:

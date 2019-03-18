@@ -9,6 +9,8 @@ import ExpenseTable from '../expenses/expenseTable'
 import { search, getData } from '../expenses/expensesAction'
 import SSelect from 'react-select';
 import Loader from './../../../components/loader/loader'
+import ModalConfig from './expenseConfig'
+import ModalExport from './expenseExport'
 class Expenses extends Component {
 	static propTypes = {
 		label: PropTypes.string,
@@ -120,10 +122,9 @@ class Expenses extends Component {
               <Col md={12}><Button onClick={this.searchTable}><i className="fas fa-search" /></Button></Col>
 							</Col>
 						</Row>
-						<div className="float-right m-b-10">
-							<Button>
-								<i className="fas fa-file-export" />
-							</Button>
+						<div className="flex-row-end m-b-10">
+							<ModalConfig />
+							<ModalExport />
 							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)}/>
 						</div>
 						<ExpenseTable table={this.state.dataTable} pageChange={this.pageChange} retriveSearch={() => this.pageChange(1)}/>

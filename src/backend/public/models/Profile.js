@@ -20,7 +20,7 @@ var profileSchema = new Schema({
     ngayVaoO: Date,
     ngayHetHan: Date,
     danToc: String,
-    img: String,
+    img:  { data: Buffer, contentType: String },
 });
 
 profileSchema.plugin(mongoosePaginate);

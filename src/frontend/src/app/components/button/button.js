@@ -8,6 +8,7 @@ class Button extends Component{
 		color: 'primary',
 		variant: 'default',
 		className: '',
+		title: null,
 		onClick: () => {}
 	};
 
@@ -39,6 +40,7 @@ class Button extends Component{
 				style={style}
 				className={'bt bt-' + size + ' bt-' + color + ' bt-' + variant + ' ' + classDisabled + ' ' + classFullWidth + ' ' + className}
 				onClick={e => this.props.onClick({key: this.props.keyButton})}
+				title={this.props.title}
 			>
 				{children}
 			</button>
