@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap'
 import DatePicker from 'react-datepicker'
 import axios from './../../../config'
 
-
+import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
 import Input from './../../../components/input/input'
 import CheckBox from './../../../components/checkbox/checkbox'
@@ -28,7 +28,8 @@ class ActivityModal extends Component{
   getValue = (name, val) => {
     this.setState({ [name]: val })
   }
-  handleSave = () => {
+  handleSave = async () => {
+    await refreshToken()
     var secret = JSON.parse(localStorage.getItem('secret'))
     axios({
       method: 'post',

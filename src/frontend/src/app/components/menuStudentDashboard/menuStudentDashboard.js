@@ -1,12 +1,13 @@
 import React from 'react'
 import { ListGroup, Tab, Row, Col, Collapse } from 'react-bootstrap'
+
 import './menuStudentDashboard.css'
 import Profile from './../profileStudent/profileStudent'
 import Bill from './../billStudent/billStudent'
 import ListActivity from './../listActivity/listActivity'
 import StudentActivity from './../studentActivity/studentActivity'
-import ConfirmRegister from './../modalConfirmRegister/modalConfirmRegister'
 import Practise from './../practiseStudent/practiseStudent';
+
 class MenuStudent extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -22,7 +23,7 @@ class MenuStudent extends React.Component {
         return (
             <React.Fragment >
                 <div className='student-dashboard'>
-                    <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
+                    <Tab.Container id="list-group-tabs-example" defaultActiveKey="#profile">
                         <Row>
                             <Col sm={3}>
                                 <div className='menu-student'>

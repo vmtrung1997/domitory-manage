@@ -1,9 +1,12 @@
 import {combineReducers} from 'redux';
 import userProfile from './profileReducer';
-
+import specialized from './specializedReducer';
+import school from './schoolReducer'
 
 const rootReducer = combineReducers({
-  userProfile
+  userProfile,
+  specialized,
+  school
 })
 
 export default rootReducer;

@@ -27,6 +27,8 @@
     "react-select": "^2.4.1",
     "react-slideshow-image": "^1.1.2",
     "react-spinners": "^0.5.3",
+    "react-toastr": "^3.0.0",
+    "react-toasts": "^3.0.1",
     "really-smooth-scroll": "^2.1.1",
     "redux": "^4.0.1",
     "styled-components": "^4.1.3"
