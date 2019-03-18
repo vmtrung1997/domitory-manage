@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col, Table } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import Input from './../../../components/input/input';
-import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
-import CheckBox from './../../../components/checkbox/checkbox';
-import Pagination from './../../../components/pagination/pagination';
 import './infoStudentDetail.css';
 import './../../../style.css'
 

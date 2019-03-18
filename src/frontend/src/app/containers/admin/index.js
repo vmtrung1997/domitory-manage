@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 
 import Layout from './layout/layout'
 import InfoStudent from './infoStudent/infoStudent'

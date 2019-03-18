@@ -2,12 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 
 import './infoActivity.css'
-import Button from './../button/button'
 
 class InfoActivity extends Component{
-	constructor(props){
-	    super(props)
-	}
 	static propTypes = {
 	    name: PropTypes.string,
 	    time: PropTypes.string,

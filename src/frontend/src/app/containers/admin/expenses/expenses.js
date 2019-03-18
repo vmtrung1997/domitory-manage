@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-bootstrap'
+import SSelect from 'react-select';
+
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
 import ModalExpense from './expensesModal'
 import Title from '../../../components/title/title'
 import ExpenseTable from '../expenses/expenseTable'
 import { search, getData } from '../expenses/expensesAction'
-import SSelect from 'react-select';
 import Loader from './../../../components/loader/loader'
 import ModalConfig from './expenseConfig'
 import ModalExport from './expenseExport'
@@ -41,7 +42,7 @@ class Expenses extends Component {
 				self.setState({ rooms: roomOptions });
 				self.searchTable();
 			}
-		}).catch(err => console.log(err))
+		}).catch(err => {})
 	}
 
 	searchTable = () => {
@@ -53,14 +54,11 @@ class Expenses extends Component {
 			status: parseInt(this.state.statusSelected),
 			options: this.state.options
 		}
-		console.log(options)
 		search(options).then(result => {
 			if (result.data) {
 				this.setState({ dataTable: result.data.rs, loading: false })
 			}
-		}).catch(error => {
-			console.log(error)
-		});
+		}).catch(error => {});
 	}
 	roomSelected = selectedOption => {
 		this.setState({ roomSelected: selectedOption, options: { page: 1 } })
@@ -72,7 +70,6 @@ class Expenses extends Component {
 		this.setState({ yearSelected: value, options: { page: 1 } })
 	}
 	statusSelected = value => {
-		console.log(value);
 		this.setState({ statusSelected: value, options: { page: 1 } })
 	}
 	pageChange = value => {

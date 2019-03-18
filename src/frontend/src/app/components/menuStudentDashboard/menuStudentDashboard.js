@@ -1,12 +1,13 @@
 import React from 'react'
 import { ListGroup, Tab, Row, Col, Collapse } from 'react-bootstrap'
+
 import './menuStudentDashboard.css'
 import Profile from './../profileStudent/profileStudent'
 import Bill from './../billStudent/billStudent'
 import ListActivity from './../listActivity/listActivity'
 import StudentActivity from './../studentActivity/studentActivity'
-import ConfirmRegister from './../modalConfirmRegister/modalConfirmRegister'
 import Practise from './../practiseStudent/practiseStudent';
+
 class MenuStudent extends React.Component {
     constructor(props, context) {
         super(props, context);

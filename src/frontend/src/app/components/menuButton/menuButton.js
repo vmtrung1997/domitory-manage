@@ -4,11 +4,6 @@ import { Link } from "react-router-dom";
 import './menuButton.css';
 
 export default class MenuButton extends React.Component {
-  constructor(props){
-    super(props)
-  }
-
-
   render() {
     const { icon, label, link, ikey, path } = this.props;
     var focus = ''
