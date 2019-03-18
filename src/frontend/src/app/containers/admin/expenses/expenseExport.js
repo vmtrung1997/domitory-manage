@@ -13,7 +13,18 @@ class Example extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.state = {
       show: false,
-      edit: false
+      edit: false,
+      fromMonth: '',
+      toMonth: '',
+      sdtt: false,
+      sntt: false,
+      sdht: false,
+      snht: false,
+      tienRac: false,
+      ttbc: false,
+      ttbs: false,
+      room: '',
+      status: ''
     }
   }
   componentDidMount(){
@@ -29,19 +40,29 @@ class Example extends React.Component {
   }
   
   handleSubmit = () => {
-    
+    console.log('submit state ',this.state)
   }
-  handleCheck = () => {
-
+  handleCheck = (obj) => {
+    console.log('check value ', obj)
+    this.setState({[obj.value]: obj.chk})
   }
-  statusSelected = () => {
-
+  statusSelected = (value) => {
+    this.setState({status: value})
+  }
+  roomSelected = (value) => {
+    this.setState({room: value})
+  }
+  getValue = (target) => {
+    this.setState({
+      [target.name]: target.value
+    })
   }
   render() {
     var trangThai = [
 			{ value: 2, label: 'Tất cả' },
 			{ value: 1, label: 'Đã thanh toán' },
-			{ value: 0, label: 'Chưa thanh toán' }]
+      { value: 0, label: 'Chưa thanh toán' }]
+    var {roomList} = this.props
     return (
       <>
         <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore}/>
@@ -56,16 +77,17 @@ class Example extends React.Component {
             <Row>
               <Col>
               Từ tháng
-              <Input />
+              <Input getValue={this.getValue} name={'fromMonth'}/>
               </Col>
               <Col>
               Đến tháng
-              <Input />
+              <Input getValue={this.getValue} name={'toMonth'} />
               </Col>
             </Row>
             <Row>
               <Col>Phòng
-              <Input /></Col>
+              <Select options={roomList} selected={this.roomSelected} />
+              </Col>
               <Col>Trạng thái
               <Select options={trangThai} selected={this.statusSelected} /></Col>
             </Row>
@@ -78,7 +100,7 @@ class Example extends React.Component {
               <Col><Checkbox label={'Số nước hiện tại'} value={false} name={'snht'} isCheck={this.handleCheck}/></Col>
             </Row>
             <Row>
-              <Col><Checkbox label={'Tiền rác'} value={false} name={'tr'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Tiền rác'} value={false} name={'tienRac'} isCheck={this.handleCheck}/></Col>
               <Col><Checkbox label={'Tổng tiền (bằng số)'} value={false} name={'ttbs'} isCheck={this.handleCheck}/></Col>
             </Row>
             <Row>

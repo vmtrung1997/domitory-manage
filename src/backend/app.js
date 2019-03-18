@@ -5,7 +5,13 @@ var express = require('express'),
     mongoose = require('mongoose'),
     cors = require('cors')
 
-mongoose.connect('mongodb://admin:123abc@ds149875.mlab.com:49875/kytucxa', { useNewUrlParser: true })
+mongoose.connect('mongodb://admin:123abc@ds149875.mlab.com:49875/kytucxa', 
+{ 
+  useNewUrlParser: true,
+  autoReconnect:true,
+  reconnectTries: Number.MAX_VALUE,
+  reconnectInterval: 1000,
+})
 
 require('./public/models/Phong')
 require('./public/models/ChiPhiPhong')

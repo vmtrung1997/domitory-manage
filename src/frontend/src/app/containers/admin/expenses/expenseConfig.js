@@ -43,8 +43,7 @@ class Example extends React.Component {
             <Modal.Title>Thông số</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-              
-              
+            
           </Modal.Body>
           <Modal.Footer>
             <Button variant="default" color="default" onClick={this.handleClose}>
