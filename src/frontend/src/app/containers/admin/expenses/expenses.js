@@ -121,7 +121,7 @@ class Expenses extends Component {
 						</Row>
 						<div className="flex-row-end m-b-10">
 							<ModalConfig />
-							<ModalExport />
+							<ModalExport roomList={this.state.rooms}/>
 							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)}/>
 						</div>
 						<ExpenseTable table={this.state.dataTable} pageChange={this.pageChange} retriveSearch={() => this.pageChange(1)}/>
