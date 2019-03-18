@@ -38,7 +38,7 @@ class Activity extends Component{
 		.catch( err => {})
 
 	}
-
+	
 	componentDidMount = () => {
 		this.setState({ loading: true})		
 		this.getData()
