@@ -45,10 +45,9 @@ exports.generateRefreshToken = () => {
 
 exports.updateRefreshToken = (userId, rfToken) => {
     return new Promise((resolve, reject) => {
-        dbToken.deleteRefreshToken(userId).then(() =>{
-            var rdt = moment().format('YYYY-MM-DD HH:mm:ss');
-            return dbToken.insertRefreshToken(rfToken, userId, rdt)
-        }).then(value => resolve(value))
-        .catch(err => reject(err));
+        var rdt = moment().format('YYYY-MM-DD HH:mm:ss');
+        dbToken.insertRefreshToken(rfToken, userId, rdt).then(result => {
+            resolve(result);
+        }).catch(err => reject(err));
     });
 }
