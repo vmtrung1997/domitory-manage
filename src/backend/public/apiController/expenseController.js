@@ -19,7 +19,7 @@ exports.select_expense_table = (req, res) => {
 	var search = req.body;
 	var options = req.body.options;
 	// console.log(search);
-	options.populate = { path: 'idPhong', select: 'tenPhong', options: {sort: {tenPhong: 1}}} 
+	options.populate = { path: 'idPhong', select: 'tenPhong', options: {sort: 'tenPhong'}} 
 	options.sort = 'nam thang idPhong'
 	var searchObj = {};
 	if (search.month !== 0) {
@@ -129,6 +129,14 @@ exports.update_expense = (req, res) => {
 		}
 	})
 }
+exports.report_expense = (req, res) => {
+	var condition = req.body;
+	console.log(condition)
+	res.json({
+		rs: 'success'
+	})
+}
+
 exports.refresh_data = (req, res) => {
 	ChiPhiPhong.find().then(results => {
 		console.log(results[0])

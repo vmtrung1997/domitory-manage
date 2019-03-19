@@ -53,3 +53,14 @@ export const update_expense = (exp) => {
     .catch(error => reject(error));
   })
 }
+
+export const report_expense = (exp) => {
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/report', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
