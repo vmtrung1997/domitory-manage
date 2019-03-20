@@ -1,18 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import App from './app/App';
 import * as serviceWorker from './serviceWorker';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+import App from './app/App';
 import './app/style.css'
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
 import rootReducer from './app/reducers/index';
-//initialState
-const initialState = []
+import requestMiddleware from './app/middleware'
+
+
 //Create store
-const store = createStore(rootReducer, initialState);
+const store = createStore(
+	rootReducer,
+	applyMiddleware(requestMiddleware)
+);
 
 ReactDOM.render(
     <Provider store={store}>

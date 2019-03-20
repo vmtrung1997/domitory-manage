@@ -1,8 +1,6 @@
 import { css } from '@emotion/core';
 import React, { Component} from 'react'
-import { MoonLoader,FadeLoader
-,ScaleLoader
- } from 'react-spinners';
+import { ScaleLoader } from 'react-spinners';
 
 const override = css`
     z-index: 1000;

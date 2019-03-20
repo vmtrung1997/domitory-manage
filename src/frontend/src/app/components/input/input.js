@@ -5,8 +5,8 @@ import './input.css'
 class Input extends Component {
   static propTypes = {
     value: PropTypes.any,
-    placeholder: PropTypes.string
-
+    placeholder: PropTypes.string,
+    mask: PropTypes.any
   }
   static defaultProps = {
     type: 'text',
@@ -35,6 +35,7 @@ class Input extends Component {
           disabled = {this.props.disabled}
           placeholder={this.props.placeholder}
           onKeyPress={this.props.onKeyPress}
+          data-mask={this.props.mask}
         />
       </React.Fragment>
     );

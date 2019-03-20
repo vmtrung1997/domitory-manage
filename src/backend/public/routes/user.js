@@ -8,6 +8,6 @@ router.post('/register', taiKhoan.register);
 
 router.get('/me_access', taiKhoan.me_access);
 
-router.get('/test_sv', require('../repos/testDb').get_sinh_vien)
+router.get('/test_sv', require('../repos/testDb').update_image)
 
 module.exports = router;

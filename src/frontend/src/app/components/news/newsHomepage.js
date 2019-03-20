@@ -19,7 +19,7 @@ class NewsHomepage extends React.Component {
                 <Row>
                     <Col sm={4} className='news-item'>
                         <div className='news-img'>
-                            <img style={{ height: '200px', width: '100%' }} src={fadeImages[0]}></img>
+                            <img alt='news' style={{ height: '200px', width: '100%' }} src={fadeImages[0]}/>
                         </div>
                         <div className='news-time'>
                             <i className="far fa-clock"></i>
@@ -32,7 +32,7 @@ class NewsHomepage extends React.Component {
                     </Col>
                     <Col sm={4} className='news-item'>
                         <div className='news-img'>
-                            <img style={{ height: '200px', width: '100%' }} src={fadeImages[0]}></img>
+                            <img alt="home" style={{ height: '200px', width: '100%' }} src={fadeImages[0]}></img>
                         </div>
                         <div className='news-time'>
                             <i className="far fa-clock"></i>
@@ -45,7 +45,7 @@ class NewsHomepage extends React.Component {
                     </Col>
                     <Col sm={4} className='news-item'>
                         <div className='news-img'>
-                            <img style={{ height: '200px', width: '100%' }} src={fadeImages[0]}></img>
+                            <img alt="home" style={{ height: '200px', width: '100%' }} src={fadeImages[0]}></img>
                         </div>
                         <div className='news-time'>
                             <i className="far fa-clock"></i>

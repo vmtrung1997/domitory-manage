@@ -1,6 +1,6 @@
 import React from 'react';
 import ExpenseDetail from './expenseDetail'
-import { Table, Button } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 import Pagination from 'react-js-pagination'
 import './expenses.css'
 
@@ -23,6 +23,9 @@ export default class ExpenseTable extends React.Component {
 	}
 	showDetail = (value) => {
 		this.setState({showDetail: value})
+	}
+	retriveSearch = (value) => {
+		this.props.retriveSearch(value);
 	}
 	render() {
 		// console.log('table', this.props.table)
@@ -53,7 +56,7 @@ export default class ExpenseTable extends React.Component {
 										onChange={this.handlePageChange} />:''
 		return (
 			<React.Fragment>
-				{this.state.showDetail && <ExpenseDetail expenseDetail={this.state.detail} show={this.showDetail}/>}
+				{this.state.showDetail && <ExpenseDetail expenseDetail={this.state.detail} show={this.showDetail} retriveSearch={this.retriveSearch}/>}
 				<Table bordered hover responsive size="sm">
 					<thead >
 						<tr>

@@ -4,7 +4,7 @@
     display: block;
     position: relative;
     cursor: pointer;
-    font-size: 20px;
+    padding-left: 25px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -23,7 +23,6 @@
   /* Create a custom checkbox */
   .checkmark {
     position: absolute;
-    padding: auto 0;
     left: 0;
     height: 20px;
     width: 20px;

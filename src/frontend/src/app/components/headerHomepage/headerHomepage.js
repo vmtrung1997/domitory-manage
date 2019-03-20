@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Col, Row, Form, Button, InputGroup, FormControl, Dropdown, SplitButton, ButtonToolbar } from 'react-bootstrap'
+import { Button, InputGroup, FormControl, Dropdown, SplitButton, ButtonToolbar } from 'react-bootstrap'
 import Login from './../../containers/student/modalLogin/login'
 import { connect } from 'react-redux'
 import './headerHomepage.css'
@@ -56,8 +56,6 @@ class HeaderHomepage extends Component {
     }
 
     render() {
-        var { state } = this.props;
-        var userProfile = state;
         let isLogin;
         const secret = JSON.parse(localStorage.getItem('secret'))
         if (secret && !this.state.isLogin) {
@@ -111,7 +109,7 @@ class HeaderHomepage extends Component {
                         </div>
                     </div>
                     <div className='logoHeader'>
-                        <img className='img-header' style={{ width: '100px', height: '100px', borderRadius: '50%' }} src='/images/Logo-KHTN.jpg'></img>
+                        <img alt="img_header" className='img-header' style={{ width: '100px', height: '100px', borderRadius: '50%' }} src='/images/Logo-KHTN.jpg'></img>
                     </div>
                     <div className='option'>
                         <div className='right-content'>

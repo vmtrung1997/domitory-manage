@@ -5,12 +5,11 @@ import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import CheckBox from './../../../components/checkbox/checkbox';
 //import Pagination from './../../../components/pagination/pagination';
-import {Route, withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import './infoStudent.css';
 import './../../../style.css'
 import Select from "../../../components/selectOption/select";
 import axios from 'axios';
-import InfoStudentDetail from './infoStudentDetail';
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
 
@@ -45,6 +44,8 @@ class InfoStudent extends Component{
       case 'edit':
         this.setState({ showEditPopup: false });
         break;
+      default:
+        break
     }
   };
 
@@ -56,11 +57,12 @@ class InfoStudent extends Component{
       case 'edit':
         this.setState({ showEditPopup: true });
         break;
+      default:
+        break
     }
   };
 
   onViewDetail = (info) => {
-    console.log('==fine', info)
     this.props.history.push({
       pathname: '/admin/id',
       state: { info: info }
@@ -84,7 +86,6 @@ class InfoStudent extends Component{
       roomOptions: roomOptions,
       schoolOptions: schoolOptions
     })
-    console.log('==roomOptions',roomOptions, this.state.phong)
   }
 
   getElement = name => {
@@ -92,7 +93,6 @@ class InfoStudent extends Component{
     axios.get(`/manager/getElement/` + name,  {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
-      console.log('==element success', result)
       switch (name) {
         case 'phong':
           const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
@@ -108,10 +108,10 @@ class InfoStudent extends Component{
             schoolOptions: schoolOptions
           })
           break;
+        default:
+          break
       }
-    }).catch(err => {
-      console.log('==e err', err)
-    })
+    }).catch(err => {})
   }
 
   getData = () => {
@@ -122,17 +122,14 @@ class InfoStudent extends Component{
 
     const { mssv, hoTen, roomSelected } = this.state;
     let idPhong = roomSelected;
-    console.log('==state get', this.state)
     const options = {
       page: this.state.pageActive,
       limit: this.state.limit
     };
 
     if(roomSelected === '0'){
-      console.log('==tat ca')
       idPhong = ''
     }
-    console.log('==api', options, headers)
     axios.post(`/manager/infoStudent/get`,
       { options: options,
         mssv: mssv,
@@ -140,39 +137,29 @@ class InfoStudent extends Component{
         idPhong: idPhong
       }, { headers: headers }
     ).then(result => {
-      console.log('==success: ', result);
       this.setState({
         infoList: result.data.docs
       })
     }).catch((err) => {
       let statusCode = err.response;
 
-      console.log('==get info err: ', err, statusCode)
-
       if(statusCode === 401) {
         axios.get(`/user/me_access`,  {
           headers: { 'x-refresh-token': secret.refresh_token }
         }).then(res => {
-          console.log('==get token sucess: ', res)
           localStorage.setItem('secret', JSON.stringify(res.data));
           headers = {'x-access-token': res.data.access_token};
-          console.log('==headers', headers);
           axios({
             method: 'get',
             url: `/manager/infoStudent/get`,
             headers: headers,
             data: options
           }).then(result => {
-            console.log('==success: ', result);
             this.setState({
               infoList: result.data.docs
             })
-          }).catch(err => {
-            console.log('==get 2', err)
-          })
-        }).catch(err => {
-          console.log('==get token err', err)
-        })
+          }).catch(err => {})
+        }).catch(err => {})
       }
     })
   }
@@ -198,7 +185,6 @@ class InfoStudent extends Component{
 
   handleSubmitAddStudent = () => {
     const { mssvAdded, nameAdded, roomAdded, schoolAdded } = this.state;
-    console.log('==ahihihi', this.state)
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
       'x-access-token': secret.access_token
@@ -213,7 +199,6 @@ class InfoStudent extends Component{
     ).then(result => {
       this.handleClosePopup('add');
     }).catch(err => {
-      console.log('==add err', err);
       this.handleClosePopup('add');
     })
   }
@@ -226,9 +211,8 @@ class InfoStudent extends Component{
   }
 
   render(){
-    console.log('==state', this.state);
     let i = 0;
-    const { roomList, infoList, pageList, pageActive, mssv, hoTen, roomSelected, schoolAdded, roomOptions, schoolOptions, roomAdded } = this.state;
+    const { infoList, pageList, pageActive, roomSelected, schoolAdded, roomOptions, schoolOptions, roomAdded } = this.state;
     return(
       <div>
         <Title>
@@ -403,14 +387,14 @@ class InfoStudent extends Component{
                 <Pagination>
                   <Pagination.First />
                   <Pagination.Prev />
-                  {pageList && pageList.map(page => {
+                  {pageList && pageList.map((page, index) => {
                     if(pageActive === page)
                       return(
-                        <Pagination.Item active onClick={()=>this.direcPage(page)}>{page}</Pagination.Item>
+                        <Pagination.Item active key={index}>{page}</Pagination.Item>
                       );
                     else
                       return(
-                        <Pagination.Item>{page}</Pagination.Item>
+                        <Pagination.Item key={index}>{page}</Pagination.Item>
                       )
                   })}
                   <Pagination.Next />

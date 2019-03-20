@@ -1,6 +1,6 @@
 import React from 'react'
-import { Modal, Alert,Button, InputGroup, FormControl, Container } from 'react-bootstrap'
-
+import { Modal,Button, InputGroup, FormControl, Container } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
 class ConfirmRegister extends React.Component {
   constructor(props, context) {
@@ -86,7 +86,7 @@ class ConfirmRegister extends React.Component {
             {this.state.wrongLogin && <p style = {{color: 'red'}}>*Tên tài khoản hoặc mật khẩu không đúng!</p>}
             <Button onClick = {this.Login} variant="primary">Đăng nhập</Button>
             <div>
-            <a href = '#'>Quên mật khẩu?</a>
+            <Link to='/'>Quên mật khẩu?</Link>
             </div>
             </Modal.Body>
           </Container>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Col } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 import axios from './../../config'
 
 import './infoActivityTable.css'
