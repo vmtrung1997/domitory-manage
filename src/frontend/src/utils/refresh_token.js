@@ -10,7 +10,9 @@ const refreshToken = async () => {
     		var res = await axios.get(`/user/me_access`,  {
 	        	headers: { 'x-refresh-token': secret.refresh_token }
 		    })
-			localStorage.setItem('secret', JSON.stringify(res.data))
+            .catch( err => {})
+			if(res && res.data !== undefined)
+                localStorage.setItem('secret', JSON.stringify(res.data))
     	})
     }
 }

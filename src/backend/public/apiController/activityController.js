@@ -1,9 +1,14 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const Activity = require('./../models/HoatDong');
 const resultActivity = require('./../models/KetQuaHD');
+const Profile = require('./../models/Profile')
 
 exports.get_activity = (req, res) => {
-	Activity.paginate({}, {page: req.query.page}).then( result => {
+	const option = {
+		options: { sort: { ngay: -1 }},
+		page: req.query.page
+	}
+	Activity.paginate({}, option).then( result => {
 		console.log('==get_activity: success')
 		res.json({
 			rs: result
@@ -11,6 +16,15 @@ exports.get_activity = (req, res) => {
 	}).catch(err => console.log('==get_activity: ',err))	
 };
 
+exports.detail_activity = (req, res) => {
+	const id = req.query.id
+	resultActivity.find({ idHD: id })
+	.populate('idSV')
+	.then( data => 
+		Activity.find({_id: id}).then( a =>
+		res.json({rs: data, hd: a})
+	))
+};
 exports.post_activity = (req, res) => {
 	var tmp = {
 		ten: req.body.name,
@@ -41,7 +55,7 @@ exports.delete_activity = (req, res) => {
 			console.log('==delete_activity: err')
 		}
 	});
-}
+};
 exports.update_activity = (req, res) => {
 	const id = req.query.id
 	var data = {
@@ -63,4 +77,4 @@ exports.update_activity = (req, res) => {
 			console.log('==update_activity: not found activity')
 		}
 	})
-}
+};

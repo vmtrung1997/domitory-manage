@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
+
 import Input from './../../../components/input/input';
 import Title from './../../../components/title/title';
 import './infoStudentDetail.css';
@@ -47,10 +49,10 @@ class InfoStudentDetail extends Component{
         <div className={'content-body'}>
           <div className={'infoDetail'}>
             <div className={'id-back'}>
-              <a href={'http://localhost:3000/admin/student'}>
-              <i className="fas fa-chevron-left"/>
-              <span>Trở về</span>
-              </a>
+              <Link to={'/admin/student'}>
+                <i className="fas fa-chevron-left"/>
+                <span>Trở về</span>
+              </Link>
             </div>
             <Row>
               <Col md={2}>
