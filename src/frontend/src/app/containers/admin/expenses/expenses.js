@@ -9,6 +9,7 @@ import ModalExpense from './expensesModal'
 import Title from '../../../components/title/title'
 import ExpenseTable from '../expenses/expenseTable'
 import { search, getData } from '../expenses/expensesAction'
+import {get_month, get_year, get_status} from './expenseRepo'
 import Loader from './../../../components/loader/loader'
 import ModalConfig from './expenseConfig'
 import ModalExport from './expenseExport'
@@ -54,6 +55,7 @@ class Expenses extends Component {
 			status: parseInt(this.state.statusSelected),
 			options: this.state.options
 		}
+		console.log(options);
 		search(options).then(result => {
 			if (result.data) {
 				this.setState({ dataTable: result.data.rs, loading: false })
@@ -80,12 +82,9 @@ class Expenses extends Component {
 		this.setState({loading: value});
 	}
 	render() {
-		var month = [...Array(13)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i, label: i } });
-		var year = [...Array(4)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 2014, label: i + 2014 } });
-		var trangThai = [
-			{ value: 2, label: 'Tất cả' },
-			{ value: 1, label: 'Đã thanh toán' },
-			{ value: 0, label: 'Chưa thanh toán' }]
+		var month = get_month();
+		var year = get_year();
+		var trangThai = get_status();
 		return (
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>

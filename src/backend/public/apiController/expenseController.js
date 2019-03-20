@@ -131,10 +131,103 @@ exports.update_expense = (req, res) => {
 }
 exports.report_expense = (req, res) => {
 	var condition = req.body;
-	console.log(condition)
-	res.json({
-		rs: 'success'
+	console.log(condition);
+	var query = {};
+	var options = []
+	if (condition.disableToMonth === true){
+		query.thang = condition.fromMonth;
+		query.nam = condition.fromYear;
+		if (condition.room !== 0){
+			query.idPhong = condition.room
+		}
+		if (condition.status !== 0){
+			query.trangThai = condition.status
+		}
+	}
+	else {
+		if (condition.fromYear === condition.toYear){
+			if (condition.fromMonth < condition.toMonth){
+				query.thang = {$gte: condition.fromMonth, $lte: condition.toMonth}
+				query.nam = condition.fromYear
+				if (condition.room !== 0){
+					query.idPhong = condition.room
+				}
+				if (condition.status !== 0){
+					query.trangThai = condition.status
+				}
+			}
+			else {
+				res.json({
+					rs: false,
+					msg: 'Dieu kien sai'
+				})
+			}
+		} else if (condition.fromYear < condition.toYear){
+			var or = [
+				{thang: {$gte: condition.fromMonth, $lte: 12}, nam: condition.fromYear},
+				{thang: {$gte: 1, $lte: condition.toMonth}, nam: condition.toYear}
+			]
+			if (condition.toYear - condition.fromYear>1){
+				for (let i = condition.fromYear+1; i<condition.toYear; i++){
+					or.push({nam: i})
+				}
+			}
+			query.$and = [{
+				$or : or
+			}]
+			if (condition.room !== 0){
+				query.$and.push({idPhong : condition.room})
+			}
+			if (condition.status !== 0){
+				query.$and.push({trangThai: condition.status})
+			}
+			
+			
+		} else {
+			res.json({
+				rs: false,
+				msg: 'Dieu kien sai'
+			})
+		}
+	}
+	if (condition.soDien)
+	{
+			options.push('soDien')
+			options.push('soDienCu')
+	}
+	if (condition.soNuoc)
+	{	
+		options.push('soNuoc')
+		options.push('soNuocCu')
+	}
+	if (condition.tienRac){
+		options.push('tienRac')
+	}
+	if (condition.tongTien){
+		options.push('tongTienChu');
+		options.push('tongTienSo')
+	}
+	console.log('==query: ', query);
+	console.log('==options: ', options);
+	ChiPhiPhong.find(query)
+	.select(options)
+	.sort(['nam','thang'])
+	.populate({
+		path: 'idPhong',
+		select: 'tenPhong',
+		options: {sort: {'tenPhong': 1}}
 	})
+	.then(result=> {
+		res.json({
+			rs: 'success',
+			data: result
+		})
+	}).catch(err => 
+		res.json({
+		rs: 'fail',
+		msg: err
+	}))
+	
 }
 
 exports.refresh_data = (req, res) => {

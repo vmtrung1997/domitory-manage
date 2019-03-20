@@ -7,7 +7,8 @@ export const getData = () => {
     axios.get('/manager/expense/get_expense_data').then(result => {
       resolve(result);
     })
-    .catch(error =>{reject(error)});
+    .catch(error =>{
+      console.log('err: ',error.response);reject(error)});
 
   })
 }
@@ -18,7 +19,9 @@ export const search = (searchConditions) => {
     axios.post('/manager/expense/get_expense_table', searchConditions).then(result => { 
       resolve(result);
     })
-    .catch(error => reject(error));
+    .catch(error =>{
+      console.log(error);
+       reject(error)});
   })
 }
 export const add_expense = (table) => {
@@ -50,7 +53,9 @@ export const update_expense = (exp) => {
     axios.post('/manager/expense/update_expense', exp).then(result => { 
       resolve(result);
     })
-    .catch(error => reject(error));
+    .catch(error => {
+      reject(error)
+    });
   })
 }
 

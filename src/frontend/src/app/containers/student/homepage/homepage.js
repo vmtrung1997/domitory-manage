@@ -6,7 +6,7 @@ import Info from '../../../components/introHomepage/info'
 import ReallySmoothScroll from 'really-smooth-scroll';
 
 
-ReallySmoothScroll.shim();
+//ReallySmoothScroll.shim();
 class Homepage extends Component {
 
     componentDidMount() {

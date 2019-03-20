@@ -2,8 +2,10 @@ import React from 'react'
 import { Modal, Row, Col } from 'react-bootstrap'
 import Button from '../../../components/button/button'
 import Checkbox from '../../../components/checkbox/checkbox'
-import Input from '../../../components/input/input'
+// import Input from '../../../components/input/input'
 import Select from '../../../components/selectOption/select'
+import { report_expense } from './expensesAction'
+import {get_month, get_year, get_status} from './expenseRepo'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 class Example extends React.Component {
   
@@ -13,34 +15,64 @@ class Example extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.state = {
       show: false,
-      edit: false,
-      fromMonth: '',
-      toMonth: '',
-      sdtt: false,
-      sntt: false,
-      sdht: false,
-      snht: false,
-      tienRac: false,
-      ttbc: false,
-      ttbs: false,
-      room: '',
-      status: ''
+      fromMonth: 1,
+      toMonth: 1,
+      fromYear: 2015,
+      toYear: 2015,
+      soDien: true,
+      soNuoc: true,
+      tienRac: true,
+      tongTien: true,
+      room: 0,
+      status: 0,
+      disableToMonth: true
     }
   }
   componentDidMount(){
   }
   handleClose() {
-    this.setState({ show: false});
-  }
-  handleEdit = () => {
-    this.setState({edit: true})
+    this.setState({ 
+      show: false,
+      fromMonth: 1,
+      toMonth: 1,
+      toYear: 2015,
+      fromYear: 2015,
+      soDien: true,
+      soNuoc: true,
+      tienRac: true,
+      tongTien: true,
+      room: 0,
+      status: 0,
+      disableToMonth: true
+    });
   }
   handleShow() {
     this.setState({ show: true });
   }
-  
+  monthFromSelected = (value) => {
+    this.setState({fromMonth: value})
+  }
+  yearFromSelected = (value) => {
+    this.setState({fromYear: value})
+  }
+  monthToSelected = (value) => {
+    this.setState({toMonth: value});
+  }
+  yearToSelected = (value) => {
+    this.setState({toYear: value});
+  }
   handleSubmit = () => {
-    console.log('submit state ',this.state)
+    var report = {...this.state};
+    report.fromMonth = parseInt(report.fromMonth)
+    report.toMonth = parseInt(report.toMonth)
+    report.fromYear = parseInt(report.fromYear)
+    report.toYear = parseInt(report.toYear)
+    report.trangThai = parseInt(report.trangThai)
+    console.log(report);
+    report_expense(report).then(result=> {
+      alert('success')
+      console.log(result);
+    }).catch(err => console.log(err));
   }
   handleCheck = (obj) => {
     console.log('check value ', obj)
@@ -57,11 +89,13 @@ class Example extends React.Component {
       [target.name]: target.value
     })
   }
+  handleCheckToMonth = () => {
+    this.setState({disableToMonth: !this.state.disableToMonth})
+  }
   render() {
-    var trangThai = [
-			{ value: 2, label: 'Tất cả' },
-			{ value: 1, label: 'Đã thanh toán' },
-      { value: 0, label: 'Chưa thanh toán' }]
+    var month = get_month().filter(m => m.value !== 0);
+    var year = get_year().filter(y => y.value !== 0);
+    var trangThai = get_status();
     var {roomList} = this.props
     return (
       <>
@@ -76,12 +110,18 @@ class Example extends React.Component {
           <Modal.Body>
             <Row>
               <Col>
-              Từ tháng
-              <Input getValue={this.getValue} name={'fromMonth'}/>
+              <div style={{marginBottom:'8px'}}>Tháng</div>
+              <Row>
+                <Col><Select options={month} selected={this.monthFromSelected} /></Col>
+                <Col><Select options={year} selected={this.yearFromSelected} /></Col>
+              </Row>
               </Col>
               <Col>
-              Đến tháng
-              <Input getValue={this.getValue} name={'toMonth'} />
+              <Checkbox label={'Đến tháng'} check={false} name={'sdtt'} isCheck={this.handleCheckToMonth}/>
+              <Row>
+                <Col><Select options={month} selected={this.monthToSelected} disabled={this.state.disableToMonth}/></Col>
+                <Col><Select options={year} selected={this.yearToSelected} disabled={this.state.disableToMonth}/></Col>
+              </Row>
               </Col>
             </Row>
             <Row>
@@ -92,21 +132,12 @@ class Example extends React.Component {
               <Select options={trangThai} selected={this.statusSelected} /></Col>
             </Row>
             <Row>
-              <Col><Checkbox label={'Số điện trong tháng'} value={false} name={'sdtt'} isCheck={this.handleCheck}/></Col>
-              <Col><Checkbox label={'Số nước trong tháng'} value={false} name={'sntt'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Số điện'} check={true} name={'soDien'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Số nước'} check={true} name={'soNuoc'} isCheck={this.handleCheck}/></Col>
             </Row>
             <Row>
-              <Col><Checkbox label={'Số điện hiện tại'} value={false} name={'sdht'} isCheck={this.handleCheck}/></Col>
-              <Col><Checkbox label={'Số nước hiện tại'} value={false} name={'snht'} isCheck={this.handleCheck}/></Col>
-            </Row>
-            <Row>
-              <Col><Checkbox label={'Tiền rác'} value={false} name={'tienRac'} isCheck={this.handleCheck}/></Col>
-              <Col><Checkbox label={'Tổng tiền (bằng số)'} value={false} name={'ttbs'} isCheck={this.handleCheck}/></Col>
-            </Row>
-            <Row>
-              
-              <Col><Checkbox label={'Tổng tiền (bằng chữ)'} value={false} name={'ttbc'} isCheck={this.handleCheck}/></Col>
-              <Col></Col>
+              <Col><Checkbox label={'Tiền rác'} check={true} name={'tienRac'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Tổng tiền'} check={true} name={'tongTien'} isCheck={this.handleCheck}/></Col>
             </Row>
           </Modal.Body>
           <Modal.Footer>

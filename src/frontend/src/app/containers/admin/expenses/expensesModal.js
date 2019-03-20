@@ -4,6 +4,7 @@ import Input from '../../../components/input/input'
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
 import {getData, add_expense} from '../expenses/expensesAction'
+import {get_month, get_year} from './expenseRepo'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 class Example extends React.Component {
   static defaultProps = {
@@ -92,8 +93,8 @@ class Example extends React.Component {
     this.setState({table: table});
   }
   render() {
-    var monthOptions = [...Array(12)].map((_, i) =>  {return { value: i+1, label: i+1 }});
-    var yearOptions = [...Array(3)].map((_, i) => { return { value: i + 2015, label: i + 2015 } });
+    var monthOptions = get_month();
+    var yearOptions = get_year();
     var table = this.state.table.length ? this.state.table.map((row,index) => {
       return (
         <tr key={index}>

@@ -10,7 +10,7 @@ import NewsContent from '../../components/newsContent/newsContent';
 import DashBoardStudent from './dashBoard/dashBoard'
 
 
-ReallySmoothScroll.shim();
+//ReallySmoothScroll.shim();
 const checkAuth = () => {
     const secret = JSON.parse(localStorage.getItem('secret'))
     if(secret){
