@@ -1,12 +1,16 @@
-const ObjectId = require('mongoose').mongo.ObjectId;
-const md5 = require('md5');
 const Profile = require('../models/Profile');
 const NganhHoc = require('../models/NganhHoc');
 const Truong = require('../models/Truong');
 const ChiPhiPhong = require('../models/ChiPhiPhong');
+const HoatDong = require('../models/HoatDong');
+const KetQuaHD = require('../models/KetQuaHD');
 require('../models/Phong')
 require('../models/NganhHoc')
 require('../models/Truong')
+require('../models/HoatDong');
+
+const moment = require('moment');
+const today = moment().startOf('day');
 
 
 exports.a = (req, res) => {
@@ -23,6 +27,58 @@ exports.getSpecialized = (req, res) => {
 		})
 	})
 }
+
+exports.getListActivities = (req, res) => {
+	var date = new Date();
+
+	KetQuaHD.find({ idSV: req.body.id }).select('idHD').then(result => {
+		var arr = [];
+		result.forEach(item => {
+			arr.push(item.idHD);
+		})
+		HoatDong.find({ _id: { $nin: arr }, ngay: { $gte: new Date(date.getFullYear(), date.getMonth(), date.getDate()) } }).sort({ nam: 1, thang: 1 }).then(rs => {
+			if (!rs) {
+				res.status(400).json({
+					status: 'fail',
+					data: 'no data'
+				})
+			}
+			else {
+				res.status(200).json({
+					status: 'success',
+					data: rs
+				})
+			}
+		})
+	})
+
+
+}
+
+exports.registerActivities = (req, res) => {
+	req.body.data.activity.forEach(item => {
+		try {
+			var data = {
+				idHD: item,
+				idSV: req.body.data.user,
+				status: '0'
+			}
+			var register = new KetQuaHD(data);
+			register.save().then(() => {
+				console.log('==insert: success')
+				res.status(201).json({
+					message: 'ok'
+				})
+			}).catch(err => {
+				console.log('==insert: ', err);
+				res.status(500);
+			})
+		} catch (e) {
+			console.log(e);
+		}
+	})
+}
+
 
 exports.updateInfo = (req, res) => {
 
@@ -60,9 +116,9 @@ exports.updateInfo = (req, res) => {
 
 exports.getBill = (req, res) => {
 	//console.log(req.body.id);
-	ChiPhiPhong.find({idPhong: req.body.id}).sort({nam: -1, thang: -1}).then(result => {
+	ChiPhiPhong.find({ idPhong: req.body.id }).sort({ nam: -1, thang: -1 }).then(result => {
 		if (result) {
-			console.log(result);
+
 			res.status(200).json({
 				status: 'success',
 				data: result
