@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Table } from 'react-bootstrap';
 import Input from './../../../components/input/input';
+import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import './infoStudentDetail.css';
 import './../../../style.css'
@@ -28,6 +29,7 @@ class InfoStudentDetail extends Component{
       gioiTinh,
       idPhong: {tenPhong},
       idTaiKhoan: {username},
+      truong: {tenTruong},
       img
     } = info;
     console.log('img = ', img)
@@ -35,7 +37,7 @@ class InfoStudentDetail extends Component{
     if (img){
       var base64Flag = 'data:image/jpeg;base64,';
       var imageStr = this.arrayBufferToBase64(img.data.data);
-      var imgFile = base64Flag + imageStr;  
+      var imgFile = base64Flag + imageStr;
     }
     var birthDate = new Date(ngaySinh);
     var stringDate = birthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
@@ -186,7 +188,7 @@ class InfoStudentDetail extends Component{
                     Trường:
                   </Col>
                   <Col md={10}>
-                    <Input/>
+                    <Input val={tenTruong}/>
                   </Col>
                 </Row>
 

@@ -44,6 +44,13 @@ exports.addStudent = (req, res) => {
   })
 }
 
+exports.deleteStudent = (req, res) => {
+  const arrDel = req.body.arrDelete;
+  arrDel.forEach(id => {
+
+  })
+}
+
 exports.getListStudent = (req, res) => {
   let query = {};
   const params = req.body;
@@ -55,20 +62,32 @@ exports.getListStudent = (req, res) => {
     query.idPhong = params.idPhong;
   if(!params.options)
     res.status(400).json({'msg': 'missing options'});
+  //query.idTaiKhoan = {$ne: null} ;
+  //query.idTaiKhoan =  {isDelete: 0};
+  console.log('==query', query);
 
   let options = params.options;
-  options.populate = [ 'idTaiKhoan', 'idPhong' ];
+  options.populate = ['idTaiKhoan','idPhong', 'truong', 'nganhHoc'];
+  //options.populate = [ 'idTaiKhoan', 'idPhong' ];
   console.log('==query', query);
-  Profile.paginate(query, options)
-    .then(result => {
-      res.status(200).json(result);
-    }).catch(err => {
-    console.log('==fail', err);
+  Account.find({isDelete: 0}).select('_id').then(accs => {
+    var arr = [];
+    accs.forEach(acc => {
+      arr.push(acc._id)
+    })
+    query.idTaiKhoan = {$in : arr}
+    Profile.paginate(query, options)
+      .then(result => {
+        res.status(200).json(result);
+      }).catch(err => {
+      console.log('==fail', err);
 
-    res.statusCode(400).json({
-      err: 'get info student fail'
+      res.statusCode(400).json({
+        err: 'get info student fail'
+      })
     })
   })
+
   //}
 };
 

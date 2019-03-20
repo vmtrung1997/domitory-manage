@@ -5,11 +5,15 @@ import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import CheckBox from './../../../components/checkbox/checkbox';
 //import Pagination from './../../../components/pagination/pagination';
-import { withRouter } from 'react-router-dom';
+import {Route, withRouter} from 'react-router-dom';
 import './infoStudent.css';
 import './../../../style.css'
 import Select from "../../../components/selectOption/select";
 import axios from 'axios';
+import refreshToken from './../../../../utils/refresh_token'
+import InfoStudentDetail from './infoStudentDetail';
+import MyPagination from "../../../components/pagination/pagination";
+import SearchSelect from 'react-select';
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
 
@@ -21,6 +25,7 @@ class InfoStudent extends Component{
       showAddPopup: false,
       showEditPopup: false,
       pageActive: 1,
+      totalpages: 1,
       mssvAdded: '',
       nameAdded: '',
       roomAdded: '',
@@ -32,7 +37,9 @@ class InfoStudent extends Component{
       hoTen: '',
       roomSelected: '',
       phong: [],
-      truong: []
+      truong: [],
+      listDelete: [],
+      flag: false
     }
   }
 
@@ -63,6 +70,7 @@ class InfoStudent extends Component{
   };
 
   onViewDetail = (info) => {
+    console.log('==fine', info)
     this.props.history.push({
       pathname: '/admin/id',
       state: { info: info }
@@ -86,6 +94,7 @@ class InfoStudent extends Component{
       roomOptions: roomOptions,
       schoolOptions: schoolOptions
     })
+    console.log('==roomOptions',roomOptions, this.state.phong)
   }
 
   getElement = name => {
@@ -93,6 +102,7 @@ class InfoStudent extends Component{
     axios.get(`/manager/getElement/` + name,  {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
+      console.log('==element success', result)
       switch (name) {
         case 'phong':
           const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
@@ -114,7 +124,9 @@ class InfoStudent extends Component{
     }).catch(err => {})
   }
 
-  getData = () => {
+  getData = async () => {
+    console.log('==pageActive', this.state.pageActive);
+    await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
       'x-access-token': secret.access_token
@@ -122,6 +134,7 @@ class InfoStudent extends Component{
 
     const { mssv, hoTen, roomSelected } = this.state;
     let idPhong = roomSelected;
+    console.log('==pageActive222', this.state.pageActive);
     const options = {
       page: this.state.pageActive,
       limit: this.state.limit
@@ -137,30 +150,13 @@ class InfoStudent extends Component{
         idPhong: idPhong
       }, { headers: headers }
     ).then(result => {
+      console.log('==get info success', result);
       this.setState({
-        infoList: result.data.docs
+        infoList: result.data.docs,
+        totalPages: result.data.totalPages
       })
     }).catch((err) => {
-      let statusCode = err.response;
-
-      if(statusCode === 401) {
-        axios.get(`/user/me_access`,  {
-          headers: { 'x-refresh-token': secret.refresh_token }
-        }).then(res => {
-          localStorage.setItem('secret', JSON.stringify(res.data));
-          headers = {'x-access-token': res.data.access_token};
-          axios({
-            method: 'get',
-            url: `/manager/infoStudent/get`,
-            headers: headers,
-            data: options
-          }).then(result => {
-            this.setState({
-              infoList: result.data.docs
-            })
-          }).catch(err => {})
-        }).catch(err => {})
-      }
+      console.log('get info Student err', err);
     })
   }
   onChange = (event) => {
@@ -203,11 +199,43 @@ class InfoStudent extends Component{
     })
   }
 
-  direcPage = (page) => {
-    this.setState({
+  clickPage = async (page) => {
+    await this.setState({
       pageActive: page
-    })
+    });
     this.getData();
+  }
+
+  handleCheckDelete = (props) => {
+    console.log('==arrDel', props)
+    if(props.chk){
+      let arrDel = this.state.listDelete;
+      arrDel.push(props.value);
+      this.setState({
+        listDelete: arrDel
+      })
+    } else {
+      let arrDel = this.state.listDelete;
+      let element = props.value;
+      const i = arrDel.indexOf(element);
+      if (i !== -1) {
+        arrDel.splice(i,1);
+      }
+
+      this.setState({
+        listDelete: arrDel
+      })
+    }
+    console.log('==arrDel',this.state.listDelete)
+  }
+
+  handleValueCheck = mssv => {
+    console.log('==mssv', mssv)
+    const i = this.state.listDelete.indexOf(mssv);
+    if(i !== -1)
+      return true
+    else
+      return false
   }
 
   render(){
@@ -222,43 +250,119 @@ class InfoStudent extends Component{
 
           <div className={'is-header'}>
             <Row>
-              <Col md={3}>
+              <Col md={1}>
                 MSSV
+
+              </Col>
+              <Col md={2}>
                 <Input getValue={this.onChange} name={'mssv'} />
               </Col>
-              <Col md={5}>
-                Họ và tên
+
+              <Col md={1}>
+                Họ tên
+              </Col>
+              <Col md={4}>
                 <Input getValue={this.onChange} name={'hoTen'} />
               </Col>
-              <Col md={3}>
-                Phòng
 
-                <Select
+              <Col md={1}>
+                Phòng
+              </Col>
+              <Col md={2}>
+                <SearchSelect
                   placeholder={''}
                   value={roomSelected}
                   selected={this.handleSelectRoom}
                   // onChange={()=>{this.handleSelectRoom()}}
-                  options={roomOptions} />
+                  options={roomOptions}
+                />
               </Col>
-              <Col md={1} className={'is-btnSearch'}>
-                <Button
-                  fullWidth
-                  onClick={() => this.handleSearch()}
-                >
-                  <i className="fas fa-search"/>
-                </Button>
+            </Row>
+            <Row>
+              <Col md={1}>
+                Năm
               </Col>
+              <Col md={2}>
+                <Input getValue={this.onChange} name={'mssv'} />
+              </Col>
+
+              <Col md={1}>
+                Trường
+              </Col>
+              <Col md={4}>
+                <SearchSelect
+                  placeholder={''}
+                  value={schoolAdded}
+                  selected={this.handleSelectAddSchool}
+                  options={schoolOptions}
+                />
+              </Col>
+
+              <Col md={1}>
+                Lầu
+              </Col>
+              <Col md={2}>
+                <SearchSelect
+                  placeholder={''}
+                  value={roomSelected}
+                  selected={this.handleSelectRoom}
+                  // onChange={()=>{this.handleSelectRoom()}}
+                  options={roomOptions}
+                />
+              </Col>
+
+
+            </Row>
+
+            {/*Button search*/}
+            <Row style={{display: 'flex', justifyContent: 'center'}}>
+            <Col md={3} >
+              <Button
+                size={'md'}
+                fullWidth
+                onClick={() => this.handleSearch()}
+              >
+                <i className="fas fa-search"/>
+                Tìm kiếm
+              </Button>
+            </Col>
+            <Col md={1} >
+              <Button
+                size={'md'}
+                color={'default'}
+                fullWidth
+                onClick={() => this.handleSearch()}
+              >
+                <i className="fas fa-sync-alt"/>
+              </Button>
+            </Col>
             </Row>
           </div>
 
           <Row>
             <Col md={6} className={''}>
               <div className={'is-manipulation'}>
-                <Button >
+                <Button
+                  variant={'rounded'}
+                >
                   <i className="fas fa-file-import"/>
                 </Button>
-                <Button>
+                <Button
+                  variant={'rounded'}
+                >
                   <i className="fas fa-file-export"/>
+                </Button>
+                <Button
+                  variant={'rounded'}
+                  color={'success'}
+                >
+                  <i className="fas fa-address-card"/>
+                </Button>
+                <Button
+                  variant={'rounded'}
+                  color={'success'}
+                >
+                  <i className="fas fa-print"/>
                 </Button>
               </div>
             </Col>
@@ -298,7 +402,7 @@ class InfoStudent extends Component{
                   Phòng:
                 </Col>
                 <Col md={9}>
-                  <Select
+                  <SearchSelect
                     placeholder={''}
                     value={roomAdded}
                     selected={this.handleSelectAddRoom}
@@ -308,7 +412,7 @@ class InfoStudent extends Component{
                   Trường:
                 </Col>
                 <Col md={9}>
-                  <Select
+                  <SearchSelect
                     placeholder={''}
                     value={schoolAdded}
                     selected={this.handleSelectAddSchool}
@@ -352,6 +456,7 @@ class InfoStudent extends Component{
                 <th>#</th>
                 <th>MSSV</th>
                 <th>Họ và Tên</th>
+                <th>Trường</th>
                 <th>Phòng</th>
                 <th>Thao tác</th>
               </tr>
@@ -365,12 +470,13 @@ class InfoStudent extends Component{
                     <td >{i}</td>
                     <td>{info.MSSV}</td>
                     <td>{info.hoTen}</td>
+                    <td>{info.truong.tenTruong}</td>
                     <td>{info.idPhong.tenPhong}</td>
                     <td style={{display: 'flex', justifyContent: 'center'}}>
                       <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.onViewDetail(info)}>
                         <i className="fas fa-edit"/>
                       </Button>
-                      <CheckBox/>
+                      <CheckBox name={info.MSSV} isCheck={this.handleCheckDelete} check={this.handleValueCheck(info.MSSV)}/>
                     </td>
                   </tr>
                 )
@@ -384,22 +490,24 @@ class InfoStudent extends Component{
               </Col>
               <Col md={9}>
                 <div className={'is-pagination'}>
-                <Pagination>
-                  <Pagination.First />
-                  <Pagination.Prev />
-                  {pageList && pageList.map((page, index) => {
-                    if(pageActive === page)
-                      return(
-                        <Pagination.Item active key={index}>{page}</Pagination.Item>
-                      );
-                    else
-                      return(
-                        <Pagination.Item key={index}>{page}</Pagination.Item>
-                      )
-                  })}
-                  <Pagination.Next />
-                  <Pagination.Last />
-                </Pagination>
+                {/*<Pagination>*/}
+                  {/*<Pagination.First />*/}
+                  {/*<Pagination.Prev />*/}
+                  {/*{pageList && pageList.map((page, index) => {*/}
+                    {/*if(pageActive === page)*/}
+                      {/*return(*/}
+                        {/*<Pagination.Item active key={index}>{page}</Pagination.Item>*/}
+                      {/*);*/}
+                    {/*else*/}
+                      {/*return(*/}
+                        {/*<Pagination.Item key={index}>{page}</Pagination.Item>*/}
+                      {/*)*/}
+                  {/*})}*/}
+                  {/*<Pagination.Next />*/}
+                  {/*<Pagination.Last />*/}
+                {/*</Pagination>*/}
+                  <MyPagination page={this.state.pageActive} totalPages={this.state.totalPages} clickPage={this.clickPage}/>
+
                 </div>
               </Col>
             </Row>
