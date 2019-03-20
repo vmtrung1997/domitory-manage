@@ -2,12 +2,22 @@
 	margin-top: 15px;
 }
 .bt-delete{
-	text-align: center;
 	cursor: pointer;
-	color: #DD4125
+	color: #DD4125;
+	padding: 5px 10px;
 }
+
 .lb-done{
-	font-weight: bold;
+	cursor: pointer;
+	padding:5px 5px;
 	text-align: center;
 	color: #04C913;
+}
+.bt-edit{
+	cursor: pointer;
+	padding: 5px 10px;
+	color: #0195D7;
+}
+.bt-edit:hover, .bt-delete:hover{
+	background: white;
 }

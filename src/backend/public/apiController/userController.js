@@ -56,7 +56,11 @@ exports.login = (req, res) => {
 exports.me_access = (req, res) => {
 	var reToken = req.headers['x-refresh-token'];
 	ReToken.findOne({ token: reToken }, null, function (err, result) {
-		if (err) console.log('==refresh_token: ',err);
+		if (err) {
+			res.status(401).end('end')
+			console.log('==refresh_token: ',err);
+		}
+
 		if (result) {
 			var id = new ObjectId(result.userid);
 			User.findOne({ '_id': id }, function (err, userEntity) {

@@ -7,7 +7,7 @@ export default class MenuButton extends React.Component {
   render() {
     const { icon, label, link, ikey, path } = this.props;
     var focus = ''
-    if(path === this.props.link){
+    if(path.split('/')[2] === link.split('/')[2]){
       focus = 'focus'
     }
     return(
