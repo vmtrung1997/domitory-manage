@@ -64,7 +64,7 @@ class InfoStudent extends Component{
 
   onViewDetail = (info) => {
     this.props.history.push({
-      pathname: '/admin/id',
+      pathname: '/admin/student/detail',
       state: { info: info }
     });
     // return (
