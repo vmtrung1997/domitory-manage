@@ -31,14 +31,16 @@ class Activity extends Component{
 			headers: { 'x-access-token': secret.access_token}
 		})
       	.then(res => {  
-    	    this.setState({
+       	    this.setState({
     	    	data: res.data.rs.docs,
 				loading: false,
 				show: false,
 				totalPages: res.data.rs.totalPages
 			})
 		})
-		.catch( err => {})
+		.catch( err => {
+			this.setState({ loading: false })
+		})
 	}
 	
 	componentDidMount = () => {
@@ -56,10 +58,14 @@ class Activity extends Component{
 		this.setState({ show: false })
 	}
 	clickPage = (page) => {
-		this.setState({ page: page })
+		this.setState({ 
+			page: page,
+		})
 		this.getData()
 	}
-
+	handleSave = () => {
+		this.getData()
+	}
 	render(){	
 		const tmp = this.state.data.map((item , i) => {
 			return(
@@ -77,6 +83,8 @@ class Activity extends Component{
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
+				<ActivityModal show={this.state.show} handleClose={this.handleClose} handleSave={this.handleSave}/>
+
 				<Title> Hoạt động sinh viên </Title>
         		<div className={'content-body full'}>
 					<div className='header-optimize'>
@@ -98,12 +106,11 @@ class Activity extends Component{
 						</div>
 						<div className='bts-header'>
 							<Button className='bt-header' color='success' onClick={this.handleShow}>Thêm</Button>
-							<ActivityModal show={this.state.show} handleClose={this.handleClose} handleSave={this.clickPage}/>
 							<Button className='bt-header' color='success'>Báo cáo</Button>
 						</div>
 					</div>
 					{ this.state.isTable ? 
-						<InfoActivityTable data={this.state.data} handleSave={this.getData}/>
+						<InfoActivityTable data={this.state.data} refresh={this.getData}/>
 						:
 						<div className="infor-activity">
 							{tmp}

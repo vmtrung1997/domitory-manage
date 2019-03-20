@@ -31,18 +31,18 @@ class SignInAdmin extends Component{
 	login = () => {
 		this.setState({ loading: true})
 		axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
-			.then(res => {
-				localStorage.setItem('secret', JSON.stringify(res.data));
-				let { from } = this.props.location.state || { from: { pathname: "/admin/student" } }
-				this.props.history.push(from)
+		.then(res => {
+			localStorage.setItem('secret', JSON.stringify(res.data));
+			let { from } = this.props.location.state || { from: { pathname: "/admin/student" } }
+			this.props.history.push(from)
+		})
+		.catch( err => {
+			this.setState({
+				isNotify: true
 			})
-			.catch( err => {
-				this.setState({
-					isNotify: true
-				})
-			}).then( () => {
-				this.setState({ loading: false})
-			})
+		}).then( () => {
+			this.setState({ loading: false})
+		})
 	}
 	render(){
 		return(

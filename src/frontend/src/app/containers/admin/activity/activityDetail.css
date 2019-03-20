@@ -1,0 +1,11 @@
+.back{
+	text-decoration: none;
+	color: #999c9e;
+    font-weight: bold;
+}
+.back i{
+    margin-right: 5px;
+}
+.back:hover{
+	color: #5b5b5b;
+}

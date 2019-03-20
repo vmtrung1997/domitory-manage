@@ -25,6 +25,8 @@ router.post('/expense/report', expenseController.report_expense);
 // Activity
 router.get('/activity/get_activity', activityController.get_activity);
 
+router.get('/activity/detail', activityController.detail_activity);
+
 router.post('/activity/post', activityController.post_activity);
 
 router.post('/activity/delete', activityController.delete_activity);
