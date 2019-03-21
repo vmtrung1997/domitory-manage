@@ -5,15 +5,11 @@ import Info from '../../../components/introHomepage/info'
 
 import Header from './../../../components/headerHomepage/headerHomepage'
 //import autoscroll from 'autoscroll-react'
-import { Route } from 'react-router-dom'
 import ReallySmoothScroll from 'really-smooth-scroll';
 
 
 // ReallySmoothScroll.shim();
 class Homepage extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     componentDidMount() {
         console.log('a');

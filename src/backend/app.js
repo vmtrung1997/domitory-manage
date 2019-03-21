@@ -5,7 +5,13 @@ var express = require('express'),
     mongoose = require('mongoose'),
     cors = require('cors')
 
-mongoose.connect('mongodb://admin:123abc@ds149875.mlab.com:49875/kytucxa', { useNewUrlParser: true })
+mongoose.connect('mongodb://admin:123abc@ds149875.mlab.com:49875/kytucxa', 
+{ 
+  useNewUrlParser: true,
+  autoReconnect:true,
+  reconnectTries: Number.MAX_VALUE,
+  reconnectInterval: 1000,
+})
 
 require('./public/models/Phong')
 require('./public/models/ChiPhiPhong')
@@ -22,8 +28,9 @@ var verifyAccessToken = require('./public/repos/authRepo').verifyAccessToken;
 
 
 app.use('/api/user', require('./public/routes/user'));
-app.use('/api/manager', verifyAccessToken, require('./public/routes/manager'));
+app.use('/api/manager', require('./public/routes/manager'));
 app.use('/api/student', verifyAccessToken, require('./public/routes/student'));
+app.use('/api/check_token', verifyAccessToken, require('./public/routes/token'));
 app.use('/api/logout', require('./public/routes/logout'));
 
 app.get('/', (_, res) => {

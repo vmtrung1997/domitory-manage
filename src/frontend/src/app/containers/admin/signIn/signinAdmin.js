@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import md5 from 'md5';
 import axios from 'axios';
+import { Link } from 'react-router-dom'
 
 import Loader from './../../../components/loader/loader'
 import Input from '../../../components/input/input'
@@ -30,25 +31,24 @@ class SignInAdmin extends Component{
 	login = () => {
 		this.setState({ loading: true})
 		axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
-			.then(res => {
-				console.log('==user', this.state);
-				localStorage.setItem('secret', JSON.stringify(res.data));
-				let { from } = this.props.location.state || { from: { pathname: "/admin/student" } }
-				this.props.history.push(from)
+		.then(res => {
+			localStorage.setItem('secret', JSON.stringify(res.data));
+			let { from } = this.props.location.state || { from: { pathname: "/admin/student" } }
+			this.props.history.push(from)
+		})
+		.catch( err => {
+			this.setState({
+				isNotify: true
 			})
-			.catch( err => {
-				this.setState({
-					isNotify: true
-				})
-			}).then( () => {
-				this.setState({ loading: false})
-			})
+		}).then( () => {
+			this.setState({ loading: false})
+		})
 	}
 	render(){
 		return(
 			<React.Fragment>
 				<div className='header-sgin-admin'>
-					<a href='#'><img className='logo' src={logo_HCMUS} /></a>
+					<Link to='/'><img alt="logo_hcmus" className='logo' src={logo_HCMUS} /></Link>
 					<span> Chào mừng đến với ký túc xá Trần Hưng Đạo </span>
 				</div>
 				<div className='form-login'>
@@ -71,7 +71,6 @@ class SignInAdmin extends Component{
 					</div>
 					<div style={{margin: '10px'}}> 
 						<Button 
-							color = 'success'
 							style = {{width:'250px', fontSize: '18px', padding:'8px auto', borderRadius:'4px'}}
 							onClick = {(e) => this.login()}
 						> 
@@ -79,7 +78,7 @@ class SignInAdmin extends Component{
 						</Button>
 					</div>
 					<Loader loading={this.state.loading}/>
-					<a href='#'> Bạn quên mật khẩu ?</a>
+					<Link to='/'> Bạn quên mật khẩu ?</Link>
 				</div>
 			</React.Fragment>
 		)

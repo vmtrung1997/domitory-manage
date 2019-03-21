@@ -11,7 +11,7 @@ var taiKhoanSchema = new Schema({
     // diaChi: String,
     // sdt: String,
     loai: {type: String, enum: ['SA', 'AM', 'SV', 'BV']},
-    idDelete: {type: Number, enum: [0, 1], select: false}
+    isDelete: {type: Number, enum: [0, 1], select: false}
 });
 const model = mongoose.model('TaiKhoan', taiKhoanSchema, 'TaiKhoan');
 module.exports = model;

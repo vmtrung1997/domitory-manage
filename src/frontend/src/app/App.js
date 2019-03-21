@@ -25,6 +25,8 @@ const checkAuth = () => {
             case 'BV':
                 isSecurity = true
                 break
+            default:
+                break
         }
     }
 }
@@ -58,7 +60,6 @@ const SecurityRoute = ({ component: Component, ...rest }) => {
         />
     )
 }
-
 
 class App extends Component {
 	render() {

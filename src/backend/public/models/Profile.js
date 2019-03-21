@@ -6,7 +6,7 @@ var profileSchema = new Schema({
     idTaiKhoan: {type: Schema.Types.String, ref: 'TaiKhoan'},
     hoTen: String,
     ngaySinh: Date,
-    gioiTinh: {type: Number, enum: [0,1]},
+    gioiTinh: {type: Number, enum: [0,1]}, //1 nam 0 nu
     email: String,
     diaChi: String,
     sdt: String,
@@ -20,7 +20,7 @@ var profileSchema = new Schema({
     ngayVaoO: Date,
     ngayHetHan: Date,
     danToc: String,
-    img: String,
+    img:  { data: Buffer, contentType: String },
 });
 
 profileSchema.plugin(mongoosePaginate);

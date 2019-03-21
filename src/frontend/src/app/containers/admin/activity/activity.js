@@ -8,11 +8,14 @@ import InfoActivity from './../../../components/infoActivity/infoActivity'
 import InfoActivityTable from './../../../components/infoActivity/infoActivityTable'
 import ActivityModal from './activityModal'
 import Loader from './../../../components/loader/loader'
+import refreshToken from './../../../../utils/refresh_token'
+import MyPagination from './../../../components/pagination/pagination'
 
 class Activity extends Component{
 	constructor(props){
 		super(props)
 		this.state = {
+			totalPages: 1,
 			page: 1,
 			isTable: true,
 			show: false,
@@ -21,38 +24,30 @@ class Activity extends Component{
 		}
 	}
 
-	getData = () => {
+	getData = async () => {
+		await refreshToken()
 		var secret = JSON.parse(localStorage.getItem('secret'))
 		axios.get(`/manager/activity/get_activity?page=${this.state.page}`,{
 			headers: { 'x-access-token': secret.access_token}
 		})
-      	.then(res => {    
-    	    this.setState({data: res.data.rs.docs})
+      	.then(res => {  
+       	    this.setState({
+    	    	data: res.data.rs.docs,
+				loading: false,
+				show: false,
+				totalPages: res.data.rs.totalPages
+			})
 		})
 		.catch( err => {
-			axios.get(`/user/me_access`,  {
-            	headers: { 'x-refresh-token': secret.refresh_token }
-        	})
-        	.then( res => {
-        		localStorage.setItem('secret', JSON.stringify(res.data))
-        		axios.get(`/manager/activity/get_activity?page=${this.state.page}`,{
-					headers: { 'x-access-token': res.data.access_token}
-				})
-				.then(res => {
-	    	    	this.setState({data: res.data.rs.docs})
-				})
-        	})
+			this.setState({ loading: false })
 		})
-		.then( () => {this.setState({ 
-			loading: false,
-			show: false
-		})})
 	}
-
+	
 	componentDidMount = () => {
 		this.setState({ loading: true})		
 		this.getData()
 	}
+
 	isCheckTable = (val) => {
 		this.setState({ isTable: val })
 	}
@@ -62,7 +57,15 @@ class Activity extends Component{
 	handleClose = () => {
 		this.setState({ show: false })
 	}
-
+	clickPage = (page) => {
+		this.setState({ 
+			page: page,
+		})
+		this.getData()
+	}
+	handleSave = () => {
+		this.getData()
+	}
 	render(){	
 		const tmp = this.state.data.map((item , i) => {
 			return(
@@ -76,11 +79,14 @@ class Activity extends Component{
 				/>
 			)
 		})
+
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
+				<ActivityModal show={this.state.show} handleClose={this.handleClose} handleSave={this.handleSave}/>
+
 				<Title> Hoạt động sinh viên </Title>
-        		<div className={'content-body'}>
+        		<div className={'content-body full'}>
 					<div className='header-optimize'>
 						<div>
 							<Button 
@@ -100,19 +106,22 @@ class Activity extends Component{
 						</div>
 						<div className='bts-header'>
 							<Button className='bt-header' color='success' onClick={this.handleShow}>Thêm</Button>
-							<ActivityModal show={this.state.show} handleClose={this.handleClose} handleSave={this.getData}/>
 							<Button className='bt-header' color='success'>Báo cáo</Button>
 						</div>
 					</div>
 					{ this.state.isTable ? 
-						<InfoActivityTable data={this.state.data} handleSave={this.getData}/>
+						<InfoActivityTable data={this.state.data} refresh={this.getData}/>
 						:
 						<div className="infor-activity">
 							{tmp}
 						</div>
 
 					}
+					<div className={'is-pagination'}>
+						<MyPagination page={this.state.page} totalPages={this.state.totalPages} clickPage={this.clickPage}/>
+	            	</div>
 				</div>
+
 			</React.Fragment>
 		)
 	}

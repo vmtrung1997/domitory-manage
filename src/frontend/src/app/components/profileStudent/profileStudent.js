@@ -1,8 +1,7 @@
 import React from 'react'
 import { InputGroup, Row, Col, Button } from 'react-bootstrap'
 import './profileStudent.css'
-import './../../components/loadingStudent/loadingStudent.css'
-
+import "react-datepicker/dist/react-datepicker.css";
 import MyInput from '../input/input'
 import MySelectOption from '../selectOption/select'
 import './../titleStudent/titleStudent.css'
@@ -11,7 +10,8 @@ import axios from 'axios'
 import jwt_decode from 'jwt-decode';
 import { bindActionCreators } from 'redux'
 import * as UserAction from '../../actions/userAction'
-import * as StudentAction from '../../actions/studentAction'
+import * as SpecializedAction from '../../actions/SpecialAction'
+import * as SchoolAction from '../../actions/schoolAction'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 import Loader from 'react-loader-spinner'
 
@@ -184,10 +184,6 @@ class ProfileStudent extends React.Component {
             }).catch(err => {
                 console.log(err)
             })
-
-            var { state } = this.props;
-
-
         }
         else {
             console.log('ko co data');

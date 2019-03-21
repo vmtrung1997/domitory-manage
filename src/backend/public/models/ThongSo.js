@@ -3,8 +3,11 @@ var Schema = mongoose.Schema;
 
 var thongSoSchema = new Schema({
     id: Number,
+    giaTriDau: Number,
+    giaTriCuoi: Number,
+    donVi: String,
     moTa: String,
-    giaTri: Number,
+    giaTriThuc: Number,
 });
 const model = mongoose.model('ThongSo', thongSoSchema, 'ThongSo');
 module.exports = model;

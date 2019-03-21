@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 import ReallySmoothScroll from 'really-smooth-scroll';
 import jwt_decode from 'jwt-decode';
 
@@ -35,9 +35,6 @@ const StudentRoute = ({ component: Component, ...rest }) => {
     )
 }
 class Student extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     componentDidMount() {
        // autoscroll(Info, { isScrolledDownThreshold: 150 /*default*/ })

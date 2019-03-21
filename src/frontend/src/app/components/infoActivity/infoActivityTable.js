@@ -1,48 +1,60 @@
 import React, { Component } from 'react'
-import { Table, Col } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import axios from './../../config'
 
 import './infoActivityTable.css'
 import Confirm from './../confirm/confirm'
+import refreshToken from './../../../utils/refresh_token'
+import Button from './../button/button'
+import ActivityEdit from './../../containers/admin/activity/activityEdit'
 
 class InfoActivityTable extends Component{
 	constructor(props){
 		super(props)
 		this.state = {
-			show: false,
+			dataEdit: {},
+			showDelete: false,
+			showEdit: false,
 			id: ''
 		}
 	}
 	static defaultProps = {
-		handleSave: () => {},
+		refresh: () => {}
 	}
 	handleDelete = (id) => {
 		this.setState({ 
-			show: true,
+			showDelete: true,
 			id: id
 		})
 	}
-	handleClose = () => {
-		this.setState({ show: false })
+	handleClose = (state) => {
+		this.setState({ [state]: false })
 	}
-	handleSave = () => {
+	handleSave = async (state) => {
+		await refreshToken()
     	var secret = JSON.parse(localStorage.getItem('secret'))
 		axios({
 	      	method: 'post',
 	      	url: `/manager/activity/delete?id=${this.state.id}`,
 	      	headers: { 'x-access-token': secret.access_token }
 	    })
-		this.setState({ show: false })
-
-    	this.props.handleSave()
-    	console.log(12)
+		this.setState({ [state]: false })
+		this.props.refresh()
+	}
+	handleEdit = (data) => {
+		this.setState({
+			showEdit: true,
+			dataEdit: data
+		})
 	}
 
 	render(){
 		const table = this.props.data.map((row, index) => {
 			var curData = new Date();
 			var date = new Date(row.ngay);
-			var strDate = `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`
+			var strDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+			var url = `/admin/activity/detail/${row._id}`
 			return (
 				<tr key={index}>
 					<td>{index + 1}</td>
@@ -56,16 +68,44 @@ class InfoActivityTable extends Component{
 						<td>  </td>
 					)}
 					{curData > date ? (
-						<td className='lb-done'> Hoàn thành </td>
+						<td className='lb-done'>
+							<Link to={url}>
+								<Button> 
+									<i className="fas fa-poll-h"></i>
+								</Button>
+							</Link>
+						</td>
 					):(
-						<td className="bt-delete"> <i onClick={() => {this.handleDelete(row._id)}} className="fas fa-trash-alt"></i> </td>
+						<td style={{textAlign: 'center'}}> 
+							<Link to={url}>
+								<Button>
+									<i className="fas fa-poll-h"></i>
+								</Button>
+							</Link>
+							<Button color={'warning'} style={{margin: '0 5px'}} onClick={(e) => {this.handleEdit(row)}}>
+								<i className="fas fa-edit"></i>
+							</Button>
+							<Button color={'danger'} onClick={(e) => {this.handleDelete(row._id)}}>
+								<i className=" fas fa-trash-alt"></i>
+							</Button>
+						</td>
 					)}
 				</tr>
 			)
 		})
+
 		return(
 			<React.Fragment>
-				<Confirm show={this.state.show} handleClose={this.handleClose} handleSave={this.handleSave}/>
+				<Confirm show={this.state.showDelete} handleClose={() => this.handleClose('showDelete')} handleSave={() => this.handleSave('showDelete')}/>
+				{this.state.showEdit ?
+					<ActivityEdit 
+						show={this.state.showEdit}
+						data={this.state.dataEdit}
+						handleClose={() => this.handleClose('showEdit')} 
+						handleSave={() => this.handleSave('showEdit')}
+					/>
+					: <React.Fragment/>
+				}
 				<Table bordered hover responsive size="sm" className="table-activity">
 					<thead >
 						<tr>

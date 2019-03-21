@@ -3,6 +3,9 @@
 	flex-wrap: wrap;
 	justify-content: center;
 }
+.full{
+    overflow: auto;
+}
 .header-optimize{
 	display: flex;
 	justify-content: space-between;
