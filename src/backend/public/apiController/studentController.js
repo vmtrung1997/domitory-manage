@@ -55,6 +55,25 @@ exports.getListActivities = (req, res) => {
 
 }
 
+exports.cancelRegisterActivities = (req,res) =>{
+	req.body.data.activity.forEach(item => {
+		try {
+			KetQuaHD.deleteOne({idHD: item.idHD, idSV: req.body.data.user}).then(() => {
+				console.log('==delete: success')
+				res.status(201).json({
+					message: 'ok'
+				})
+			}).catch(err => {
+				console.log('==insert: ', err);
+				res.status(500);
+			})
+		} catch (e) {
+			console.log(e);
+		}
+	})
+
+}
+
 exports.registerActivities = (req, res) => {
 	req.body.data.activity.forEach(item => {
 		try {
@@ -139,6 +158,24 @@ exports.getSchool = (req, res) => {
 			status: 'success',
 			data: result
 		})
+	})
+}
+
+exports.upcomingActivities = (req,res) => {
+	KetQuaHD.find({idSV: req.body.id}).populate({path: 'idHD'}).then(result=>{
+		if (result) {
+
+			res.status(200).json({
+				status: 'success',
+				data: result
+			})
+		}
+		else {
+			res.json({
+				status: 'fail',
+				data: 'no data'
+			})
+		}
 	})
 }
 

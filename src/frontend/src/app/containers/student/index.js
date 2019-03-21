@@ -3,7 +3,6 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import ReallySmoothScroll from 'really-smooth-scroll';
 import jwt_decode from 'jwt-decode';
 
-import Header from './../../components/headerHomepage/headerHomepage'
 import Homepage from './homepage/homepage'
 import News from './news/news'
 import NewsContent from '../../components/newsContent/newsContent';
@@ -65,7 +64,7 @@ class Student extends Component {
     render() {
         return (
             <React.Fragment>
-                <Header getScroll={this.getScroll}></Header>
+                {/* <Header getScroll={this.getScroll}></Header> */}
 				<Route exact path={`/news`} component={News} />
 				<Route exact path={`/news/detail/:id`} component={NewsContent} />
 				<Route exact path={`/`} component={Homepage} />

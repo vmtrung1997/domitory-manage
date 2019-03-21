@@ -1,17 +1,19 @@
 import React from 'react'
 import { InputGroup, Row, Col, Button } from 'react-bootstrap'
 import './profileStudent.css'
-import "react-datepicker/dist/react-datepicker.css";
+import './../../components/loadingStudent/loadingStudent.css'
+
 import MyInput from '../input/input'
 import MySelectOption from '../selectOption/select'
 import './../titleStudent/titleStudent.css'
-    import { connect } from 'react-redux'
+import { connect } from 'react-redux'
 import axios from 'axios'
 import jwt_decode from 'jwt-decode';
 import { bindActionCreators } from 'redux'
 import * as UserAction from '../../actions/userAction'
 import * as StudentAction from '../../actions/studentAction'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import Loader from 'react-loader-spinner'
 
 
 class ProfileStudent extends React.Component {
@@ -21,6 +23,7 @@ class ProfileStudent extends React.Component {
             startDate: new Date(),
             readOnly: true,
             isDisable: true,
+            isLoad: true,
 
             MSSV: '',
             danToc: undefined,
@@ -75,6 +78,8 @@ class ProfileStudent extends React.Component {
             truong: this.state.truong.value
         };
 
+        this.setState({ isDisable: !this.state.isDisable });
+        
         var secret = localStorage.getItem('secret');
         secret = JSON.parse(secret);
         axios.defaults.headers['x-access-token'] = secret.access_token;
@@ -140,6 +145,10 @@ class ProfileStudent extends React.Component {
                         sdtNguoiThan: res.data.data.sdtNguoiThan,
                         truong: truong
                     })
+
+                    this.setState({
+                        isLoad: false
+                    })
                 }
             }).catch(err => {
                 console.log(err)
@@ -177,7 +186,6 @@ class ProfileStudent extends React.Component {
             })
 
             var { state } = this.props;
-            var profile = state.userProfile;
 
 
         }
@@ -206,17 +214,38 @@ class ProfileStudent extends React.Component {
         })
 
     }
+    formatDay = (val) => {
+        console.log(val)
 
+    }
     render() {
+        if(!this.state.isLoad)
+        {
+        console.log(this.state.gioiTinh);
         var { state } = this.props;
         var profile = state.userProfile || null;
 
-        var gender = [{ value: 0, label: 'Nữ' }, { value: 1, label: 'Nam' }]
+        var gender = [{ value:'0', label: 'Nữ' }, { value: '1', label: 'Nam' }]
         var majorInput;
         var schoolInput;
         var genderInput;
-        if (!this.state.readOnly) {
 
+        //Định dạng ngày sinh
+        var d = new Date(this.state.ngaySinh);
+        var month = d.getMonth() + 1;
+        var birthdayFormat =  d.getDate() + '/' + month + '/' + d.getFullYear();
+
+        //Định dạng ngày vào
+        var d = new Date(this.state.ngayVaoO);
+        var month = d.getMonth() + 1;
+        var dayInFormat =  d.getDate() + '/' + month + '/' + d.getFullYear();
+
+        //Định dạng ngày ra
+        var d = new Date(this.state.ngayHetHan);
+        var month = d.getMonth() + 1;
+        var dayOutFormat =  d.getDate() + '/' + month + '/' + d.getFullYear();
+
+        if (!this.state.readOnly) {
             genderInput = <MySelectOption
                 name='gioiTinh'
                 getValue={this.getValue}
@@ -245,20 +274,25 @@ class ProfileStudent extends React.Component {
             />
         }
         else {
-            schoolInput = <MyInput getValue={this.getValue} name='truong' readOnly={this.state.readOnly} value={profile.truong.tenTruong} borderRadius="3px" />
-            majorInput = <MyInput getValue={this.getValue} name='nganhHoc' disabled={this.state.readOnly} value={profile.nganhHoc.tenNganh} borderRadius="3px" />
-            genderInput = <MyInput getValue={this.getValue} name='gioiTinh' readOnly={this.state.readOnly} value={profile.gioiTinh === '1' ? 'Nam' : 'Nữ'} borderRadius="3px" />
+            schoolInput = <MyInput getValue={this.getValue} name='truong' disabled={this.state.readOnly} value={this.state.truong.label} borderRadius="3px" />
+            majorInput = <MyInput getValue={this.getValue} name='nganhHoc' disabled={this.state.readOnly} value={this.state.nganhHoc.label} borderRadius="3px" />
+            genderInput = <MyInput getValue={this.getValue} name='gioiTinh' disabled={this.state.readOnly} value={this.state.gioiTinh === 1 ? 'Nam' : 'Nữ'} borderRadius="3px" />
         }
-
-
+    }
 
         return (
+
             <React.Fragment>
-               
+                
                 <div className='title-header'>
                     <span>THÔNG TIN CÁ NHÂN</span>
                 </div>
                 <div className='title-header-line'></div>
+                {this.state.isLoad?	
+                <div   className='loading-student'>
+                <Loader type="Triangle" color="#007bff" height={60} width={60} /></div>:
+                
+                <div>
                 <div className='profile-panel'>
                 
                     <Row>
@@ -268,12 +302,12 @@ class ProfileStudent extends React.Component {
                                 <div className='profile-panel-content-row'>
                                     <Row>
                                         <Col>
-                                            Mã thẻ
-                                            <MyInput getValue={this.getValue} disabled name='maThe' value={profile.maThe} borderRadius="3px" />
+                                            <span className ='label-font'>Mã thẻ</span>
+                                            <MyInput  getValue={this.getValue} disabled name='maThe' value={this.state.maThe} borderRadius="3px" />
                                         </Col>
                                         <Col>
-                                            Email
-                                            <MyInput getValue={this.getValue} name='email' disabled={this.state.readOnly} value={profile.email} borderRadius="3px" />
+                                        <span className ='label-font'>Email</span>
+                                            <MyInput required className={this.state.readOnly?'profile-not-allowed':''} getValue={this.getValue} name='email' disabled={this.state.readOnly} value={this.state.email} borderRadius="3px" />
                                         </Col>
                                     </Row>
                                 </div>
@@ -281,45 +315,40 @@ class ProfileStudent extends React.Component {
                                 <div className='profile-panel-content-row'>
                                     <Row>
                                         <Col>
-                                            Họ tên
-                                            <MyInput getValue={this.getValue} name='hoTen' disabled={this.state.readOnly} value={profile.hoTen} borderRadius="3px" />
+                                        <span className ='label-font'>Họ tên</span>
+                                            <MyInput getValue={this.getValue} name='hoTen' disabled={this.state.readOnly} value={this.state.hoTen} borderRadius="3px" />
                                         </Col>
                                         <Col>
-                                            Địa chỉ
-                                            <MyInput getValue={this.getValue} name='diaChi' disabled={this.state.readOnly} value={profile.diaChi} borderRadius="3px" />
+                                        <span className ='label-font'>Địa chỉ</span>
+                                            <MyInput getValue={this.getValue} name='diaChi' disabled={this.state.readOnly} value={this.state.diaChi} borderRadius="3px" />
                                         </Col>
                                     </Row>
                                 </div>
                                 <div className='profile-panel-content-row'>
                                     <Row>
                                         <Col>
-                                            Ngày sinh
+                                        <span className ='label-font'>Ngày sinh</span>
                                             <InputGroup className="mb-3">
-                                                <MyInput name='ngaySinh' getValue={this.getValue} disabled={this.state.readOnly} value={profile.ngaySinh} className={'input-picker'} borderRadius="3px" />
-                                                {/* <FormControl readOnly={this.state.readOnly} value={profile.ngaySinh} aria-describedby="basic-addon1" /> */}
-                                                {/* <DatePicker
-                                                    customInput={<InputDatetimePicker />} */}
-
-                                                {/* onChange={this.handleChange} /> */}
+                                                <MyInput name='ngaySinh' getValue={this.getValue} disabled={this.state.readOnly} value={birthdayFormat} className='input-picker' borderRadius="3px" />
                                             </InputGroup>
                                         </Col>
 
                                         <Col>
-                                            Số điện thoại
-                                            <MyInput getValue={this.getValue} name='sdt' disabled={this.state.readOnly} value={profile.sdt} borderRadius="3px" />
+                                        <span className ='label-font'>Số điện thoại</span>
+                                            <MyInput getValue={this.getValue} name='sdt' disabled={this.state.readOnly} value={this.state.sdt} borderRadius="3px" />
                                         </Col>
                                     </Row>
                                 </div>
                                 <div className='profile-panel-content-row'>
                                     <Row>
                                         <Col>
-                                            Ngành học
+                                        <span className ='label-font'>Ngành học</span>
 
                                                 {majorInput}
                                         </Col>
                                         <Col>
-                                            Số điện thoại người thân
-                                            <MyInput getValue={this.getValue} name='sdtNguoiThan' disabled={this.state.readOnly} value={profile.sdtNguoiThan} borderRadius="3px" />
+                                        <span className ='label-font'>Số điện thoại người thân</span>
+                                            <MyInput getValue={this.getValue} name='sdtNguoiThan' disabled={this.state.readOnly} value={this.state.sdtNguoiThan} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -327,12 +356,12 @@ class ProfileStudent extends React.Component {
                                 <div className='profile-panel-content-row'>
                                     <Row>
                                         <Col>
-                                            Trường
+                                        <span className ='label-font'>Trường</span>
                                             {schoolInput}
                                         </Col>
                                         <Col>
-                                            Ngày vào
-                                            <MyInput getValue={this.getValue} name='ngayVaoO' disabled={this.state.readOnly} value={profile.ngayVaoO} borderRadius="3px" />
+                                        <span className ='label-font'> Ngày vào</span>
+                                            <MyInput getValue={this.getValue} name='ngayVaoO' disabled={this.state.readOnly} value={dayInFormat} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -340,17 +369,18 @@ class ProfileStudent extends React.Component {
                                 <div className='profile-panel-content-row'>
                                     <Row>
                                         <Col>
-                                            Phòng
+                                        <span className ='label-font'>Phòng</span>
                                             <MyInput
                                                 getValue={this.getValue}
                                                 name='tenPhong'
                                                 readOnly={this.state.readOnly}
-                                                value={profile.idPhong.tenPhong}
+                                                disabled={this.state.readOnly}
+                                                value={this.state.tenPhong.tenPhong}
                                                 borderRadius="3px" />
                                         </Col>
                                         <Col>
-                                            Ngày hết hạn
-                                            <MyInput getValue={this.getValue} name='ngayHetHan' disabled={this.state.readOnly} value={profile.ngayHetHan} borderRadius="3px" />
+                                        <span className ='label-font'>Ngày hết hạn </span>
+                                            <MyInput getValue={this.getValue} name='ngayHetHan' disabled={this.state.readOnly} value={dayOutFormat} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -358,12 +388,12 @@ class ProfileStudent extends React.Component {
                                 <div className='profile-panel-content-row'>
                                     <Row>
                                         <Col>
-                                            Trạng thái
-                                            <MyInput getValue={this.getValue} disabled={this.state.readOnly} borderRadius="3px" />
+                                        <span className ='label-font'>Trạng thái</span>
+                                                <MyInput getValue={this.getValue} disabled={this.state.readOnly} borderRadius="3px" />
                                         </Col>
                                         <Col>
-                                            Dân tộc
-                                            <MyInput getValue={this.getValue} name='danToc' readOdisablednly={this.state.readOnly} value={profile.danToc} borderRadius="3px" />
+                                        <span className ='label-font'> Dân tộc</span>
+                                            <MyInput getValue={this.getValue} name='danToc' disabled={this.state.readOnly} value={this.state.danToc} borderRadius="3px" />
 
                                         </Col>
                                     </Row>
@@ -371,7 +401,8 @@ class ProfileStudent extends React.Component {
                                 <div className='profile-panel-content-row'>
                                     <Row>
                                         <Col sm={6}>
-                                            Giới tính
+                                        <span className ='label-font'>Giới tính</span>
+                                           
                                            {genderInput}
                                         </Col>
 
@@ -394,8 +425,9 @@ class ProfileStudent extends React.Component {
 
                     </Row>
                 </div>
+                </div>
 
-
+        }
             </React.Fragment>
         )
     }

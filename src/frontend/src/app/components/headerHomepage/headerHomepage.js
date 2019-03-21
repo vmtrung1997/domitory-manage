@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import './headerHomepage.css'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import jwt_decode from 'jwt-decode';
 
 class HeaderHomepage extends Component {
     constructor(props) {
@@ -12,6 +13,7 @@ class HeaderHomepage extends Component {
         this.state = {
             showLoginModal: false,
             isLogin: false,
+            name: ''
         }
     }
 
@@ -55,11 +57,30 @@ class HeaderHomepage extends Component {
         this.setState({ isLogin: false })
     }
 
+    componentDidMount() {
+        var secret = localStorage.getItem('secret');
+        if (secret) {
+            const decode = jwt_decode(secret);
+            var name = decode.user.profile.hoTen.split(" ");
+            this.setState({ name: name[name.length-1] });
+        }
+    }
+
+    setName = () => {
+
+    }
+
     render() {
+
         var { state } = this.props;
-        var userProfile = state;
         let isLogin;
-        const secret = JSON.parse(localStorage.getItem('secret'))
+        var secret = localStorage.getItem('secret');
+
+        secret = JSON.parse(secret);
+
+        if (secret) {
+            this.setName();
+        }
         if (secret && !this.state.isLogin) {
             this.setState({ isLogin: true })
         }
@@ -68,21 +89,19 @@ class HeaderHomepage extends Component {
                 <span>Đăng nhập</span></Button>
         }
         else {
-            // var name = userProfile.hoTen.split(" ");
-            // name = name[name.length-1];
             isLogin = <ButtonToolbar>
                 {['Primary'].map(
                     variant => (
                         <SplitButton
 
-                            title={`Chào $`}
+                            title= {this.state.name}
                             variant="link"
                             id={`dropdown-split-variants-${variant}`}
                             key={variant}
                             onSelect={this.handleSelect}
                         >
-                            <Dropdown.Item eventKey="1"><Link to="/dashboard#profile"><i className="fas fa-user-circle"></i><span className='list-menu-sub'>Trang cá nhân</span></Link></Dropdown.Item>
-                            <Dropdown.Item eventKey="2"><i className="fas fa-snowboarding"></i><span className='list-menu-sub'>Hoạt động</span></Dropdown.Item>
+                            <Dropdown.Item eventKey="1" href='/dashboard'><i className="fas fa-user-circle"></i><span className='list-menu-sub'>Trang cá nhân</span></Dropdown.Item>
+                            <Dropdown.Item eventKey="2"><Link to="/dashboard#list"><i className="fas fa-snowboarding"></i><span className='list-menu-sub'>Hoạt động</span></Link></Dropdown.Item>
                             <Dropdown.Item eventKey="3"><i className="fas fa-file-invoice"></i><span className='list-menu-sub'>Điện nước</span></Dropdown.Item>
                             <Dropdown.Divider />
                             <Dropdown.Item onClick={this.logOut} eventKey="4"><i className="fas fa-sign-out-alt"></i><span className='list-menu-sub'>Thoát</span></Dropdown.Item>

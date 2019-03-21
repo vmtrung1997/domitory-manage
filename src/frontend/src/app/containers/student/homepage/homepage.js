@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import Slide from '../../../components/slideHomepage/slideHomepage'
 import News from '../../../components/news/newsHomepage'
 import Info from '../../../components/introHomepage/info'
+
+import Header from './../../../components/headerHomepage/headerHomepage'
 //import autoscroll from 'autoscroll-react'
 import { Route } from 'react-router-dom'
 import ReallySmoothScroll from 'really-smooth-scroll';
@@ -39,6 +41,7 @@ class Homepage extends Component {
     render() {
         return (
             <React.Fragment>
+                  <Header ></Header>
                 <Slide></Slide>
                 <News id="new"></News>
                 <Info id="info"></Info>          
