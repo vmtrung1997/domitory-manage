@@ -15,7 +15,6 @@ import requestMiddleware from './app/middleware'
 //Create store
 const store = createStore(
 	rootReducer,
-	applyMiddleware(requestMiddleware)
 );
 
 ReactDOM.render(

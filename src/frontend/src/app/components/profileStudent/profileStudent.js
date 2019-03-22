@@ -9,12 +9,10 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import jwt_decode from 'jwt-decode';
 import { bindActionCreators } from 'redux'
-import * as UserAction from '../../actions/userAction'
-import * as SpecializedAction from '../../actions/SpecialAction'
-import * as SchoolAction from '../../actions/schoolAction'
+import * as UserAction from '../../actions/studentAction'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 import Loader from 'react-loader-spinner'
-
+import refreshToken from './../../../utils/refresh_token'
 
 class ProfileStudent extends React.Component {
     constructor(props) {
@@ -59,7 +57,7 @@ class ProfileStudent extends React.Component {
         this.setState({ isDisable: !this.state.isDisable });
     }
 
-    updateProfile = () => {
+    updateProfile =  async() => {
         var data = {
             MSSV: this.state.MSSV,
             danToc: this.state.danToc,
@@ -80,6 +78,8 @@ class ProfileStudent extends React.Component {
 
         this.setState({ isDisable: !this.state.isDisable });
         
+        await refreshToken();
+
         var secret = localStorage.getItem('secret');
         secret = JSON.parse(secret);
         axios.defaults.headers['x-access-token'] = secret.access_token;
@@ -100,20 +100,22 @@ class ProfileStudent extends React.Component {
         console.log(date);
     }
 
-    componentDidMount() {
+    componentDidMount = async () =>{
+
+        await refreshToken();
+
         var secret = localStorage.getItem('secret');
-        const decode = jwt_decode(secret);
-        secret = JSON.parse(secret);
 
         if (secret) {
-
+            const decode = jwt_decode(secret);
+            secret = JSON.parse(secret);
             var id = decode.user.userEntity._id;
-
             //Lấy thông tin sinh viên
             axios.defaults.headers['x-access-token'] = secret.access_token;
             axios.post(`http://localhost:4000/api/student/get-info`, { id: id }).then(res => {
                 if (res) {
                     //Lưu trong redux
+                    console.log(res.data.data);
                     this.props.getUserAction(res.data.data);
 
                     var nganhHoc = {
@@ -157,9 +159,9 @@ class ProfileStudent extends React.Component {
             //Lấy danh sách các ngành học
             axios.get('http://localhost:4000/api/student/get-specialized').then(res => {
                 if (res) {
-                    res.data.data.forEach(element => {
-                        this.props.getSpecialized(element);
-                    });
+                    // res.data.data.forEach(element => {
+                    //     this.props.getSpecialized(element);
+                    // });
                     var options = res.data.data.map(obj => {
                         return { value: obj._id, label: obj.tenNganh }
                     })
@@ -172,10 +174,9 @@ class ProfileStudent extends React.Component {
             //Lấy danh sách các trường
             axios.get('http://localhost:4000/api/student/get-school').then(res => {
                 if (res) {
-                    console.log(res.data.data);
-                    res.data.data.forEach(element => {
-                        this.props.getSchool(element);
-                    });
+                    // res.data.data.forEach(element => {
+                    //     this.props.getSchool(element);
+                    // });
                     var options = res.data.data.map(obj => {
                         return { value: obj._id, label: obj.tenTruong }
                     })
@@ -215,9 +216,9 @@ class ProfileStudent extends React.Component {
 
     }
     render() {
+        console.log(this.props.state);
         if(!this.state.isLoad)
         {
-        console.log(this.state.gioiTinh);
         var { state } = this.props;
         var profile = state.userProfile || null;
 
@@ -438,8 +439,6 @@ var mapStateToProps = (state) => {
 var mapDispatchToProps = (dispatch) => {
     return {
         getUserAction: bindActionCreators(UserAction.GET_USER_INFO, dispatch),
-        getSpecialized: bindActionCreators(SpecializedAction.GET_SPECIALIZED_INFO, dispatch),
-        getSchool: bindActionCreators(SchoolAction.GET_SCHOOL_INFO, dispatch),
     };
 }
 
