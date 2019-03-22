@@ -3,9 +3,23 @@
 }
 
 .time-bill-header{
+    margin-top: 20px;
     margin-bottom: 10px;
     color: #2680EB;
 }
+
+.detail{
+    color: #007bff;
+    cursor: pointer;
+}
+
+
+.detail:hover{
+    color: blue;    
+    cursor: pointer;
+    text-decoration: underline
+}
+
 
 .is-done{
     color: green;
@@ -17,4 +31,8 @@
 
 .sub-list-activity{
     margin-left: 20px;
+}
+
+.sub-list-activity:hover{
+    background-color: aqua !important;
 }

@@ -33,15 +33,17 @@
     
   
 }
-
+.profile-panel-content-title{
+    font-size: 5px;
+}
 .profile-panel-button{
     margin-left: 15px;
     margin-right: 15px;
 }
 
-/* .profile-panel-content-row{
-    margin-bottom: 20px !important;
-} */
+.profile-not-allowed{
+    cursor: not-allowed
+}
 
 .input-picker{
     background-color: #FFFFFF !important;

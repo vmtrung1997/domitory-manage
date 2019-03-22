@@ -21,7 +21,6 @@ class PractiseStudent extends React.Component {
                                     <th>Năm học</th>
                                     <th>Học kỳ</th>
                                     <th>Điểm</th>
-                                    <th>Xếp loại DRL</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -29,8 +28,6 @@ class PractiseStudent extends React.Component {
                                     <td>1</td>
                                     <td>Table cell</td>
                                     <td>Table cell</td>
-                                    <td>Table cell</td>
-                                  
                                 </tr>
                             </tbody>
                         </Table>
