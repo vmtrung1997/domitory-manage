@@ -61,66 +61,85 @@ function update_data(item, cb) {
 		})
 	}, 100)
 }
-function CalculateTien (arr, number){
+function CalculateTien(arr, number) {
 	let total = 0;
-	for (let i = 0;i<arr.length;i++){
-		total+=1;
-		if (number>= arr[i].giaTriDau && number<=arr[i].giaTriCuoi){
-			for (let j=0; j<i; j++){
-				if (j !=0)
-					total += (arr[j].giaTriCuoi - arr[j].giaTriDau +1) * arr[j].giaTriThuc;
+	for (let i = 0; i < arr.length; i++) {
+		if (number >= arr[i].giaTriDau && number <= arr[i].giaTriCuoi) {
+			for (let j = 0; j < i; j++) {
+				if (j != 0)
+					total = total + (arr[j].giaTriCuoi - arr[j].giaTriDau + 1) * arr[j].giaTriThuc;
 				else
-					total += (arr[j].giaTriCuoi - arr[j].giaTriDau) * arr[j].giaTriThuc;
+					total = total(arr[j].giaTriCuoi - arr[j].giaTriDau) * arr[j].giaTriThuc;
 			}
-			total += (number - arr[i].giaTriDau) * arr[i].giaTriThuc;
+			total = total + (number - arr[i].giaTriDau) * arr[i].giaTriThuc;
 			break;
 		}
 	}
-	return 0;
+	return total;
 }
 exports.add_data = (req, res) => {
 	var table = req.body
-	ThongSo.find().sort({id: 1}).then(thongSoArr => {
+	var tableAdd = [];
+	var tableErr = [];
+	ThongSo.find().sort({ id: 1 }).then(thongSoArr => {
 		if (thongSoArr.length > 0) {
-			var arrDien = thongSoArr.filter(value=> value.loai === 'dien')
-			var arrNuoc = thongSoArr.filter(value=> value.loai === 'nuoc')
+			var arrDien = thongSoArr.filter(value => value.loai === 'dien')
+			var arrNuoc = thongSoArr.filter(value => value.loai === 'nuoc')
 			ChiPhiHienTai.find().then(vals => {
-				if (vals) {
-					var tableAdd = table.map(row => {
+				if (vals.length > 0) {
+					table.forEach(row => {
+						// ChiPhiPhong
+						// .findOne({ thang: row.thang, nam: row.nam, idPhong: row.phong.value })
+						// .then(value => {
+						// 	if (value) {
+						// 		tableErr.push(row);
+						// 			console.log('double reject')
+						// 		} else {
+						// 			console.log('not double')
+									
+						// 		}
+						// 	})
 						var obj = vals.find((val) => val.idPhong === row.phong.value)
-						if (obj)
-							var tienDien = CalculateTien(arrDien,obj.soDien-obj.soDienCu)
-							var tienNuoc = CalculateTien(arrNuoc,obj.soNuoc-obj.soNuocCu)
-							var tongTien = Math.round(tienDien+tienNuoc*1000)/1000
-							return {
-								idPhong: row.phong.value,
-								thang: row.thang,
-								nam: row.nam,
-								soDien: row.soDien,
-								soNuoc: row.soNuoc,
-								soDienCu: obj.soDien,
-								soNuocCu: obj.soNuoc,
-								tienDien: tienDien,
-								tienNuoc: tienNuoc,
-								tienRac: 50000,
-								tongTien: tongTien,
-								tongTienChu: '',
-								trangThai: 0
-							}
+									if (obj) {
+										var tienDien = CalculateTien(arrDien, obj.soDien - obj.soDienCu)
+										var tienNuoc = CalculateTien(arrNuoc, obj.soNuoc - obj.soNuocCu)
+										var tongTien = Math.round(tienDien + tienNuoc * 1000) / 1000
+										tableAdd.push({
+											idPhong: row.phong.value,
+											thang: row.thang,
+											nam: row.nam,
+											soDien: row.soDien,
+											soNuoc: row.soNuoc,
+											soDienCu: obj.soDien,
+											soNuocCu: obj.soNuoc,
+											tienDien: tienDien,
+											tienNuoc: tienNuoc,
+											tienRac: 50000,
+											tongTien: tongTien,
+											tongTienChu: '',
+											trangThai: 0
+										})
+									}
 					});
-					ChiPhiPhong.collection.insert(tableAdd, function (err, result) {
-						if (result) {
-							res.status(201).json({
-								rs: 'success',
-								data: result
-							})
-						} else {
-							res.end(400).json({
-								rs: 'fail',
-								msg: err
-							})
-						}
-					})
+					console.log('tableAdd: ',tableAdd)
+					console.log('tableErr: ',tableErr)
+					if (tableAdd.length>0){
+						ChiPhiPhong.insertMany(tableAdd).then((result) => {
+							if (result.length>0) {
+								res.status(201).json({
+									rs: 'success',
+									data: result,
+									dataErr: tableErr
+								})
+							}
+						}).catch(err => {res.json({rs: 'fail', msg: err})})
+					} else {
+						res.status(200).json({
+							rs: 'fail',
+							data: [],
+							dataErr: tableErr
+						})
+					}
 				}
 			})
 		}
@@ -269,7 +288,7 @@ exports.report_expense = (req, res) => {
 		.then(result => {
 			var array = []
 			array.push(header);
-			var total = ['', '', 'Tổng', '', 0, '', 0, 0, 0]
+			var total = ['', '', 'Tổng', 0, 0, 0, 0,'']
 			for (let item of result) {
 				var arr = []
 				arr.push(item.nam);
@@ -289,9 +308,11 @@ exports.report_expense = (req, res) => {
 				}
 				if (options.indexOf('tongTien') > 0) {
 					arr.push(item.tienDien);
+					total[header.indexOf('Tiền điện')] += item.tienDien
 					arr.push(item.tienNuoc);
 					arr.push(item.tongTien);
 					arr.push(item.tongTienChu);
+					total[header.indexOf('Tiền nước')] += item.tienNuoc
 					total[header.indexOf('Tổng tiền')] += item.tongTien
 				}
 				array.push(arr)

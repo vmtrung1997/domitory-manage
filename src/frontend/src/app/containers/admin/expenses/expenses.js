@@ -21,7 +21,7 @@ class Expenses extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			required: false,
+			//required: false,
 			dataTable: { docs: [] },
 			rooms: [],
 			sendRoom: [],
@@ -41,6 +41,7 @@ class Expenses extends Component {
 		var self = this;
 		getData().then(result => {
 			if (result.data) {
+				console.log(result)
 				var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong }))
 				roomOptions.unshift({ value: 0, label: 'Tất cả' });
 				self.setState({ rooms: roomOptions });
@@ -61,6 +62,7 @@ class Expenses extends Component {
 		options.options.page=page
 		search(options).then(result => {
 			if (result.data) {
+				console.log(result.data);
 				this.setState({ dataTable: result.data.rs, loading: false,options: {page: 1} })
 			}
 		}).catch(error => {});
@@ -85,6 +87,16 @@ class Expenses extends Component {
 	}
 	handleRequire = (value) => {
 		this.setState({required: value})
+		var self = this;
+		getData().then(result => {
+			if (result.data) {
+				console.log(result)
+				var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong }))
+				roomOptions.unshift({ value: 0, label: 'Tất cả' });
+				self.setState({ rooms: roomOptions });
+				self.searchTable(1);
+			}
+		}).catch(err => {})
 	}
 	render() {
 		var month = get_month();
@@ -94,8 +106,8 @@ class Expenses extends Component {
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
 				<Title> Chi phí </Title>
-				<ModalRequire require={this.handleRequire}/>
-				{this.state.required && <div className={'content-body'}>
+				
+				<div className={'content-body'}>
 					<div>
 						<Row className={'m-b-10'}>
 							<Col md={2} xs={12}>
@@ -133,7 +145,7 @@ class Expenses extends Component {
 						<ExpenseTable table={this.state.dataTable} pageChange={e => this.pageChange(e)} retriveSearch={() => this.pageChange(1)}/>
 						
 					</div>
-				</div>}
+				</div>
 			</React.Fragment>
 		)
 	}
