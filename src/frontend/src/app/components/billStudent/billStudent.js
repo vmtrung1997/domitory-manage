@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux'
 import DetailBill from './detailBill'
 import OpitmizeNumber from '../../optimization/optimizationNumber/optimizationNumber'
 import Loader from 'react-loader-spinner'
+import refreshToken from './../../../utils/refresh_token'
 
 class BillStudent extends React.Component {
 
@@ -18,34 +19,42 @@ class BillStudent extends React.Component {
         this.state = ({
             showDetail: false,
             data: [],
-            isLoad: true
+            isLoad: true,
+            bills: []
         })
     }
 
-    componentDidMount() {
+    componentDidMount = async () => {
 
-        var secret = localStorage.getItem('secret');
+        await refreshToken();
+
+       
+		var secret = localStorage.getItem('secret');
         const decode = jwt_decode(secret);
+
         secret = JSON.parse(secret);
         var id = decode.user.userEntity._id;
+        console.log(decode);
 
+        axios.defaults.headers['x-access-token'] = secret.access_token;
+        var bill = [];
         //Lấy thông tin điện nước
         axios.post(`http://localhost:4000/api/student/get-info`, { id: id }).then(res => {
             if (res) {
+                
                 axios.post(`http://localhost:4000/api/student/get-bill`, { id: res.data.data.idPhong._id }).then(res => {
-                    console.log(res.data);
-                    //Lưu bill trong redux;
                     res.data.data.map(item => {
-                        this.props.getBill(item)
+                        if (item) {
+                            bill.push(item);
+                        }
                     })
-
+                    this.setState({
+                        isLoad: false,
+                        bills: bill
+                    })
                 });
             }
-        }).then(() => {
-            this.setState({
-                isLoad: false
-            })
-        });
+        })
     }
 
     showDetail = (data) => {
@@ -66,6 +75,7 @@ class BillStudent extends React.Component {
 
     render() {
         var isFirstRow = false;
+        console.log(this.props.profile);
 
         return (
 
@@ -106,17 +116,17 @@ class BillStudent extends React.Component {
                                     </thead>
                                     <tbody>
                                         <tr >
-                                            <td>{this.props.state[0].nam}</td>
-                                            <td>{this.props.state[0].thang}</td>
+                                            <td>{this.state.bills[0].nam}</td>
+                                            <td>{this.state.bills[0].thang}</td>
 
                                             <td>{this.props.profile.idPhong.tenPhong}</td>
-                                            <td>{this.props.state[0].soDien - this.props.state[0].soDienCu}</td>
-                                            <td>{this.props.state[0].soNuoc - this.props.state[0].soNuocCu}</td>
+                                            <td>{this.state.bills[0].soDien - this.state.bills[0].soDienCu}</td>
+                                            <td>{this.state.bills[0].soNuoc - this.state.bills[0].soNuocCu}</td>
 
-                                            <td>{OpitmizeNumber.OpitmizeNumber(this.props.state[0].tongTien)}</td>
+                                            <td>{OpitmizeNumber.OpitmizeNumber(this.state.bills[0].tongTien)}</td>
 
-                                            {this.props.state[0].trangThai === "0" ? <td className='is-dont-done'>Chưa thanh toán</td> : <td className='is-done'>Đã thanh toán</td>}
-                                            <td onClick={e => this.showDetail(this.props.state[0])} className='detail' ><span>Xem chi tiết</span></td>
+                                            {this.state.bills[0].trangThai === "0" ? <td className='is-dont-done'>Chưa thanh toán</td> : <td className='is-done'>Đã thanh toán</td>}
+                                            <td onClick={e => this.showDetail(this.state.bills[0])} className='detail' ><span>Xem chi tiết</span></td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -143,7 +153,7 @@ class BillStudent extends React.Component {
                                         </thead>
                                         <tbody>
                                             {
-                                                this.props.state.map(item => {
+                                                this.state.bills.map(item => {
                                                     if (!isFirstRow) {
                                                         isFirstRow = true;
                                                     }

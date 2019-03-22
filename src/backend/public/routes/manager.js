@@ -36,10 +36,16 @@ router.post('/activity/delete', activityController.delete_activity);
 
 router.post('/activity/update', activityController.update_activity);
 
+router.post('/activity/rollcall', activityController.rollcall_activity)
+
 // Info of student
 router.post('/infoStudent/get', infoStudent.getListStudent);
 
 router.post('/infoStudent/add', infoStudent.addStudent);
+
+router.post('/infoStudent/delete', infoStudent.deleteStudent);
+
+router.post('/infoStudent/update', infoStudent.updateInfo);
 
 router.get('/getElement/:name', repo.get_element);
 

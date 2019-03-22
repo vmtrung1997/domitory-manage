@@ -66,25 +66,17 @@ class HeaderHomepage extends Component {
         }
     }
 
-    setName = () => {
-
-    }
-
     render() {
 
         var { state } = this.props;
         let isLogin;
-        var secret = localStorage.getItem('secret');
-
-        secret = JSON.parse(secret);
-
-        if (secret) {
-            this.setName();
-        }
+        const secret = JSON.parse(localStorage.getItem('secret'))
         if (secret && !this.state.isLogin) {
-            this.setState({ isLogin: true })
+            const decode = jwt_decode(secret.access_token)
+            if(decode.user.userEntity.loai === 'SV')
+                this.setState({ isLogin: true })
         }
-        if (!secret && !this.state.isLogin) {
+        if (!this.state.isLogin) {
             isLogin = <Button onClick={this.Login} variant="primary" className='form-rounded menu-item btn-menu'>
                 <span>Đăng nhập</span></Button>
         }
