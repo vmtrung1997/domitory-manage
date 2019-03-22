@@ -13,7 +13,10 @@ exports.get_activity = (req, res) => {
 		res.json({
 			rs: result
 		})
-	}).catch(err => console.log('==get_activity: ',err))	
+	}).catch(err => {
+		console.log('==get_activity: ',err)
+		res.status(500)
+	})	
 };
 
 exports.detail_activity = (req, res) => {
@@ -25,6 +28,7 @@ exports.detail_activity = (req, res) => {
 		res.json({rs: data, hd: a})
 	))
 };
+
 exports.post_activity = (req, res) => {
 	var tmp = {
 		ten: req.body.name,
@@ -40,7 +44,10 @@ exports.post_activity = (req, res) => {
 		console.log('==post_activity: success')
 		res.json({rs: 'ok'})
 	})
-	.catch( err => {console.log('==post_activity: ',err)})
+	.catch( err => {
+		console.log('==post_activity: ',err)
+		res.status(500)
+	})
 };
 
 exports.delete_activity = (req, res) => {
@@ -51,11 +58,12 @@ exports.delete_activity = (req, res) => {
 			console.log('==delete_activity: success')
 		}
 		else{
-			res.json({ rs: 'not found activity'})
-			console.log('==delete_activity: err')
+			console.log('==delete_activity: ', err)
+			res.status(500)
 		}
 	});
 };
+
 exports.update_activity = (req, res) => {
 	const id = req.query.id
 	var data = {
@@ -73,8 +81,57 @@ exports.update_activity = (req, res) => {
 			console.log('==update_activity: success')
 		}
 		else{
-			res.json({ rs: 'not found activity'})
-			console.log('==update_activity: not found activity')
+			console.log('==update_activity:', err)
+			res.status(500)
 		}
 	})
+};
+
+exports.rollcall_activity = async (req, res) => {
+	var data = {
+		hd: req.body.idHD,
+		the: req.body.idThe,
+		diem: req.body.point,
+		sv: ''
+	}
+
+	await Profile.findOne({ maThe: data.the}, (err, val) => {
+		if(err){
+			console.log('==rollcall_activ:', err)
+			res.status(500)
+		}
+		if(!val){
+			console.log(1)
+			res.status(200).json({rs: 'not found student'})
+		}
+		data.sv = val
+	})
+	if(data.sv){
+		resultActivity.findOne({ idHD: data.hd, idSV: data.sv._id }, (err,val) => {
+			if(err){
+				console.log('==rollcall_activity:', err)
+				res.status(500)
+			}
+			if(!val) {
+				var rs = new resultActivity({
+					idHD: data.hd,
+					idSV: data.sv._id,
+					status: 1 
+				})
+				rs.save()
+			} else {
+				if(val.status === 1){
+					res.status(200).json({ rs: 'ok'})
+					return true
+				}
+				val.status = 1
+				val.save()
+			}
+			data.sv.diemHD = (data.sv.diemHD || 0) + data.diem
+			data.sv.save()
+			res.json({ rs: 'ok'})
+			console.log('==rollcall_activity: success')
+		})
+	}
+
 };

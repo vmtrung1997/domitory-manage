@@ -7,8 +7,6 @@ import './activityDetail.css'
 import refreshToken from './../../../../utils/refresh_token'
 import Loader from './../../../components/loader/loader'
 import Title from './../../../components/title/title'
-import Input from './../../../components/input/input'
-import CheckBox from './../../../components/checkbox/checkbox'
 
 
 class ActivityDetail extends Component{
@@ -45,7 +43,6 @@ class ActivityDetail extends Component{
 		var signUpTable = []
 		var iSignup = 0
 		var iJoin = 0
-		var curData = new Date();
 		var date = new Date(this.state.hd.ngay);
 		var strDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 

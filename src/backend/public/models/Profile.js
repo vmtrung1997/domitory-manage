@@ -21,6 +21,7 @@ var profileSchema = new Schema({
     ngayHetHan: Date,
     danToc: String,
     img: String,
+    diemHD: Number
 });
 
 profileSchema.plugin(mongoosePaginate);
