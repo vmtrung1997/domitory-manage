@@ -66,14 +66,16 @@ exports.me_access = (req, res) => {
 			User.findOne({ '_id': id }, function (err, userEntity) {
 				if (userEntity) {
 					Profile.findOne({idTaiKhoan: userEntity._id},(err,prof) => {
-						var userObj = {userEntity, profile: prof}
-						var acToken = auth.generateAccessToken(userObj);
-						console.log('==refresh_token: success')
-						res.status(200).json({
-							auth: true,
-							access_token: acToken,
-							refresh_token: reToken
-						})
+						if (prof.length>0){
+							var userObj = {userEntity, hoTen: prof.hoTen}
+							var acToken = auth.generateAccessToken(userObj);
+							console.log('==refresh_token: success')
+							res.status(200).json({
+								auth: true,
+								access_token: acToken,
+								refresh_token: reToken
+							})
+						}
 					})
 				}
 			})

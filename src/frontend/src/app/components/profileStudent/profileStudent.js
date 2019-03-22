@@ -438,8 +438,8 @@ var mapStateToProps = (state) => {
 var mapDispatchToProps = (dispatch) => {
     return {
         getUserAction: bindActionCreators(UserAction.GET_USER_INFO, dispatch),
-        getSpecialized: bindActionCreators(StudentAction.GET_SPECIALIZED_INFO, dispatch),
-        getSchool: bindActionCreators(StudentAction.GET_SCHOOL_INFO, dispatch),
+        getSpecialized: bindActionCreators(SpecializedAction.GET_SPECIALIZED_INFO, dispatch),
+        getSchool: bindActionCreators(SchoolAction.GET_SCHOOL_INFO, dispatch),
     };
 }
 

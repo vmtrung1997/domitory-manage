@@ -22,6 +22,9 @@ router.post('/expense/update_expense', expenseController.update_expense);
 
 router.post('/expense/report', expenseController.report_expense);
 
+router.get('/expense/get_parameter', expenseController.get_parameter);
+
+router.post('/expense/require', expenseController.require)
 // Activity
 router.get('/activity/get_activity', activityController.get_activity);
 
