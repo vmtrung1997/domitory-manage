@@ -281,6 +281,19 @@ class InfoStudent extends Component{
     })
   };
 
+  handleReload = () => {
+    this.setState({
+      pageActive: 1,
+      hoTen: '',
+      mssv: '',
+      roomSelected: '',
+      schoolSelected: '',
+      floorSelected: '',
+
+    })
+    this.getData();
+  }
+
   render(){
     console.log('==render state', this.state);
     let i = 0;
@@ -375,7 +388,7 @@ class InfoStudent extends Component{
                 size={'md'}
                 color={'default'}
                 fullWidth
-                onClick={() => this.handleSearch()}
+                onClick={() => this.handleReload()}
               >
                 <i className="fas fa-sync-alt"/>
               </Button>
