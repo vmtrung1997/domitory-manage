@@ -41,3 +41,16 @@ body{
     bottom: 0;
     left: 0;
 }
+
+.link{
+    color: #007bff;
+    cursor: pointer;
+}
+.link:hover{
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.label-font{
+    font-weight: 500;
+}

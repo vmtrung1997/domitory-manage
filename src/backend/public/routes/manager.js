@@ -22,6 +22,9 @@ router.post('/expense/update_expense', expenseController.update_expense);
 
 router.post('/expense/report', expenseController.report_expense);
 
+router.get('/expense/get_parameter', expenseController.get_parameter);
+
+router.post('/expense/require', expenseController.require)
 // Activity
 router.get('/activity/get_activity', activityController.get_activity);
 
@@ -39,6 +42,10 @@ router.post('/activity/rollcall', activityController.rollcall_activity)
 router.post('/infoStudent/get', infoStudent.getListStudent);
 
 router.post('/infoStudent/add', infoStudent.addStudent);
+
+router.post('/infoStudent/delete', infoStudent.deleteStudent);
+
+router.post('/infoStudent/update', infoStudent.updateInfo);
 
 router.get('/getElement/:name', repo.get_element);
 

@@ -1,7 +1,9 @@
 import React from 'react'
-import { Modal } from 'react-bootstrap'
+import {Modal,Table } from 'react-bootstrap'
 import Button from '../../../components/button/button'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import {get_parameter} from './expensesAction'
+import Input from '../../../components/input/input';
 class Example extends React.Component {
   
   constructor(props, context) {
@@ -14,6 +16,7 @@ class Example extends React.Component {
     }
   }
   componentDidMount(){
+
   }
   handleClose() {
     this.setState({ show: false});
@@ -23,6 +26,9 @@ class Example extends React.Component {
   }
   handleShow() {
     this.setState({ show: true });
+    get_parameter().then(result => {
+      this.setState({parameter: result.data.data});
+    })
   }
   
   handleSubmit = () => {
@@ -43,7 +49,34 @@ class Example extends React.Component {
             <Modal.Title>Thông số</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            
+          <Table bordered hover responsive size="sm">
+					<thead >
+						<tr>
+							<th>Id</th>
+							<th>Loại chi phí</th>
+							<th>Giá trị đầu</th>
+							<th>Giá trị cuối</th>
+							<th>Đơn vị</th>
+							<th>Mô tả</th>
+							<th>Giá trị thực</th>
+						</tr>
+					</thead>
+					<tbody>
+            {this.state.parameter && this.state.parameter.map((para, index) => {
+              return(
+                <tr key={index}>
+                  <td>{para.id}</td>
+                  <td>{para.loaiChiPhi}</td>
+                  <td>{para.giaTriDau}</td>
+                  <td>{para.giaTriCuoi}</td>
+                  <td>{para.donVi}</td>
+                  <td>{para.moTa}</td>
+                  <td>{para.giaTriThuc}</td>
+                </tr>
+              )
+            })}
+					</tbody>
+				</Table>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="default" color="default" onClick={this.handleClose}>
