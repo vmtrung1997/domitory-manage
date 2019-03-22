@@ -40,6 +40,8 @@ router.post('/infoStudent/add', infoStudent.addStudent);
 
 router.post('/infoStudent/delete', infoStudent.deleteStudent);
 
+router.post('/infoStudent/update', infoStudent.updateInfo);
+
 router.get('/getElement/:name', repo.get_element);
 
 

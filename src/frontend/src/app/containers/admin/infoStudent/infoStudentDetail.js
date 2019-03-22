@@ -5,16 +5,62 @@ import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import './infoStudentDetail.css';
 import './../../../style.css'
+import refreshToken from "../../../../utils/refresh_token";
+import axios from "axios";
+import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
+import Select from "../../../components/selectOption/select";
 
 class InfoStudentDetail extends Component{
+  constructor(props) {
+    super(props);
+    this.state = {
+      info: {},
+      genderOptions: [{value: 0, label: 'nữ'}, {value: 1, label: 'nam'}]
+    }
+  }
+
+  componentWillMount() {
+    this.setState({
+      info: this.props.location.state.info
+    })
+  }
   arrayBufferToBase64(buffer) {
     var binary = '';
     var bytes = [].slice.call(new Uint8Array(buffer));
     bytes.forEach((b) => binary += String.fromCharCode(b));
     return window.btoa(binary);
   };
+
+  onChange = (event) => {
+    this.setState({
+      info: {...this.state.info, [event.name]: event.value}
+    })
+    console.log('==state', this.state)
+  }
+
+  handleSaveChange = async() => {
+    await refreshToken()
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.post(`/manager/infoStudent/update`,
+      { info: this.state.info
+      }, { headers: { 'x-access-token': secret.access_token } }
+    ).then(result => {
+      console.log('==up success', result)
+      ToastsStore.success("Cập nhật thành công!");
+    }).catch(err => {
+      console.log('==up err', err)
+      ToastsStore.error("Cập nhật không thành công!");
+    })
+  }
+
+  handleSelectGender = selectedOption => {
+    console.log('==gender', selectedOption)
+    this.setState({ info: {...this.state.info, gioiTinh: selectedOption} })
+  }
+
   render(){
-    const { location: { state: { info }}} = this.props;
+    console.log('==state render', this.state);
+    const { info, genderOptions } = this.state;
     const {
       hoTen,
       MSSV,
@@ -43,6 +89,7 @@ class InfoStudentDetail extends Component{
     var stringDate = birthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     return(
       <div>
+        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
         <Title>
           Thông tin sinh viên
         </Title>
@@ -66,13 +113,13 @@ class InfoStudentDetail extends Component{
                     Họ và tên:
                   </Col>
                   <Col md={4}>
-                    <Input value={hoTen}/>
+                    <Input value={hoTen} getValue={this.onChange} name={'hoTen'} />
                   </Col>
                   <Col md={2}>
                     MSSV:
                   </Col>
                   <Col md={4}>
-                    <Input value={MSSV} disabled/>
+                    <Input value={MSSV} disabled />
                   </Col>
                 </Row>
 
@@ -81,13 +128,13 @@ class InfoStudentDetail extends Component{
                     Username:
                   </Col>
                   <Col md={4}>
-                    <Input value={username}/>
+                    <Input value={username} disabled />
                   </Col>
                   <Col md={2}>
                     Mã thẻ:
                   </Col>
                   <Col md={4}>
-                    <Input value={maThe}/>
+                    <Input value={maThe} getValue={this.onChange} name={'username'} />
                   </Col>
                 </Row>
 
@@ -96,13 +143,18 @@ class InfoStudentDetail extends Component{
                     Ngày sinh:
                   </Col>
                   <Col md={4}>
-                    <Input value={stringDate}/>
+                    <Input value={stringDate} getValue={this.onChange} name={'username'} />
                   </Col>
                   <Col md={2}>
                     Giới tính:
                   </Col>
                   <Col md={4}>
-                    <Input value={gioiTinh ? 'Name' : 'Nữ'}/>
+                    <Select
+                      placeholder={''}
+                      value={gioiTinh}
+                      selected={this.handleSelectGender}
+                      options={genderOptions} />
+
                   </Col>
                 </Row>
 
@@ -112,13 +164,13 @@ class InfoStudentDetail extends Component{
                     Email:
                   </Col>
                   <Col md={4}>
-                    <Input value={email}/>
+                    <Input value={email} getValue={this.onChange} name={'email'} />
                   </Col>
                   <Col md={2}>
                     Số điện thoại:
                   </Col>
                   <Col md={4}>
-                    <Input value={sdt}/>
+                    <Input value={sdt} getValue={this.onChange} name={'sdt'} />
                   </Col>
                 </Row>
 
@@ -127,13 +179,13 @@ class InfoStudentDetail extends Component{
                     Dân tộc:
                   </Col>
                   <Col md={4}>
-                    <Input value={danToc}/>
+                    <Input value={danToc} getValue={this.onChange} name={'danToc'} />
                   </Col>
                   <Col md={2}>
                     Sđt người thân:
                   </Col>
                   <Col md={4}>
-                    <Input value={sdtNguoiThan}/>
+                    <Input value={sdtNguoiThan} getValue={this.onChange} name={'sdtNguoiThan'} />
                   </Col>
                 </Row>
 
@@ -163,7 +215,7 @@ class InfoStudentDetail extends Component{
                     Phòng:
                   </Col>
                   <Col md={4}>
-                    <Input value={tenPhong}/>
+                    <Input value={tenPhong} />
                   </Col>
                 </Row>
 
@@ -172,7 +224,7 @@ class InfoStudentDetail extends Component{
                     Địa chỉ:
                   </Col>
                   <Col md={10}>
-                    <Input value={diaChi}/>
+                    <Input value={diaChi} getValue={this.onChange} name={'diaChi'} />
                   </Col>
                 </Row>
                 <Row>
@@ -188,7 +240,7 @@ class InfoStudentDetail extends Component{
                     Trường:
                   </Col>
                   <Col md={10}>
-                    <Input val={tenTruong}/>
+                    <Input val={tenTruong} />
                   </Col>
                 </Row>
 
@@ -197,13 +249,19 @@ class InfoStudentDetail extends Component{
                     Mô tả:
                   </Col>
                   <Col md={10}>
-                    <Input value={moTa}/>
+                    <Input value={moTa} getValue={this.onChange} name={'moTa'} />
                   </Col>
                 </Row>
               </Col>
             </Row>
+
           </div>
         </div>
+        <Row className={'isc-footer-btn'}>
+          <Button onClick={() =>this.handleSaveChange()}>
+            Lưu thay đổi
+          </Button>
+        </Row>
       </div>
 
     )

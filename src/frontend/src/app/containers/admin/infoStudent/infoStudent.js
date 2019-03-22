@@ -8,7 +8,7 @@ import CheckBox from './../../../components/checkbox/checkbox';
 import {Route, withRouter} from 'react-router-dom';
 import './infoStudent.css';
 import './../../../style.css'
-import Select from "../../../components/selectOption/select";
+
 import axios from 'axios';
 import refreshToken from './../../../../utils/refresh_token'
 import InfoStudentDetail from './infoStudentDetail';
@@ -23,25 +23,35 @@ class InfoStudent extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      roomList: [{value: 0, label: 101}, {value: 1, label: 102}, {value: 2, label: 103}],
       showAddPopup: false,
       showDelPopup: false,
       pageActive: 1,
       totalpages: 1,
+      limit: 10,
+
       mssvAdded: '',
       nameAdded: '',
       roomAdded: '',
       schoolAdded: '',
-      limit: 10,
+
       pageList: [1,2,3,4,5],
       infoList: [],
+
       mssv: '',
       hoTen: '',
-      roomSelected: '',
+      roomSelected: {},
+      schoolSelected: {},
+      floorSelected: {},
+
       phong: [],
       truong: [],
+
       listDelete: [],
-      flag: false
+      flag: false,
+
+      schoolOptions: [],
+      roomOptions: [],
+      floorOptions: [{value: 0, label: 1}, {value: 1, label: 2}, {value: 2, label: 3}, {value: 3, label: 4}, {value: 4, label: 5}, {value: 5, label: 6}],
     }
   }
 
@@ -134,24 +144,29 @@ class InfoStudent extends Component{
       'x-access-token': secret.access_token
     };
 
-    const { mssv, hoTen, roomSelected } = this.state;
-    let idPhong = roomSelected;
-    console.log('==state', this.state);
+    const { mssv, hoTen, roomSelected, schoolSelected } = this.state;
+    let idPhong = roomSelected.value;
+    let idTruong = schoolSelected.value;
+    console.log('==idTruong', idTruong);
     //console.log('==pageActive222',roomSelected);
     const options = {
       page: this.state.pageActive,
       limit: this.state.limit
     };
 
-    if(roomSelected === '0'){
+    if(idPhong === '0'){
       idPhong = ''
+    }
+    if(idTruong === '0'){
+      idTruong = ''
     }
     //console.log('==pageActive222',roomSelected);
       axios.post(`/manager/infoStudent/get`,
       { options: options,
         mssv: mssv,
         hoTen: hoTen,
-        idPhong: idPhong
+        idPhong: idPhong,
+        idTruong: idTruong
       }, { headers: headers }
     ).then(result => {
       console.log('==get info success', result);
@@ -176,11 +191,17 @@ class InfoStudent extends Component{
   handleSelectRoom = selectedOption => {
     this.setState({ roomSelected: selectedOption, pageActive: 1 })
   }
+  handleSelectSchool = selectedOption => {
+    this.setState({ schoolSelected: selectedOption, pageActive: 1 })
+  }
+  handleSelectFloor = selectedOption => {
+    this.setState({ floorSelected: selectedOption, pageActive: 1 })
+  }
   handleSelectAddRoom = selectedOption => {
     this.setState({ roomAdded: selectedOption })
   }
   handleSelectAddSchool = selectedOption => {
-    this.setState({ shoolAdded: selectedOption })
+    this.setState({ schoolAdded: selectedOption })
   }
 
   handleSubmitAddStudent = () => {
@@ -234,7 +255,6 @@ class InfoStudent extends Component{
   }
 
   handleValueCheck = mssv => {
-    console.log('==mssv', mssv)
     const i = this.state.listDelete.indexOf(mssv);
     if(i !== -1)
       return true
@@ -250,13 +270,21 @@ class InfoStudent extends Component{
         arrDelete: this.state.listDelete
       }, { headers: {'x-access-token': secret.access_token} }
     ).then(result => {
-
+      console.log('==del success', result)
+      ToastsStore.success("Xóa thành công!");
+      this.getData();
+      this.handleClosePopup('del')
+    }).catch(err => {
+      console.log('==del err', err)
+      ToastsStore.error("Xóa  không thành công!");
+      this.handleClosePopup('del')
     })
   };
 
   render(){
+    console.log('==render state', this.state);
     let i = 0;
-    const { infoList, pageList, pageActive, roomSelected, schoolAdded, roomOptions, schoolOptions, roomAdded } = this.state;
+    const { infoList, pageList, pageActive, roomSelected, schoolSelected, floorSelected, schoolAdded, roomOptions, schoolOptions, floorOptions, roomAdded } = this.state;
     return(
       <div>
         <Title>
@@ -288,8 +316,8 @@ class InfoStudent extends Component{
                 <SearchSelect
                   placeholder={''}
                   value={roomSelected}
-                  selected={this.handleSelectRoom}
-                  // onChange={()=>{this.handleSelectRoom()}}
+                  // selected={this.handleSelectRoom}
+                  onChange={this.handleSelectRoom}
                   options={roomOptions}
                 />
               </Col>
@@ -308,8 +336,9 @@ class InfoStudent extends Component{
               <Col md={4}>
                 <SearchSelect
                   placeholder={''}
-                  value={schoolAdded}
-                  selected={this.handleSelectAddSchool}
+                  value={schoolSelected}
+                  onChange={this.handleSelectSchool}
+                  // selected={this.handleSelectSchool}
                   options={schoolOptions}
                 />
               </Col>
@@ -320,10 +349,9 @@ class InfoStudent extends Component{
               <Col md={2}>
                 <SearchSelect
                   placeholder={''}
-                  value={roomSelected}
-                  selected={this.handleSelectRoom}
-                  // onChange={()=>{this.handleSelectRoom()}}
-                  options={roomOptions}
+                  value={floorSelected}
+                  onChange={this.handleSelectFloor}
+                  options={floorOptions}
                 />
               </Col>
 
@@ -421,6 +449,7 @@ class InfoStudent extends Component{
                   <SearchSelect
                     placeholder={''}
                     value={roomAdded}
+                    onChange={()=>this.handleSelectAddRoom()}
                     selected={this.handleSelectAddRoom}
                     options={roomOptions} />
                 </Col>
@@ -431,6 +460,7 @@ class InfoStudent extends Component{
                   <SearchSelect
                     placeholder={''}
                     value={schoolAdded}
+                    onChange={()=>this.handleSelectAddSchool()}
                     selected={this.handleSelectAddSchool}
                     options={schoolOptions} />
                 </Col>
@@ -445,6 +475,8 @@ class InfoStudent extends Component{
               </Button>
             </Modal.Footer>
           </Modal>
+          <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
+
           {/*end modal*/}
 
           {/*modal popup edit student*/}

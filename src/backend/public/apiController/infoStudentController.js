@@ -47,17 +47,36 @@ exports.addStudent = (req, res) => {
 exports.deleteStudent = (req, res) => {
   const arrDel = req.body.arrDelete;
   console.log('==body', req.body, arrDel);
-  arrDel.forEach(id => {
-    console.log('==id', id);
-    Account.findOneAndUpdate({username: id},{ $set: {isDelete: 1} })
-      .then(result => {
-        console.log('find success', result);
-        res.status(200).json({msg: 'Bạn đã xóa thành công'})
-      }).catch(err => {
+  if(arrDel === undefined || arrDel.length == 0) {
+    console.log('==rỗng')
+    res.status(400).json({msg: 'Không có dữ liệu để xóa'})
+  }
+  else {
+    arrDel.forEach(id => {
+      console.log('==id', id);
+      Account.findOneAndUpdate({username: id},{ $set: {isDelete: 1} })
+        .then(result => {
+          console.log('find success', result);
+          res.status(200).json({msg: 'Bạn đã xóa thành công'})
+        }).catch(err => {
         res.status(400).json({msg: 'Xóa thất bại'})
+      })
     })
-  })
+  }
+
 }
+
+exports.updateInfo = (req,res) => {
+  const info = req.body.info;
+  Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info })
+    .then(result => {
+      console.log('==success', result)
+      res.status(200).json({msg: 'Cập nhật thành công!'})
+    }).catch(err => {
+    console.log('==err', err)
+      res.status(400).json({msg: 'cập nhật không thành công!'})
+  })
+};
 
 exports.getListStudent = (req, res) => {
   let query = {};
@@ -68,6 +87,8 @@ exports.getListStudent = (req, res) => {
     query.MSSV = params.mssv;
   if(params.idPhong)
     query.idPhong = params.idPhong;
+  if(params.idTruong)
+    query.truong = params.idTruong;
   if(!params.options)
     res.status(400).json({'msg': 'missing options'});
   //query.idTaiKhoan = {$ne: null} ;
