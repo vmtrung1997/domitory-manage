@@ -21,3 +21,6 @@
 select:disabled {
     background: #eee
 }
+.content-body{
+    overflow: auto
+}

@@ -7,6 +7,7 @@ import Select from '../../../components/selectOption/select'
 import { report_expense } from './expensesAction'
 import {get_month, get_year, get_status} from './expenseRepo'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import {saveAs} from 'file-saver'
 class Example extends React.Component {
   
   constructor(props, context) {
@@ -33,6 +34,7 @@ class Example extends React.Component {
   handleClose() {
     this.setState({ 
       show: false,
+      loading: false,
       fromMonth: 1,
       toMonth: 1,
       toYear: 2015,
@@ -61,17 +63,36 @@ class Example extends React.Component {
   yearToSelected = (value) => {
     this.setState({toYear: value});
   }
+  s2ab = (s) => {
+    var buf = new ArrayBuffer(s.length);
+    var view = new Uint8Array(buf);
+    for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+    return buf;
+  }
   handleSubmit = () => {
+    var self= this;
+    this.props.loading(true)
+    this.handleClose()
     var report = {...this.state};
     report.fromMonth = parseInt(report.fromMonth)
     report.toMonth = parseInt(report.toMonth)
     report.fromYear = parseInt(report.fromYear)
     report.toYear = parseInt(report.toYear)
-    report.trangThai = parseInt(report.trangThai)
-    console.log(report);
+    report.status = parseInt(report.status)
+    if (report.room === '0')
+      report.room = 0;
     report_expense(report).then(result=> {
-      alert('success')
-      console.log(result);
+      self.props.loading(false);
+      var byteCharacters = window.atob(result.data.file);
+      var byteNumbers = new Array(byteCharacters.length);
+      for (var i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      var byteArray = new Uint8Array(byteNumbers);
+      var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      
+      saveAs(blob, result.data.filename)
+      
     }).catch(err => console.log(err));
   }
   handleCheck = (obj) => {

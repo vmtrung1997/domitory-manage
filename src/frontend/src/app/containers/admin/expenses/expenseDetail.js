@@ -105,6 +105,15 @@ class Example extends React.Component {
           </Row>
           <Row>
             <Col>
+            Tiền điện
+            <Input name={'soDien'} type={'number'} disabled={true} value={exp.tienDien} getValue={this.handleChange}/>
+            </Col>
+            <Col>
+            Tiền nước
+            <Input name={'soNuoc'} type={'number'} disabled={true} value={exp.tienNuoc} getValue={this.handleChange}/></Col>
+          </Row>
+          <Row>
+            <Col>
             Tiền rác
             <Input disabled={true} value={exp.tienRac}/>
             </Col>

@@ -2,6 +2,7 @@ import React from 'react';
 import ExpenseDetail from './expenseDetail'
 import { Table } from 'react-bootstrap'
 import Pagination from 'react-js-pagination'
+import MyPagination from './../../../components/pagination/pagination'
 import './expenses.css'
 
 export default class ExpenseTable extends React.Component {
@@ -28,7 +29,6 @@ export default class ExpenseTable extends React.Component {
 		this.props.retriveSearch(value);
 	}
 	render() {
-		// console.log('table', this.props.table)
 		const data = this.props.table.docs
 		const table = data.map((row, index) => {
 			return (
@@ -45,15 +45,7 @@ export default class ExpenseTable extends React.Component {
 				</tr>
 			)
 		})
-		const pagination = this.props.table && this.props.table.docs.length !== 0?
-			<Pagination
-										activePage={this.props.table.page}
-										itemsCountPerPage={this.props.table.limit}
-										totalItemsCount={this.props.table.totalDocs}
-										pageRangeDisplayed={5}
-										innerClass={'pagination'}
-										itemClass={'page-item'}
-										onChange={this.handlePageChange} />:''
+
 		return (
 			<React.Fragment>
 				{this.state.showDetail && <ExpenseDetail expenseDetail={this.state.detail} show={this.showDetail} retriveSearch={this.retriveSearch}/>}
@@ -76,7 +68,10 @@ export default class ExpenseTable extends React.Component {
 					</tbody>
 				</Table>
 				<div className="float-right">
-					{pagination}
+				{
+				this.props.table && this.props.table.docs.length !== 0?
+				<MyPagination page={this.props.table.page} totalPages={this.props.table.totalPages} clickPage={this.handlePageChange}/>:''
+				}
 				</div>
 			</React.Fragment>
 		)

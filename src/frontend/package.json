@@ -11,6 +11,7 @@
     "autoscroll-react": "^3.2.0",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
+    "file-saver": "^2.0.1",
     "jquery": "^3.3.1",
     "jwt-decode": "^2.2.0",
     "md5": "^2.2.1",
