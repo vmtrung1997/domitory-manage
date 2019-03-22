@@ -46,8 +46,16 @@ exports.addStudent = (req, res) => {
 
 exports.deleteStudent = (req, res) => {
   const arrDel = req.body.arrDelete;
+  console.log('==body', req.body, arrDel);
   arrDel.forEach(id => {
-
+    console.log('==id', id);
+    Account.findOneAndUpdate({username: id},{ $set: {isDelete: 1} })
+      .then(result => {
+        console.log('find success', result);
+        res.status(200).json({msg: 'Bạn đã xóa thành công'})
+      }).catch(err => {
+        res.status(400).json({msg: 'Xóa thất bại'})
+    })
   })
 }
 

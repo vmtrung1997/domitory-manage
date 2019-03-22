@@ -14,6 +14,8 @@ import refreshToken from './../../../../utils/refresh_token'
 import InfoStudentDetail from './infoStudentDetail';
 import MyPagination from "../../../components/pagination/pagination";
 import SearchSelect from 'react-select';
+import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
+
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
 
@@ -23,7 +25,7 @@ class InfoStudent extends Component{
     this.state = {
       roomList: [{value: 0, label: 101}, {value: 1, label: 102}, {value: 2, label: 103}],
       showAddPopup: false,
-      showEditPopup: false,
+      showDelPopup: false,
       pageActive: 1,
       totalpages: 1,
       mssvAdded: '',
@@ -48,8 +50,8 @@ class InfoStudent extends Component{
       case 'add':
         this.setState({ showAddPopup: false });
         break;
-      case 'edit':
-        this.setState({ showEditPopup: false });
+      case 'del':
+        this.setState({ showDelPopup: false });
         break;
       default:
         break
@@ -61,8 +63,8 @@ class InfoStudent extends Component{
       case 'add':
         this.setState({ showAddPopup: true });
         break;
-      case 'edit':
-        this.setState({ showEditPopup: true });
+      case 'del':
+        this.setState({ showDelPopup: true });
         break;
       default:
         break
@@ -134,7 +136,8 @@ class InfoStudent extends Component{
 
     const { mssv, hoTen, roomSelected } = this.state;
     let idPhong = roomSelected;
-    console.log('==pageActive222', this.state.pageActive);
+    console.log('==state', this.state);
+    //console.log('==pageActive222',roomSelected);
     const options = {
       page: this.state.pageActive,
       limit: this.state.limit
@@ -143,7 +146,8 @@ class InfoStudent extends Component{
     if(roomSelected === '0'){
       idPhong = ''
     }
-    axios.post(`/manager/infoStudent/get`,
+    //console.log('==pageActive222',roomSelected);
+      axios.post(`/manager/infoStudent/get`,
       { options: options,
         mssv: mssv,
         hoTen: hoTen,
@@ -236,7 +240,19 @@ class InfoStudent extends Component{
       return true
     else
       return false
-  }
+  };
+
+  handleDelStudent = async()  => {
+    await refreshToken();
+    var secret = JSON.parse(localStorage.getItem('secret'));
+    axios.post(`/manager/infoStudent/delete`,
+      {
+        arrDelete: this.state.listDelete
+      }, { headers: {'x-access-token': secret.access_token} }
+    ).then(result => {
+
+    })
+  };
 
   render(){
     let i = 0;
@@ -373,7 +389,7 @@ class InfoStudent extends Component{
                   <i className="fas fa-plus"/>
                 </Button>
                 <Button color={'danger'}>
-                  <i className="fas fa-trash-alt"/>
+                  <i className="fas fa-trash-alt" onClick={() => this.handleShowPopup('del')}/>
                 </Button>
               </div>
             </Col>
@@ -432,17 +448,17 @@ class InfoStudent extends Component{
           {/*end modal*/}
 
           {/*modal popup edit student*/}
-          <Modal show={this.state.showEditPopup} onHide={() =>this.handleClosePopup('edit')}>
+          <Modal show={this.state.showDelPopup} onHide={() =>this.handleClosePopup('del')}>
             <Modal.Header closeButton>
-              <Modal.Title>Thêm sinh viên</Modal.Title>
+              <Modal.Title>Bạn có chắc chắn muốn xóa những sinh viên này?</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+            {/*<Modal.Body>Bạn có chắc chắn muốn xóa những sinh viên này?</Modal.Body>*/}
             <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handleClosePopup('edit')}>
-                Close
+              <Button variant="outline" onClick={() =>this.handleClosePopup('del')}>
+                Cancel
               </Button>
-              <Button  onClick={() =>this.handleClosePopup('edit')}>
-                Save Changes
+              <Button  onClick={() =>this.handleDelStudent()}>
+                OK
               </Button>
             </Modal.Footer>
           </Modal>
