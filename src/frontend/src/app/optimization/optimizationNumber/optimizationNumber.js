@@ -8,7 +8,7 @@ function OpitmizeNumber(number) {
         numberAccount.replace(".", "");
         var subnumber = null;
         var index = numberAccount.indexOf('.');
-        if (index != -1) {
+        if (index !== -1) {
             subnumber = numberAccount.substr(index, numberAccount.length - 1);
             numberAccount = numberAccount.substr(0, index)
         
@@ -25,8 +25,8 @@ function OpitmizeNumber(number) {
 
 
         result = array[array.length - 1] + '.';
-        for (var i = array.length - 2; i >= 0; i--) {
-            result = result + array[i] + '.'
+        for (var ii = array.length - 2; ii >= 0; ii--) {
+            result = result + array[ii] + '.'
         }
         result = result.substr(0, result.length - 1);
         if (subnumber)
