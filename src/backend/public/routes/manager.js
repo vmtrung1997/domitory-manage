@@ -33,6 +33,8 @@ router.post('/activity/delete', activityController.delete_activity);
 
 router.post('/activity/update', activityController.update_activity);
 
+router.post('/activity/rollcall', activityController.rollcall_activity)
+
 // Info of student
 router.post('/infoStudent/get', infoStudent.getListStudent);
 
