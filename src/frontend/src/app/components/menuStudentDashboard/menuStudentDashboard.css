@@ -1,7 +1,7 @@
 .menu-student{
    
-    min-height: 100vh;
-    background-color: #E4E4E4;
+    min-height: 80vh;
+    background-color: #2680EB;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -29,10 +29,29 @@
     /* margin-top: 45px; */
 }
 
-.list-group-item-action:hover{
+.menu-student-style{
+    border: none !important;
     background-color: #2680EB !important;
     color: #ffffff !important;
 }
+
+.menu-student-style:active{
+    background-color: #ffffff !important;
+    color: #2680EB !important;
+}
+
+.tab-panel-content{
+    height: 80vh;
+    background-color: #ffffff;
+    -webkit-box-shadow: 4px 6px 5px 0px rgba(0,0,0,0.51);
+    -moz-box-shadow: 4px 6px 5px 0px rgba(0,0,0,0.51);
+    box-shadow: 4px 6px 5px 0px rgba(0,0,0,0.51);
+}
+.menu-student-style:hover{
+    background-color: #ffffff !important;
+    color: #2680EB !important;
+}
+
 
 .menu-student-name{
     margin-top: 20px;

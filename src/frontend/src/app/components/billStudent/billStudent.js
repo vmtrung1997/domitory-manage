@@ -162,14 +162,12 @@ class BillStudent extends React.Component {
                                                             <tr onClick={e => this.showDetail(item)}>
                                                             <td>{item.nam}</td>
                                                                 <td>{item.thang}</td>
-                                                                
                                                                 <td>{this.props.profile.idPhong.tenPhong}</td>
                                                                 <td>{item.soDien - item.soDienCu}</td>
                                                                 <td>{item.soNuoc - item.soNuocCu}</td>
                                                                 <td>{OpitmizeNumber.OpitmizeNumber(item.tongTien)}</td>
                                                                 {item.trangThai === "0" ? <td className='is-dont-done'>Chưa thanh toán</td> : <td className='is-done'>Đã thanh toán</td>}
                                                                 <td onClick={e => this.showDetail(this.props.state[0])} className='detail' ><span>Xem chi tiết</span></td>
-
                                                             </tr>
                                                         )
                                                     }
