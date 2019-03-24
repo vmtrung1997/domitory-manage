@@ -24,7 +24,14 @@ router.post('/expense/report', expenseController.report_expense);
 
 router.get('/expense/get_parameter', expenseController.get_parameter);
 
-router.post('/expense/require', expenseController.require)
+router.post('/expense/config', expenseController.apply_config)
+
+router.post('/expense/find',expenseController.find_expense);
+
+router.post('/expense/check', expenseController.check_expense)
+
+router.post('/expense/confirm_expense', expenseController.confirm)
+
 // Activity
 router.get('/activity/get_activity', activityController.get_activity);
 

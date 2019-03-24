@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 var thongSoSchema = new Schema({
     id: Number,
+    loaiChiPhi: String,
     giaTriDau: Number,
     giaTriCuoi: Number,
     donVi: String,

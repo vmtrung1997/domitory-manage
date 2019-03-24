@@ -19,3 +19,16 @@
 select:disabled {
   background: #eee
 }
+.input-success{
+  color: #1ab394;
+}
+.input-info{
+  color: #1c84c6;
+}
+.input-danger{
+  color: #ed5565;
+}
+
+.input-warning{
+  color: #f8ac59;
+}

@@ -9,7 +9,6 @@ import ModalExpense from './expensesModal'
 import Title from '../../../components/title/title'
 import ExpenseTable from '../expenses/expenseTable'
 import { search, getData } from '../expenses/expensesAction'
-import ModalRequire from './expenseRequire'
 import {get_month, get_year, get_status} from './expenseRepo'
 import Loader from './../../../components/loader/loader'
 import ModalConfig from './expenseConfig'
@@ -106,7 +105,6 @@ class Expenses extends Component {
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
 				<Title> Chi phí </Title>
-				
 				<div className={'content-body'}>
 					<div>
 						<Row className={'m-b-10'}>
@@ -120,7 +118,7 @@ class Expenses extends Component {
 							</Col>
 							<Col md={4} xs={12}>
 								Phòng
-								<SSelect
+								<SSelect 
 									placeholder={''}
 									isSearchable={true}
 									value={this.state.roomSelected}
@@ -137,12 +135,16 @@ class Expenses extends Component {
 							</Col>
 						</Row>
 						<div className="flex-row-end m-b-10">
-							<ModalConfig />
+							<ModalConfig loading={this.handleLoading}/>
 							<ModalExport loading={this.handleLoading} roomList={this.state.rooms}/>
 							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)}/>
 						</div>
 						
-						<ExpenseTable table={this.state.dataTable} pageChange={e => this.pageChange(e)} retriveSearch={() => this.pageChange(1)}/>
+						<ExpenseTable table={this.state.dataTable} 
+												pageChange={e => this.pageChange(e)} 
+												retriveSearch={() => this.pageChange(1)}
+												loading={this.handleLoading}
+												/>
 						
 					</div>
 				</div>

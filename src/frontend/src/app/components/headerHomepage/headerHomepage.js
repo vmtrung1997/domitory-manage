@@ -73,8 +73,12 @@ class HeaderHomepage extends Component {
         const secret = JSON.parse(localStorage.getItem('secret'))
         if (secret && !this.state.isLogin) {
             const decode = jwt_decode(secret.access_token)
+            var name = decode.user.profile.hoTen.split(" ");
             if(decode.user.userEntity.loai === 'SV')
-                this.setState({ isLogin: true })
+                this.setState({ 
+                    isLogin: true,
+                    name: name[name.length-1] 
+                 })
         }
         if (!this.state.isLogin) {
             isLogin = <Button onClick={this.Login} variant="primary" className='form-rounded menu-item btn-menu'>

@@ -42,6 +42,7 @@ class StudentLogin extends React.Component {
   }
 
   Login = () => {
+    localStorage.removeItem('secret')
     axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
       .then(res => {
         if (res.data) {
