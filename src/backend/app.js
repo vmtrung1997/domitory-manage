@@ -25,12 +25,12 @@ app.use(morgan('tiny'));
 app.use(bodyParser.json());
 app.use(cors())
 var verifyAccessToken = require('./public/repos/authRepo').verifyAccessToken;
-
+var checkToken = require('./public/repos/authRepo').checkToken;
 
 app.use('/api/user', require('./public/routes/user'));
 app.use('/api/manager', verifyAccessToken, require('./public/routes/manager'));
 app.use('/api/student', verifyAccessToken, require('./public/routes/student'));
-app.use('/api/check_token', verifyAccessToken, require('./public/routes/token'));
+app.use('/api/check_token', checkToken, require('./public/routes/token'));
 app.use('/api/logout', require('./public/routes/logout'));
 
 app.get('/', (_, res) => {

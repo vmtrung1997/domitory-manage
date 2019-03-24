@@ -17,13 +17,12 @@
 }
 
 
-.profile-panel-content{
- 
-    padding-top: 30px;
+.tab-profile-style{
+    background-color: #ced4da;
 }
 .profile-panel{
     width: 100%;
-    height: 500px;
+    margin-top: 20px;
    
 }
 
