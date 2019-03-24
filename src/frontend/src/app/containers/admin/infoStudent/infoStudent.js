@@ -296,8 +296,21 @@ class InfoStudent extends Component{
 
   render(){
     console.log('==render state', this.state);
-    let i = 0;
-    const { infoList, pageList, pageActive, roomSelected, schoolSelected, floorSelected, schoolAdded, roomOptions, schoolOptions, floorOptions, roomAdded } = this.state;
+
+    const {
+      infoList,
+      limit,
+      pageActive,
+      roomSelected,
+      schoolSelected,
+      floorSelected,
+      schoolAdded,
+      roomOptions,
+      schoolOptions,
+      floorOptions,
+      roomAdded
+    } = this.state;
+    let i = pageActive*limit - 10;
     return(
       <div>
         <Title>
