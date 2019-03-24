@@ -7,7 +7,7 @@ class Input extends Component {
     value: PropTypes.any,
     placeholder: PropTypes.string,
     mask: PropTypes.any,
-    color: PropTypes.oneOf(['success', 'warning', 'danger'])
+    color: PropTypes.oneOf(['success', 'warning', 'danger','info'])
   }
   static defaultProps = {
     type: 'text',
