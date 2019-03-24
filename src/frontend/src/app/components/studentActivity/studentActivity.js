@@ -6,6 +6,7 @@ import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import Loader from 'react-loader-spinner'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import refreshToken from './../../../utils/refresh_token';
 
 class StudentActivity extends React.Component {
     constructor(props) {
@@ -18,10 +19,12 @@ class StudentActivity extends React.Component {
         })
     }
 
-    getActivities = () => {
+    getActivities = async () => {
         this.setState({
             isLoad: true
         })
+
+        await refreshToken();
         var secret = localStorage.getItem('secret');
         const decode = jwt_decode(secret);
         var id = decode.user.profile._id;
@@ -55,7 +58,7 @@ class StudentActivity extends React.Component {
         })
     }
 
-    cancelRegister = () => {
+    cancelRegister = async() => {
         var self = this;
         // check hoạt động bắt buộc
         var isValid = true;
@@ -78,6 +81,8 @@ class StudentActivity extends React.Component {
             var data = [];
 
             data = this.state.incomingActivities.filter(obj => obj.check === true)
+
+            await refreshToken();
             var secret = localStorage.getItem('secret');
             const decode = jwt_decode(secret);
             var id = decode.user.profile._id;

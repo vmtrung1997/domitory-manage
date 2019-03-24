@@ -180,9 +180,11 @@ exports.upcomingActivities = (req,res) => {
 }
 
 exports.getInfo = (req, res) => {
-	var id = req.body.id;;
+	var id = req.body.id;
+	
 	Profile.findOne({ idTaiKhoan: id }).populate([{ path: 'truong', select: 'tenTruong' }, { path: 'nganhHoc', select: 'tenNganh' }, { path: 'idPhong', select: 'tenPhong lau' }])
 		.then(result => {
+			
 			if (result) {
 
 				res.status(200).json({

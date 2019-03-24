@@ -4,7 +4,8 @@ import './select.css'
 class Select extends Component {
   static defaultProps = {
 		selected: () => {},
-		value: () => { return this.props.options[0].value}
+		value: () => { return this.props.options[0].value},
+		disabled: false
   }
 	onHandleChange = (event) => {
 		event.persist();
@@ -16,7 +17,11 @@ class Select extends Component {
 		});
 		return (
 			<React.Fragment>
-				<select className="select-control" defaultValue={this.props.value} onChange={this.onHandleChange} onSelect={this.onHandleChange}>
+				<select className="select-control" 
+								defaultValue={this.props.value} 
+								onChange={this.onHandleChange} 
+								onSelect={this.onHandleChange} 
+								disabled={this.props.disabled}>
 					{options}
 				</select>
 			</React.Fragment>

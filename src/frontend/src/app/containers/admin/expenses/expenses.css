@@ -18,3 +18,9 @@
 .flex-row-end button{
     margin-left: 10px;
 }
+select:disabled {
+    background: #eee
+}
+.content-body{
+    overflow: auto
+}

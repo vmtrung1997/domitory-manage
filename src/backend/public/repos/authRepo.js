@@ -51,3 +51,21 @@ exports.updateRefreshToken = (userId, rfToken) => {
         }).catch(err => reject(err));
     });
 }
+
+exports.checkToken = (req, res, next) => {
+    var token = req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, SECRET, (err, payload) => {
+            if (err) {
+                next()
+            } else {
+                req.token_payload = payload;
+                console.log('verify success');
+            }
+        });
+    } else {
+        res.status(403).json({
+            msg: 'NO_TOKEN'
+        })
+    }
+}

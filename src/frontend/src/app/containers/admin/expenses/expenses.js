@@ -9,6 +9,8 @@ import ModalExpense from './expensesModal'
 import Title from '../../../components/title/title'
 import ExpenseTable from '../expenses/expenseTable'
 import { search, getData } from '../expenses/expensesAction'
+import ModalRequire from './expenseRequire'
+import {get_month, get_year, get_status} from './expenseRepo'
 import Loader from './../../../components/loader/loader'
 import ModalConfig from './expenseConfig'
 import ModalExport from './expenseExport'
@@ -19,6 +21,7 @@ class Expenses extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
+			required: false,
 			dataTable: { docs: [] },
 			rooms: [],
 			sendRoom: [],
@@ -30,7 +33,8 @@ class Expenses extends Component {
 			options: {
 				page: 1,
 				limit: 10
-			}
+			},
+			show: true
 		}
 	}
 	componentDidMount() {
@@ -40,13 +44,13 @@ class Expenses extends Component {
 				var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong }))
 				roomOptions.unshift({ value: 0, label: 'Tất cả' });
 				self.setState({ rooms: roomOptions });
-				self.searchTable();
+				self.searchTable(1);
 			}
 		}).catch(err => {})
 	}
-
-	searchTable = () => {
+	searchTable = (page) => {
 		this.handleLoading(true)
+		this.setState({options: {page: 1}})
 		var options = {
 			month: parseInt(this.state.monthSelected),
 			year: parseInt(this.state.yearSelected),
@@ -54,9 +58,10 @@ class Expenses extends Component {
 			status: parseInt(this.state.statusSelected),
 			options: this.state.options
 		}
+		options.options.page=page
 		search(options).then(result => {
 			if (result.data) {
-				this.setState({ dataTable: result.data.rs, loading: false })
+				this.setState({ dataTable: result.data.rs, loading: false,options: {page: 1} })
 			}
 		}).catch(error => {});
 	}
@@ -73,24 +78,24 @@ class Expenses extends Component {
 		this.setState({ statusSelected: value, options: { page: 1 } })
 	}
 	pageChange = value => {
-		this.setState({ options: { page: value } })
-		this.searchTable()
+		this.searchTable(value)
 	}
 	handleLoading = (value) => {
 		this.setState({loading: value});
 	}
+	handleRequire = (value) => {
+		this.setState({required: value})
+	}
 	render() {
-		var month = [...Array(13)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i, label: i } });
-		var year = [...Array(4)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 2014, label: i + 2014 } });
-		var trangThai = [
-			{ value: 2, label: 'Tất cả' },
-			{ value: 1, label: 'Đã thanh toán' },
-			{ value: 0, label: 'Chưa thanh toán' }]
+		var month = get_month();
+		var year = get_year();
+		var trangThai = get_status();
 		return (
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
 				<Title> Chi phí </Title>
-				<div className={'content-body'}>
+				<ModalRequire require={this.handleRequire}/>
+				{this.state.required && <div className={'content-body'}>
 					<div>
 						<Row className={'m-b-10'}>
 							<Col md={2} xs={12}>
@@ -116,17 +121,19 @@ class Expenses extends Component {
 							</Col>
 							<Col md={1}>
 								&nbsp;
-              <Col md={12}><Button onClick={this.searchTable}><i className="fas fa-search" /></Button></Col>
+              <Col md={12}><Button onClick={e => this.searchTable(1)}><i className="fas fa-search" /></Button></Col>
 							</Col>
 						</Row>
 						<div className="flex-row-end m-b-10">
 							<ModalConfig />
-							<ModalExport roomList={this.state.rooms}/>
+							<ModalExport loading={this.handleLoading} roomList={this.state.rooms}/>
 							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)}/>
 						</div>
-						<ExpenseTable table={this.state.dataTable} pageChange={this.pageChange} retriveSearch={() => this.pageChange(1)}/>
+						
+						<ExpenseTable table={this.state.dataTable} pageChange={e => this.pageChange(e)} retriveSearch={() => this.pageChange(1)}/>
+						
 					</div>
-				</div>
+				</div>}
 			</React.Fragment>
 		)
 	}

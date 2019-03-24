@@ -5,7 +5,6 @@ import './activity.css'
 import Title from './../../../components/title/title'
 import Button from './../../../components/button/button'
 import InfoActivity from './../../../components/infoActivity/infoActivity'
-import InfoActivityTable from './../../../components/infoActivity/infoActivityTable'
 import ActivityModal from './activityModal'
 import Loader from './../../../components/loader/loader'
 import refreshToken from './../../../../utils/refresh_token'
@@ -17,7 +16,6 @@ class Activity extends Component{
 		this.state = {
 			totalPages: 1,
 			page: 1,
-			isTable: true,
 			show: false,
 			loading: false,
 			data: []
@@ -48,9 +46,6 @@ class Activity extends Component{
 		this.getData()
 	}
 
-	isCheckTable = (val) => {
-		this.setState({ isTable: val })
-	}
 	handleShow = () => {
 		this.setState({ show: true })
 	}
@@ -67,56 +62,20 @@ class Activity extends Component{
 		this.getData()
 	}
 	render(){	
-		const tmp = this.state.data.map((item , i) => {
-			return(
-				<InfoActivity
-					name = {item.ten}
-					time = {item.ngay}
-					location= {item.diaDiem}
-					par = {item.soLuong}
-					rule = {item.batBuoc}
-					status = {item.status}
-				/>
-			)
-		})
-
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
 				<ActivityModal show={this.state.show} handleClose={this.handleClose} handleSave={this.handleSave}/>
-
 				<Title> Hoạt động sinh viên </Title>
         		<div className={'content-body full'}>
 					<div className='header-optimize'>
-						<div>
-							<Button 
-								color='default' 
-								style={{margin: '3px', border: '1px solid #bababa'}} 
-								onClick={() => this.isCheckTable(true)}
-							>
-								<i className="fas fa-list-ul"></i>
-							</Button>
-							<Button 
-								color='default' 
-								style={{border: '1px solid #bababa'}} 
-								onClick={() => this.isCheckTable(false)}
-							>
-								<i className="fas fa-table"></i>
-							</Button>
-						</div>
+						<div/>
 						<div className='bts-header'>
 							<Button className='bt-header' color='success' onClick={this.handleShow}>Thêm</Button>
 							<Button className='bt-header' color='success'>Báo cáo</Button>
 						</div>
 					</div>
-					{ this.state.isTable ? 
-						<InfoActivityTable data={this.state.data} refresh={this.getData}/>
-						:
-						<div className="infor-activity">
-							{tmp}
-						</div>
-
-					}
+					<InfoActivity data={this.state.data} refresh={this.getData}/>
 					<div className={'is-pagination'}>
 						<MyPagination page={this.state.page} totalPages={this.state.totalPages} clickPage={this.clickPage}/>
 	            	</div>

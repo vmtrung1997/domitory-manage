@@ -10,6 +10,7 @@ import jwt_decode from 'jwt-decode';
 import * as StudentAction from '../../actions/studentAction';
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 import Loader from 'react-loader-spinner'
+import refreshToken from './../../../utils/refresh_token'
 
 class ListActivity extends React.Component {
     constructor(props) {
@@ -21,7 +22,7 @@ class ListActivity extends React.Component {
     }
     listOption = [false];
     listRegister = [];
-    register = () => {
+    register = async() => {
         var self = this;
         // check hoạt động bắt buộc
         var isValid = true;
@@ -45,6 +46,8 @@ class ListActivity extends React.Component {
             var data = [];
 
             data = this.state.activities.filter(obj => obj.check === true)
+
+            await refreshToken();
             var secret = localStorage.getItem('secret');
             const decode = jwt_decode(secret);
             var id = decode.user.profile._id;
@@ -83,15 +86,19 @@ class ListActivity extends React.Component {
         this.setState({ activities: act })
     }
 
-    getActivity = () => {
+    getActivity = async() => {
 
         this.setState({
             isLoad: true
         })
+
+
+        await refreshToken();
         var secret = localStorage.getItem('secret');
         const decode = jwt_decode(secret);
         secret = JSON.parse(secret);
         var id = decode.user.profile._id;
+        axios.defaults.headers['x-access-token'] = secret.access_token;
         //Lấy thông tin hoạt động
         var activity = [];
         axios.post(`http://localhost:4000/api/student/get-list-activities`, { id: id }).then(res => {
@@ -99,6 +106,7 @@ class ListActivity extends React.Component {
                 if (item) {
                     item.check = false;
                     activity.push(item);
+                    this.props.getActivity(item);
                 }
             })
           
@@ -122,7 +130,7 @@ class ListActivity extends React.Component {
 
     render() {
 
-        console.log('activities ', this.state.activities);
+   console.log(this.props.activity);
         var index = -1;
         return (
             <React.Fragment>
