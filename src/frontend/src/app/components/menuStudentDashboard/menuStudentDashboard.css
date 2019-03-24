@@ -1,7 +1,7 @@
 .menu-student{
    
     min-height: 80vh;
-    background-color: #2680EB;
+    background-color:#0457ab ;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -26,12 +26,13 @@
    
 }
 .menu-student-content{
-    /* margin-top: 45px; */
+    font-size: 2.5vh;
+   
 }
 
 .menu-student-style{
     border: none !important;
-    background-color: #2680EB !important;
+    background-color: #0457ab !important;
     color: #ffffff !important;
 }
 

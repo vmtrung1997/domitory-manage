@@ -81,6 +81,14 @@
    
 }
 
+.list-item-link{
+    color: #212529;
+}
+
+.list-item-link:hover{
+
+    color: #ffffff
+}
 .list-menu-sub{
     margin-left: 10px;
 }
