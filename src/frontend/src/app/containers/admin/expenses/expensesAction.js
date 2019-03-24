@@ -1,4 +1,5 @@
 import axios from 'axios';
+import refreshToken from './../../../../utils/refresh_token'
 export const getData = () => {
   const secret = JSON.parse(localStorage.getItem('secret'))
   axios.defaults.headers.common['x-access-token'] = secret.access_token
@@ -97,6 +98,50 @@ export const require_expense = (exp) => {
   axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
     axios.post('/manager/expense/require', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const config_expense = (exp) => {
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/config', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const find_expense = (exp) => {
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/find', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const check_expense = (exp) => {
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/check', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const submit_expense = (exp) => {
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/confirm_expense', exp).then(result => { 
       resolve(result);
     })
     .catch(error => reject(error));
