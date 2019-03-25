@@ -26,6 +26,7 @@ class InfoStudent extends Component{
       showAddPopup: false,
       showDelPopup: false,
       showImportPopup: false,
+
       pageActive: 1,
       totalpages: 1,
       limit: 10,
@@ -142,7 +143,7 @@ class InfoStudent extends Component{
 
   getData = async () => {
     console.log('==pageActive', this.state.pageActive);
-    await refreshToken()
+    //await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
       'x-access-token': secret.access_token
@@ -292,7 +293,7 @@ class InfoStudent extends Component{
   }
 
   filesOnChange = (sender) =>{
-    let file = sender.target.files;
+    let file = sender.target.files[0];
 
     this.setState({
       fileImport: file
@@ -456,6 +457,7 @@ class InfoStudent extends Component{
               <div className={'is-manipulation'}>
                 <Button
                   variant={'rounded'}
+                  onClick={() => this.handleShowPopup('import')}
                 >
                   <i className="fas fa-file-import"/>
                 </Button>
@@ -612,7 +614,7 @@ class InfoStudent extends Component{
                       <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.onViewDetail(info)}>
                         <i className="fas fa-edit"/>
                       </Button>
-                      <CheckBox name={info.MSSV} isCheck={this.handleCheckDelete} check={checked}/>
+                      <CheckBox name={info.MSSV} isCheck={this.handleCheckDelete} check={false}/>
                     </td>
                   </tr>
                 )
@@ -626,22 +628,6 @@ class InfoStudent extends Component{
               </Col>
               <Col md={9}>
                 <div className={'is-pagination'}>
-                {/*<Pagination>*/}
-                  {/*<Pagination.First />*/}
-                  {/*<Pagination.Prev />*/}
-                  {/*{pageList && pageList.map((page, index) => {*/}
-                    {/*if(pageActive === page)*/}
-                      {/*return(*/}
-                        {/*<Pagination.Item active key={index}>{page}</Pagination.Item>*/}
-                      {/*);*/}
-                    {/*else*/}
-                      {/*return(*/}
-                        {/*<Pagination.Item key={index}>{page}</Pagination.Item>*/}
-                      {/*)*/}
-                  {/*})}*/}
-                  {/*<Pagination.Next />*/}
-                  {/*<Pagination.Last />*/}
-                {/*</Pagination>*/}
                   <MyPagination page={this.state.pageActive} totalPages={this.state.totalPages} clickPage={this.clickPage}/>
 
                 </div>
