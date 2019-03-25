@@ -1,0 +1,6 @@
+.header-news-admin{
+	display: flex;
+	justify-content: flex-end !important;
+    padding: 14px 15px 7px;
+    -webkit-justify-content: space-between;
+}
