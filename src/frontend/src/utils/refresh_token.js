@@ -10,7 +10,7 @@ const refreshToken = async () => {
             }
   	    })
         .catch( err => { return true})
-  		if(res && res.data.rs.access_token !== undefined){  
+  		if(res && res.data.access_token !== undefined){  
             localStorage.setItem('secret', JSON.stringify(res.data))
         }
     }

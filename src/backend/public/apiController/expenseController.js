@@ -122,7 +122,7 @@ exports.add_data = (req, res) => {
 						if (obj) {
 							var tienDien = Math.round(CalculateTien(arrDien, row.soDien - obj.soDien) *1000)/1000
 							var tienNuoc = CalculateTien(arrNuoc, row.soNuoc - obj.soNuoc)
-							var tongTien = Math.round(tienDien + tienNuoc * 1000) / 1000
+							var tongTien = Math.round((tienDien + tienNuoc) * 1000) / 1000
 							tableAdd.push({
 								idPhong: row.phong.value,
 								thang: row.thang,
@@ -210,22 +210,32 @@ exports.remove_expense = (req, res) => {
 	})
 }
 exports.update_expense = (req, res) => {
-	var exp = req.body;
-	var id = new ObjectId(exp._id);
-	console.log('==expense update id ', id);
-	console.log(exp);
-	ChiPhiPhong.updateOne({ _id: id }, exp, (err) => {
-		if (err) {
-			res.status(400).json({
-				rs: 'fail',
-				msg: err
+	ThongSo.find().sort({ id: 1 }).then(thongSoArr => {
+		if (thongSoArr.length > 0) {
+			var exp = req.body;
+			var id = new ObjectId(exp._id);
+			var arrDien = thongSoArr.filter(value => value.loaiChiPhi === 'dien').sort((a,b)=> {return a.id - b.id})
+			var arrNuoc = thongSoArr.filter(value => value.loaiChiPhi === 'nuoc').sort((a,b)=>{return a.id - b.id})
+			var tienDien = Math.round(CalculateTien(arrDien, exp.soDien - exp.soDienCu) *1000)/1000
+			var tienNuoc = CalculateTien(arrNuoc, exp.soNuoc - exp.soNuocCu)
+			var tongTien = Math.round((tienDien + tienNuoc) * 1000) / 1000
+			exp.tienDien = tienDien
+			exp.tienNuoc = tienNuoc
+			exp.tongTien = tongTien
+
+			ChiPhiPhong.updateOne({ _id: id }, exp, (err) => {
+				if (err) {
+					res.status(400).json({
+						rs: 'fail',
+						msg: err
+					})
+				} else {
+					res.status(201).json({
+						rs: 'success'
+					})
+				}
 			})
-		} else {
-			res.status(201).json({
-				rs: 'success'
-			})
-		}
-	})
+		}})
 }
 exports.reports_expense = (req, res) => {
 	var xlsx = writeXlsx.testXlsx();
