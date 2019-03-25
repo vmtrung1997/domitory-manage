@@ -1,6 +1,3 @@
-import axios from 'axios';
-import jwt_decode from 'jwt-decode';
-
 const initialState = [{}];
 
 export default function Activity(state = initialState, action) {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Button } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 import './billStudent.css'
 import './../titleStudent/titleStudent.css'
 import axios from 'axios';
@@ -47,6 +47,7 @@ class BillStudent extends React.Component {
                         if (item) {
                             bill.push(item);
                         }
+                        return true
                     })
                     this.setState({
                         isLoad: false,
@@ -171,6 +172,7 @@ class BillStudent extends React.Component {
                                                             </tr>
                                                         )
                                                     }
+                                                    return true
                                                 })
                                             }
                                         </tbody>

@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
 import axios from './../../../config'
+import { Row, Col } from 'react-bootstrap'
 
 import './activity.css'
 import Title from './../../../components/title/title'
 import Button from './../../../components/button/button'
 import InfoActivity from './../../../components/infoActivity/infoActivity'
+import Input from './../../../components/input/input'
 import ActivityModal from './activityModal'
 import Loader from './../../../components/loader/loader'
 import refreshToken from './../../../../utils/refresh_token'
 import MyPagination from './../../../components/pagination/pagination'
+import Select from './../../../components/selectOption/select'
 
 class Activity extends Component{
 	constructor(props){
@@ -18,7 +21,10 @@ class Activity extends Component{
 			page: 1,
 			show: false,
 			loading: false,
-			data: []
+			last: {},
+			data: [],
+			yearSelected: new Date().getFullYear(),
+			monthSelected: new Date().getMonth() + 1
 		}
 	}
 
@@ -28,11 +34,12 @@ class Activity extends Component{
 		axios.get(`/manager/activity/get_activity?page=${this.state.page}`,{
 			headers: { 'x-access-token': secret.access_token}
 		})
-      	.then(res => {  
+      	.then(res => {
        	    this.setState({
     	    	data: res.data.rs.docs,
 				loading: false,
 				show: false,
+				last: res.data.last,
 				totalPages: res.data.rs.totalPages
 			})
 		})
@@ -61,18 +68,65 @@ class Activity extends Component{
 	handleSave = () => {
 		this.getData()
 	}
-	render(){	
+	getValue = (state, value) => {
+		this.setState({ 
+			[state]: value, 
+		})
+	}
+	getMonth = () => {
+		var month = []
+		for(var i = 0; i < 12; i++){
+			month.push({value: i+1, label: i+1})
+		}
+		return month
+	}
+	getYear = () => {
+		var year = []
+		if(this.state.last){
+			var date = new Date(this.state.last.ngay)
+			var curDate = new Date().getFullYear()
+			for(var i = date.getFullYear(); i <= curDate; i++){
+				year.push({value: i, label: i})
+			}
+		}
+		return year
+	}
+	render(){
+		var month = this.getMonth()
+		var year = this.getYear()
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
 				<ActivityModal show={this.state.show} handleClose={this.handleClose} handleSave={this.handleSave}/>
 				<Title> Hoạt động sinh viên </Title>
         		<div className={'content-body full'}>
-					<div className='header-optimize'>
-						<div/>
+					<div>
+						<Row className={'m-b-10'}>
+							<Col>
+								<Input/>
+							</Col>
+							<Col md={3} xs={12}>
+								<Select 
+									options={month} 
+									value={this.state.monthSelected} 
+									selected={val => this.getValue('monthSelected',val)} 
+								/>
+							</Col>
+							<Col md={4} xs={12}>
+              					<Select 
+              						options={year} 
+              						value={this.state.yearSelected}
+              						selected={val => this.getValue('yearSelected', val)}
+              					/>	
+              				</Col>
+              			</Row>		
 						<div className='bts-header'>
-							<Button className='bt-header' color='success' onClick={this.handleShow}>Thêm</Button>
-							<Button className='bt-header' color='success'>Báo cáo</Button>
+							<Button color={'warning'} onClick={this.handleShow} style={{padding: '5px 20px'}}> 
+								<i className="fas fa-plus"/>
+							</Button>
+							<Button style={{margin: '0 5px', padding: '5px 20px'}}>
+                				<i className="fas fa-file-export"/>
+                			</Button>
 						</div>
 					</div>
 					<InfoActivity data={this.state.data} refresh={this.getData}/>
