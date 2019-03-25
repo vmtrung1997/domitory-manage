@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Form, Button, Row } from 'react-bootstrap'
+import { Table, Button } from 'react-bootstrap'
 import './../titleStudent/titleStudent.css'
 import './../tableStudentTextStyle/tableStudentTextStyle.css'
 import axios from 'axios';
@@ -43,6 +43,7 @@ class StudentActivity extends React.Component {
                 else {
                     oldActivities.push(item);
                 }
+                return true
             })
 
 
@@ -59,7 +60,6 @@ class StudentActivity extends React.Component {
     }
 
     cancelRegister = async() => {
-        var self = this;
         // check hoạt động bắt buộc
         var isValid = true;
         var isEmpty = true;
@@ -72,6 +72,7 @@ class StudentActivity extends React.Component {
             if (item.check === true) {
                 isEmpty = false;
             }
+            return true
         })
 
         if (isEmpty) {

@@ -1,5 +1,5 @@
 
-import { Nav, Image, NavDropdown, Navbar, Form, Button, FormControl } from 'react-bootstrap'
+import { Nav, NavDropdown, Navbar, Form } from 'react-bootstrap'
 import React from 'react'
 
 class HeaderDashboardStudent extends React.Component {

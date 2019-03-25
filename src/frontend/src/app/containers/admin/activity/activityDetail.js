@@ -66,7 +66,7 @@ class ActivityDetail extends Component{
 					</tr>
 				)
 			}
-			
+			return true
 		})
 		return(
 			<React.Fragment>

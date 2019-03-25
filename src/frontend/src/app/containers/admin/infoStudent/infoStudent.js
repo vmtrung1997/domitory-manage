@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import { Row, Col, Table, Pagination, Modal } from 'react-bootstrap';
+import { Row, Col, Table, Modal } from 'react-bootstrap';
+import axios from 'axios';
+import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
+import { withRouter } from 'react-router-dom';
+import SearchSelect from 'react-select';
+
+
 import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import CheckBox from './../../../components/checkbox/checkbox';
-//import Pagination from './../../../components/pagination/pagination';
-import {Route, withRouter} from 'react-router-dom';
 import './infoStudent.css';
 import './../../../style.css'
-
-import axios from 'axios';
 import refreshToken from './../../../../utils/refresh_token'
 import InfoStudentDetail from './infoStudentDetail';
 import MyPagination from "../../../components/pagination/pagination";
-import SearchSelect from 'react-select';
-import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
 
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
@@ -89,7 +89,6 @@ class InfoStudent extends Component{
   };
 
   onViewDetail = (info) => {
-    console.log('==fine', info)
     this.props.history.push({
       pathname: '/admin/student/detail',
       state: { info: info }
@@ -113,7 +112,6 @@ class InfoStudent extends Component{
       roomOptions: roomOptions,
       schoolOptions: schoolOptions
     })
-    console.log('==roomOptions',roomOptions, this.state.phong)
   }
 
   getElement = name => {
@@ -121,7 +119,6 @@ class InfoStudent extends Component{
     axios.get(`/manager/getElement/` + name,  {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
-      console.log('==element success', result)
       switch (name) {
         case 'phong':
           const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
@@ -145,8 +142,7 @@ class InfoStudent extends Component{
 
   getData = async () => {
     console.log('==pageActive', this.state.pageActive);
-    //await refreshToken()
-    console.log('==pageActive22222', this.state.pageActive);
+    await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
       'x-access-token': secret.access_token
@@ -155,8 +151,6 @@ class InfoStudent extends Component{
     const { mssv, hoTen, roomSelected, schoolSelected } = this.state;
     let idPhong = roomSelected.value;
     let idTruong = schoolSelected.value;
-    console.log('==idTruong', idTruong);
-    //console.log('==pageActive222',roomSelected);
     const options = {
       page: this.state.pageActive,
       limit: this.state.limit
@@ -168,7 +162,6 @@ class InfoStudent extends Component{
     if(idTruong === '0'){
       idTruong = ''
     }
-    //console.log('==pageActive222',roomSelected);
       axios.post(`/manager/infoStudent/get`,
       { options: options,
         mssv: mssv,
@@ -177,15 +170,12 @@ class InfoStudent extends Component{
         idTruong: idTruong
       }, { headers: headers }
     ).then(result => {
-      console.log('==get info success', result);
       this.setState({
         infoList: result.data.docs,
         totalPages: result.data.totalPages
       })
     }).catch((err) => {
-      console.log('get info Student err', err);
     })
-    console.log('==end getdata');
   }
   onChange = (event) => {
     this.setState({
@@ -241,7 +231,6 @@ class InfoStudent extends Component{
   }
 
   handleCheckDelete = (props) => {
-    console.log('==arrDel', props)
     if(props.chk){
       let arrDel = this.state.listDelete;
       arrDel.push(props.value);
@@ -260,7 +249,6 @@ class InfoStudent extends Component{
         listDelete: arrDel
       })
     }
-    console.log('==arrDel',this.state.listDelete)
   }
 
   handleValueCheck = mssv => {
@@ -285,7 +273,6 @@ class InfoStudent extends Component{
       this.handleClosePopup('del')
       this.getData();
     }).catch(err => {
-      console.log('==del err', err)
       ToastsStore.error("Xóa  không thành công!");
       this.handleClosePopup('del')
     })
@@ -464,13 +451,11 @@ class InfoStudent extends Component{
             </Row>
           </div>
 
-          {/*file, card*/}
           <Row>
             <Col md={6} className={''}>
               <div className={'is-manipulation'}>
                 <Button
                   variant={'rounded'}
-                  onClick={() => this.handleShowPopup('import')}
                 >
                   <i className="fas fa-file-import"/>
                 </Button>
@@ -494,7 +479,6 @@ class InfoStudent extends Component{
               </div>
             </Col>
 
-            {/*add, delete*/}
             <Col md={6} >
               <div className={'is-manipulation'} style={{float: 'right'}}>
                 <Button color={'warning'} onClick={() => this.handleShowPopup('add')}>
@@ -506,8 +490,6 @@ class InfoStudent extends Component{
               </div>
             </Col>
           </Row>
-
-
 
           {/*modal popup add student*/}
           <Modal show={this.state.showAddPopup} onHide={() =>this.handleClosePopup('add')}>
@@ -618,9 +600,7 @@ class InfoStudent extends Component{
               <tbody>
 
               {infoList && infoList.map(info => {
-                console.log('==info', info)
-                let checked = this.state.listDelete.includes(info.MSSV);
-                console.log('==icheck, checked', checked, info.MSSV);
+
                 return(
                   <tr onDoubleClick ={() => this.onViewDetail(info)} key={i++}>
                     <td >{i}</td>

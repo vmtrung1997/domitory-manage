@@ -1,5 +1,5 @@
 import React from 'react'
-import {Modal,Table } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import Button from '../../../components/button/button'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 import {require_expense} from './expensesAction'

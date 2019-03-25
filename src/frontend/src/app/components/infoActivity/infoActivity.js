@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import axios from './../../config'
 
 import './infoActivity.css'
@@ -68,7 +68,6 @@ class InfoActivity extends Component{
 			var curData = new Date();
 			var date = new Date(row.ngay);
 			var strDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
-			var url = `/admin/activity/detail/${row._id}`
 			return (
 				<tr key={index} onDoubleClick={e => {this.handleClick(row._id)}}>
 					<td>{index + 1}</td>

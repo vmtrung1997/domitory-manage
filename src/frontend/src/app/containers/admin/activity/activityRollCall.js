@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap'
-import DatePicker from 'react-datepicker'
 import axios from './../../../config'
 
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
-import Input from './../../../components/input/input'
-import CheckBox from './../../../components/checkbox/checkbox'
-import Botton from './../../../components/button/button'
 
 class ActivityRollCall extends Component{
 	static defaultProps = {

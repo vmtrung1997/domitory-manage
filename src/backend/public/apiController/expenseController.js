@@ -3,9 +3,7 @@ const ChiPhiPhong = require('../models/ChiPhiPhong')
 const ChiPhiHienTai = require('../models/ChiSoHienTai')
 const phongRepo = require('../repos/phongRepo')
 const writeXlsx = require('../repos/xlsxRepo')
-const NumberReader = require('read-vn-number')
 const ThongSo = require('../models/ThongSo')
-const MatKhauChiPhi = require('../models/MatKhauChiPhi')
 
 exports.quan_ly_dien_nuoc = (req, res, next) => {
 	res.json({
@@ -80,7 +78,6 @@ function CalculateTien(arr, number) {
 }
 exports.find_expense = (req, res) => {
 	var exp = req.body;
-	console.log('exp', exp)
 	ChiPhiPhong
 		.findOne({ thang: exp.thang, nam: exp.nam, idPhong: exp.phong.value })
 		.then(value => {
@@ -113,7 +110,6 @@ exports.check_expense = (req, res) => {
 }
 exports.add_data = (req, res) => {
 	var table = req.body
-	console.log('table: ', table)
 	var tableAdd = [];
 	ThongSo.find().sort({ id: 1 }).then(thongSoArr => {
 		if (thongSoArr.length > 0) {
@@ -124,10 +120,9 @@ exports.add_data = (req, res) => {
 					table.forEach(row => {
 						var obj = vals.find((val) => val.idPhong === row.phong.value)
 						if (obj) {
-							console.log('obj',obj)
 							var tienDien = Math.round(CalculateTien(arrDien, row.soDien - obj.soDien) *1000)/1000
 							var tienNuoc = CalculateTien(arrNuoc, row.soNuoc - obj.soNuoc)
-							var tongTien = Math.round(tienDien + tienNuoc * 1000) / 1000
+							var tongTien = Math.round((tienDien + tienNuoc) * 1000) / 1000
 							tableAdd.push({
 								idPhong: row.phong.value,
 								thang: row.thang,
@@ -145,7 +140,6 @@ exports.add_data = (req, res) => {
 							})
 						}
 					});
-					console.log('tableAdd: ', tableAdd)
 					if (tableAdd.length > 0) {
 						ChiPhiPhong.insertMany(tableAdd).then((result) => {
 							if (result.length > 0) {
@@ -216,33 +210,41 @@ exports.remove_expense = (req, res) => {
 	})
 }
 exports.update_expense = (req, res) => {
-	var exp = req.body;
-	var id = new ObjectId(exp._id);
-	console.log('==expense update id ', id);
-	console.log(exp);
-	ChiPhiPhong.updateOne({ _id: id }, exp, (err) => {
-		if (err) {
-			res.status(400).json({
-				rs: 'fail',
-				msg: err
+	ThongSo.find().sort({ id: 1 }).then(thongSoArr => {
+		if (thongSoArr.length > 0) {
+			var exp = req.body;
+			var id = new ObjectId(exp._id);
+			var arrDien = thongSoArr.filter(value => value.loaiChiPhi === 'dien').sort((a,b)=> {return a.id - b.id})
+			var arrNuoc = thongSoArr.filter(value => value.loaiChiPhi === 'nuoc').sort((a,b)=>{return a.id - b.id})
+			var tienDien = Math.round(CalculateTien(arrDien, exp.soDien - exp.soDienCu) *1000)/1000
+			var tienNuoc = CalculateTien(arrNuoc, exp.soNuoc - exp.soNuocCu)
+			var tongTien = Math.round((tienDien + tienNuoc) * 1000) / 1000
+			exp.tienDien = tienDien
+			exp.tienNuoc = tienNuoc
+			exp.tongTien = tongTien
+
+			ChiPhiPhong.updateOne({ _id: id }, exp, (err) => {
+				if (err) {
+					res.status(400).json({
+						rs: 'fail',
+						msg: err
+					})
+				} else {
+					res.status(201).json({
+						rs: 'success'
+					})
+				}
 			})
-		} else {
-			res.status(201).json({
-				rs: 'success'
-			})
-		}
-	})
+		}})
 }
 exports.reports_expense = (req, res) => {
 	var xlsx = writeXlsx.testXlsx();
-	console.log('xx')
 	res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 	res.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
 	res.json({ filename: 'Report.xlsx', file: xlsx });
 }
 exports.report_expense = (req, res) => {
 	var condition = req.body;
-	console.log(condition);
 	var query = {};
 	var header = ['Năm', 'Tháng', 'Tên phòng']
 	var options = ['nam', 'thang']
@@ -417,7 +419,6 @@ exports.apply_config = (req, res) => {
 						msg: errInsert
 					})
 				} else {
-					console.log('config success')
 					res.json({
 						rs: 'success'
 					})

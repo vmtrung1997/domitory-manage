@@ -61,6 +61,7 @@ exports.checkToken = (req, res, next) => {
             } else {
                 req.token_payload = payload;
                 console.log('verify success');
+                res.json({rs: 'ok'})
             }
         });
     } else {

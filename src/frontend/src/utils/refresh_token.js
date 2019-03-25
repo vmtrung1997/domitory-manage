@@ -1,18 +1,21 @@
 import axios from 'axios'
+import jwt_decode from 'jwt-decode';
 
 const refreshToken = async () => {
   console.log('==refresh token')
     var secret = JSON.parse(localStorage.getItem('secret'))
     if( secret ){
-  		var res = await axios.get(`/check_token`,  {
-          	headers: { 
-                'x-refresh-token': secret.refresh_token,
-                'x-access-token': secret.access_token
+        const exp = jwt_decode(secret.access_token).exp
+        if( exp < new Date().getTime()/1000){
+      		var res = await axios.get(`/user/me_access`,  {
+              	headers: { 
+                    'x-refresh-token': secret.refresh_token,
+                }
+      	    })
+            .catch( err => { return true})
+      		if(res && res.data.access_token !== undefined){  
+                localStorage.setItem('secret', JSON.stringify(res.data))
             }
-  	    })
-        .catch( err => {})
-  		if(res && res.data !== undefined){  
-            localStorage.setItem('secret', JSON.stringify(res.data))
         }
     }
   console.log('==refresh token end')
