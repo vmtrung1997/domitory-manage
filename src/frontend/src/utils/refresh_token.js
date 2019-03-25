@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const refreshToken = async () => {
+  console.log('==refresh token')
     var secret = JSON.parse(localStorage.getItem('secret'))
     if( secret ){
   		var res = await axios.get(`/check_token`,  {
@@ -14,6 +15,8 @@ const refreshToken = async () => {
             localStorage.setItem('secret', JSON.stringify(res.data))
         }
     }
+  console.log('==refresh token end')
+
 }
 
 export default refreshToken

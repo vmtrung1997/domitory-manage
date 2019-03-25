@@ -138,7 +138,8 @@ class InfoStudent extends Component{
 
   getData = async () => {
     console.log('==pageActive', this.state.pageActive);
-    await refreshToken()
+    //await refreshToken()
+    console.log('==pageActive22222', this.state.pageActive);
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
       'x-access-token': secret.access_token
@@ -177,6 +178,7 @@ class InfoStudent extends Component{
     }).catch((err) => {
       console.log('get info Student err', err);
     })
+    console.log('==end getdata');
   }
   onChange = (event) => {
     this.setState({
@@ -255,11 +257,9 @@ class InfoStudent extends Component{
   }
 
   handleValueCheck = mssv => {
+    console.log('==mssv checkbox', mssv)
     const i = this.state.listDelete.indexOf(mssv);
-    if(i !== -1)
-      return true
-    else
-      return false
+    return i !== -1;
   };
 
   handleDelStudent = async()  => {
@@ -271,9 +271,12 @@ class InfoStudent extends Component{
       }, { headers: {'x-access-token': secret.access_token} }
     ).then(result => {
       console.log('==del success', result)
+      this.setState({
+        listDelete: []
+      });
       ToastsStore.success("Xóa thành công!");
-      this.getData();
       this.handleClosePopup('del')
+      this.getData();
     }).catch(err => {
       console.log('==del err', err)
       ToastsStore.error("Xóa  không thành công!");
@@ -449,6 +452,8 @@ class InfoStudent extends Component{
             </Col>
           </Row>
 
+          <input type="file" name="file" />
+
           {/*modal popup add student*/}
           <Modal show={this.state.showAddPopup} onHide={() =>this.handleClosePopup('add')}>
             <Modal.Header closeButton>
@@ -538,7 +543,9 @@ class InfoStudent extends Component{
               <tbody>
 
               {infoList && infoList.map(info => {
-
+                console.log('==info', info)
+                let checked = this.state.listDelete.includes(info.MSSV);
+                console.log('==icheck, checked', checked, info.MSSV);
                 return(
                   <tr onDoubleClick ={() => this.onViewDetail(info)} key={i++}>
                     <td >{i}</td>
@@ -550,7 +557,7 @@ class InfoStudent extends Component{
                       <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.onViewDetail(info)}>
                         <i className="fas fa-edit"/>
                       </Button>
-                      <CheckBox name={info.MSSV} isCheck={this.handleCheckDelete} check={this.handleValueCheck(info.MSSV)}/>
+                      <CheckBox name={info.MSSV} isCheck={this.handleCheckDelete} check={checked}/>
                     </td>
                   </tr>
                 )
