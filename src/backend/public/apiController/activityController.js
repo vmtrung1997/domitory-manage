@@ -8,15 +8,20 @@ exports.get_activity = (req, res) => {
 		options: { sort: { ngay: -1 }},
 		page: req.query.page
 	}
-	Activity.paginate({}, option).then( result => {
+	var last
+	Activity.paginate({}, { sort: {ngay : 1}}).then( result => {
+		last = result.docs[0]
+	})
+	.then(Activity.paginate({}, option).then( result => {
 		console.log('==get_activity: success')
 		res.json({
-			rs: result
+			rs: result,
+			last: last
 		})
 	}).catch(err => {
 		console.log('==get_activity: ',err)
 		res.status(500)
-	})	
+	}))
 };
 
 exports.detail_activity = (req, res) => {

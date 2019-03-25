@@ -1,7 +1,7 @@
 import React from 'react';
 import ExpenseDetail from './expenseDetail'
 import { Table } from 'react-bootstrap'
-import Pagination from 'react-js-pagination'
+import Optimize from '../../../optimization/optimizationNumber/optimizationNumber'
 import MyPagination from './../../../components/pagination/pagination'
 import './expenses.css'
 
@@ -28,6 +28,9 @@ export default class ExpenseTable extends React.Component {
 	retriveSearch = (value) => {
 		this.props.retriveSearch(value);
 	}
+	handleLoading = (value) => {
+		this.props.loading(value);
+	}
 	render() {
 		const data = this.props.table.docs
 		const table = data.map((row, index) => {
@@ -37,10 +40,10 @@ export default class ExpenseTable extends React.Component {
 					<td>{row.thang}</td>
 					<td>{row.nam}</td>
 					<td><span className={'link'} onClick={() => this.onHandleClick(row)}>{row.idPhong.tenPhong}</span></td>
-					<td>{row.soDien>0?row.soDien - row.soDienCu:row.soDien}</td>
-					<td>{row.soNuoc>0?row.soNuoc - row.soNuocCu:row.soNuoc}</td>
-					<td>{row.tienRac}</td>
-					<td>{row.tongTien}</td>
+					<td className={'text-right'}>{row.soDien>0?row.soDien - row.soDienCu:row.soDien}</td>
+					<td className={'text-right'}>{row.soNuoc>0?row.soNuoc - row.soNuocCu:row.soNuoc}</td>
+					<td className={'text-right'}>{Optimize.OpitmizeNumber(row.tienRac)}</td>
+					<td className={'text-right'}>{Optimize.OpitmizeNumber(row.tongTien)}</td>
 					<td>{row.trangThai === 0 ? 'Chưa thanh toán' : 'Đã thanh toán'}</td>
 				</tr>
 			)
@@ -48,7 +51,7 @@ export default class ExpenseTable extends React.Component {
 
 		return (
 			<React.Fragment>
-				{this.state.showDetail && <ExpenseDetail expenseDetail={this.state.detail} show={this.showDetail} retriveSearch={this.retriveSearch}/>}
+				{this.state.showDetail && <ExpenseDetail expenseDetail={this.state.detail} show={this.showDetail} retriveSearch={this.retriveSearch} loading={this.handleLoading}/>}
 				<Table bordered hover responsive size="sm">
 					<thead >
 						<tr>

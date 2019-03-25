@@ -6,7 +6,8 @@ class Input extends Component {
   static propTypes = {
     value: PropTypes.any,
     placeholder: PropTypes.string,
-    mask: PropTypes.any
+    mask: PropTypes.any,
+    color: PropTypes.oneOf(['success', 'warning', 'danger','info'])
   }
   static defaultProps = {
     type: 'text',
@@ -23,15 +24,16 @@ class Input extends Component {
     this.props.getValue(event.target);
   }
   render() {
+    var {color} = this.props
     return (
       <React.Fragment>
         <input 
           style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
+          className={`input-control input-${color}`}
           name={this.props.name}
           onChange={this.onChange}
-          defaultValue={this.props.value}
-          type={this.props.type} 
-          className="input-control" 
+          value={this.props.value}
+          type={this.props.type}
           disabled = {this.props.disabled}
           placeholder={this.props.placeholder}
           onKeyPress={this.props.onKeyPress}

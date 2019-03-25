@@ -41,7 +41,9 @@ body{
     bottom: 0;
     left: 0;
 }
-
+.text-right{
+    text-align: right;
+}
 .link{
     color: #007bff;
     cursor: pointer;
@@ -50,7 +52,12 @@ body{
     color: #0056b3;
     text-decoration: underline;
 }
-
 .label-font{
     font-weight: 500;
+}
+select:disabled {
+    background: #eee
+}
+input:disabled {
+    background: #eee
 }

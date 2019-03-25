@@ -21,7 +21,6 @@ class DetailBill extends React.Component {
     render() {
         var data =  this.props.data;
 
-        var tongTien = OpimizationNumber.OpitmizeNumber(data.tongTien);
         return (
             <>
           

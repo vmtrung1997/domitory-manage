@@ -129,6 +129,7 @@ class HeaderHomepage extends Component {
         </ButtonToolbar>
       );
     }
+    
     return (
       <div>
         {this.state.showLoginModal && (
