@@ -71,7 +71,7 @@ class ActivityEdit extends Component{
 		return(
 			<Modal show={this.props.show} onHide={this.props.handleClose} style={{marginTop: '-20px'}}>
         		<Modal.Header closeButton>
-            		<Modal.Title>Thêm hoạt động</Modal.Title>
+            		<Modal.Title>Chỉnh sửa hoạt động</Modal.Title>
           		</Modal.Header>
           		<Modal.Body>
           			<div>

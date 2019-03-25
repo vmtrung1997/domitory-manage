@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Form, Button } from 'react-bootstrap'
+import { Table, Button } from 'react-bootstrap'
 import './listActivity.css'
 import './../titleStudent/titleStudent.css'
 import './../tableStudentTextStyle/tableStudentTextStyle.css'
@@ -23,7 +23,6 @@ class ListActivity extends React.Component {
     listOption = [false];
     listRegister = [];
     register = async() => {
-        var self = this;
         // check hoạt động bắt buộc
         var isValid = true;
         var isEmpty = true;
@@ -36,6 +35,7 @@ class ListActivity extends React.Component {
             if (item.check === true) {
                 isEmpty = false;
             }
+            return true
         })
 
         if (isEmpty) {
@@ -108,6 +108,7 @@ class ListActivity extends React.Component {
                     activity.push(item);
                     this.props.getActivity(item);
                 }
+                return true
             })
           
         }).then(()=>{
@@ -129,9 +130,6 @@ class ListActivity extends React.Component {
     }
 
     render() {
-
-   console.log(this.props.activity);
-        var index = -1;
         return (
             <React.Fragment>
                 <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore} />
