@@ -68,7 +68,6 @@ class HeaderHomepage extends Component {
 
     render() {
 
-        var { state } = this.props;
         let isLogin;
         const secret = JSON.parse(localStorage.getItem('secret'))
         if (secret && !this.state.isLogin) {

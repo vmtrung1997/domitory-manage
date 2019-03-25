@@ -219,8 +219,6 @@ class ProfileStudent extends React.Component {
         console.log(this.props.state);
         if(!this.state.isLoad)
         {
-        var { state } = this.props;
-        var profile = state.userProfile || null;
 
         var gender = [{ value:'0', label: 'Nữ' }, { value: '1', label: 'Nam' }]
         var majorInput;
@@ -233,13 +231,13 @@ class ProfileStudent extends React.Component {
         var birthdayFormat =  d.getDate() + '/' + month + '/' + d.getFullYear();
 
         //Định dạng ngày vào
-        var d = new Date(this.state.ngayVaoO);
-        var month = d.getMonth() + 1;
+        d = new Date(this.state.ngayVaoO);
+        month = d.getMonth() + 1;
         var dayInFormat =  d.getDate() + '/' + month + '/' + d.getFullYear();
 
         //Định dạng ngày ra
-        var d = new Date(this.state.ngayHetHan);
-        var month = d.getMonth() + 1;
+        d = new Date(this.state.ngayHetHan);
+        month = d.getMonth() + 1;
         var dayOutFormat =  d.getDate() + '/' + month + '/' + d.getFullYear();
 
         if (!this.state.readOnly) {

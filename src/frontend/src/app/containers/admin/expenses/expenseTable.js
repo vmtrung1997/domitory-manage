@@ -1,7 +1,6 @@
 import React from 'react';
 import ExpenseDetail from './expenseDetail'
 import { Table } from 'react-bootstrap'
-import Pagination from 'react-js-pagination'
 import MyPagination from './../../../components/pagination/pagination'
 import './expenses.css'
 

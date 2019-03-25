@@ -5,7 +5,6 @@ import Info from '../../../components/introHomepage/info'
 
 import Header from './../../../components/headerHomepage/headerHomepage'
 //import autoscroll from 'autoscroll-react'
-import ReallySmoothScroll from 'really-smooth-scroll';
 
 
 // ReallySmoothScroll.shim();
