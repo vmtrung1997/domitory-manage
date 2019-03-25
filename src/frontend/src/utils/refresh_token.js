@@ -9,8 +9,8 @@ const refreshToken = async () => {
                 'x-access-token': secret.access_token
             }
   	    })
-        .catch( err => {})
-  		if(res && res.data !== undefined){  
+        .catch( err => { return true})
+  		if(res && res.data.rs.access_token !== undefined){  
             localStorage.setItem('secret', JSON.stringify(res.data))
         }
     }
