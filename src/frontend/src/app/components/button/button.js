@@ -39,7 +39,7 @@ class Button extends Component{
 			<button  
 				style={style}
 				className={'bt bt-' + size + ' bt-' + color + ' bt-' + variant + ' ' + classDisabled + ' ' + classFullWidth + ' ' + className}
-				onClick={e => this.props.onClick({key: this.props.keyButton})}
+				onClick={e => this.props.onClick({key: this.props.keyButton, e: e})}
 				title={this.props.title}
 			>
 				{children}

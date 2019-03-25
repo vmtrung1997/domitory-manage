@@ -25,6 +25,7 @@ class InfoStudent extends Component{
     this.state = {
       showAddPopup: false,
       showDelPopup: false,
+      showImportPopup: false,
       pageActive: 1,
       totalpages: 1,
       limit: 10,
@@ -63,6 +64,9 @@ class InfoStudent extends Component{
       case 'del':
         this.setState({ showDelPopup: false });
         break;
+      case 'import':
+        this.setState({ showImportPopup: false });
+        break;
       default:
         break
     }
@@ -75,6 +79,9 @@ class InfoStudent extends Component{
         break;
       case 'del':
         this.setState({ showDelPopup: true });
+        break;
+      case 'import':
+        this.setState({ showImportPopup: true });
         break;
       default:
         break
@@ -297,6 +304,51 @@ class InfoStudent extends Component{
     this.getData();
   }
 
+  filesOnChange = (sender) =>{
+    let file = sender.target.files;
+
+    this.setState({
+      fileImport: file
+    });
+  }
+
+  uploadJustFile = (props) => {
+
+    if (!this.state.hasOwnProperty('fileImport')) {
+      this.setState({
+        justFileServiceResponse: 'Vui lòng chọn 1 file!!'
+      });
+      return;
+    }
+    console.log('==eeee', props.e, this.state.fileImport);
+    props.e.preventDefault();
+    this.setState({
+      justFileServiceResponse: 'Vui lòng chờ!!'
+    });
+
+
+
+    let form = new FormData();
+    form.append('file', this.state.fileImport);
+
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.post('/manager/infoStudent/importFile', form, { headers: {
+      'x-access-token': secret.access_token,
+        'content-type': 'multipart/form-data'
+    } })
+      .then((result) => {
+        // let message = "Success!"
+        // if (!result.data.success) {
+        //   message = result.data.message;
+        // }
+        console.log('==import file success', result);
+        ToastsStore.error("Success!");
+      })
+      .catch((err) => {
+        ToastsStore.error("Error!");
+        console.log(err);
+      });
+  }
   render(){
     console.log('==render state', this.state);
 
@@ -412,11 +464,13 @@ class InfoStudent extends Component{
             </Row>
           </div>
 
+          {/*file, card*/}
           <Row>
             <Col md={6} className={''}>
               <div className={'is-manipulation'}>
                 <Button
                   variant={'rounded'}
+                  onClick={() => this.handleShowPopup('import')}
                 >
                   <i className="fas fa-file-import"/>
                 </Button>
@@ -440,6 +494,7 @@ class InfoStudent extends Component{
               </div>
             </Col>
 
+            {/*add, delete*/}
             <Col md={6} >
               <div className={'is-manipulation'} style={{float: 'right'}}>
                 <Button color={'warning'} onClick={() => this.handleShowPopup('add')}>
@@ -452,7 +507,7 @@ class InfoStudent extends Component{
             </Col>
           </Row>
 
-          <input type="file" name="file" />
+
 
           {/*modal popup add student*/}
           <Modal show={this.state.showAddPopup} onHide={() =>this.handleClosePopup('add')}>
@@ -510,7 +565,7 @@ class InfoStudent extends Component{
 
           {/*end modal*/}
 
-          {/*modal popup edit student*/}
+          {/*modal popup delete student*/}
           <Modal show={this.state.showDelPopup} onHide={() =>this.handleClosePopup('del')}>
             <Modal.Header closeButton>
               <Modal.Title>Bạn có chắc chắn muốn xóa những sinh viên này?</Modal.Title>
@@ -522,6 +577,26 @@ class InfoStudent extends Component{
               </Button>
               <Button  onClick={() =>this.handleDelStudent()}>
                 OK
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {/*end modal*/}
+
+          {/*modal popup upload file*/}
+          <Modal show={this.state.showImportPopup} onHide={() =>this.handleClosePopup('import')}>
+            {/*<Modal.Header closeButton>*/}
+              {/*<Modal.Title>Bạn có chắc chắn muốn xóa những sinh viên này?</Modal.Title>*/}
+            {/*</Modal.Header>*/}
+            <Modal.Body>
+              <input type="file" name="file" onChange={this.filesOnChange}/>
+              <p><b>{this.state.justFileServiceResponse}</b></p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="outline" onClick={() =>this.handleClosePopup('import')}>
+                Cancel
+              </Button>
+              <Button  onClick={this.uploadJustFile}>
+                Upload
               </Button>
             </Modal.Footer>
           </Modal>
