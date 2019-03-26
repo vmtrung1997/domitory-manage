@@ -5,11 +5,11 @@ const Profile = require('./../models/Profile')
 
 exports.get_activity = (req, res) => {
 	const option = {
-		options: { sort: { ngay: -1 }},
+		options: { sort: { ngayBD: -1 }},
 		page: req.query.page
 	}
 	var last
-	Activity.paginate({}, { sort: {ngay : 1}}).then( result => {
+	Activity.paginate({}, { sort: {ngayBD : 1}}).then( result => {
 		last = result.docs[0]
 	})
 	.then(Activity.paginate({}, option).then( result => {
@@ -38,7 +38,10 @@ exports.post_activity = (req, res) => {
 	var tmp = {
 		ten: req.body.name,
     	diaDiem: req.body.location,
-    	ngay: req.body.time,
+    	ngayBD: req.body.date,
+    	gioBD: req.body.time,
+    	ngayKT: req.body.dateEnd,
+    	gioKT: req.body.timeEnd,
     	batBuoc: req.body.isRequire,
     	soLuong: 0,
     	diem: req.body.point,
@@ -74,7 +77,10 @@ exports.update_activity = (req, res) => {
 	var data = {
 		ten: req.body.name,
     	diaDiem: req.body.location,
-    	ngay: req.body.time,
+    	ngayBD: req.body.date,
+    	gioBD: req.body.time,
+    	ngayKT: req.body.dateEnd,
+    	gioKT: req.body.timeEnd,
     	batBuoc: req.body.isRequire,
     	diem: req.body.point,
     	moTa: req.body.des
@@ -106,7 +112,6 @@ exports.rollcall_activity = async (req, res) => {
 			res.status(500)
 		}
 		if(!val){
-			console.log(1)
 			res.status(200).json({rs: 'not found student'})
 		}
 		data.sv = val
@@ -121,15 +126,15 @@ exports.rollcall_activity = async (req, res) => {
 				var rs = new resultActivity({
 					idHD: data.hd,
 					idSV: data.sv._id,
-					status: 1 
+					isTG: true
 				})
 				rs.save()
 			} else {
-				if(val.status === 1){
+				if(val.isTG === true){
 					res.status(200).json({ rs: 'ok'})
 					return true
 				}
-				val.status = 1
+				val.isTG = true
 				val.save()
 			}
 			data.sv.diemHD = (data.sv.diemHD || 0) + data.diem

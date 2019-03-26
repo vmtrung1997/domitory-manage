@@ -48,7 +48,7 @@ class Activity extends Component{
 		})
 	}
 	
-	componentDidMount = () => {
+	componentWillMount = () => {
 		this.setState({ loading: true})		
 		this.getData()
 	}
@@ -103,21 +103,28 @@ class Activity extends Component{
 					<div>
 						<Row className={'m-b-10'}>
 							<Col>
-								<Input/>
+								<span> Tìm kiếm </span>
+								<Input placeholder={'Hoạt động'}/>
 							</Col>
-							<Col md={3} xs={12}>
+							<Col md={2} xs={12}>
+								<span> Tháng </span>
 								<Select 
 									options={month} 
 									value={this.state.monthSelected} 
 									selected={val => this.getValue('monthSelected',val)} 
 								/>
 							</Col>
-							<Col md={4} xs={12}>
+							<Col md={3} xs={12}>
+								<span> Năm </span>
               					<Select 
               						options={year} 
               						value={this.state.yearSelected}
               						selected={val => this.getValue('yearSelected', val)}
               					/>	
+              				</Col>
+              				<Col md={2} xs={12}>
+              					<div>&nbsp;</div>
+              					<Button style={{padding: '7px 15px'}} ><i className="fas fa-search" /></Button>
               				</Col>
               			</Row>		
 						<div className='bts-header'>

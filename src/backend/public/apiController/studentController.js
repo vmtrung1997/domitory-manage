@@ -52,7 +52,6 @@ exports.getListActivities = (req, res) => {
 		})
 	})
 
-
 }
 
 exports.cancelRegisterActivities = (req,res) =>{
@@ -203,4 +202,24 @@ exports.getInfo = (req, res) => {
 			console.log(err);
 		});
 
+}
+
+exports.getInfoByIdCard = (req, res) => {
+	var idCard = req.body.idCard;
+	
+	Profile.findOne({ maThe: idCard }).then(result => {	
+		if (result) {
+			res.status(200).json({
+				status: 'success',
+				student: result
+			})
+		} else {
+			res.json({
+				status: 'fail',
+				data: 'no data'
+			})
+		}
+	}).catch(err => {
+		console.log(err);
+	});
 }
