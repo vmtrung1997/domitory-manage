@@ -31,8 +31,13 @@ class Activity extends Component{
 	getData = async () => {
 		await refreshToken()
 		var secret = JSON.parse(localStorage.getItem('secret'))
-		axios.get(`/manager/activity/get_activity?page=${this.state.page}`,{
-			headers: { 'x-access-token': secret.access_token}
+		axios({
+			method: 'post',
+      		url: `/manager/activity/get_activity?page=${this.state.page}`,
+			headers: { 'x-access-token': secret.access_token},
+			data: {
+				search: 'trung',
+			}
 		})
       	.then(res => {
        	    this.setState({

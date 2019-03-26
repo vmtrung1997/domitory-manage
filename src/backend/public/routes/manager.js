@@ -33,7 +33,7 @@ router.post('/expense/check', expenseController.check_expense)
 router.post('/expense/confirm_expense', expenseController.confirm)
 
 // Activity
-router.get('/activity/get_activity', activityController.get_activity);
+router.post('/activity/get_activity', activityController.get_activity);
 
 router.get('/activity/detail', activityController.detail_activity);
 

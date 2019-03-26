@@ -4,12 +4,18 @@ const resultActivity = require('./../models/KetQuaHD');
 const Profile = require('./../models/Profile')
 
 exports.get_activity = (req, res) => {
+	console.log(req.body)
 	const option = {
-		options: { sort: { ngayBD: -1 }},
+		options: { 
+			sort: { ngayBD: -1 }
+		},
 		page: req.query.page
 	}
 	var last
-	Activity.paginate({}, { sort: {ngayBD : 1}}).then( result => {
+	Activity.paginate(
+		{}, 
+		{ sort: {ngayBD : 1}})
+	.then( result => {
 		last = result.docs[0]
 	})
 	.then(Activity.paginate({}, option).then( result => {
