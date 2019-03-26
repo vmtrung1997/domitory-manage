@@ -28,6 +28,7 @@
     "react-scripts": "^2.1.8",
     "react-scroll-to-component": "^1.0.2",
     "react-select": "^2.4.1",
+    "react-simple-timefield": "^2.0.1",
     "react-slideshow-image": "^1.1.2",
     "react-spinners": "^0.5.3",
     "react-toastr": "^3.0.0",

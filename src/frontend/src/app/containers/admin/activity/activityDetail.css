@@ -9,3 +9,21 @@
 .back:hover{
 	color: #5b5b5b;
 }
+.detail-activity{
+	display: flex;
+	border: solid 1px #52C5BF;
+	border-radius: 0 0 5px 5px;
+	padding: 5px 30px;
+}
+p{
+	margin: 0;
+}
+
+.title-detail{
+	background: #52C5BF;
+	color: white;
+	font-weight: bold;
+	padding: 5px 20px;
+	border-radius: 5px 5px 0 0;
+	margin-top: 10px;
+}

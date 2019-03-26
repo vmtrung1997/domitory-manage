@@ -5,7 +5,10 @@ var Schema = mongoose.Schema;
 var hoatDongSchema = new Schema({
     ten: String,
     diaDiem: String,
-    ngay: Date,
+    ngayBD: Date,
+    gioBD: String,
+   	ngayKT: Date,
+    gioKT: String,
     batBuoc: Boolean,
     soLuong: Number,
     diem: Number,
