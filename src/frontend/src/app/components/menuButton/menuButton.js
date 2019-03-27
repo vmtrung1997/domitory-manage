@@ -5,7 +5,7 @@ import './menuButton.css';
 
 export default class MenuButton extends React.Component {
   render() {
-    const { icon, label, link, ikey, path } = this.props;
+    const { icon, label, link, ikey, path, subMenu } = this.props;
     var focus = ''
     if(path.split('/')[2] === link.split('/')[2]){
       focus = 'focus'
@@ -22,6 +22,27 @@ export default class MenuButton extends React.Component {
             </span>
           }
         </Link>
+        {subMenu &&
+        <ul>
+          {subMenu.map(menu => {
+            return(
+
+                <li  key={ ikey} onClick={this.click}>
+                  <Link to={menu.link} className={"mb_link"}>
+
+                    {menu.label &&
+                    <span className={"mb_nav-label"}>
+                      {menu.label}
+                    </span>
+                    }
+                  </Link>
+                </li>
+
+            )
+          })}
+        </ul>
+
+        }
       </li>
     )
   }
