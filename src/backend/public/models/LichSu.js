@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var lichSuSchema = new Schema({
-    idSV: {type: Schema.Types.String, ref: 'Profile'},
+    MSSV: String,
     thoiGian: Date
 });
 const model = mongoose.model('LichSu', lichSuSchema, 'LichSu');

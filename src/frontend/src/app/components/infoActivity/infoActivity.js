@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
+import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 import axios from './../../config'
 
 import './infoActivity.css'
@@ -33,6 +34,10 @@ class InfoActivity extends Component{
 	handleClose = (state) => {
 		this.setState({ [state]: false })
 	}
+	handleSaveEdit = (state) => {
+		this.setState({ [state]: false })
+		this.props.refresh()
+	}
 	handleSave = async () => {
 		await refreshToken()
     	var secret = JSON.parse(localStorage.getItem('secret'))
@@ -40,6 +45,10 @@ class InfoActivity extends Component{
 	      	method: 'post',
 	      	url: `/manager/activity/delete?id=${this.state.id}`,
 	      	headers: { 'x-access-token': secret.access_token }
+	    }).then(res => {
+	    	ToastsStore.success("Xóa hoạt động thành công!");
+	    }).catch(err => {
+	    	ToastsStore.error("Xóa hoạt động không thành công!");
 	    })
 	    this.setState({ showDelete: false })
 		this.props.refresh()
@@ -48,12 +57,6 @@ class InfoActivity extends Component{
 		this.setState({
 			showEdit: true,
 			dataEdit: data
-		})
-	}
-
-	handleClick = (id) => {
-		this.props.history.push({
-			pathname: `/admin/activity/detail/${id}`
 		})
 	}
 
@@ -66,15 +69,18 @@ class InfoActivity extends Component{
 	render(){
 		const table = this.props.data.map((row, index) => {
 			var curData = new Date();
-			var date = new Date(row.ngay);
+			var date = new Date(row.ngayBD);
 			var strDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+			var url = `/admin/activity/detail/${row._id}`
 			return (
-				<tr key={index} onDoubleClick={e => {this.handleClick(row._id)}}>
+				<tr key={index} >
 					<td>{index + 1}</td>
-					<td>{row.ten}</td>
+					<td style={{maxWidth: '500px'}}>
+						<Link to={url}>{row.ten}</Link>
+					</td>
+					<td>{row.gioBD}</td>
 					<td>{strDate}</td>
 					<td>{row.diaDiem}</td>
-					<td>{row.soLuong}</td>
 					{row.batBuoc ? (
 						<td style={{textAlign: 'center', color: '#04C913'}}> <i className="fas fa-check"></i> </td>
 					):(
@@ -105,13 +111,14 @@ class InfoActivity extends Component{
 
 		return(
 			<React.Fragment>
+		        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
 				<Confirm show={this.state.showDelete} handleClose={() => this.handleClose('showDelete')} handleSave={() => this.handleSave()}/>
 				{this.state.showEdit ?
 					<ActivityEdit 
 						show={this.state.showEdit}
 						data={this.state.dataEdit}
 						handleClose={() => this.handleClose('showEdit')} 
-						handleSave={() => this.handleClose('showEdit')}
+						handleSave={() => this.handleSaveEdit('showEdit')}
 					/>
 					: <React.Fragment/>
 				}
@@ -125,13 +132,13 @@ class InfoActivity extends Component{
 					: <React.Fragment/>
 				}
 				<Table bordered hover responsive size="sm" className="table-activity">
-					<thead >
+					<thead style={{background: '#cfcfcf', textAlign: 'center'}}>
 						<tr>
 							<th>STT</th>
 							<th>Hoạt động</th>
 							<th>Thời gian</th>
+							<th>Ngày</th>
 							<th>Địa điểm</th>
-							<th>Tham gia</th>
 							<th>Bắt buộc</th>
 							<th>Thao tác</th>
 						</tr>

@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css?family=Podkova');
+.security.title{
+    color: #286090;
+    background: white;
+    padding: 10px 50px;
+    margin: auto -15px;
+}
+.content-body{
+  overflow: auto;
+}
+.img-css img{
+  width: 100%;
+}
+.info{
+  font-family: 'Podkova', serif;
+  font-size: 2em;
+  padding: auto 0;
+}
+.info span{
+  color: blue;
+}
+.id-back{
+  margin-bottom: 15px;
+}
+
+.id-back span, .id-back i{
+  text-decoration: none;
+  color: #999c9e;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.id-back i{
+  margin-right: 5px;
+}
+
+.item-history{
+  display: flex;
+  margin:10px;
+  border: 1px solid #999c9e;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+}
+.item-image{
+  max-width: 100px;
+  max-height: 100px;
+  margin: auto;
+}
+.item-image img{
+  width:100px;
+}
+.item-text{
+  margin: auto;
+  padding-left: 10px;
+}
+.max-height-history{
+  max-height: 500px;
+}

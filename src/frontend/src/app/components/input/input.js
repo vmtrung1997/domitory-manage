@@ -19,9 +19,11 @@ class Input extends Component {
     disabled: false,
     getValue: () => {},
     onKeyPress: () => {},
+    onChange: () => {},
   }
   onChange = (event) => {
     this.props.getValue(event.target);
+    this.props.onChange(event);
   }
   render() {
     var {color} = this.props
