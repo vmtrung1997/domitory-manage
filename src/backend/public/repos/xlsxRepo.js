@@ -58,3 +58,9 @@ exports.save = function(arr, options) {
   bookType: "xlsx",
   bookSST: false});
 }
+
+exports.read = (arquivo) => {
+  var fileReader = new FileReader();
+  fileReader.readAsArrayBuffer(arquivo);
+  
+}

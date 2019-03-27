@@ -4,7 +4,7 @@ var ChiPhiPhong = require('../models/ChiPhiPhong')
 var Profile = require('../models/Profile')
 var ObjectId = require('mongoose').Types.ObjectId;
 var fs = require('fs')
-
+var XLSX = require('xlsx')
 function updateProfile(object) {
 	return new Promise((resolve, reject) => {
 		//console.log(object);
@@ -59,6 +59,55 @@ exports.update_image = (req, res) => {
 			})
 		}
 	})
+}
+function process_RS(stream/*:ReadStream*/, cb/*:(wb:Workbook)=>void*/)/*:void*/{
+  var buffers = [];
+  stream.on('data', function(data) { buffers.push(data); });
+  stream.on('end', function() {
+    var buffer = Buffer.concat(buffers);
+    var workbook = XLSX.read(buffer, {type:"buffer"});
+ 
+    /* DO SOMETHING WITH workbook IN THE CALLBACK */
+    cb(workbook);
+  });
+}
+
+exports.uploadExcelFile = (req, res) => {
+	var fileArr = req.body.file;
+	var workbook = XLSX.read(fileArr, {type: 'binary'})
+	var sheet_name_list = workbook.SheetNames;
+	sheet_name_list.forEach(function(y) {
+				var worksheet = workbook.Sheets[y];
+				//console.log(worksheet)
+				var headers = {};
+				var data = [];
+				for(z in worksheet) {
+						if(z[0] === '!') continue;
+						//parse out the column, row, and value
+						var tt = 0;
+						for (var i = 0; i < z.length; i++) {
+								if (!isNaN(z[i])) {
+										tt = i;
+										break;
+								}
+						};
+						var col = z.substring(0,tt);
+						var row = parseInt(z.substring(tt));
+						var value = worksheet[z].v;
+	
+						//store header names
+						if(row == 1 && value) {
+								headers[col] = value;
+								continue;
+						}
+	
+						if(!data[row]) data[row]={};
+						data[row][headers[col]] = value;
+				}
+				console.log(headers)
+				console.log(data);
+		});
+	res.json({rs:'success'})
 }
     // exports.update_password = (req, res) => {
     //     TaiKhoan.updateMany({},{
