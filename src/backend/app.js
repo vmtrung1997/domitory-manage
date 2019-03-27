@@ -27,6 +27,7 @@ app.use(cors())
 var verifyAccessToken = require('./public/repos/authRepo').verifyAccessToken;
 var checkToken = require('./public/repos/authRepo').checkToken;
 
+app.use('/news',require('./public/routes/visitor'));
 app.use('/api/user', require('./public/routes/user'));
 app.use('/api/manager', verifyAccessToken, require('./public/routes/manager'));
 app.use('/api/student', verifyAccessToken, require('./public/routes/student'));

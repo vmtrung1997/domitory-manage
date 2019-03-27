@@ -9,6 +9,7 @@
     margin-left: auto;
     margin-right: auto;
     padding-top: 130px;
+    min-height: 100vh
 }
 
 .tilte{
@@ -25,6 +26,7 @@
 .content-detail{
     font-size: 15px;
     margin-top: 50px;
+    margin-bottom: 40px;
     color: #707070;
 }
 

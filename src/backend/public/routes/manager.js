@@ -59,5 +59,8 @@ router.get('/getElement/:name', repo.get_element);
 
 //News
 router.post('/news/add',newsController.addNews);
+router.get('/news/get',newsController.getNews);
+router.post('/news/update',newsController.updateNews);
+router.post('/news/delete',newsController.deleteNews);
 
 module.exports = router;
