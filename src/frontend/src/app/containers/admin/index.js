@@ -7,6 +7,7 @@ import InfoStudentDetail from './infoStudent/infoStudentDetail'
 import Expense from './expenses/expenses'
 import Activity from './activity/activity'
 import ActivityDetail from './activity/activityDetail'
+import InfoDormitory from "./infoDormitory/infoDormitory";
 
 class Admin extends Component{
 	constructor(props) {
@@ -23,6 +24,7 @@ class Admin extends Component{
 				<Route path={`${this.props.match.url}/expense`} component={Expense} />
         		<Route exact path={`${this.props.match.url}/activity`} component={Activity} />
         		<Route exact path={`${this.props.match.url}/activity/detail/:id`} component={ActivityDetail} />
+        <Route exact path={`${this.props.match.url}/dormitory`} component={InfoDormitory} />
 	    	</Layout>
   		)
 	}
