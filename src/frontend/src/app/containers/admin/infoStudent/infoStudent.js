@@ -322,7 +322,7 @@ class InfoStudent extends Component{
     await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
 
-    axios.post('/manager/test', form, { headers: {
+    axios.post('/manager/infoStudent/importFile', form, { headers: {
         'x-access-token': secret.access_token,
         'content-type': 'multipart/form-data'
       } })

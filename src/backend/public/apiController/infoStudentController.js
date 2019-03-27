@@ -4,7 +4,7 @@
 
 require('../models/TaiKhoan');
 var multer  = require('multer'),
-    upload = multer()
+    upload = multer().any();
 //require('../models/NganhHoc');
 const Profile = require('../models/Profile');
 const Account = require('../models/TaiKhoan');
@@ -81,18 +81,10 @@ exports.updateInfo = (req,res) => {
 };
 
 exports.importFile = (req, res, err) => {
-  if(!err)
-    return res.send(200).end();
 
   upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      // A Multer error occurred when uploading.
-    } else if (err) {
-      // An unknown error occurred when uploading.
-    }
-
     console.log("Request ---", req.body);
-    console.log("Request file ---", req.file);//Here you get file.
+    console.log("Request file ---", req.files);//Here you get file.
     /*Now do where ever you want to do*/
     if(!err)
       return res.send(200).end();
