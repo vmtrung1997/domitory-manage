@@ -75,7 +75,7 @@ class InfoActivity extends Component{
 			return (
 				<tr key={index} >
 					<td>{index + 1}</td>
-					<td>
+					<td style={{maxWidth: '500px'}}>
 						<Link to={url}>{row.ten}</Link>
 					</td>
 					<td>{row.gioBD}</td>
