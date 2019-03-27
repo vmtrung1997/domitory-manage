@@ -115,7 +115,8 @@ class InfoStudent extends Component{
     })
   }
 
-  getElement = name => {
+  getElement = async(name) => {
+    await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getElement/` + name,  {
       headers: { 'x-access-token': secret.access_token }
@@ -143,7 +144,7 @@ class InfoStudent extends Component{
 
   getData = async () => {
     console.log('==pageActive', this.state.pageActive);
-    //await refreshToken()
+    await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
       'x-access-token': secret.access_token
@@ -300,7 +301,7 @@ class InfoStudent extends Component{
     });
   }
 
-  uploadJustFile = (props) => {
+  uploadJustFile = async(props) => {
 
     if (!this.state.hasOwnProperty('fileImport')) {
       this.setState({
@@ -315,15 +316,16 @@ class InfoStudent extends Component{
     });
 
 
-
     let form = new FormData();
     form.append('file', this.state.fileImport);
 
+    await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
-    axios.post('/manager/infoStudent/importFile', form, { headers: {
-      'x-access-token': secret.access_token,
+
+    axios.post('/manager/test', form, { headers: {
+        'x-access-token': secret.access_token,
         'content-type': 'multipart/form-data'
-    } })
+      } })
       .then((result) => {
         // let message = "Success!"
         // if (!result.data.success) {

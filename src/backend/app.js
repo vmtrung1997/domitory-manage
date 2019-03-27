@@ -4,6 +4,9 @@ var express = require('express'),
     path = require('path'),
     mongoose = require('mongoose'),
     cors = require('cors')
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+
 
 mongoose.connect('mongodb://admin:123abc@ds149875.mlab.com:49875/kytucxa', 
 { 
@@ -32,6 +35,8 @@ app.use('/api/manager', verifyAccessToken, require('./public/routes/manager'));
 app.use('/api/student', verifyAccessToken, require('./public/routes/student'));
 app.use('/api/check_token', checkToken, require('./public/routes/token'));
 app.use('/api/logout', require('./public/routes/logout'));
+
+
 
 app.get('/', (_, res) => {
     res.json({
