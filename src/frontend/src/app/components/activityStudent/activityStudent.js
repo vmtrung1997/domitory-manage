@@ -30,7 +30,6 @@ class ProfileStudent extends React.Component {
         this.setState({
             startDate: date
         });
-        console.log(date);
     }
 
 
