@@ -23,15 +23,13 @@ global.appRoot = path.resolve(__dirname);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
-app.use(cors())
-var verifyAccessToken = require('./public/repos/authRepo').verifyAccessToken;
-var checkToken = require('./public/repos/authRepo').checkToken;
+app.use(cors());
+var { verifyAccessToken, verifyAdmin, verifySecurity } = require('./public/repos/authRepo');
 
 app.use('/api/user', require('./public/routes/user'));
-app.use('/api/manager', verifyAccessToken, require('./public/routes/manager'));
+app.use('/api/manager', verifyAccessToken, verifyAdmin, require('./public/routes/manager'));
 app.use('/api/student', verifyAccessToken, require('./public/routes/student'));
-app.use('/api/check_token', checkToken, require('./public/routes/token'));
-app.use('/api/security', verifyAccessToken, require('./public/routes/security'));
+app.use('/api/security', verifyAccessToken, verifySecurity, require('./public/routes/security'));
 app.use('/api/logout', require('./public/routes/logout'));
 
 app.get('/', (_, res) => {
