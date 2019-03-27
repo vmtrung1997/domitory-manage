@@ -3,22 +3,39 @@ const Activity = require('./../models/HoatDong');
 const resultActivity = require('./../models/KetQuaHD');
 const Profile = require('./../models/Profile')
 
-exports.get_activity = (req, res) => {
-	console.log(req.body)
+exports.get_list_activity = (req, res) => {
 	const option = {
 		options: { 
 			sort: { ngayBD: -1 }
 		},
 		page: req.query.page
 	}
-	var last
-	Activity.paginate(
-		{}, 
-		{ sort: {ngayBD : 1}})
+	var last = {}
+
+	var query = {}
+	if(req.body.search){ 
+		query = { 
+			$text: { $search: req.body.search },
+		}
+	}
+	if(parseInt(req.body.month) !== 0){
+		query.thang = parseInt(req.body.month)
+	}
+	if(parseInt(req.body.year) !== 0){
+		query.nam = parseInt(req.body.year)
+	}
+
+	if(req.body.require === 'true' || req.body.require === 'false'){
+		query.batBuoc = req.body.require === 'true' ? true : false
+	} 
+                                                
+	Activity.paginate( {} , { sort: {ngayBD : 1}})
 	.then( result => {
-		last = result.docs[0]
+		if(result.docs){
+			last = result.docs[0]
+		}
 	})
-	.then(Activity.paginate({}, option).then( result => {
+	.then(Activity.paginate( query , option).then( result => {
 		console.log('==get_activity: success')
 		res.json({
 			rs: result,
@@ -48,11 +65,14 @@ exports.post_activity = (req, res) => {
     	gioBD: req.body.time,
     	ngayKT: req.body.dateEnd,
     	gioKT: req.body.timeEnd,
+    	thang: new Date(req.body.date).getMonth() + 1,
+    	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
     	soLuong: 0,
     	diem: req.body.point,
     	moTa: req.body.des
 	}
+	console.log(tmp)
 	var act = new Activity(tmp)
 	act.save().then(() => {
 		console.log('==post_activity: success')
@@ -87,6 +107,8 @@ exports.update_activity = (req, res) => {
     	gioBD: req.body.time,
     	ngayKT: req.body.dateEnd,
     	gioKT: req.body.timeEnd,
+    	thang: new Date(req.body.date).getMonth() + 1,
+    	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
     	diem: req.body.point,
     	moTa: req.body.des
