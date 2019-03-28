@@ -72,13 +72,15 @@ class InfoActivity extends Component{
 			var date = new Date(row.ngayBD);
 			var strDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 			var url = `/admin/activity/detail/${row._id}`
+			var strTimeBegin = new Date(row.ngayBD).getHours()+ ':' + new Date(row.ngayBD).getMinutes()
+
 			return (
 				<tr key={index} >
 					<td>{index + 1}</td>
 					<td style={{maxWidth: '500px'}}>
 						<Link to={url}>{row.ten}</Link>
 					</td>
-					<td>{row.gioBD}</td>
+					<td>{strTimeBegin}</td>
 					<td>{strDate}</td>
 					<td>{row.diaDiem}</td>
 					{row.batBuoc ? (
@@ -88,19 +90,19 @@ class InfoActivity extends Component{
 					)}
 					{curData > date ? (
 						<td className='lb-done'>
-							<Button onClick={(e) => {this.handleRollCall(row)}}> 
+							<Button title={'Điểm danh'} onClick={(e) => {this.handleRollCall(row)}}> 
 								<i className="fas fa-poll-h"></i>
 							</Button>
 						</td>
 					):(
 						<td style={{textAlign: 'center'}}> 
-							<Button onClick={(e) => {this.handleRollCall(row)}}>
+							<Button title={'Điểm danh'} onClick={(e) => {this.handleRollCall(row)}}>
 								<i className="fas fa-poll-h"></i>
 							</Button>
-							<Button color={'warning'} style={{margin: '0 5px'}} onClick={(e) => {this.handleEdit(row)}}>
+							<Button title={'Chỉnh sửa'} color={'warning'} style={{margin: '0 5px'}} onClick={(e) => {this.handleEdit(row)}}>
 								<i className="fas fa-edit"></i>
 							</Button>
-							<Button color={'danger'} onClick={(e) => {this.handleDelete(row._id)}}>
+							<Button title={'Xóa'} color={'danger'} onClick={(e) => {this.handleDelete(row._id)}}>
 								<i className=" fas fa-trash-alt"></i>
 							</Button>
 						</td>

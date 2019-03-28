@@ -62,9 +62,7 @@ exports.post_activity = (req, res) => {
 		ten: req.body.name,
     	diaDiem: req.body.location,
     	ngayBD: req.body.date,
-    	gioBD: req.body.time,
     	ngayKT: req.body.dateEnd,
-    	gioKT: req.body.timeEnd,
     	thang: new Date(req.body.date).getMonth() + 1,
     	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
@@ -72,7 +70,18 @@ exports.post_activity = (req, res) => {
     	diem: req.body.point,
     	moTa: req.body.des
 	}
-	console.log(tmp)
+	var timeFirst = req.body.time.split(':')
+	var timeFinal = req.body.timeEnd.split(':')
+
+	var dateFirst = new Date(tmp.ngayBD)
+	var dateFinal = new Date(tmp.ngayKT)
+
+	dateFirst.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
+	dateFinal.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
+
+	tmp.ngayBD = dateFirst
+	tmp.ngayKT = dateFinal
+	
 	var act = new Activity(tmp)
 	act.save().then(() => {
 		console.log('==post_activity: success')
@@ -104,15 +113,25 @@ exports.update_activity = (req, res) => {
 		ten: req.body.name,
     	diaDiem: req.body.location,
     	ngayBD: req.body.date,
-    	gioBD: req.body.time,
     	ngayKT: req.body.dateEnd,
-    	gioKT: req.body.timeEnd,
     	thang: new Date(req.body.date).getMonth() + 1,
     	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
     	diem: req.body.point,
     	moTa: req.body.des
 	}
+
+	var timeFirst = req.body.time.split(':')
+	var timeFinal = req.body.timeEnd.split(':')
+
+	var dateFirst = new Date(data.ngayBD)
+	var dateFinal = new Date(data.ngayKT)
+
+	dateFirst.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
+	dateFinal.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
+
+	data.ngayBD = dateFirst
+	data.ngayKT = dateFinal
 
 	Activity.update({ _id: id }, data, (err, val) => {
 		if(!err){
