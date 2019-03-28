@@ -1,30 +1,84 @@
 const LichSu = require('../models/LichSu')
+const mongoose = require('mongoose')
+const Profile = require('../models/Profile')
 require('../models/Profile')
-exports.get_history_list = (req, res) => {
-  LichSu.aggregate([
-    {
-      $lookup:{
-      from: 'Profile',
-      localField: 'MSSV',
-      foreignField: 'MSSV',
-      as: 'profile'
+require('../models/Truong')
+require('../models/NganhHoc')
+require('../models/Phong')
+require('../models/TaiKhoan')
+function find_history(){
+  return new Promise((resolve,reject) => {
+    LichSu.find().sort({thoiGian: -1}).
+    limit(15).
+    populate({
+      path: 'profile',
+      select: 'hoTen idPhong truong nganhHoc img',
+      populate: [{ path: 'idPhong', select: 'tenPhong'}, 
+      { path: 'truong', select: 'tenTruong'},
+      { path: 'nganhHoc', select: 'tenNganh'}]
+    }).
+    exec((err,result) => {
+      if (result){
+        resolve(result)
+      } else {
+        reject(err)
       }
-    },
-    {
-      $match:{ profile: {$ne: {}} } 
-    },
-    {
-      $sort: {thoiGian: -1}
-    },
-    {
-      $limit: 15
-    }
-  ]).
-  then(hisList => {
-    res.json({
-      rs:'success',
-      data: hisList
     })
+  })
+}
+
+exports.get_history_list = (req, res) => {
+  find_history().then(result => {
+    res.json({
+      rs: 'success',
+      data: result
+    })
+  }).catch(err => {
+    res.json({
+      rs: 'fail',
+      msg: err
+    })
+  })
+}
+
+exports.input_card = (req, res) => {
+  var {info} = req.body;
+  console.log(info)
+  Profile.findOne({maThe: info}).populate({
+    path:'idTaiKhoan',
+    match:{ isDelete: 0}
+  }).then(profile => {
+      if (profile){
+        console.log(profile)
+        if (profile.MSSV)
+        var his = new LichSu({
+          MSSV: profile.MSSV,
+          thoiGian: new Date()
+        })
+        his.save().then(() => {
+          find_history().then(result => {
+            res.json({
+              rs: 'success',
+              hisList: result
+            })
+          }).catch(errFind => {
+            res.json({
+              rs: 'fail',
+              msg: errFind
+            })
+          })
+        }).catch(errSave => {
+          res.json({
+            rs: 'fail',
+            msg: errSave
+          })
+        })
+      } else {
+        res.json({
+          rs: 'not found',
+          msg: 'Thẻ đã xóa'
+        })
+      }
   }).catch(err => {
     res.json({
       rs: 'fail',
