@@ -12,6 +12,7 @@ import Loader from './../../../components/loader/loader'
 import refreshToken from './../../../../utils/refresh_token'
 import MyPagination from './../../../components/pagination/pagination'
 import Select from './../../../components/selectOption/select'
+import ActivityExport from './activityExport'
 
 class Activity extends Component{
 	constructor(props){
@@ -19,7 +20,8 @@ class Activity extends Component{
 		this.state = {
 			totalPages: 1,
 			page: 1,
-			show: false,
+			showAdd: false,
+			showExport: false,
 			loading: false,
 			query: '',
 			last: {},
@@ -48,7 +50,7 @@ class Activity extends Component{
        	    this.setState({
     	    	data: res.data.rs.docs,
 				loading: false,
-				show: false,
+				showAdd: false,
 				last: res.data.last,
 				totalPages: res.data.rs.totalPages
 			})
@@ -63,11 +65,11 @@ class Activity extends Component{
 		this.getData()
 	}
 
-	handleShow = () => {
-		this.setState({ show: true })
+	handleShow = (nameModal) => {
+		this.setState({ [nameModal]: true })
 	}
-	handleClose = () => {
-		this.setState({ show: false })
+	handleClose = (nameModal) => {
+		this.setState({ [nameModal]: false })
 	}
 	clickPage = (page) => {
 		this.setState({ 
@@ -112,15 +114,16 @@ class Activity extends Component{
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
-				<ActivityModal show={this.state.show} handleClose={this.handleClose} handleSave={this.handleSave}/>
+				<ActivityModal show={this.state.showAdd} handleClose={() => this.handleClose('showAdd')} handleSave={this.handleSave}/>
+				<ActivityExport show={this.state.showExport} handleClose={() =>this.handleClose('showExport')} handleSave={this.handleSave}/>
 				<Title> Hoạt động sinh viên </Title>
         		<div className={'content-body full'}>
 					<div>
 						<Row className={'m-b-10'}>
 							<Col>
-								<span> Tìm kiếm </span>
+								<span> Hoạt động </span>
 								<Input 
-									placeholder={'Hoạt động'} 
+									placeholder={'Tìm kiếm'} 
 									getValue={ (obj) => this.getValue('query', obj.value)}
 									onKeyPress={ (e) => {if(e.key === 'Enter') this.getData()}}
 								/>
@@ -151,14 +154,14 @@ class Activity extends Component{
               				</Col>
               				<Col md={1} xs={12}>
               					<div>&nbsp;</div>
-              					<Button style={{padding: '7px 15px'}} onClick={this.getData}><i className="fas fa-search" /></Button>
+              					<Button title={'Tìm kiếm'} style={{padding: '7px 15px'}} onClick={this.getData}><i className="fas fa-search" /></Button>
               				</Col>
               			</Row>		
 						<div className='bts-header'>
-							<Button color={'warning'} onClick={this.handleShow} style={{padding: '5px 20px'}}> 
+							<Button title={'Thêm mới'} color={'warning'} onClick={() => this.handleShow('showAdd')} style={{padding: '5px 20px'}}> 
 								<i className="fas fa-plus"/>
 							</Button>
-							<Button style={{margin: '0 5px', padding: '5px 20px'}}>
+							<Button title={'Xuất báo cáo'} onClick={() => this.handleShow('showExport')}  style={{margin: '0 5px', padding: '5px 20px'}}>
                 				<i className="fas fa-file-export"/>
                 			</Button>
 						</div>

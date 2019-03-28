@@ -44,9 +44,9 @@ class ActivityDetail extends Component{
 		var iJoin = 0
 
 		var date = new Date(this.state.hd.ngayBD);
-		var strDateStart = `${this.state.hd.gioBD} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+		var strDateStart = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 		date = new Date(this.state.hd.ngayKT);
-		var strDateEnd = `${this.state.hd.gioBD} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+		var strDateEnd = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 
 		this.state.data.map( (item, index) => {
 			if(item.status === 0){
@@ -99,8 +99,16 @@ class ActivityDetail extends Component{
 							<p>	{this.state.hd.ten} </p>
 							<p> {strDateStart} </p>
 							<p> {strDateEnd} </p>
-							<p> {this.state.hd.diaDiem} </p>
-							<p> {this.state.hd.diem} </p>
+							{this.state.hd.diaDiem ?
+								<p> {this.state.hd.diaDiem} </p>
+								:
+								<p> &nbsp; </p>
+							}
+							{this.state.hd.diem ?
+								<p> {this.state.hd.diem} </p>
+								:
+								<p> &nbsp; </p>
+							}
 							<p> {this.state.hd.batBuoc ? 'có' : 'không'} </p>
 							<textarea rows={this.state.hd.moTa ? 4:1} value={this.state.hd.moTa} disabled={true}/>
 						</Col>
