@@ -7,7 +7,8 @@ class Input extends Component {
     value: PropTypes.any,
     placeholder: PropTypes.string,
     mask: PropTypes.any,
-    color: PropTypes.oneOf(['success', 'warning', 'danger','info'])
+    color: PropTypes.oneOf(['success', 'warning', 'danger','info']),
+    ref: PropTypes.any
   }
   static defaultProps = {
     type: 'text',
@@ -17,11 +18,15 @@ class Input extends Component {
     padding: '6px 12px',
     borderRadius: '1px',
     disabled: false,
+    autoFocus: false,
     getValue: () => {},
     onKeyPress: () => {},
   }
   onChange = (event) => {
     this.props.getValue(event.target);
+  }
+  onRef = (event) => {
+    this.props.ref(event)
   }
   render() {
     var {color} = this.props
@@ -38,6 +43,8 @@ class Input extends Component {
           placeholder={this.props.placeholder}
           onKeyPress={this.props.onKeyPress}
           data-mask={this.props.mask}
+          ref={this.props.onRef}
+          autoFocus={this.props.autoFocus}
         />
       </React.Fragment>
     );
