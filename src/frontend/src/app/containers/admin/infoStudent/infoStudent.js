@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Row, Col, Table, Pagination, Modal, Collapse } from 'react-bootstrap';
+import { Row, Col, Table, Modal } from 'react-bootstrap';
+import axios from 'axios';
+import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
+import { withRouter } from 'react-router-dom';
+import SearchSelect from 'react-select';
+
+
 import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import CheckBox from './../../../components/checkbox/checkbox';
-//import Pagination from './../../../components/pagination/pagination';
-import {Route, withRouter} from 'react-router-dom';
 import './infoStudent.css';
 import './../../../style.css'
-
-import axios from 'axios';
 import refreshToken from './../../../../utils/refresh_token'
 import InfoStudentDetail from './infoStudentDetail';
 import MyPagination from "../../../components/pagination/pagination";
@@ -23,7 +25,6 @@ class InfoStudent extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
       showAddPopup: false,
       showDelPopup: false,
       pageActive: 1,
@@ -298,7 +299,7 @@ class InfoStudent extends Component{
   render(){
     console.log('==render state', this.state);
     let i = 0;
-    const { infoList, pageList, pageActive, roomSelected, schoolSelected, floorSelected, schoolAdded, roomOptions, schoolOptions, floorOptions, roomAdded } = this.state;
+    const { infoList, roomSelected, schoolSelected, floorSelected, schoolAdded, roomOptions, schoolOptions, floorOptions, roomAdded } = this.state;
     return(
       <div>
         <Title>
@@ -492,21 +493,6 @@ class InfoStudent extends Component{
           <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
 
           {/*end modal*/}
-
-          <Button
-            onClick={() => this.setState({ open: !this.state.open })}
-            aria-controls="example-collapse-text"
-            aria-expanded={this.state.open}
-          >
-            click
-          </Button>
-          <Collapse in={this.state.open}>
-            <div id="example-collapse-text">
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus
-              terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
-              labore wes anderson cred nesciunt sapiente ea proident.
-            </div>
-          </Collapse>
 
           {/*modal popup edit student*/}
           <Modal show={this.state.showDelPopup} onHide={() =>this.handleClosePopup('del')}>

@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
-import DatePicker from 'react-datepicker'
+import { Table, Modal } from 'react-bootstrap'
 import axios from './../../../config'
 
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
-import Input from './../../../components/input/input'
-import CheckBox from './../../../components/checkbox/checkbox'
-import Botton from './../../../components/button/button'
 
 class ActivityRollCall extends Component{
 	static defaultProps = {
@@ -17,7 +13,8 @@ class ActivityRollCall extends Component{
   constructor(props) {
     super(props)
     this.state = {
-      idThe: ''
+      idThe: '',
+      data: []
     }
   }
   onChange = (val) => {
@@ -40,12 +37,43 @@ class ActivityRollCall extends Component{
         point: this.props.data.diem
       }
     })
+    axios({
+      method: 'post',
+      url: '/student/get-info-by-idCard',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-access-token': secret.access_token
+      },
+      data:{
+        idCard: this.state.idThe
+      }
+    }).then(res => {
+      if(res.data.student){
+        if(!this.state.data.some(el => el.MSSV === res.data.student.MSSV)){
+          this.setState({ 
+            data: this.state.data.concat(res.data.student)
+          })
+        }
+      }
+    })
     this.setState({
       idThe: ''
     })
   }
   
 	render(){
+    var table = []
+    this.state.data.map( (item, index) => {
+      table.push(
+        <tr key={index}>
+          <td>{index + 1}</td>
+          <td>{item.MSSV}</td>
+          <td>{item.hoTen}</td>
+        </tr>
+      )
+      return true
+    })
+
 		return(
 			<Modal show={this.props.show} onHide={this.props.handleClose} >
         		<Modal.Header closeButton>
@@ -69,6 +97,18 @@ class ActivityRollCall extends Component{
                     Điểm danh 
                   </Button>
                 </div>
+                <Table bordered hover responsive size="sm" className="table-activity">
+                  <thead style={{background: '#cfcfcf', textAlign: 'center'}}>
+                    <tr>
+                      <th>STT</th>
+                      <th>MSSV</th>
+                      <th>Họ tên</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {table}
+                  </tbody>
+                </Table>
           		</Modal.Body>
           		<Modal.Footer>
 	            	<Button variant='default' color='default' onClick={this.props.handleClose}>

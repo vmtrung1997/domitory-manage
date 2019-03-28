@@ -2,7 +2,8 @@ import React from 'react'
 import { Row, Col, Modal } from 'react-bootstrap'
 import Button from '../../../components/button/button'
 import Input from '../../../components/input/input'
-import {remove_expense, update_expense} from './expensesAction'
+import Optimize from '../../../optimization/optimizationNumber/optimizationNumber'
+import {remove_expense, update_expense, submit_expense} from './expensesAction'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 class Example extends React.Component {
   constructor(props, context) {
@@ -19,7 +20,7 @@ class Example extends React.Component {
   }
   componentDidMount(){
     var {expenseDetail} = this.props;
-    this.setState({exp: expenseDetail})
+    this.setState({exp: expenseDetail,soDien: expenseDetail.soDien, soNuoc: expenseDetail.soNuoc})
   }
   handleClose() {
     this.setState({ show: false, disabled: true, capNhat: false });
@@ -33,9 +34,11 @@ class Example extends React.Component {
     var {exp} = this.state;
     if (!window.confirm("Bạn chắc chắn muốn xóa chi phí này"))
       return;
+    self.props.loading(true)
     remove_expense(exp).then(result => {
       if (result.data){
         ToastsStore.success("Xóa chi phí thành công");
+        self.props.loading(false)
         self.props.retriveSearch(true);
         self.handleClose();
       } else {
@@ -51,15 +54,32 @@ class Example extends React.Component {
     var {expenseDetail} = this.props;
     expenseDetail.soDien = this.state.soDien;
     expenseDetail.soNuoc = this.state.soNuoc;
-    console.log(expenseDetail);
+    self.props.loading(true)
     update_expense(expenseDetail).then(result => {
       if (result.data){
         ToastsStore.success("Cập nhật chi phí thành công");
+        self.props.loading(false)
         self.props.retriveSearch(true);
         self.handleClose();
       } else {
         ToastsStore.err("Cập nhật chi phí thất bại");
         self.handleClose();
+      }
+    })
+  }
+  handleSubmit = () => {
+    if (!window.confirm('Xác nhận thanh toán chi phí này?'))
+      return;
+    this.props.loading(true)
+    var exp = {id: this.props.expenseDetail._id};
+    submit_expense(exp).then(result=> {
+      if (result.data.rs === 'fail'){
+        ToastsStore.err("Thanh toán không thành công")
+        this.handleClose();
+        this.props.loading(true)
+      } else {
+        ToastsStore.success("Thanh toán thành công");
+        this.handleClose();
       }
     })
   }
@@ -97,38 +117,38 @@ class Example extends React.Component {
           <Row>
             <Col>
             Số điện hiện tai
-            <Input name={'soDien'} type={'number'} disabled={this.state.disabled} value={exp.soDien} getValue={this.handleChange}/>
+            <Input name={'soDien'} type={'number'} disabled={this.state.disabled} value={this.state.soDien} getValue={this.handleChange}/>
             </Col>
             <Col>
             Số nước hiện tại
-            <Input name={'soNuoc'} type={'number'} disabled={this.state.disabled} value={exp.soNuoc} getValue={this.handleChange}/></Col>
+            <Input name={'soNuoc'} type={'number'} disabled={this.state.disabled} value={this.state.soNuoc} getValue={this.handleChange}/></Col>
           </Row>
           <Row>
             <Col>
             Tiền điện
-            <Input name={'soDien'} type={'number'} disabled={true} value={exp.tienDien} getValue={this.handleChange}/>
+            <Input name={'soDien'} disabled={true} value={Optimize.OpitmizeNumber(exp.tienDien)} getValue={this.handleChange}/>
             </Col>
             <Col>
             Tiền nước
-            <Input name={'soNuoc'} type={'number'} disabled={true} value={exp.tienNuoc} getValue={this.handleChange}/></Col>
+            <Input name={'soNuoc'} disabled={true} value={Optimize.OpitmizeNumber(exp.tienNuoc)} getValue={this.handleChange}/></Col>
           </Row>
           <Row>
             <Col>
             Tiền rác
-            <Input disabled={true} value={exp.tienRac}/>
+            <Input disabled={true} value={Optimize.OpitmizeNumber(exp.tienRac)}/>
             </Col>
             <Col>
-            Tổng tiền
-            <Input disabled={true} value={exp.tongTien}/></Col>
+            Trạng thái
+            <Input color={exp.trangThai===1?'success':'warning'} disabled={true} value={exp.trangThai === 1?'Đã thanh toán':'Chưa thanh toán'}/>
+            </Col>
           </Row>
           <Row>
             <Col>
-            Trạng thái
-            <Input disabled={true} value={exp.trangThai === 1?'Đã thanh toán':'Chưa thanh toán'}/>
-            </Col>
+            Tổng tiền
+            <Input color={'danger'} disabled={true} value={Optimize.OpitmizeNumber(exp.tongTien)}/></Col>
             <Col>
             Tổng tiền chữ
-            <Input disabled={true} value={exp.tongTienChu}/></Col>
+            <Input color={'danger'} disabled={true} value={exp.tongTienChu}/></Col>
           </Row>
         </Modal.Body>
         <Modal.Footer>
@@ -144,7 +164,7 @@ class Example extends React.Component {
             {exp.trangThai===0 && this.state.capNhat && <Button color="warning" onClick={this.handleUpdate}>
             Cập nhật
             </Button>}
-          { exp.trangThai===0 && <Button variant="default" onClick={this.handleClose}>
+          { exp.trangThai===0 && <Button variant="default" onClick={this.handleSubmit}>
           Xác nhận thanh toán
         </Button>}
         </Modal.Footer>

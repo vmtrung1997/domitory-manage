@@ -1,11 +1,12 @@
 import React from 'react'
-import { Table, Form, Button } from 'react-bootstrap'
+import { Table, Button } from 'react-bootstrap'
 import './listActivity.css'
 import './../titleStudent/titleStudent.css'
 import './../tableStudentTextStyle/tableStudentTextStyle.css'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import axios from 'axios';
+
 import jwt_decode from 'jwt-decode';
 import * as StudentAction from '../../actions/studentAction';
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
@@ -23,7 +24,6 @@ class ListActivity extends React.Component {
     listOption = [false];
     listRegister = [];
     register = async() => {
-        var self = this;
         // check hoạt động bắt buộc
         var isValid = true;
         var isEmpty = true;
@@ -36,6 +36,7 @@ class ListActivity extends React.Component {
             if (item.check === true) {
                 isEmpty = false;
             }
+            return true
         })
 
         if (isEmpty) {
@@ -52,14 +53,13 @@ class ListActivity extends React.Component {
             const decode = jwt_decode(secret);
             var id = decode.user.profile._id;
 
-
             var info = {
                 activity: data,
                 user: id
             }
-
+           
             //Đăng ký tham gia hoạt động
-            axios.post('http://localhost:4000/api/student/register-activities', { data: info }).then(res => {
+            axios.post('/student/register-activities', { data: info }).then(res => {
                 if (res.status === 201) {
                     ToastsStore.success("Đăng ký thành công");
                     //load lại danh sách hoạt động
@@ -68,6 +68,8 @@ class ListActivity extends React.Component {
                 else {
                     ToastsStore.warning("Đăng ký không thành công");
                 }
+            }).then(()=>{
+               
             })
         }
     }
@@ -108,6 +110,7 @@ class ListActivity extends React.Component {
                     activity.push(item);
                     this.props.getActivity(item);
                 }
+                return true
             })
           
         }).then(()=>{
@@ -129,9 +132,6 @@ class ListActivity extends React.Component {
     }
 
     render() {
-
-   console.log(this.props.activity);
-        var index = -1;
         return (
             <React.Fragment>
                 <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore} />
@@ -157,9 +157,10 @@ class ListActivity extends React.Component {
                                         <Table responsive bordered size='sm' hover>
                                             <thead className='thread-student'>
                                                 <tr>
-                                                    <th>Thời gian</th>
+                                                    <th>Thời gian bắt đầu</th>
+                                                    <th>Thời gian kết thúc</th>
                                                     <th>Tên hoạt động</th>
-                                                    <th>Mô tả</th>
+                                                    
                                                     <th>Điểm</th>
                                                     <th>Địa điểm</th>
                                                     <th>Trạng thái</th>
@@ -169,17 +170,21 @@ class ListActivity extends React.Component {
                                             <tbody>
                                                 {this.state.activities.map((item, index) => {
 
-                                                    var d = new Date(item.ngay);
+                                                    var d = new Date(item.ngayBD);
                                                     var month = d.getMonth() + 1;
                                                    
                                                     this.listOption[index] = false; //default Option
-                                                    var formatDay = d.getDate() + '/' + month + '/' + d.getFullYear() + ' ' + d.getHours() + ':' + d.getMinutes();
+                                                    var formatDayBD = d.getDate() + '/' + month + '/' + d.getFullYear() + ' ' + d.getHours() + ':' + d.getMinutes();
 
+                                                    var dkt = new Date(item.ngayKT);
+                                                    var monthkt = d.getMonth() + 1;
+                                                    var formatDayKT = dkt.getDate() + '/' + monthkt + '/' + dkt.getFullYear() + ' ' + dkt.getHours() + ':' + dkt.getMinutes();
                                                     return (
                                                         <tr key={index}>
-                                                            <td>{formatDay}</td>
-                                                            <td>{item.ten}</td>
-                                                            <td>{item.moTa}</td>
+                                                            <td>{formatDayBD}</td>
+                                                            <td>{formatDayKT}</td>
+                                                            <td style = {{ maxWidth: '500px'}}>{item.ten}</td>
+                                                         
                                                             <td>{item.diem}</td>
                                                             <td>{item.diaDiem}</td>
                                                             <td className={item.batBuoc === true ? 'is-dont-done' : ''}>{item.batBuoc === true ? 'Bắt buộc' : ''}</td>

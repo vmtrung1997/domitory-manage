@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Row, Col, Table } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
+import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
+import axios from "axios";
+
 import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import './infoStudentDetail.css';
 import './../../../style.css'
 import refreshToken from "../../../../utils/refresh_token";
-import axios from "axios";
-import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 import Select from "../../../components/selectOption/select";
-
+import {imageFile} from '../../../function/imageFunction'
 class InfoStudentDetail extends Component{
   constructor(props) {
     super(props);
@@ -79,12 +81,7 @@ class InfoStudentDetail extends Component{
       img
     } = info;
     console.log('img = ', img)
-    var imgFile = '';
-    if (img){
-      var base64Flag = 'data:image/jpeg;base64,';
-      var imageStr = this.arrayBufferToBase64(img.data.data);
-      var imgFile = base64Flag + imageStr;
-    }
+    var imgFile = imageFile(img)
     var birthDate = new Date(ngaySinh);
     var stringDate = birthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     return(
@@ -96,15 +93,15 @@ class InfoStudentDetail extends Component{
         <div className={'content-body'}>
           <div className={'infoDetail'}>
             <div className={'id-back'}>
-              <a href={'http://localhost:3000/admin/student'}>
+              <Link to={'http://localhost:3000/admin/student'}>
               <i className="fas fa-chevron-left"/>
               <span>Trở về</span>
-              </a>
+              </Link>
             </div>
             <Row>
               <Col md={2}>
                 <div className={'id-avt'}>
-                  <img src={imgFile}/>
+                  <img alt='avater student' src={imgFile}/>
                 </div>
               </Col>
               <Col md={10}>

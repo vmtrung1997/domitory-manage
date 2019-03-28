@@ -1,7 +1,7 @@
 var router = require('express').Router();
 var expenseController = require('./../apiController/expenseController')
 var activityController = require('./../apiController/activityController')
-
+var newsController = require('./../apiController/newsController');
 var infoStudent = require('../apiController/infoStudentController');
 var infoDormitory = require('../apiController/infoDormitoryController');
 let repo = require('../repos/phongRepo');
@@ -25,9 +25,16 @@ router.post('/expense/report', expenseController.report_expense);
 
 router.get('/expense/get_parameter', expenseController.get_parameter);
 
-router.post('/expense/require', expenseController.require)
+router.post('/expense/config', expenseController.apply_config)
+
+router.post('/expense/find',expenseController.find_expense);
+
+router.post('/expense/check', expenseController.check_expense)
+
+router.post('/expense/confirm_expense', expenseController.confirm)
+
 // Activity
-router.get('/activity/get_activity', activityController.get_activity);
+router.post('/activity/get_activity', activityController.get_list_activity);
 
 router.get('/activity/detail', activityController.detail_activity);
 
@@ -52,5 +59,11 @@ router.get('/getElement/:name', repo.get_element);
 
 //Info dormitory
 router.get('/infoDormitory/getRoom/:floor', infoDormitory.getRoom);
+
+//News
+router.post('/news/add',newsController.addNews);
+router.get('/news/get',newsController.getNews);
+router.post('/news/update',newsController.updateNews);
+router.post('/news/delete',newsController.deleteNews);
 
 module.exports = router;

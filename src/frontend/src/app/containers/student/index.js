@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import ReallySmoothScroll from 'really-smooth-scroll';
 import jwt_decode from 'jwt-decode';
 
 import Homepage from './homepage/homepage'
@@ -63,7 +62,7 @@ class Student extends Component {
             <React.Fragment>
                 {/* <Header getScroll={this.getScroll}></Header> */}
 				<Route exact path={`/news`} component={News} />
-				<Route exact path={`/news/detail/:id`} component={NewsContent} />
+				<Route exact path={`/news/detail`} component={NewsContent} />
 				<Route exact path={`/`} component={Homepage} />
                 <StudentRoute exact path={`/dashboard`} component={DashBoardStudent} />
             </React.Fragment>

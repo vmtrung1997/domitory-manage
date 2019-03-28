@@ -1,29 +1,19 @@
 import axios from 'axios';
-export const getData = () => {
+import refreshToken from './../../../../utils/refresh_token'
+export const getData = async () => {
+  await refreshToken();
   const secret = JSON.parse(localStorage.getItem('secret'))
   axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
     axios.get('/manager/expense/get_expense_data').then(result => {
       resolve(result);
     })
-    .catch(error =>{
-      console.log('err: ',error.response.data.status);
-      if (error.response.data.status === 401){
-        axios.defaults.headers.common['x-refresh-token'] = secret.refresh_token
-        axios.get('/user/me_access').then(res => {
-          if(res && res.data !== undefined)
-            {
-              localStorage.setItem('secret', JSON.stringify(res.data))
-              getData()
-            }
-        }).catch(errRefresh => reject(errRefresh))
-      }
-      else
-        reject(error)});
+    .catch(error =>{reject(error)});
 
   })
 }
-export const search = (searchConditions) => {
+export const search = async (searchConditions) => {
+  await refreshToken();
   const secret = JSON.parse(localStorage.getItem('secret'))
   axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
@@ -31,11 +21,11 @@ export const search = (searchConditions) => {
       resolve(result);
     })
     .catch(error =>{
-      console.log(error);
-       reject(error)});
-  })
+        reject(error)});
+      })
 }
-export const add_expense = (table) => {
+export const add_expense = async (table) => {
+  await refreshToken();
   const secret = JSON.parse(localStorage.getItem('secret'))
   axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
@@ -46,7 +36,8 @@ export const add_expense = (table) => {
   })
 }
 
-export const remove_expense = (exp) => {
+export const remove_expense = async (exp) => {
+  await refreshToken();
   const secret = JSON.parse(localStorage.getItem('secret'))
   axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
@@ -57,7 +48,8 @@ export const remove_expense = (exp) => {
   })
 }
 
-export const update_expense = (exp) => {
+export const update_expense = async (exp) => {
+  await refreshToken();
   const secret = JSON.parse(localStorage.getItem('secret'))
   axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
@@ -70,9 +62,10 @@ export const update_expense = (exp) => {
   })
 }
 
-export const report_expense = (exp) => {
-  const secret = JSON.parse(localStorage.getItem('secret'))
-  axios.defaults.headers.common['x-access-token'] = secret.access_token
+export const report_expense = async (exp) => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'));
+  axios.defaults.headers.common['x-access-token'] = secret.access_token;
   return new Promise((resolve, reject) => {
     axios.post('/manager/expense/report', exp).then(result => { 
       resolve(result);
@@ -81,7 +74,8 @@ export const report_expense = (exp) => {
   })
 }
 
-export const get_parameter = (exp) => {
+export const get_parameter = async (exp) => {
+  await refreshToken();
   const secret = JSON.parse(localStorage.getItem('secret'))
   axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
@@ -92,11 +86,60 @@ export const get_parameter = (exp) => {
   })
 }
 
-export const require_expense = (exp) => {
+export const require_expense = async (exp) => {
+  await refreshToken();
   const secret = JSON.parse(localStorage.getItem('secret'))
   axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
     axios.post('/manager/expense/require', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const config_expense = async (exp) => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/config', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const find_expense = async (exp) => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/find', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const check_expense = async (exp) => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/check', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const submit_expense = async (exp) => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/confirm_expense', exp).then(result => { 
       resolve(result);
     })
     .catch(error => reject(error));

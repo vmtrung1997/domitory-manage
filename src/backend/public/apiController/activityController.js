@@ -3,20 +3,48 @@ const Activity = require('./../models/HoatDong');
 const resultActivity = require('./../models/KetQuaHD');
 const Profile = require('./../models/Profile')
 
-exports.get_activity = (req, res) => {
+exports.get_list_activity = (req, res) => {
 	const option = {
-		options: { sort: { ngay: -1 }},
+		options: { 
+			sort: { ngayBD: -1 }
+		},
 		page: req.query.page
 	}
-	Activity.paginate({}, option).then( result => {
+	var last = {}
+
+	var query = {}
+	if(req.body.search){ 
+		query = { 
+			$text: { $search: req.body.search },
+		}
+	}
+	if(parseInt(req.body.month) !== 0){
+		query.thang = parseInt(req.body.month)
+	}
+	if(parseInt(req.body.year) !== 0){
+		query.nam = parseInt(req.body.year)
+	}
+
+	if(req.body.require === 'true' || req.body.require === 'false'){
+		query.batBuoc = req.body.require === 'true' ? true : false
+	} 
+                                                
+	Activity.paginate( {} , { sort: {ngayBD : 1}})
+	.then( result => {
+		if(result.docs){
+			last = result.docs[0]
+		}
+	})
+	.then(Activity.paginate( query , option).then( result => {
 		console.log('==get_activity: success')
 		res.json({
-			rs: result
+			rs: result,
+			last: last
 		})
 	}).catch(err => {
 		console.log('==get_activity: ',err)
 		res.status(500)
-	})	
+	}))
 };
 
 exports.detail_activity = (req, res) => {
@@ -33,12 +61,18 @@ exports.post_activity = (req, res) => {
 	var tmp = {
 		ten: req.body.name,
     	diaDiem: req.body.location,
-    	ngay: req.body.time,
+    	ngayBD: req.body.date,
+    	gioBD: req.body.time,
+    	ngayKT: req.body.dateEnd,
+    	gioKT: req.body.timeEnd,
+    	thang: new Date(req.body.date).getMonth() + 1,
+    	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
     	soLuong: 0,
     	diem: req.body.point,
     	moTa: req.body.des
 	}
+	console.log(tmp)
 	var act = new Activity(tmp)
 	act.save().then(() => {
 		console.log('==post_activity: success')
@@ -69,7 +103,12 @@ exports.update_activity = (req, res) => {
 	var data = {
 		ten: req.body.name,
     	diaDiem: req.body.location,
-    	ngay: req.body.time,
+    	ngayBD: req.body.date,
+    	gioBD: req.body.time,
+    	ngayKT: req.body.dateEnd,
+    	gioKT: req.body.timeEnd,
+    	thang: new Date(req.body.date).getMonth() + 1,
+    	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
     	diem: req.body.point,
     	moTa: req.body.des
@@ -101,7 +140,6 @@ exports.rollcall_activity = async (req, res) => {
 			res.status(500)
 		}
 		if(!val){
-			console.log(1)
 			res.status(200).json({rs: 'not found student'})
 		}
 		data.sv = val
@@ -116,15 +154,15 @@ exports.rollcall_activity = async (req, res) => {
 				var rs = new resultActivity({
 					idHD: data.hd,
 					idSV: data.sv._id,
-					status: 1 
+					isTG: true
 				})
 				rs.save()
 			} else {
-				if(val.status === 1){
+				if(val.isTG === true){
 					res.status(200).json({ rs: 'ok'})
 					return true
 				}
-				val.status = 1
+				val.isTG = true
 				val.save()
 			}
 			data.sv.diemHD = (data.sv.diemHD || 0) + data.diem
