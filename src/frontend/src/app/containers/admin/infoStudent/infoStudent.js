@@ -13,10 +13,7 @@ import CheckBox from './../../../components/checkbox/checkbox';
 import './infoStudent.css';
 import './../../../style.css'
 import refreshToken from './../../../../utils/refresh_token'
-import InfoStudentDetail from './infoStudentDetail';
 import MyPagination from "../../../components/pagination/pagination";
-import SearchSelect from 'react-select';
-import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
 
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
