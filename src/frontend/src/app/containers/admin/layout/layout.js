@@ -39,7 +39,8 @@ export default class Layout extends React.Component{
             menuList={[
               {key: 0, link: '/admin/student', label: 'Sinh viên',icon: 'fas fa-user-graduate'},
               {key: 1, link: '/admin/expense', label: 'Chi phí', icon: 'fas fa-dollar-sign'},
-              {key: 2, link: '/admin/activity', label: 'Hoạt động', icon: 'fas fa-running'}
+              {key: 2, link: '/admin/activity', label: 'Hoạt động', icon: 'fas fa-running'},
+              {key: 3, link: '/admin/news', label: 'Bài viết', icon: 'far fa-newspaper'},
             ]}
           />
         </div>

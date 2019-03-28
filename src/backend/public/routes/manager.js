@@ -1,7 +1,7 @@
 var router = require('express').Router();
 var expenseController = require('./../apiController/expenseController')
 var activityController = require('./../apiController/activityController')
-
+var newsController = require('./../apiController/newsController');
 var infoStudent = require('../apiController/infoStudentController');
 let repo = require('../repos/phongRepo');
 
@@ -56,5 +56,11 @@ router.post('/infoStudent/update', infoStudent.updateInfo);
 
 router.get('/getElement/:name', repo.get_element);
 
+
+//News
+router.post('/news/add',newsController.addNews);
+router.get('/news/get',newsController.getNews);
+router.post('/news/update',newsController.updateNews);
+router.post('/news/delete',newsController.deleteNews);
 
 module.exports = router;

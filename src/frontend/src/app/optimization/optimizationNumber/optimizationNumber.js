@@ -9,7 +9,7 @@ function OpitmizeNumber(number) {
         var subnumber = null;
         var index = numberAccount.indexOf('.');
         if (index !== -1) {
-            subnumber = numberAccount.substr(index, numberAccount.length - 1);
+            subnumber = numberAccount.substr(index + 1, numberAccount.length - 1);
             numberAccount = numberAccount.substr(0, index)
         
         }
@@ -29,8 +29,9 @@ function OpitmizeNumber(number) {
             result = result + array[ii] + '.'
         }
         result = result.substr(0, result.length - 1);
+        //format dạng 123.345,78
         if (subnumber)
-            result = result + subnumber;
+            result = result + ',' + subnumber;
 
 
     }

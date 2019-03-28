@@ -26,6 +26,7 @@ app.use(bodyParser.json());
 app.use(cors());
 var { verifyAccessToken, verifyAdmin, verifySecurity } = require('./public/repos/authRepo');
 
+app.use('/news',require('./public/routes/visitor'));
 app.use('/api/user', require('./public/routes/user'));
 app.use('/api/manager', verifyAccessToken, verifyAdmin, require('./public/routes/manager'));
 app.use('/api/student', verifyAccessToken, require('./public/routes/student'));
