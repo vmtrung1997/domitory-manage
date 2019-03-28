@@ -3,6 +3,7 @@ var expenseController = require('./../apiController/expenseController')
 var activityController = require('./../apiController/activityController')
 
 var infoStudent = require('../apiController/infoStudentController');
+var infoDormitory = require('../apiController/infoDormitoryController');
 let repo = require('../repos/phongRepo');
 
 // Expense
@@ -49,5 +50,7 @@ router.post('/infoStudent/update', infoStudent.updateInfo);
 
 router.get('/getElement/:name', repo.get_element);
 
+//Info dormitory
+router.get('/infoDormitory/getRoom/:floor', infoDormitory.getRoom);
 
 module.exports = router;

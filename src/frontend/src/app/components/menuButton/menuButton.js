@@ -1,17 +1,25 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import {Collapse} from 'react-bootstrap';
 
 import './menuButton.css';
 
 export default class MenuButton extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      open: false,
+    }
+  }
   render() {
+    const { open } = this.state;
     const { icon, label, link, ikey, path, subMenu } = this.props;
     var focus = ''
     if(path.split('/')[2] === link.split('/')[2]){
       focus = 'focus'
     }
     return(
-      <li className={`menu-button ${focus}`} key={ ikey} onClick={this.click}>
+      <li className={`menu-button ${focus}`} key={ ikey} onClick={() => this.setState({ open: !open })} aria-controls="example-collapse-text">
         <Link to={link} className={"mb_link"}>
           {icon &&
             <i className={icon + " mb_icon"}/>
@@ -23,10 +31,8 @@ export default class MenuButton extends React.Component {
           }
         </Link>
         {subMenu &&
-        <ul>
-          {subMenu.map(menu => {
+          subMenu.map(menu => {
             return(
-
                 <li  key={ ikey} onClick={this.click}>
                   <Link to={menu.link} className={"mb_link"}>
 
@@ -37,10 +43,8 @@ export default class MenuButton extends React.Component {
                     }
                   </Link>
                 </li>
-
             )
-          })}
-        </ul>
+          })
 
         }
       </li>

@@ -45,10 +45,6 @@ export default class Layout extends React.Component{
                 link: '/admin/dormitory',
                 label: 'Ký túc xá',
                 icon: 'fas fa-tasks',
-                subMenu: [
-                  {key: 0, link: '/admin/dormitory/floor', label:'Lầu - Phòng'},
-                  {key: 1, link: '/admin/dormitory/school', label:'Trường'}
-                  ]
               },
             ]}
           />

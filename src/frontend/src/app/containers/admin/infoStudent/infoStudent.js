@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Table, Pagination, Modal } from 'react-bootstrap';
+import { Row, Col, Table, Pagination, Modal, Collapse } from 'react-bootstrap';
 import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
@@ -23,6 +23,7 @@ class InfoStudent extends Component{
   constructor(props) {
     super(props);
     this.state = {
+      open: false,
       showAddPopup: false,
       showDelPopup: false,
       pageActive: 1,
@@ -491,6 +492,21 @@ class InfoStudent extends Component{
           <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
 
           {/*end modal*/}
+
+          <Button
+            onClick={() => this.setState({ open: !this.state.open })}
+            aria-controls="example-collapse-text"
+            aria-expanded={this.state.open}
+          >
+            click
+          </Button>
+          <Collapse in={this.state.open}>
+            <div id="example-collapse-text">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus
+              terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
+              labore wes anderson cred nesciunt sapiente ea proident.
+            </div>
+          </Collapse>
 
           {/*modal popup edit student*/}
           <Modal show={this.state.showDelPopup} onHide={() =>this.handleClosePopup('del')}>
