@@ -521,7 +521,7 @@ class InfoStudent extends Component{
                     <td>{info.MSSV}</td>
                     <td>{info.hoTen}</td>
                     <td>{info.truong.tenTruong}</td>
-                    <td></td>
+                    <td>{info.idPhong.tenPhong}</td>
                     <td style={{display: 'flex', justifyContent: 'center'}}>
                       <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.onViewDetail(info)}>
                         <i className="fas fa-edit"/>
