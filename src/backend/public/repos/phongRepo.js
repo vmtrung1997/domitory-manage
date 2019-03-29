@@ -36,5 +36,14 @@ exports.get_element = (req, res) => {
         res.status(400).json({err: error});
       });
       break;
+    case 'floor':
+      Phong.distinct('lau').
+        then(result => {
+          res.status(200).json(result);
+
+      }).catch(err => {
+        res.status(400).json({err: err});
+      })
+      break;
   }
 };

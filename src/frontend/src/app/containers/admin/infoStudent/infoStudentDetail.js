@@ -212,7 +212,7 @@ class InfoStudentDetail extends Component{
                     Phòng:
                   </Col>
                   <Col md={4}>
-                    <Input value={tenPhong} />
+                    <Input value={tenPhong}/>
                   </Col>
                 </Row>
 
