@@ -19,6 +19,14 @@
 		border-color: #bababa;
 		color: #FFFFFF;
 	}
+	.bt-default.actived{
+		background-color: #bababa;
+		border-color: #bababa;
+		color: #FFFFFF;
+	}
+	.bt-default.bt-3d {
+		box-shadow: inset 0px 0px 0px #b3b3b3, 0px 5px 0px 0px #b3b3b3, 0px 10px 5px #999999;
+	}
 
 .bt-primary{
     background-color: #1ab394;
@@ -34,6 +42,14 @@
     	border-color: #18a689;
     	color: #FFFFFF;
 	}
+	.bt-primary.actived{
+		background-color: #18a689;
+		border-color: #18a689;
+		color: #FFFFFF;
+	}
+	.bt-primary.bt-3d {
+		box-shadow: inset 0px 0px 0px #16987e, 0px 5px 0px 0px #16987e, 0px 10px 5px #999999;
+	}
 .bt-success{
     background-color: #1c84c6;
     border-color: #1c84c6;
@@ -48,6 +64,15 @@
 		border-color: #1a7bb9;
     	color: #FFFFFF;
 	}
+	.bt-success.actived{
+		background-color: #1a7bb9;
+		border-color: #1a7bb9;
+		color: #FFFFFF;
+	}
+	.bt-success.bt-3d {
+		box-shadow: inset 0px 0px 0px #1872ab, 0px 5px 0px 0px #1872ab, 0px 10px 5px #999999;
+	}
+
 .bt-info {
     background-color: #23c6c8;
     border-color: #23c6c8;
@@ -62,6 +87,15 @@
 	    border-color: #21b9bb;
 	    color: #FFFFFF;
 	}
+	.bt-info.actived{
+		background-color: #21b9bb;
+		border-color: #21b9bb;
+		color: #FFFFFF;
+	}
+	.bt-info.bt-outline {
+		box-shadow: inset 0px 0px 0px #1eacae, 0px 5px 0px 0px #1eacae, 0px 10px 5px #999999;
+	}
+
 .bt-warning{
     background-color: #f8ac59;
     border-color: #f8ac59;
@@ -76,6 +110,15 @@
 	    border-color: #f7a54a;
 	    color: #FFFFFF;
 	}
+	.bt-warning.actived{
+		background-color: #f7a54a;
+		border-color: #f7a54a;
+		color: #FFFFFF;
+	}
+	.bt-warning.bt-3d {
+		box-shadow: inset 0px 0px 0px #f79d3c, 0px 5px 0px 0px #f79d3c, 0px 10px 5px #999999;
+	}
+
 .bt-danger{
     background-color: #ed5565;
     border-color: #ed5565;
@@ -90,6 +133,15 @@
 	    border-color: #ec4758;
     	color: #FFFFFF;
 	}
+	.bt-danger.actived{
+		background-color: #ec4758;
+		border-color: #ec4758;
+		color: #FFFFFF;
+	}
+	.bt-danger.bt-3d {
+		box-shadow: inset 0px 0px 0px #ea394c, 0px 5px 0px 0px #ea394c, 0px 10px 5px #999999;
+	}
+
 .bt-lg{
 	font-size: 18px;
 	padding: 10px 16px;
@@ -112,7 +164,7 @@
 	border-radius: 50px;
 }
 
-.disable{
+.disabled{
 	opacity: 0.3;
 	cursor: default !important;
 }
