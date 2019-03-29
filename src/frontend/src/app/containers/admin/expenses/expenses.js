@@ -119,6 +119,7 @@ class Expenses extends Component {
 							<Col md={4} xs={12}>
 								Phòng
 								<SSelect 
+									style={{background: 'black'}}
 									placeholder={''}
 									isSearchable={true}
 									value={this.state.roomSelected}

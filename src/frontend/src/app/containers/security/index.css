@@ -8,8 +8,12 @@
 .content-body{
   overflow: auto;
 }
+.img-css{
+  float: right;
+}
 .img-css img{
   width: 100%;
+  max-width: 600px;
 }
 .info{
   font-family: 'Podkova', serif;
@@ -43,12 +47,10 @@
   width: 100%;
 }
 .item-image{
-  max-width: 100px;
   max-height: 100px;
-  margin: auto;
 }
 .item-image img{
-  width:100px;
+  max-height:100px;
 }
 .item-text{
   margin: auto;

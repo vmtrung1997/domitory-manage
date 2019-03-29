@@ -36,7 +36,7 @@ exports.getListActivities = (req, res) => {
 		result.forEach(item => {
 			arr.push(item.idHD);
 		})
-		HoatDong.find({ _id: { $nin: arr }, ngay: { $gte: new Date(date.getFullYear(), date.getMonth(), date.getDate()) } }).sort({ nam: 1, thang: 1 }).then(rs => {
+		HoatDong.find({ _id: { $nin: arr }, ngayBD: { $gte: new Date(date.getFullYear(), date.getMonth(), date.getDate()) } }).sort({ nam: 1, thang: 1 }).then(rs => {
 			if (!rs) {
 				res.status(400).json({
 					status: 'fail',
@@ -74,12 +74,14 @@ exports.cancelRegisterActivities = (req,res) =>{
 }
 
 exports.registerActivities = (req, res) => {
+	console.log('aaaaaa');
 	req.body.data.activity.forEach(item => {
 		try {
 			var data = {
 				idHD: item,
 				idSV: req.body.data.user,
-				status: '0'
+				isDK: true,
+				isTG: false
 			}
 			var register = new KetQuaHD(data);
 			register.save().then(() => {
@@ -163,7 +165,6 @@ exports.getSchool = (req, res) => {
 exports.upcomingActivities = (req,res) => {
 	KetQuaHD.find({idSV: req.body.id}).populate({path: 'idHD'}).then(result=>{
 		if (result) {
-
 			res.status(200).json({
 				status: 'success',
 				data: result
