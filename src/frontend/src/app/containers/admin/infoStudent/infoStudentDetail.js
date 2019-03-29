@@ -75,7 +75,7 @@ class InfoStudentDetail extends Component{
       ngaySinh,
       sdtNguoiThan,
       gioiTinh,
-      idPhong: {tenPhong},
+      //idPhong: {tenPhong},
       idTaiKhoan: {username},
       truong: {tenTruong},
       img
@@ -212,7 +212,7 @@ class InfoStudentDetail extends Component{
                     Phòng:
                   </Col>
                   <Col md={4}>
-                    <Input value={tenPhong} />
+                    <Input />
                   </Col>
                 </Row>
 

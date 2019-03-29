@@ -98,16 +98,6 @@ class InfoStudent extends Component{
     // this.modifyData();
   }
 
-  modifyData = () => {
-    const roomOptions = this.state.phong.map(room => ({value: room._id, label: room.tenPhong}));
-    const schoolOptions = this.state.truong.map(truong => ({ value: truong._id, label: truong.tenTruong }));
-    this.setState({
-      roomOptions: roomOptions,
-      schoolOptions: schoolOptions
-    })
-    console.log('==roomOptions',roomOptions, this.state.phong)
-  }
-
   getElement = name => {
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getElement/` + name,  {
@@ -531,7 +521,7 @@ class InfoStudent extends Component{
                     <td>{info.MSSV}</td>
                     <td>{info.hoTen}</td>
                     <td>{info.truong.tenTruong}</td>
-                    <td>{info.idPhong.tenPhong}</td>
+                    <td></td>
                     <td style={{display: 'flex', justifyContent: 'center'}}>
                       <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.onViewDetail(info)}>
                         <i className="fas fa-edit"/>

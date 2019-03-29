@@ -1,6 +1,3 @@
-// const ObjectId = require('mongoose').mongo.ObjectId;
-// const md5 = require('md5');
-
 
 require('../models/TaiKhoan');
 //require('../models/NganhHoc');

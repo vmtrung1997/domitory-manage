@@ -60,6 +60,8 @@ router.get('/getElement/:name', repo.get_element);
 //Info dormitory
 router.get('/infoDormitory/getRoom/:floor', infoDormitory.getRoom);
 
+router.post('/infoDormitory/addRoom', infoDormitory.addRoom);
+
 //News
 router.post('/news/add',newsController.addNews);
 router.get('/news/get',newsController.getNews);
