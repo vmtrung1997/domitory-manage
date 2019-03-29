@@ -24,7 +24,13 @@ class InfoDormitory extends React.Component{
 
       showRoomPopup: false,
       showAddFloorPopup: false,
-      showAddRoomPopup: false
+      showAddRoomPopup: false,
+
+      limitPersonDetail: null,
+      roomNameDetail: '',
+      statusDetail: 0,
+      descriptionDetail: '',
+      idActive: ''
     }
   }
 
@@ -51,7 +57,6 @@ class InfoDormitory extends React.Component{
       });
       this.setState({
         floorList: floorList,
-        floorActive: floorList[0].label
       })
     }).catch(err => {
       console.log('==get lau err', err);
@@ -145,12 +150,42 @@ class InfoDormitory extends React.Component{
       console.log('==add room suc', result);
       ToastsStore.success("Thêm phòng thành công!");
       this.handleClosePopup('addRoom');
+      this.handleClosePopup('addFloor');
       this.getData();
     }).catch(err => {
       console.log('==add room err', err.response);
       ToastsStore.error( err.response.data.msg);
     })
   };
+
+  handleShowDetail = (room) => {
+    this.setState({
+      limitPersonDetail: room.soNguoiToiDa,
+      roomNameDetail: room.tenPhong,
+      statusDetail: 0,
+      descriptionDetail: room.moTa,
+      idActive: room._id
+    })
+    this.handleShowPopup('room');
+  }
+
+  handleDeleteRoom = async(id) => {
+    const { roomNameAdd, limitPersonAdd, descriptionAdd, statusAddRoom, floorActive } = this.state;
+    await refreshToken();
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.get(`/manager/infoDormitory/delRoom/` + id
+        ,{ headers: { 'x-access-token': secret.access_token } }
+    ).then(result => {
+      console.log('==del success:', result);
+      ToastsStore.success("Xóa phòng thành công!");
+      this.getData();
+      this.handleClosePopup('room');
+    }).catch(err => {
+      console.log('==del err:', err);
+      ToastsStore.error("Xóa phòng không thành công!");
+      ToastsStore.error(err.response.data.msg);
+    })
+  }
 
   render(){
     const {
@@ -162,6 +197,10 @@ class InfoDormitory extends React.Component{
       showAddFloorPopup,
       showAddRoomPopup,
       statusOptions,
+      limitPersonDetail,
+      descriptionDetail,
+      roomNameDetail,
+      idActive
     } = this.state;
 
     console.log('==render state', this.state)
@@ -175,7 +214,7 @@ class InfoDormitory extends React.Component{
           {/*RoomDetail*/}
           <Modal show={showRoomPopup} onHide={() =>this.handleClosePopup('room')}>
             <Modal.Header closeButton>
-              <Modal.Title>Phòng {roomActive}</Modal.Title>
+              <Modal.Title>Phòng {roomNameDetail}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Row>
@@ -183,7 +222,7 @@ class InfoDormitory extends React.Component{
                   Số người tối đa:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChange} name={'soNguoiToiDa'} />
+                  <Input getValue={this.onChange} name={'soNguoiToiDa'} value={limitPersonDetail}/>
                 </Col>
 
                 <Col md={4}>
@@ -200,7 +239,7 @@ class InfoDormitory extends React.Component{
                   Mô tả:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChange} name={'moTa'} />
+                  <Input getValue={this.onChange} name={'moTa'} value={descriptionDetail} />
                 </Col>
 
 
@@ -209,7 +248,7 @@ class InfoDormitory extends React.Component{
             <Modal.Footer>
               <Button
                 color={"danger"}
-                onClick={() =>this.handleClosePopup('room')}
+                onClick={() =>this.handleDeleteRoom(idActive)}
               >
                 Delete
               </Button>
@@ -272,13 +311,74 @@ class InfoDormitory extends React.Component{
           </Modal>
           {/*end add room popup*/}
 
+          {/*add floor popup*/}
+          <Modal show={showAddFloorPopup} onHide={() =>this.handleClosePopup('addFloor')}>
+            <Modal.Header closeButton>
+              <Modal.Title>Thêm Lầu</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Row>
+                <Col md={4}>
+                  Lầu:
+                </Col>
+                <Col md={8}>
+                  <Input getValue={this.onChange} name={'floorNameAdd'} />
+                </Col>
+
+                <span className={'id-addFloor_text'}>* Để thêm lầu bạn phải thêm tối thiểu một phòng</span>
+                <Col md={4}>
+                  Tên phòng:
+                </Col>
+                <Col md={8}>
+                  <Input getValue={this.onChange} name={'roomNameAdd'} />
+                </Col>
+
+                <Col md={4}>
+                  Số người tối đa:
+                </Col>
+                <Col md={8}>
+                  <Input getValue={this.onChange} name={'limitPersonAdd'} />
+                </Col>
+
+                <Col md={4}>
+                  Trạng Thái:
+                </Col>
+                <Col md={8}>
+                  <Select
+                    options={statusOptions}
+                    selected={this.statusAddSelected}
+                  />
+                </Col>
+
+                <Col md={4}>
+                  Mô tả:
+                </Col>
+                <Col md={8}>
+                  <Input getValue={this.onChange} name={'descriptionAdd'} />
+                </Col>
+              </Row>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="outline" onClick={() =>this.handleClosePopup('room')}>
+                Cancel
+              </Button>
+              <Button  onClick={async() =>{
+                await this.setState({floorActive: this.state.floorNameAdd});
+                this.handleSubmitAddRoom()
+              }}>
+                SAVE
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {/*end add floor popup*/}
           <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
 
           <Row>
           <Col md={2}>
+            <div className={'id-floor'}>
             {floorList.map(floor => {
               return(
-                <div className={'id-floor'} key={floor.key}>
+                <div className={'id-floor_item'} key={floor.key}>
                   <Button
                     color={'success'}
                     variant={'outline'}
@@ -293,14 +393,17 @@ class InfoDormitory extends React.Component{
             })}
 
 
-            <div className={'id-floor'}>
+
+            <div className={'id-floor_item'}>
               <Button
                 color={'success'}
                 variant={'outline'}
                 diminsion
+                onClick={() => this.handleShowPopup('addFloor')}
               >
                 <i className="fas fa-plus"/>
               </Button>
+            </div>
             </div>
 
           </Col>
@@ -312,9 +415,7 @@ class InfoDormitory extends React.Component{
                     <Button
                       variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
                       color={'warning'}
-                      onClick={()=>{
-                        this.handleShowPopup('room');
-                      }}
+                      onClick={()=>this.handleShowDetail(room.data)}
                     >
                       Phòng {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
                     </Button>
