@@ -66,9 +66,19 @@ class ActivityExport extends Component{
     //   )
     //   return true
     // })
+    for(var i = 2019; i <=2019; i++){
+      table.push(
+        <tr key={i} style={{textAlign: 'center'}}>
+          <td> 
+            <input type='checkbox'/>
+          </td>
+          <td> 2018-2019 </td>
+        </tr>
+      )
+    }
 
 		return(
-			<Modal show={true} onHide={this.props.handleClose} >
+			<Modal show={this.props.show} onHide={this.props.handleClose} >
         		<Modal.Header closeButton>
             		<Modal.Title>Xuất báo cáo hoạt động</Modal.Title>
           		</Modal.Header>
@@ -78,12 +88,29 @@ class ActivityExport extends Component{
                   <input type="radio" name="type" value="female" onClick={() => this.check()}/> Xuất tổng hợp
                 </div>
                 {this.state.checkDetail ? (
+                  <React.Fragment>
                   <Input 
                     value={this.state.query}
                     placeholder={'Tìm kiếm hoạt động'}
                     onKeyPress={ (e) => {if(e.key === 'Enter') this.getData()}}
                     getValue={ (obj) => this.getValue('query', obj.value)}
                   />
+                  <Table bordered hover responsive size="sm" className="table-activity">
+                    <thead style={{ textAlign: 'center'}}>
+                      <tr>
+                        <th >
+                          <input type="checkbox"/>
+                        </th>
+                        <th>Hoạt động</th>
+                        <th>Thời gian</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {table}
+                    </tbody>
+                  </Table>
+                  </React.Fragment>
+
                 ):(
                   <Table bordered hover responsive size="sm" className="table-activity">
                     <thead style={{ textAlign: 'center'}}>
