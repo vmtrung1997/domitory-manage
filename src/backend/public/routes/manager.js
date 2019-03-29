@@ -35,6 +35,8 @@ router.post('/expense/confirm_expense', expenseController.confirm)
 // Activity
 router.post('/activity/get_activity', activityController.get_list_activity);
 
+router.post('/activity/search_activity', activityController.search_activity);
+
 router.get('/activity/detail', activityController.detail_activity);
 
 router.post('/activity/post', activityController.post_activity);
