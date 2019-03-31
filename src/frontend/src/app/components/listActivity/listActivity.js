@@ -149,7 +149,7 @@ class ListActivity extends React.Component {
 
                             <div style={{ 'marginTop': '30px' }}>
                                 <span>Bạn chưa có hoạt động nào</span>
-                                <Button style={{ marginLeft: '20px' }} onClick={this.refresh}>Làm mới <i className="fas fa-spinner"></i></Button>
+                                {/* <Button style={{ marginLeft: '20px' }} onClick={this.refresh}>Làm mới <i className="fas fa-spinner"></i></Button> */}
                             </div> :
                             <div>
                                 <div className='time-bill'>
@@ -198,9 +198,9 @@ class ListActivity extends React.Component {
                                     </div>
                                 </div>
 
-                                <div><span style={{ 'color': 'red' }}>* Các hoạt động Bắt buộc yêu cầu sinh viên phải đăng ký</span></div>
+                                {/* <div><span style={{ 'color': 'red' }}>* Các hoạt động Bắt buộc yêu cầu sinh viên phải đăng ký</span></div> */}
                                 <div className='register-activity'>
-                                    <Button style={{ marginRight: '20px' }} onClick={this.refresh}>Làm mới <i className="fas fa-spinner"></i></Button>
+                                    {/* <Button style={{ marginRight: '20px' }} onClick={this.refresh}>Làm mới <i className="fas fa-spinner"></i></Button> */}
                                     <Button variant='success' onClick={this.register}>Đăng ký</Button>
                                 </div>
                             </div>

@@ -148,6 +148,7 @@ class StudentActivity extends React.Component {
         <div className="title-header ">
           <span>HOẠT ĐỘNG CỦA BẠN</span>
         </div>
+        <div className='title-header-line'></div>
         <Tabs id="controlled-tab-example" defaultActiveKey="incoming">
           <Tab eventKey="incoming" title="Đang diễn ra">
             <IncomingStudentActivity />

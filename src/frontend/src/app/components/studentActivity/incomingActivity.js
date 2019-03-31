@@ -4,6 +4,9 @@ import "./../titleStudent/titleStudent.css";
 import "./../tableStudentTextStyle/tableStudentTextStyle.css";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as UserAction from "./../../actions/studentAction";
 import Loader from "react-loader-spinner";
 import {
   ToastsContainer,
@@ -131,7 +134,7 @@ class IncomingStudentActivity extends React.Component {
   }
 
   render() {
-
+    console.log(this.props.activity);
     return (
       <React.Fragment>
         <ToastsContainer
@@ -148,12 +151,12 @@ class IncomingStudentActivity extends React.Component {
            
             <div className="time-bill">
               {this.state.incomingActivities.length === 0 ? (
-                <div style={{ marginTop: "30px" }}>
+                <div style={{ marginTop: "20px" }}>
                   <span>Bạn chưa có hoạt động nào</span>
                 </div>
               ) : (
                 <div>
-                  <div className="time-bill">
+                  <div className="profile-panel" >
                     <div className="text-style">
                       <Table responsive bordered size="sm" hover>
                         <thead className="thread-student">
@@ -223,12 +226,12 @@ class IncomingStudentActivity extends React.Component {
                     </div>
                   </div>
                   <div className="register-activity">
-                    <Button
+                    {/* <Button
                       style={{ marginRight: "20px" }}
                       onClick={this.refresh}
                     >
                       Làm mới <i className="fas fa-spinner" />
-                    </Button>
+                    </Button> */}
                     <Button variant="success" onClick={this.cancelRegister}>
                       Huỷ đăng ký
                     </Button>
@@ -243,4 +246,21 @@ class IncomingStudentActivity extends React.Component {
   }
 }
 
-export default IncomingStudentActivity;
+var mapStateToProps = state => {
+  return {
+    activity: state.activity
+  };
+};
+
+var mapDispatchToProps = dispatch => {
+  return {
+    getUserAction: bindActionCreators(UserAction.GET_USER_INFO, dispatch)
+  };
+};
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+ )(IncomingStudentActivity);
+
