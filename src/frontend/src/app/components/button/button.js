@@ -9,7 +9,7 @@ class Button extends Component{
 		variant: 'default',
 		className: '',
 		title: null,
-		onClick: () => {}
+		onClick: () => {},
 	};
 
 	static propTypes = {
@@ -19,26 +19,27 @@ class Button extends Component{
 		// content of button
 		children: PropTypes.any.isRequired,
 		// if true button is disable
-		disable: PropTypes.bool,
+		disabled: PropTypes.bool,
 		// style if you want custom
     style: PropTypes.object,
 		// is true button will fullwidth
 		fullWidth: PropTypes.bool,
-	};
+		//is true button will 3d
+    diminsion: PropTypes.bool,
+		actived: PropTypes.bool,
+  };
 	render(){
-		const { children, size, color, variant, disable, style, fullWidth, className } = this.props;
-		let classDisabled = '';
-    	let classFullWidth = '';
-		if(disable){
-      		classDisabled = 'disable'
-		}
-		if(fullWidth){
-				classFullWidth = 'fullWidth'
-		}
+		const { children, size, color, variant, disabled, style, fullWidth, className, diminsion, actived } = this.props;
+		let classDisabled = disabled ? ' disabled' : '';
+		let classFullWidth = fullWidth ? ' fullWidth' : '';
+		let classDiminsion = diminsion ? ' bt-3d' : '';
+    let classActived = actived ? ' actived' : '';
+
+
 		return(
 			<button  
 				style={style}
-				className={'bt bt-' + size + ' bt-' + color + ' bt-' + variant + ' ' + classDisabled + ' ' + classFullWidth + ' ' + className}
+				className={'bt bt-' + size + ' bt-' + color + ' bt-' + variant  + classDisabled  + classFullWidth + ' ' + className + classDiminsion + classActived}
 				onClick={e => this.props.onClick({key: this.props.keyButton})}
 				title={this.props.title}
 			>

@@ -1,6 +1,3 @@
-// const ObjectId = require('mongoose').mongo.ObjectId;
-// const md5 = require('md5');
-
 
 require('../models/TaiKhoan');
 //require('../models/NganhHoc');
@@ -82,24 +79,25 @@ exports.getListStudent = (req, res) => {
   let query = {};
   const params = req.body;
   if(params.hoTen)
-    query.hoTen = params.hoTen;
+    query.hoTen = { $regex: '.*' + params.hoTen + '.*', $options: 'i' };
   if(params.mssv)
-    query.MSSV = params.mssv;
+    query.MSSV = { $regex: '.*' + params.mssv + '.*', $options: 'i' };
+
   if(params.idPhong)
     query.idPhong = params.idPhong;
   if(params.idTruong)
     query.truong = params.idTruong;
   if(!params.options)
     res.status(400).json({'msg': 'missing options'});
-  //query.idTaiKhoan = {$ne: null} ;
+  //query = {...query, truong:{$nin: [null, '']}};
   //query.idTaiKhoan =  {isDelete: 0};
   console.log('==query', query);
 
   let options = params.options;
   options.populate = ['idTaiKhoan','idPhong', 'truong', 'nganhHoc'];
-  //options.populate = [ 'idTaiKhoan', 'idPhong' ];
+
   console.log('==query', query);
-  Account.find({isDelete: 0}).select('_id').then(accs => {
+  Account.find({isDelete: 0, loai: 'SV'}).select('_id').then(accs => {
     var arr = [];
     accs.forEach(acc => {
       arr.push(acc._id)

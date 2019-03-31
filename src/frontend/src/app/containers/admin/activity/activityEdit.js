@@ -71,9 +71,9 @@ class ActivityEdit extends Component{
       name: this.props.data.ten,
       location: this.props.data.diaDiem,
       date: new Date(this.props.data.ngayBD),
-      time: this.props.data.gioBD,
+      time: new Date(this.props.data.ngayBD).getHours() + ':' + new Date(this.props.data.ngayBD).getMinutes(),
       dateEnd: new Date(this.props.data.ngayKT),
-      timeEnd: this.props.data.gioKT,
+      timeEnd: new Date(this.props.data.ngayKT).getHours() + ':' + new Date(this.props.data.ngayKT).getMinutes(),
       isRequire: this.props.data.batBuoc,
       des: this.props.data.moTa,
       point: this.props.data.diem

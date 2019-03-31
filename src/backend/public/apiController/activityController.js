@@ -1,7 +1,8 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const Activity = require('./../models/HoatDong');
 const resultActivity = require('./../models/KetQuaHD');
-const Profile = require('./../models/Profile')
+const Profile = require('./../models/Profile');
+const phong = require('./../models/Phong.js')
 
 exports.get_list_activity = (req, res) => {
 	const option = {
@@ -28,7 +29,7 @@ exports.get_list_activity = (req, res) => {
 	if(req.body.require === 'true' || req.body.require === 'false'){
 		query.batBuoc = req.body.require === 'true' ? true : false
 	} 
-                                                
+	                                            
 	Activity.paginate( {} , { sort: {ngayBD : 1}})
 	.then( result => {
 		if(result.docs){
@@ -62,9 +63,7 @@ exports.post_activity = (req, res) => {
 		ten: req.body.name,
     	diaDiem: req.body.location,
     	ngayBD: req.body.date,
-    	gioBD: req.body.time,
     	ngayKT: req.body.dateEnd,
-    	gioKT: req.body.timeEnd,
     	thang: new Date(req.body.date).getMonth() + 1,
     	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
@@ -72,7 +71,18 @@ exports.post_activity = (req, res) => {
     	diem: req.body.point,
     	moTa: req.body.des
 	}
-	console.log(tmp)
+	var timeFirst = req.body.time.split(':')
+	var timeFinal = req.body.timeEnd.split(':')
+
+	var dateFirst = new Date(tmp.ngayBD)
+	var dateFinal = new Date(tmp.ngayKT)
+
+	dateFirst.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
+	dateFinal.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
+
+	tmp.ngayBD = dateFirst
+	tmp.ngayKT = dateFinal
+	
 	var act = new Activity(tmp)
 	act.save().then(() => {
 		console.log('==post_activity: success')
@@ -104,15 +114,25 @@ exports.update_activity = (req, res) => {
 		ten: req.body.name,
     	diaDiem: req.body.location,
     	ngayBD: req.body.date,
-    	gioBD: req.body.time,
     	ngayKT: req.body.dateEnd,
-    	gioKT: req.body.timeEnd,
     	thang: new Date(req.body.date).getMonth() + 1,
     	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
     	diem: req.body.point,
     	moTa: req.body.des
 	}
+
+	var timeFirst = req.body.time.split(':')
+	var timeFinal = req.body.timeEnd.split(':')
+
+	var dateFirst = new Date(data.ngayBD)
+	var dateFinal = new Date(data.ngayKT)
+
+	dateFirst.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
+	dateFinal.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
+
+	data.ngayBD = dateFirst
+	data.ngayKT = dateFinal
 
 	Activity.update({ _id: id }, data, (err, val) => {
 		if(!err){
@@ -171,5 +191,27 @@ exports.rollcall_activity = async (req, res) => {
 			console.log('==rollcall_activity: success')
 		})
 	}
+};
 
+exports.search_activity = (req, res) => {
+	var query = {}
+	if(req.body.search){ 
+		query = { 
+			$text: { $search: req.body.search },
+		}
+	} else {
+		res.status(200).json({
+			rs: [],
+		})
+	}
+
+	Activity.find( query ).then( result => {
+		console.log('==search_activity: success')
+		res.json({
+			rs: result,
+		})
+	}).catch(err => {
+		console.log('==search_activity: ',err)
+		res.status(500)
+	})
 };

@@ -11,7 +11,7 @@ import './infoStudentDetail.css';
 import './../../../style.css'
 import refreshToken from "../../../../utils/refresh_token";
 import Select from "../../../components/selectOption/select";
-
+import {imageFile} from '../../../function/imageFunction'
 class InfoStudentDetail extends Component{
   constructor(props) {
     super(props);
@@ -81,12 +81,7 @@ class InfoStudentDetail extends Component{
       img
     } = info;
     console.log('img = ', img)
-    var imgFile = '';
-    if (img){
-      var base64Flag = 'data:image/jpeg;base64,';
-      var imageStr = this.arrayBufferToBase64(img.data.data);
-      imgFile = base64Flag + imageStr;
-    }
+    var imgFile = imageFile(img)
     var birthDate = new Date(ngaySinh);
     var stringDate = birthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     return(
@@ -217,7 +212,7 @@ class InfoStudentDetail extends Component{
                     Phòng:
                   </Col>
                   <Col md={4}>
-                    <Input value={tenPhong} />
+                    <Input value={tenPhong}/>
                   </Col>
                 </Row>
 

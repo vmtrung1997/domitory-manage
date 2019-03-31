@@ -81,6 +81,7 @@ class InfoStudent extends Component{
   };
 
   onViewDetail = (info) => {
+    console.log('==fine', info)
     this.props.history.push({
       pathname: '/admin/student/detail',
       state: { info: info }
@@ -97,20 +98,12 @@ class InfoStudent extends Component{
     // this.modifyData();
   }
 
-  modifyData = () => {
-    const roomOptions = this.state.phong.map(room => ({value: room._id, label: room.tenPhong}));
-    const schoolOptions = this.state.truong.map(truong => ({ value: truong._id, label: truong.tenTruong }));
-    this.setState({
-      roomOptions: roomOptions,
-      schoolOptions: schoolOptions
-    })
-  }
-
   getElement = name => {
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getElement/` + name,  {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
+      console.log('==element success', result)
       switch (name) {
         case 'phong':
           const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
@@ -133,6 +126,7 @@ class InfoStudent extends Component{
   }
 
   getData = async () => {
+    console.log('==pageActive', this.state.pageActive);
     await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
@@ -142,6 +136,8 @@ class InfoStudent extends Component{
     const { mssv, hoTen, roomSelected, schoolSelected } = this.state;
     let idPhong = roomSelected.value;
     let idTruong = schoolSelected.value;
+    console.log('==idTruong', idTruong);
+    //console.log('==pageActive222',roomSelected);
     const options = {
       page: this.state.pageActive,
       limit: this.state.limit
@@ -153,6 +149,7 @@ class InfoStudent extends Component{
     if(idTruong === '0'){
       idTruong = ''
     }
+    //console.log('==pageActive222',roomSelected);
       axios.post(`/manager/infoStudent/get`,
       { options: options,
         mssv: mssv,
@@ -161,11 +158,13 @@ class InfoStudent extends Component{
         idTruong: idTruong
       }, { headers: headers }
     ).then(result => {
+      console.log('==get info success', result);
       this.setState({
         infoList: result.data.docs,
         totalPages: result.data.totalPages
       })
     }).catch((err) => {
+      console.log('get info Student err', err);
     })
   }
   onChange = (event) => {
@@ -222,6 +221,7 @@ class InfoStudent extends Component{
   }
 
   handleCheckDelete = (props) => {
+    console.log('==arrDel', props)
     if(props.chk){
       let arrDel = this.state.listDelete;
       arrDel.push(props.value);
@@ -240,6 +240,7 @@ class InfoStudent extends Component{
         listDelete: arrDel
       })
     }
+    console.log('==arrDel',this.state.listDelete)
   }
 
   handleValueCheck = mssv => {
@@ -258,10 +259,12 @@ class InfoStudent extends Component{
         arrDelete: this.state.listDelete
       }, { headers: {'x-access-token': secret.access_token} }
     ).then(result => {
+      console.log('==del success', result)
       ToastsStore.success("Xóa thành công!");
       this.getData();
       this.handleClosePopup('del')
     }).catch(err => {
+      console.log('==del err', err)
       ToastsStore.error("Xóa  không thành công!");
       this.handleClosePopup('del')
     })
@@ -281,6 +284,7 @@ class InfoStudent extends Component{
   }
 
   render(){
+    console.log('==render state', this.state);
     let i = 0;
     const { infoList, roomSelected, schoolSelected, floorSelected, schoolAdded, roomOptions, schoolOptions, floorOptions, roomAdded } = this.state;
     return(
