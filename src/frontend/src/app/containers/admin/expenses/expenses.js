@@ -40,7 +40,6 @@ class Expenses extends Component {
 		var self = this;
 		getData().then(result => {
 			if (result.data) {
-				console.log(result)
 				var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong }))
 				roomOptions.unshift({ value: 0, label: 'Tất cả' });
 				self.setState({ rooms: roomOptions });
@@ -61,7 +60,6 @@ class Expenses extends Component {
 		options.options.page=page
 		search(options).then(result => {
 			if (result.data) {
-				console.log(result.data);
 				this.setState({ dataTable: result.data.rs, loading: false,options: {page: 1} })
 			}
 		}).catch(error => {});
@@ -89,7 +87,6 @@ class Expenses extends Component {
 		var self = this;
 		getData().then(result => {
 			if (result.data) {
-				console.log(result)
 				var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong }))
 				roomOptions.unshift({ value: 0, label: 'Tất cả' });
 				self.setState({ rooms: roomOptions });

@@ -2,7 +2,9 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const Activity = require('./../models/HoatDong');
 const resultActivity = require('./../models/KetQuaHD');
 const Profile = require('./../models/Profile');
-const phong = require('./../models/Phong.js')
+const phong = require('./../models/Phong.js');
+const writeXlsx = require('../repos/xlsxRepo')
+
 
 exports.get_list_activity = (req, res) => {
 	const option = {
@@ -15,7 +17,8 @@ exports.get_list_activity = (req, res) => {
 
 	var query = {}
 	if(req.body.search){ 
-		query = { 
+		query = {
+			//ten: { $regex: '.*' + req.body.search + '.*', $options: 'i' },
 			$text: { $search: req.body.search },
 		}
 	}
@@ -215,3 +218,49 @@ exports.search_activity = (req, res) => {
 		res.status(500)
 	})
 };
+
+exports.export_activity = async (req, res) => {
+	
+	var limit = []
+	if(req.body.year){
+		limit = req.body.year.map( (item, index) => {
+			return [new Date(`08-01-${parseInt(item) - 1}`), new Date(`07-31-${item}`)]
+		} )
+	}
+	
+	var result = []
+	result = await limit.map( (item, index) => {
+		// resultActivity.find({idHD: {$ne: null}})
+		// .populate({
+		// 	path: 'idHD',
+		// 	match: {ngayBD: {$gte: item[0], $lte: item[1]}}
+		// })
+		// .populate({path: 'idSV'})
+		// .where({ idHD: {$ne: null}})
+		// .exec( (err, val) => {
+		// 	console.log(val)
+		// })
+	
+		// Profile.find({ idTaiKhoan: { $ne: null } })
+		// .populate({
+		// 	path: 'idTaiKhoan',
+		// 	match: {isDelete: 0}
+		// })
+		// .then( val => {
+		// 	console.log(val.length)
+		// })
+		var header = [
+			['', '',`Điểm phong trào ktx Trần Hưng Đạo năm học ${item[0].getFullYear()} - ${item[1].getFullYear()}`],
+			[]
+		]
+		var opts = { row: 3, col: 2}
+		var xlsx = writeXlsx.save(header, opts);
+		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		res.status(200).json({ filename: 'Report.xlsx', file: xlsx });
+	})
+	
+};
+
+const getReport = (limit) =>{
+
+}

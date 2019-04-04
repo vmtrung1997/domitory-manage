@@ -11,124 +11,102 @@ import CheckBox from './../../../components/checkbox/checkbox'
 class ActivityExport extends Component{
 	static defaultProps = {
 		show: false,
-    query: '',
+    last: new Date().getFullYear(),
 		handleClose: () => {},
 	}
   constructor(props) {
     super(props)
     this.state = {
-      checkDetail: true,
-      idThe: '',
-      data: []
+      data: [],
+      check: []
     }
   }
 
-  getData = async () => {
+  getValue = (e) => {
+    if( !this.state.check.includes(e.target.value)) {
+      this.setState({ check: this.state.check.concat(e.target.value)})
+    } else {
+      var arr = this.state.check.filter( item => item !== e.target.value)
+      this.setState({ check: arr })
+    }
+  }
+
+  handleSubmit = async () => {
     await refreshToken()
     var secret = JSON.parse(localStorage.getItem('secret'))
     axios({
       method: 'post',
-      url: '/manager/activity/search_activity',
+      url: '/manager/activity/export_activity',
       headers: { 'x-access-token': secret.access_token},
       data: {
-        search: this.state.query,
+        year: this.state.check,
       }
     })
-    .then(res => {
-      this.setState({
-        data: res.data.rs,
-        query: ''
-      })
+    .then( res => {
+      var byteCharacters = window.atob(res.data.file);
+      var byteNumbers = new Array(byteCharacters.length);
+      for (var i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      var byteArray = new Uint8Array(byteNumbers);
+      var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      
+      saveAs(blob, res.data.filename)     
     })
     .catch( err => {
       this.setState({ loading: false })
     })
-  }
-  
-  getValue = (name, val) =>{
-    this.setState({ [name]: val})
+
+    this.handleClose()
   }
 
-  check = () => {
-    this.setState({ checkDetail: !this.state.checkDetail})
+  handleClose = () =>{
+    this.setState({ check: [] })
+    this.props.handleClose()
   }
 
 	render(){
-    console.log(this.state)
-    var table = []
-    // this.state.data.map( (item, index) => {
-    //   table.push(
-    //     <tr key={index}>
-    //       <td>{index + 1}</td>
-    //       <td>{item.MSSV}</td>
-    //       <td>{item.hoTen}</td>
-    //     </tr>
-    //   )
-    //   return true
-    // })
-    for(var i = 2019; i <=2019; i++){
-      table.push(
+    var tableSemester = []
+    
+    for(var i =  new Date().getFullYear() + 1; i >= this.props.last; i--){
+      tableSemester.push(
         <tr key={i} style={{textAlign: 'center'}}>
-          <td> 
-            <input type='checkbox'/>
+          <td>
+            <input type='checkbox' onClick={(e) => this.getValue(e)} value={i}/>
           </td>
-          <td> 2018-2019 </td>
+          <td> {i - 1} - { i } </td>
         </tr>
       )
     }
 
 		return(
-			<Modal show={this.props.show} onHide={this.props.handleClose} >
+			<Modal show={this.props.show} onHide={this.handleClose} >
         		<Modal.Header closeButton>
             		<Modal.Title>Xuất báo cáo hoạt động</Modal.Title>
           		</Modal.Header>
           		<Modal.Body>
                 <div> 
-                  <input type="radio" name="type" value="male" onClick={() => this.check()} defaultChecked/> Xuất báo cáo chi tiết<br/>
-                  <input type="radio" name="type" value="female" onClick={() => this.check()}/> Xuất tổng hợp
+                  <input type="radio" name="type" value="check" onClick={() => this.check()} defaultChecked/> Xuất tổng hợp
                 </div>
-                {this.state.checkDetail ? (
-                  <React.Fragment>
-                  <Input 
-                    value={this.state.query}
-                    placeholder={'Tìm kiếm hoạt động'}
-                    onKeyPress={ (e) => {if(e.key === 'Enter') this.getData()}}
-                    getValue={ (obj) => this.getValue('query', obj.value)}
-                  />
-                  <Table bordered hover responsive size="sm" className="table-activity">
-                    <thead style={{ textAlign: 'center'}}>
-                      <tr>
-                        <th >
-                          <input type="checkbox"/>
-                        </th>
-                        <th>Hoạt động</th>
-                        <th>Thời gian</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {table}
-                    </tbody>
-                  </Table>
-                  </React.Fragment>
-
-                ):(
-                  <Table bordered hover responsive size="sm" className="table-activity">
-                    <thead style={{ textAlign: 'center'}}>
-                      <tr>
-                        <th >
-                          <input type="checkbox"/>
-                        </th>
-                        <th>Năm học</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {table}
-                    </tbody>
-                  </Table>
-                )}
+                
+                <div style={{maxHeight: '400px', overflow: 'auto'}}>
+                <Table bordered hover responsive size="sm" >
+                  <thead style={{ textAlign: 'center'}}>
+                    <tr>
+                      <th >
+                        Chọn
+                      </th>
+                      <th>Năm học</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tableSemester}
+                  </tbody>
+                </Table>
+                </div>
           		</Modal.Body>
           		<Modal.Footer>
-	            	<Button variant='default' color='default' onClick={this.props.handleClose}>
+	            	<Button variant='default' color='default' onClick={this.handleClose}>
 	            		Đóng
 	            	</Button>
                 <Button variant="default" onClick={this.handleSubmit}>
