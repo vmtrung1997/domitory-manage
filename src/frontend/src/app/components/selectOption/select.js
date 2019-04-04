@@ -18,7 +18,7 @@ class Select extends Component {
 		return (
 			<React.Fragment>
 				<select className="select-control" 
-								defaultValue={this.props.value} 
+								value={this.props.value} 
 								onChange={this.onHandleChange} 
 								onSelect={this.onHandleChange} 
 								disabled={this.props.disabled}>

@@ -55,7 +55,9 @@ class StudentLogin extends React.Component {
         console.log(res.data);
         if (res.data) {
           localStorage.setItem("secret", JSON.stringify(res.data));
+          
           this.props.hideLogin(false);
+          this.props.dataLogin(res.data);
         } else {
           this.setState({
             wrongLogin: true
@@ -108,7 +110,7 @@ class StudentLogin extends React.Component {
                 {this.state.isLoad &&
                 <Loader
                   type="ThreeDots"
-                  color="#007bff"
+                  color=" #293846"
                   height={50}
                   width={50}
                 />
@@ -118,7 +120,7 @@ class StudentLogin extends React.Component {
                     *Tên tài khoản hoặc mật khẩu không đúng!
                   </p>
                 )}
-                <Button onClick={this.Login} variant="primary">
+                <Button onClick={this.Login} variant="primary" className = 'btn-color form-rounded btn-hover'>
                   Đăng nhập
                 </Button>
                 <div style = {{marginTop: '10px'}}>

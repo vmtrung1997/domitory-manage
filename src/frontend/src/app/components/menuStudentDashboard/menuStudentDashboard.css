@@ -24,6 +24,7 @@
 
 .student-dashboard{
    overflow: hidden;
+   margin-top: 2vh;
 }
 .menu-student-content{
     font-size: 2.5vh;

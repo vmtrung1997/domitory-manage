@@ -11,7 +11,7 @@ class Checkbox extends Component {
     disabled: false,
     check: false,
     type: 'checkbox',
-    isCheck: () => {}
+    isCheck: () => {},
   }
   constructor(props){
     super(props)
@@ -19,24 +19,24 @@ class Checkbox extends Component {
       check: this.props.check,
       name: this.props.name || null
     }
-  }
+  } 
   handleChangeChk = () => {
     var temp = !this.state.check
     this.setState({check: temp})
     this.props.isCheck({value: this.props.name, chk: temp});
   }
+
   render() {
     var label = this.props.label;
-    console.log(this.props)
+   
     return (
     <React.Fragment>
       <div style={this.props.style}>
         <label className="container-checkbox">{label}
           <input 
+            checked={this.props.check}
             type={this.props.type}
-            defaultChecked={this.state.check} 
             onChange={this.handleChangeChk} 
-            value={this.state.check}
             disabled={this.props.disabled}
           />
           <span className="checkmark"></span>

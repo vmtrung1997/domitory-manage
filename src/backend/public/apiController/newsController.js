@@ -56,7 +56,9 @@ exports.updateNews = (req, res) => {
             'tieuDe': data.tieuDe,
             'noiDung': data.noiDung,
             'ngayChinhSua': date,
-            'trangThai': data.trangThai
+            'trangThai': data.trangThai,
+            'ghim': data.ghim,
+            'loai': data.loai
         }
     }).then((place)=> {
       
@@ -85,7 +87,9 @@ exports.addNews = (req, res) => {
       idTaiKhoan: req.body.data.author,
       ngayChinhSua: new Date(),
       noiDung: req.body.data.content,
-      trangThai: req.body.data.trangThai
+      trangThai: req.body.data.trangThai,
+      loai: req.body.data.loai,
+      ghim: req.body.data.ghim
     };
     console.log(data);
     var register = new BaiViet(data);
