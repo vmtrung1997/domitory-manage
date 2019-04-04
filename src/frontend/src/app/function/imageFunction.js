@@ -6,13 +6,14 @@ function arrayBufferToBase64(buffer) {
 };
 
 export const imageFile = (image) => {
-  if (image) {
+  if (image && image!==null) {
     var base64Flag = 'data:image/jpeg;base64,';
     if (image.data.data){
-      console.log(image)
     }
     var imageStr= image.data.data?arrayBufferToBase64(image.data.data):image.data;
     return base64Flag + imageStr;
   }
   return '';
 }
+
+export const defaultImage = 'https://akns-images.eonline.com/eol_images/Entire_Site/20181026/rs_600x600-181126230834-e-asia-iu-things-to-know-thumbnail.jpg?fit=around|700:700&crop=700:700;center,top&output-quality=90'

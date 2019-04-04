@@ -6,6 +6,7 @@ var newsController = require('./../apiController/newsController');
 var infoStudent = require('./../apiController/infoStudentController');
 var infoDormitory = require('./../apiController/infoDormitoryController');
 var accountController = require('./../apiController/accountController')
+var historyController = require('../apiController/historyController')
 let repo = require('../repos/phongRepo');
 
 // Expense
@@ -86,5 +87,8 @@ router.post('/account/add_account',accountController.add_Account);
 router.post('/account/update_account',accountController.update_Account);
 
 router.post('/account/delete_account',accountController.delete_Account);
+
+//Security
+router.post('/security/history',historyController.find_history);
 
 module.exports = router;

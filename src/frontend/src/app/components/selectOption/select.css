@@ -11,6 +11,7 @@
   outline: transparent;
   margin-bottom: 15px;
 }
+
 .select-control:focus {
   border-color: #1ab394;
 }

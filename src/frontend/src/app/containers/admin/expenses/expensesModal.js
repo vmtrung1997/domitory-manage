@@ -65,7 +65,6 @@ class Example extends React.Component {
     this.setState({table: table, soDien: 0, soNuoc: 0})
   }
   addRow = () => {
-    console.log('state:',this.state);
     var { table, month, year, soDien, soNuoc, room } = this.state;
     find_expense({ thang: parseInt(month), nam: parseInt(year), phong: room }).then(result => {
       if (result.data.rs === 'accept') {
