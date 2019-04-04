@@ -1,12 +1,22 @@
 const Room = require('../models/Phong');
 
-exports.getRoom = (req, res) => {
+exports.getRoom = async(req, res) => {
   const floor = req.params.floor;
-  Room.find({lau: floor, isHoDan: 0}).then(result => {
-    res.status(200).json(result)
+  let roomList = {};
+  await Room.find({lau: floor, isHoDan: 0}).then(result => {
+    roomList.normal = result;
+    console.log('====', roomList)
+  }).catch(err => {
+    res.status(400)
+  });
+  await Room.find({lau: floor, isHoDan: -1}).then(result => {
+    roomList.service = result;
   }).catch(err => {
     res.status(400)
   })
+  console.log('11111', roomList)
+
+  res.status(200).json(roomList)
 };
 
 exports.addRoom = (req, res) => {
@@ -50,4 +60,19 @@ exports.delRoom  = (req, res) => {
   }).catch(err => {
     res.status(400).json({msg: 'Xóa không thành công2'})
   })
-}
+};
+
+exports.updateRoom = (req, res) => {
+  const params = req.body;
+  Room.findOne({_id: params.id})
+    .then(result => {
+      if (result.soNguoi > params.soNguoiToiDa)
+        res.status(409).json({msg: 'Không thể cập nhật vì số người đang ở lớn hơn số người tối đa bạn muốn cập nhật!'})
+      result.soNguoiToiDa = params.soNguoiToiDa ? params.soNguoiToiDa : result.soNguoiToiDa;
+      result.moTa = params.moTa ? params.moTa : result.moTa;
+      result.save()
+      res.status(200).json({msg: 'Cập nhật thành công!!'})
+    }).catch(err =>
+      res.status(400).json({msg: 'Có lỗi xảy ra, vui lòng thử lại!!'})
+  )
+};

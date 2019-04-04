@@ -15,12 +15,15 @@ class InfoDormitory extends React.Component{
     super(props);
     this.state = {
       floorActive: 1,
-      roomActive: null,
-      statusOptions: [{ value: 0, label: 'Chưa sử dụng' }, { value: 1, label: 'Sử dụng' }],
+      roomActive: {
+        soNguoiToiDa: 0,
+        moTa: ''
+      },
+      roomTypeOptions: [{ value: 0, label: 'Sinh viên' }, { value: 1, label: 'Chức năng' }],
       statusAddRoom: 0,
 
       floorList: [],
-      roomList: [],
+      roomList: {},
 
       showRoomPopup: false,
       showAddFloorPopup: false,
@@ -70,11 +73,14 @@ class InfoDormitory extends React.Component{
     ).then(result => {
       console.log('==get infoDormitory success', result);
       let i = 0;
-      const roomList = result.data.map(room => {
+      const normalRooms = result.data.normal.map(room => {
+        return {key: i++, data: room}
+      });
+      const serviceRooms = result.data.service.map(room => {
         return {key: i++, data: room}
       });
       this.setState({
-        roomList: roomList
+        roomList: {normal: normalRooms, service: serviceRooms}
       })
 
     }).catch((err) => {
@@ -127,11 +133,20 @@ class InfoDormitory extends React.Component{
     })
   };
 
-  statusUpdateSelected = value => {
+  onChangeDetailRoom = (event) => {
+    this.setState({
+      roomActive: {
+        ...this.state.roomActive,
+        [event.name]: event.value
+      }
+    })
+  };
+
+  roomTypeUpdateSelected = value => {
     this.setState({ statusUpdateRoom: value })
   };
 
-  statusAddSelected = value => {
+  roomTypeAddSelected = value => {
     this.setState({ statusAddRoom: value })
   };
 
@@ -160,6 +175,7 @@ class InfoDormitory extends React.Component{
 
   handleShowDetail = (room) => {
     this.setState({
+      roomActive: room,
       limitPersonDetail: room.soNguoiToiDa,
       roomNameDetail: room.tenPhong,
       statusDetail: 0,
@@ -170,7 +186,6 @@ class InfoDormitory extends React.Component{
   }
 
   handleDeleteRoom = async(id) => {
-    const { roomNameAdd, limitPersonAdd, descriptionAdd, statusAddRoom, floorActive } = this.state;
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/infoDormitory/delRoom/` + id
@@ -185,22 +200,43 @@ class InfoDormitory extends React.Component{
       ToastsStore.error("Xóa phòng không thành công!");
       ToastsStore.error(err.response.data.msg);
     })
-  }
+  };
+
+  handleSubmitUpdateStudent = async() => {
+    const { roomActive: { _id, soNguoiToiDa, moTa} } = this.state;
+    await refreshToken();
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.post(`/manager/infoDormitory/updateRoom/`
+      ,{
+        id: _id,
+        soNguoiToiDa: parseInt(soNguoiToiDa),
+        moTa: moTa
+      },{ headers: { 'x-access-token': secret.access_token } }
+    ).then(result => {
+      ToastsStore.success(result.data.msg);
+      this.setState({
+        limitPersonUpdate: null,
+        moTa: null
+      });
+      this.handleClosePopup('room');
+      this.getData();
+    }).catch(err => {
+      ToastsStore.error(err.response.data.msg);
+    })
+
+  };
 
   render(){
     const {
       floorActive,
-      roomActive,
       roomList,
       floorList,
       showRoomPopup,
       showAddFloorPopup,
       showAddRoomPopup,
-      statusOptions,
-      limitPersonDetail,
-      descriptionDetail,
       roomNameDetail,
-      idActive
+      roomTypeOptions,
+      roomActive
     } = this.state;
 
     console.log('==render state', this.state)
@@ -222,16 +258,16 @@ class InfoDormitory extends React.Component{
                   Số người tối đa:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChange} name={'soNguoiToiDa'} value={limitPersonDetail}/>
+                  <Input getValue={this.onChangeDetailRoom} name={'soNguoiToiDa'} value={roomActive.soNguoiToiDa}/>
                 </Col>
 
                 <Col md={4}>
-                  Trạng Thái:
+                  Loại Phòng:
                 </Col>
                 <Col md={8}>
                   <Select
-                    options={statusOptions}
-                    selected={this.statusUpdateSelected}
+                    options={roomTypeOptions}
+                    selected={this.roomTypeUpdateSelected}
                   />
                 </Col>
 
@@ -239,7 +275,7 @@ class InfoDormitory extends React.Component{
                   Mô tả:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChange} name={'moTa'} value={descriptionDetail} />
+                  <Input getValue={this.onChangeDetailRoom} name={'moTa'} value={roomActive.moTa} />
                 </Col>
 
 
@@ -248,14 +284,14 @@ class InfoDormitory extends React.Component{
             <Modal.Footer>
               <Button
                 color={"danger"}
-                onClick={() =>this.handleDeleteRoom(idActive)}
+                onClick={() =>this.handleDeleteRoom(roomActive._id)}
               >
                 Delete
               </Button>
               <Button variant="outline" onClick={() =>this.handleClosePopup('room')}>
                 Close
               </Button>
-              <Button  onClick={() =>this.handleSubmitAddStudent()}>
+              <Button  onClick={() =>this.handleSubmitUpdateStudent()}>
                 Save Changes
               </Button>
             </Modal.Footer>
@@ -283,12 +319,12 @@ class InfoDormitory extends React.Component{
                 </Col>
 
                 <Col md={4}>
-                  Trạng Thái:
+                  Loại phòng:
                 </Col>
                 <Col md={8}>
                   <Select
-                    options={statusOptions}
-                    selected={this.statusAddSelected}
+                    options={roomTypeOptions}
+                    selected={this.roomTypeAddSelected}
                   />
                 </Col>
 
@@ -341,12 +377,12 @@ class InfoDormitory extends React.Component{
                 </Col>
 
                 <Col md={4}>
-                  Trạng Thái:
+                  Loại phòng:
                 </Col>
                 <Col md={8}>
                   <Select
-                    options={statusOptions}
-                    selected={this.statusAddSelected}
+                    options={roomTypeOptions}
+                    selected={this.roomTypeAddSelected}
                   />
                 </Col>
 
@@ -373,68 +409,93 @@ class InfoDormitory extends React.Component{
           {/*end add floor popup*/}
           <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
 
-          <Row>
-          <Col md={2}>
-            <div className={'id-floor'}>
-            {floorList.map(floor => {
-              return(
-                <div className={'id-floor_item'} key={floor.key}>
-                  <Button
-                    color={'success'}
-                    variant={'outline'}
-                    diminsion
-                    actived={(floorActive === floor.label)}
-                    onClick={()=>this.handleSelectFloor(floor.label)}
-                  >
-                    Lầu {floor.label}
-                  </Button>
+          <div className={'id-content'}>
+            <Row>
+              <Col md={2}>
+                <div className={'id-floor'}>
+
+                  {floorList.map(floor => {
+                    return(
+                      <div className={'id-floor_item'} key={floor.key}>
+                        <Button
+                          color={'success'}
+                          variant={'outline'}
+                          diminsion
+                          actived={(floorActive === floor.label)}
+                          onClick={()=>this.handleSelectFloor(floor.label)}
+                        >
+                          Lầu {floor.label}
+                        </Button>
+                      </div>
+                    )
+                  })}
                 </div>
-              )
-            })}
 
-
-
-            <div className={'id-floor_item'}>
-              <Button
-                color={'success'}
-                variant={'outline'}
-                diminsion
-                onClick={() => this.handleShowPopup('addFloor')}
-              >
-                <i className="fas fa-plus"/>
-              </Button>
-            </div>
-            </div>
-
-          </Col>
-          <Col md={10}>
-            <div className={'id-room'}>
-              {roomList.map(room => {
-                return(
-                  <div className={'id-room_item'} key={room.key}>
-                    <Button
-                      variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
-                      color={'warning'}
-                      onClick={()=>this.handleShowDetail(room.data)}
-                    >
-                      Phòng {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
-                    </Button>
+              </Col>
+              <Col md={10}>
+                <div className={'id-room'}>
+                  <div>
+                  {roomList.normal && roomList.normal.map(room => {
+                    return(
+                      <div className={'id-room_item'} key={room.key}>
+                        <Button
+                          shadow
+                          variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                          color={'warning'}
+                          onClick={()=>this.handleShowDetail(room.data)}
+                        >
+                          <i className="fas fa-home"/>
+                          {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                        </Button>
+                      </div>
+                    )
+                  })}
                   </div>
-                )
-              })}
+                  <div>
+                    {roomList.service && roomList.service.map(room => {
+                      return(
+                        <div className={'id-room_item'} key={room.key}>
+                          <Button
+                            shadow
+                            variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                            onClick={()=>this.handleShowDetail(room.data)}
+                          >
+                            <i className="fas fa-home 7x"/>
+                            {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                          </Button>
+                        </div>
+                      )
+                    })}
+                  </div>
 
-              <div className={'id-room_item'}>
+
+                </div>
+              </Col>
+            </Row>
+
+
+            <Row style={{justifyContent: 'center'}}>
+              <div className={'id-add'}>
                 <Button
-                  variant={'outline'}
-                  color={'warning'}
-                  onClick={() => this.handleShowPopup('addRoom')}
+                  shadow
+                  color={'danger'}
+                  onClick={() => this.handleShowPopup('addFloor')}
                 >
-                  <i className="fas fa-plus"/>
+                  <i className="fas fa-plus"/> Thêm Lầu
                 </Button>
               </div>
-            </div>
-          </Col>
-          </Row>
+              <div className={'id-add'}>
+                <Button
+                  shadow
+                  color={'danger'}
+                  onClick={() => this.handleShowPopup('addRoom')}
+                >
+                  <i className="fas fa-plus"/> Thêm phòng
+                </Button>
+              </div>
+            </Row>
+          </div>
+
         </div>
       </div>
     )

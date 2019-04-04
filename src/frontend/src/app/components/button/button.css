@@ -172,3 +172,7 @@
 .fullWidth{
 	width: 100%;
 }
+
+.shadow{
+	box-shadow: 0px 5px 5px #999999 !important;
+}

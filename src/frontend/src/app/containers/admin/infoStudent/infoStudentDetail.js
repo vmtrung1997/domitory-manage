@@ -12,6 +12,7 @@ import './../../../style.css'
 import refreshToken from "../../../../utils/refresh_token";
 import Select from "../../../components/selectOption/select";
 import {imageFile} from '../../../function/imageFunction'
+import DatePicker from "react-datepicker/es/index";
 class InfoStudentDetail extends Component{
   constructor(props) {
     super(props);
@@ -22,8 +23,11 @@ class InfoStudentDetail extends Component{
   }
 
   componentWillMount() {
+    const { info } = this.props.location.state;
+    var birthDate = new Date(info.ngaySinh);
+    //var stringDate = new DbirthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     this.setState({
-      info: this.props.location.state.info
+      info: {...info, ngaySinh: birthDate}
     })
   }
   arrayBufferToBase64(buffer) {
@@ -34,6 +38,7 @@ class InfoStudentDetail extends Component{
   };
 
   onChange = (event) => {
+    console.log('==event', event.value, typeof(event.value));
     this.setState({
       info: {...this.state.info, [event.name]: event.value}
     })
@@ -57,7 +62,16 @@ class InfoStudentDetail extends Component{
 
   handleSelectGender = selectedOption => {
     console.log('==gender', selectedOption)
-    this.setState({ info: {...this.state.info, gioiTinh: selectedOption} })
+    this.setState({ info: {...this.state.info, gioiTinh: parseInt(selectedOption)} })
+  };
+
+  getValue = (name, val) => {
+    this.setState({
+      info: {
+        ...this.state.info,
+        [name]: val
+      }
+    })
   }
 
   render(){
@@ -82,8 +96,7 @@ class InfoStudentDetail extends Component{
     } = info;
     console.log('img = ', img)
     var imgFile = imageFile(img)
-    var birthDate = new Date(ngaySinh);
-    var stringDate = birthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
+
     return(
       <div>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
@@ -93,7 +106,7 @@ class InfoStudentDetail extends Component{
         <div className={'content-body'}>
           <div className={'infoDetail'}>
             <div className={'id-back'}>
-              <Link to={'http://localhost:3000/admin/student'}>
+              <Link to={'/admin/student'}>
               <i className="fas fa-chevron-left"/>
               <span>Trở về</span>
               </Link>
@@ -140,7 +153,13 @@ class InfoStudentDetail extends Component{
                     Ngày sinh:
                   </Col>
                   <Col md={4}>
-                    <Input value={stringDate} getValue={this.onChange} name={'username'} />
+                    {/*<Input value={ngaySinh} getValue={this.onChange} name={'username'} />*/}
+                    <DatePicker
+                      dateFormat='dd/MM/yyyy'
+                      selected={ngaySinh}
+                      onChange={(val) => this.getValue('ngaySinh', val)}
+                      className='input-datepicker'
+                    />
                   </Col>
                   <Col md={2}>
                     Giới tính:
