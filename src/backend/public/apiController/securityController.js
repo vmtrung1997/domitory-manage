@@ -43,29 +43,39 @@ exports.get_history_list = (req, res) => {
 
 exports.input_card = (req, res) => {
   var {info} = req.body;
-  console.log(info)
-  Profile.findOne({maThe: info}).populate({
-    path:'idTaiKhoan',
-    match:{ isDelete: 0}
-  }).then(profile => {
+  Profile.findOne({maThe: info}).populate([
+  {
+      path:'idTaiKhoan',
+      match:{ isDelete: 0}
+  },{ path: 'idPhong', select: 'tenPhong'}, 
+  { path: 'truong', select: 'tenTruong'},
+  { path: 'nganhHoc', select: 'tenNganh'}]).then(profile => {
       if (profile){
-        console.log(profile)
         if (profile.MSSV)
         var his = new LichSu({
           MSSV: profile.MSSV,
           thoiGian: new Date()
         })
-        his.save().then(() => {
-          find_history().then(result => {
-            res.json({
-              rs: 'success',
-              hisList: result
-            })
-          }).catch(errFind => {
-            res.json({
-              rs: 'fail',
-              msg: errFind
-            })
+        his.save().then(value => {
+          // find_history().then(result => {
+          //   res.json({
+          //     rs: 'success',
+          //     hisList: result
+          //   })
+          // }).catch(errFind => {
+          //   res.json({
+          //     rs: 'fail',
+          //     msg: errFind
+          //   })
+          // })
+          res.json({
+            rs:'success',
+            data: {
+              _id: value._id,
+              MSSV: value.MSSV,
+              thoiGian: value.thoiGian,
+              profile: profile
+            }
           })
         }).catch(errSave => {
           res.json({

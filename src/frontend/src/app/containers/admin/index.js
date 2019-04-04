@@ -8,6 +8,7 @@ import Expense from './expenses/expenses'
 import Activity from './activity/activity'
 import ActivityDetail from './activity/activityDetail'
 import InfoDormitory from "./infoDormitory/infoDormitory";
+import History from './securityHistory/history'
 import News from './news/news';
 
 class Admin extends Component{
@@ -25,6 +26,7 @@ class Admin extends Component{
 						<Route exact path={`${this.props.match.url}/expense`} component={Expense} />
         		<Route exact path={`${this.props.match.url}/activity`} component={Activity} />
 						<Route exact path={`${this.props.match.url}/news`} component={News} />
+						<Route exact path={`${this.props.match.url}/history`} component={History} />
         		<Route exact path={`${this.props.match.url}/activity/detail/:id`} component={ActivityDetail} />
         <Route exact path={`${this.props.match.url}/dormitory`} component={InfoDormitory} />
 	    	</Layout>
