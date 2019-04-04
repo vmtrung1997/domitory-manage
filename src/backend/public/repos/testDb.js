@@ -2,9 +2,12 @@ var sinhVien = require('../models/SinhVien');
 var TaiKhoan = require('../models/TaiKhoan')
 var ChiPhiPhong = require('../models/ChiPhiPhong')
 var Profile = require('../models/Profile')
+var Phong = require('../models/Phong')
 var ObjectId = require('mongoose').Types.ObjectId;
 var fs = require('fs')
 var XLSX = require('xlsx')
+require('../models/Profile')
+require('../models/TaiKhoan')
 function updateProfile(object) {
 	return new Promise((resolve, reject) => {
 		//console.log(object);
@@ -71,7 +74,48 @@ function process_RS(stream/*:ReadStream*/, cb/*:(wb:Workbook)=>void*/)/*:void*/{
     cb(workbook);
   });
 }
+require('fs');
 
+function readFile(path) {
+    var fileContent;
+
+    return new Promise(function(resolve) {
+        fileContent = fs.readFileSync(path, {encoding: 'utf8'});
+        resolve(fileContent);
+    });
+}
+function saveRoom(value){
+	let phong = new Phong({
+		_id: new ObjectId(value[0]),
+		tenPhong: value[1],
+		lau: parseInt(value[2]),
+		soNguoi: parseInt(value[3]),
+		soNguoiToiDa: parseInt(value[4]),
+		trangThai: value[5],
+		isHoDan: parseInt(value[6]),
+		moTa: value[7]
+	})
+	return new Promise((resolve, reject) => {
+		phong.save().then(()=>resolve({rs: 'ok'})).catch(err => reject(err))
+	})
+}
+exports.import_room = (req, res) => {
+	readFile('./public/bin/PhongObj2.csv').then(result => {
+		var arr = result.split('\r\n')
+		var arr_split = arr.map(value => {
+			return value.split(',')
+		})
+		var arr_promise =[]
+		arr_split.forEach(value => {
+			arr_promise.push(saveRoom(value))
+		})
+		Promise.all(arr_promise).then( () => {
+			res.json({
+				rs: 'ok'
+			})
+		}).catch(err => res.json({rs: 'fail'}))
+	})
+}
 exports.uploadExcelFile = (req, res) => {
 	var fileArr = req.body.file;
 	var workbook = XLSX.read(fileArr, {type: 'binary'})
@@ -108,6 +152,20 @@ exports.uploadExcelFile = (req, res) => {
 				console.log(data);
 		});
 	res.json({rs:'success'})
+}
+
+exports.test_idTaiKhoan = (req, res) => {
+	TaiKhoan.findOne({_id: '5c8682fb87358f57fbcd966e'}).then(value => {
+		res.json({
+			rs: 'success',
+			data: value
+		})
+	}).catch(err => {
+		res.json({
+			rs: 'fail',
+			msg: err
+		})
+	})
 }
     // exports.update_password = (req, res) => {
     //     TaiKhoan.updateMany({},{

@@ -4,6 +4,7 @@ var activityController = require('./../apiController/activityController')
 var newsController = require('./../apiController/newsController');
 var infoStudent = require('../apiController/infoStudentController');
 var infoDormitory = require('../apiController/infoDormitoryController');
+var historyController = require('../apiController/historyController')
 let repo = require('../repos/phongRepo');
 
 // Expense
@@ -72,4 +73,6 @@ router.get('/news/get',newsController.getNews);
 router.post('/news/update',newsController.updateNews);
 router.post('/news/delete',newsController.deleteNews);
 
+//Security
+router.post('/security/history',historyController.find_history);
 module.exports = router;

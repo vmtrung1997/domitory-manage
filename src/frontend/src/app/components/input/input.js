@@ -22,6 +22,7 @@ class Input extends Component {
     getValue: () => {},
     onKeyPress: () => {},
     onChange: () => {},
+    onFocus: () => {}
   }
   onChange = (event) => {
     this.props.getValue(event.target);
@@ -46,7 +47,7 @@ class Input extends Component {
           onKeyPress={this.props.onKeyPress}
           data-mask={this.props.mask}
           ref={this.props.onRef}
-          autoFocus={this.props.autoFocus}
+          onFocus={this.props.onFocus}
         />
       </React.Fragment>
     );

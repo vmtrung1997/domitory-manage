@@ -7,7 +7,7 @@ import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
 import SignInAdmin from './containers/admin/signIn/signinAdmin'
 import Student from './containers/student'
-import Security from './containers/security'
+import Security from './containers/security/index'
 
 var isAdmin = false
 var isSecurity = false
