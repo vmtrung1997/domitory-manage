@@ -28,7 +28,6 @@ class Checkbox extends Component {
 
   render() {
     var label = this.props.label;
-   
     return (
     <React.Fragment>
       <div style={this.props.style}>

@@ -20,7 +20,7 @@ exports.register = (req, res) => {
 }
 
 exports.login = (req, res) => {
-	User.findOne({ username: req.body.username, password: req.body.password }, function (error, result) {
+	User.findOne({ username: req.body.username, password: req.body.password, isDelete: 0 }, function (error, result) {
 		if (result) {
 			var userEntity = result;
 			Profile.findOne({idTaiKhoan: userEntity._id},(err,prof) => {

@@ -47,6 +47,7 @@ export default class Layout extends React.Component{
                 icon: 'fas fa-tasks',
               },
             {key: 4, link: '/admin/news', label: 'Bài viết', icon: 'far fa-newspaper'},
+            {key: 5, link: '/admin/history', label: 'Lịch sử', icon: 'fas fa-history'},
             ]}
         />
         </div>
