@@ -135,7 +135,7 @@ class NewsList extends React.Component {
                         className="post-img"
                         onClick={e => this.onViewDetail(item._id)}
                       >
-                        <img src="./img/post-3.jpg" alt />
+                        <img src="/img/post-3.jpg" alt />
                       </div>
                       <div className="post-body">
                         <div className="post-meta">
