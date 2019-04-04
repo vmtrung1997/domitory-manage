@@ -32,7 +32,12 @@ class Activity extends Component{
 		}
 	}
 
+	componentWillMount = () => {
+		this.getData()
+	}
+
 	getData = async () => {
+		this.setState({ loading: true})		
 		await refreshToken()
 		var secret = JSON.parse(localStorage.getItem('secret'))
 		axios({
@@ -60,8 +65,8 @@ class Activity extends Component{
 		})
 	}
 	
-	componentWillMount = () => {
-		this.setState({ loading: true})		
+	handleSearch = () => {
+		this.setState({ page: 1 })
 		this.getData()
 	}
 
@@ -97,7 +102,7 @@ class Activity extends Component{
 		if(this.state.last){
 			var date = new Date(this.state.last.ngayBD)
 			var curDate = new Date().getFullYear()
-			for(var i = date.getFullYear(); i <= curDate; i++){
+			for(var i = curDate; i >= date.getFullYear(); i--){
 				year.push({value: i, label: i})
 			}
 		}
@@ -111,11 +116,15 @@ class Activity extends Component{
 			{value: true, label: 'Bắt buộc'},
 			{value: false, label: 'Không bắt buộc'}
 		]
+		var lastDate = new Date().getFullYear()
+		if(this.state.last)
+			lastDate = new Date(this.state.last.ngayBD).getFullYear()
+
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
 				<ActivityModal show={this.state.showAdd} handleClose={() => this.handleClose('showAdd')} handleSave={this.handleSave}/>
-				<ActivityExport show={this.state.showExport} handleClose={() =>this.handleClose('showExport')} handleSave={this.handleSave}/>
+				<ActivityExport last={lastDate} show={this.state.showExport} handleClose={() =>this.handleClose('showExport')} handleSave={this.handleSave}/>
 				<Title> Hoạt động sinh viên </Title>
         		<div className={'content-body full'}>
 					<div>
@@ -125,7 +134,7 @@ class Activity extends Component{
 								<Input 
 									placeholder={'Tìm kiếm'} 
 									getValue={ (obj) => this.getValue('query', obj.value)}
-									onKeyPress={ (e) => {if(e.key === 'Enter') this.getData()}}
+									onKeyPress={ (e) => {if(e.key === 'Enter') this.handleSearch()}}
 								/>
 							</Col>
 							<Col md={2} xs={12}>
@@ -154,7 +163,7 @@ class Activity extends Component{
               				</Col>
               				<Col md={1} xs={12}>
               					<div>&nbsp;</div>
-              					<Button title={'Tìm kiếm'} style={{padding: '7px 15px'}} onClick={this.getData}><i className="fas fa-search" /></Button>
+              					<Button title={'Tìm kiếm'} style={{padding: '7px 15px'}} onClick={this.handleSearch}><i className="fas fa-search" /></Button>
               				</Col>
               			</Row>		
 						<div className='bts-header'>

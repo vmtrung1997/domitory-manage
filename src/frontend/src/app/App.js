@@ -19,6 +19,7 @@ const checkAuth = () => {
         switch(decode.user.userEntity.loai)
         {
             case 'SA':
+            case 'AM':
                 isAdmin = true
                 break
             case 'BV':
@@ -67,7 +68,6 @@ class App extends Component {
                 <Switch>
                     <AdminRoute path="/admin" component={Admin} />
                     <SecurityRoute path='/security' component={Security} />
-                    {/*<SecurityRoute path='/security' component={Security} />*/}
                     <Route path="/signin-admin" component={SignInAdmin} />
                     <Route path='/' component = {Student}/>
                     <Route component={NotFound} />
