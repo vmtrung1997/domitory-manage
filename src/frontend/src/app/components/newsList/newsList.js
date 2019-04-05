@@ -1,6 +1,6 @@
 import React from "react";
 import "./newsList.css";
-import { Button, ButtonGroup, Pagination } from "react-bootstrap";
+import { Button, ButtonGroup, Pagination, Row } from "react-bootstrap";
 import Axios from "axios";
 
 class NewsList extends React.Component {
@@ -8,6 +8,7 @@ class NewsList extends React.Component {
     super(props);
     this.state = {
       posts: [],
+      postsAll: [],
       pinnedPosts: []
     };
   }
@@ -19,7 +20,6 @@ class NewsList extends React.Component {
       .then(rs => {
         console.log(rs);
         if (rs.status === 200) {
-          console.log(rs.data.data);
           rs.data.data.map(item => {
             _post.push(item);
             if (item.ghim === 1) {
@@ -31,6 +31,7 @@ class NewsList extends React.Component {
       .then(() => {
         this.setState({
           posts: _post,
+          postsAll: _post,
           pinnedPosts: _pinnedPosts
         });
       });
@@ -38,6 +39,44 @@ class NewsList extends React.Component {
   onViewDetail = id => {
     var address = "http://localhost:3000/news/detail?id=" + id;
     window.open(address, "_blank");
+  };
+
+  newsFilter = type => {
+    switch (type) {
+      case 0: //Show tất cả tin tức
+        var postsAll = [];
+        this.state.postsAll.map(item => {
+          postsAll.push(item);
+        });
+        this.setState({
+          posts: postsAll
+        });
+        break;
+      case 1: //Show Thoong tin
+        var postsNews = [];
+        this.state.postsAll.map(item => {
+          if (item.loai === "Thong Tin") {
+            postsNews.push(item);
+          }
+        });
+        this.setState({
+          posts: postsNews
+        });
+        break;
+        case 2: //Show Hoat Dong
+        var postsActivity = [];
+        this.state.postsAll.map(item => {
+          if (item.loai === "Hoat Dong") {
+            postsActivity.push(item);
+          }
+        });
+        this.setState({
+          posts: postsActivity
+        });
+        break;
+      default:
+        break;
+    }
   };
   render() {
     console.log(this.state.posts);
@@ -67,12 +106,15 @@ class NewsList extends React.Component {
                 return (
                   <div className="col-md-6">
                     <div className="post post-thumb">
-                      <a className="post-img"   onClick={e => this.onViewDetail(item._id)}>
+                      <a
+                        className="post-img"
+                        onClick={e => this.onViewDetail(item._id)}
+                      >
                         <img src="/img/post-1.jpg" alt />
                       </a>
                       <div className="post-body">
                         <div className="post-meta">
-                        <span
+                          <span
                             className={
                               item.loai === "Hoat Dong"
                                 ? "post-category cat-1"
@@ -89,7 +131,7 @@ class NewsList extends React.Component {
                           </span>
                         </div>
                         <h3 className="post-title">
-                        <a
+                          <a
                             onClick={e => this.onViewDetail(item._id)}
                             href="#"
                           >
@@ -111,7 +153,32 @@ class NewsList extends React.Component {
             <div className="row">
               <div className="col-md-12">
                 <div className="section-title">
-                  <h2>Bài viết gần đây</h2>
+                  <Row>
+                    <h2>Bài viết gần đây</h2>
+                    <ButtonGroup className="section-option">
+                      <Button
+                        onClick={e => this.newsFilter(0)}
+                        variant="light"
+                        className="section-all-hover"
+                      >
+                        Tất cả
+                      </Button>
+                      <Button
+                        onClick={e => this.newsFilter(1)}
+                        variant="light"
+                        className="section-news-hover"
+                      >
+                        Thông tin{" "}
+                      </Button>
+                      <Button
+                        onClick={e => this.newsFilter(2)}
+                        variant="light"
+                        className="section-activity-hover"
+                      >
+                        Hoạt động
+                      </Button>
+                    </ButtonGroup>
+                  </Row>
                 </div>
               </div>
               {/* post */}
@@ -169,8 +236,6 @@ class NewsList extends React.Component {
                   </div>
                 );
               })}
-            
-             
             </div>
             {/* /row */}
             <div className="col-md-12">
