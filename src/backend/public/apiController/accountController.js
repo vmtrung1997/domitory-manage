@@ -64,15 +64,15 @@ exports.update_Account = (req, res) => {
 
 exports.delete_Account = (req, res) =>{
 	const id = req.query.id
-	Account.deleteOne({ _id: id }, function (err) {
+	Account.update({ _id: id }, {isDelete: 1}, (err, val) => {
 		if(!err){
 			res.json({ rs: 'ok'})
 			console.log('==delete_account: success')
 		}
 		else{
-			console.log('==delete_account: ', err)
+			console.log('==delete_account:', err)
 			res.status(500)
 		}
-	});
+	})
 }
 
