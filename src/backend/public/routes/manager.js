@@ -65,6 +65,8 @@ router.get('/infoDormitory/getRoom/:floor', infoDormitory.getRoom);
 
 router.post('/infoDormitory/addRoom', infoDormitory.addRoom);
 
+router.post('/infoDormitory/updateRoom', infoDormitory.updateRoom);
+
 router.get('/infoDormitory/delRoom/:id', infoDormitory.delRoom);
 
 //News

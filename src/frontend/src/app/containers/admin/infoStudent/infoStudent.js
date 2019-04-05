@@ -14,6 +14,7 @@ import './infoStudent.css';
 import './../../../style.css'
 import refreshToken from './../../../../utils/refresh_token'
 import MyPagination from "../../../components/pagination/pagination";
+import Loader from "../../../components/loader/loader";
 
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
@@ -22,16 +23,15 @@ class InfoStudent extends Component{
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
+
       showAddPopup: false,
       showDelPopup: false,
       pageActive: 1,
       totalpages: 1,
       limit: 10,
 
-      mssvAdded: '',
-      nameAdded: '',
-      roomAdded: '',
-      schoolAdded: '',
+      infoAdded: {},
 
       pageList: [1,2,3,4,5],
       infoList: [],
@@ -49,8 +49,9 @@ class InfoStudent extends Component{
       flag: false,
 
       schoolOptions: [],
-      roomOptions: [],
-      floorOptions: [{value: 0, label: 1}, {value: 1, label: 2}, {value: 2, label: 3}, {value: 3, label: 4}, {value: 4, label: 5}, {value: 5, label: 6}],
+      schoolOptionsSearch: [],
+      roomOptionsSearch: [],
+      floorOptions: []
     }
   }
 
@@ -91,14 +92,16 @@ class InfoStudent extends Component{
     // )
   }
 
-  componentWillMount(){
+  componentDidMount(){
     this.getData();
     this.getElement('phong');
     this.getElement('truong');
+    this.getElement('floor');
     // this.modifyData();
   }
 
-  getElement = name => {
+  getElement = async(name) => {
+    await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getElement/` + name,  {
       headers: { 'x-access-token': secret.access_token }
@@ -109,15 +112,27 @@ class InfoStudent extends Component{
           const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
           roomOptions.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
-            roomOptions: roomOptions
+            roomOptionsSearch: roomOptions
           })
           break;
         case 'truong':
-          const schoolOptions = result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }));
-          schoolOptions.unshift({ value: 0, label: 'Tất cả' });
+          const schoolOptionsSearch = result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }));
+          const schoolOptions = schoolOptionsSearch;
+          schoolOptionsSearch.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
+            schoolOptionsSearch: schoolOptionsSearch,
             schoolOptions: schoolOptions
           })
+          break;
+        case 'floor':
+          let i = 0;
+          const floorList = result.data.map(floor => {
+            return {value: i++, label: floor}
+          });
+          floorList.unshift({ value: 0, label: 'Tất cả' });
+          this.setState({
+            floorOptions: floorList,
+          });
           break;
         default:
           break
@@ -161,12 +176,42 @@ class InfoStudent extends Component{
       console.log('==get info success', result);
       this.setState({
         infoList: result.data.docs,
-        totalPages: result.data.totalPages
+        totalPages: result.data.totalPages,
+        loading: false
       })
     }).catch((err) => {
       console.log('get info Student err', err);
     })
   }
+
+  getFloor = async() => {
+    await refreshToken();
+    let secret = JSON.parse(localStorage.getItem('secret'));
+
+    axios.get(`/manager/getElement/floor`,  {
+      headers: { 'x-access-token': secret.access_token }
+    }).then(result => {
+      console.log('==get lau', result);
+      let i = 0;
+      const floorList = result.data.map(floor => {
+        return {key: i++, label: floor}
+      });
+      this.setState({
+        floorList: floorList,
+      })
+    }).catch(err => {
+      console.log('==get lau err', err);
+    });
+  };
+
+  // getRoomAvailable = async() => {
+  //   await refreshToken();
+  //   let secret = JSON.parse(localStorage.getItem('secret'));
+  //   axios.get(`/manager/getElement/` + name,  {
+  //     headers: { 'x-access-token': secret.access_token }
+  //   }).then
+  // }
+
   onChange = (event) => {
     this.setState({
       [event.name]: event.value
@@ -174,6 +219,9 @@ class InfoStudent extends Component{
   }
 
   handleSearch = () => {
+    this.setState({
+      loading: true,
+    });
     this.getData();
   }
 
@@ -181,20 +229,24 @@ class InfoStudent extends Component{
     this.setState({ roomSelected: selectedOption, pageActive: 1 })
   }
   handleSelectSchool = selectedOption => {
+    console.log('==selectedOption 111', selectedOption);
     this.setState({ schoolSelected: selectedOption, pageActive: 1 })
   }
   handleSelectFloor = selectedOption => {
     this.setState({ floorSelected: selectedOption, pageActive: 1 })
   }
+
   handleSelectAddRoom = selectedOption => {
-    this.setState({ roomAdded: selectedOption })
+    console.log('==selectedOption 222', selectedOption);
+    this.setState({ infoAdded: {...this.state.infoAdded, roomAdded: selectedOption} })
   }
   handleSelectAddSchool = selectedOption => {
-    this.setState({ schoolAdded: selectedOption })
+    this.setState({ infoAdded: {...this.state.infoAdded, schoolAdded: selectedOption} })
   }
 
-  handleSubmitAddStudent = () => {
-    const { mssvAdded, nameAdded, roomAdded, schoolAdded } = this.state;
+  handleSubmitAddStudent = async() => {
+    const { mssvAdded, nameAdded, infoAdded: { roomAdded, schoolAdded }, numberCardAdded } = this.state;
+    await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
       'x-access-token': secret.access_token
@@ -203,13 +255,15 @@ class InfoStudent extends Component{
       {
         mssv: mssvAdded,
         hoTen: nameAdded,
-        idPhong: roomAdded,
-        idTruong: schoolAdded
+        idPhong: roomAdded.value,
+        idTruong: schoolAdded.value,
+        maThe: numberCardAdded
       }, { headers: headers }
     ).then(result => {
       this.handleClosePopup('add');
+      ToastsStore.success("Thêm thành công!");
     }).catch(err => {
-      this.handleClosePopup('add');
+      ToastsStore.error("Thêm không thành công!" + err.response.data.msg);
     })
   }
 
@@ -272,6 +326,7 @@ class InfoStudent extends Component{
 
   handleReload = () => {
     this.setState({
+      loading: true,
       pageActive: 1,
       hoTen: '',
       mssv: '',
@@ -286,9 +341,21 @@ class InfoStudent extends Component{
   render(){
     console.log('==render state', this.state);
     let i = 0;
-    const { infoList, roomSelected, schoolSelected, floorSelected, schoolAdded, roomOptions, schoolOptions, floorOptions, roomAdded } = this.state;
+    const {
+      infoList,
+      roomSelected,
+      schoolSelected,
+      floorSelected,
+      roomOptionsSearch,
+      schoolOptions,
+      schoolOptionsSearch,
+      floorOptions,
+      hoTen,
+      mssv,
+      infoAdded: { roomAdded, schoolAdded} } = this.state;
     return(
       <div>
+        <Loader loading={this.state.loading}/>
         <Title>
           Thông tin sinh viên
         </Title>
@@ -298,17 +365,16 @@ class InfoStudent extends Component{
             <Row>
               <Col md={1}>
                 MSSV
-
               </Col>
               <Col md={2}>
-                <Input getValue={this.onChange} name={'mssv'} />
+                <Input getValue={this.onChange} name={'mssv'} value={mssv}/>
               </Col>
 
               <Col md={1}>
                 Họ tên
               </Col>
               <Col md={4}>
-                <Input getValue={this.onChange} name={'hoTen'} />
+                <Input getValue={this.onChange} name={'hoTen'} value={hoTen}/>
               </Col>
 
               <Col md={1}>
@@ -320,7 +386,7 @@ class InfoStudent extends Component{
                   value={roomSelected}
                   // selected={this.handleSelectRoom}
                   onChange={this.handleSelectRoom}
-                  options={roomOptions}
+                  options={roomOptionsSearch}
                 />
               </Col>
             </Row>
@@ -341,7 +407,7 @@ class InfoStudent extends Component{
                   value={schoolSelected}
                   onChange={this.handleSelectSchool}
                   // selected={this.handleSelectSchool}
-                  options={schoolOptions}
+                  options={schoolOptionsSearch}
                 />
               </Col>
 
@@ -445,15 +511,20 @@ class InfoStudent extends Component{
                   <Input getValue={this.onChange} name={'mssvAdded'} />
                 </Col>
                 <Col md={3}>
+                  Mã thẻ:
+                </Col>
+                <Col md={9}>
+                  <Input getValue={this.onChange} name={'numberCardAdded'} />
+                </Col>
+                <Col md={3}>
                   Phòng:
                 </Col>
                 <Col md={9}>
                   <SearchSelect
                     placeholder={''}
                     value={roomAdded}
-                    onChange={()=>this.handleSelectAddRoom()}
-                    selected={this.handleSelectAddRoom}
-                    options={roomOptions} />
+                    onChange={this.handleSelectAddRoom}
+                    options={roomOptionsSearch} />
                 </Col>
                 <Col md={3}>
                   Trường:
@@ -462,8 +533,7 @@ class InfoStudent extends Component{
                   <SearchSelect
                     placeholder={''}
                     value={schoolAdded}
-                    onChange={()=>this.handleSelectAddSchool()}
-                    selected={this.handleSelectAddSchool}
+                    onChange={this.handleSelectAddSchool}
                     options={schoolOptions} />
                 </Col>
               </Row>
