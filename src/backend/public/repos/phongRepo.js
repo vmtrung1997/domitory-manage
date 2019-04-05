@@ -21,7 +21,7 @@ exports.get_element = (req, res) => {
   let obj = req.params.name;
   switch (obj) {
     case 'phong':
-      Phong.find().sort({'tenPhong': 'asc'}).select(['_id', 'tenPhong']).
+      Phong.find({isHoDan: 0}).sort({'tenPhong': 'asc'}).select(['_id', 'tenPhong']).
       then(result => {
         res.status(200).json(result);
       }).catch(error => {

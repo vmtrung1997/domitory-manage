@@ -129,9 +129,6 @@ class News extends Component {
           <Button onClick = {e=>this.editorModal('add')} color="success">
             Thêm mới <i className="fas fa-plus" />
           </Button>
-            {/* <Button title={"Cài đặt"} onClick = {this.editorModal} >
-              <i className="fas fa-plus" />
-            </Button> */}
           </div>
           {this.state.news.length === 0 && !this.state.loading ? (
             <span>Bạn chưa có bài viết nào</span>
@@ -141,31 +138,18 @@ class News extends Component {
                 <tr>
                   <th>#</th>
                   <th>Tiêu đề</th>
-                  <th>Ngày tạo</th>
-                  <th>Ngày chỉnh sửa</th>
-                  <th>Trạng thái</th>
+                  <th>Loại</th>
+                
+                  <th>Lần chỉnh sửa cuối</th>
                   <th>Người tạo</th>
+                  <th>Trạng thái</th>
+                  <th>Ghim</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {this.state.news.map((item, index) => {
               
-                  var day = new Date(item.ngayTao);
-                  var month = day.getMonth() + 1;
-                  var formatDay =
-                    day.getDate() +
-                    "/" +
-                    month +
-                    "/" +
-                    day.getFullYear() +
-                    " " +
-                    day.getHours() +
-                    ":" +
-                    day.getMinutes() +
-                    ":" +
-                    day.getSeconds();
-
                   var dayEdit = new Date(item.ngayChinhSua);
                   var monthEdit = dayEdit.getMonth() + 1;
                   var formatDayEdit =
@@ -184,8 +168,10 @@ class News extends Component {
                     <tr key={index}>
                       <td>{index}</td>
                       <td style = {{width:'250px'}}>{item.tieuDe}</td>
-                      <td>{formatDay}</td>
+                      <td>{item.loai === "Hoat Dong"?"Hoạt động":"Tin tức"}</td>
+                   
                       <td>{formatDayEdit}</td>
+                      <td>{item.hoTen}</td>
                       <td
                         className={
                           item.trangThai === 1
@@ -195,7 +181,7 @@ class News extends Component {
                       >
                         {item.trangThai === 1 ? "Công khai" : "Riêng tư"}
                       </td>
-                      <td>{item.hoTen}</td>
+                      <td className ='news-status-public'>{item.ghim===1?"Có":""}</td>
                       <td>
                       <MyButton
                           color={"success"}

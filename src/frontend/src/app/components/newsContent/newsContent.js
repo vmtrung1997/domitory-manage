@@ -1,7 +1,7 @@
 import React from "react";
 import "./newsContent.css";
 import axios from "axios";
-import Header from "./../headerHomepage/headerHomepage";
+
 
 class NewsContent extends React.Component {
   constructor(props) {
@@ -56,7 +56,7 @@ class NewsContent extends React.Component {
       d.getSeconds();
     return (
       <React.Fragment>
-        <Header />
+       
         <div className="news-content-detail">
           <div className="news-detail">
             <div className="news-detail-sub">

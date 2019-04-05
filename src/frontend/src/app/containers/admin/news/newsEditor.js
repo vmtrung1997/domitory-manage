@@ -6,14 +6,15 @@ import {
   convertFromHTML
 } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { Modal, Button, FormControl } from "react-bootstrap";
+import { Modal, Button, FormControl, Col, Row } from "react-bootstrap";
 import draftToHtml from "draftjs-to-html";
 import "../../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import Input from "./../../../components/input/input";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import refreshToken from "../../../.././utils/refresh_token";
-import Checkbox from './../../../components/checkbox/checkbox'
+import Checkbox from "./../../../components/checkbox/checkbox";
+import MySelectOption from "./../../../components/selectOption/select";
 import {
   ToastsContainer,
   ToastsContainerPosition,
@@ -25,11 +26,14 @@ class EditorConvertToHTML extends Component {
     super(props);
     this.state = {
       show: true,
-      title: '',
+      title: "",
       body: undefined,
       editorState: undefined,
       idNews: undefined,
-      check: true,
+      check: false,
+      pin:false,
+      loai: 0,
+      typeOptions: [{ value: 0, label: "Tin Tức" }, { value: 1, label: "Hoạt Động" }]
     };
   }
 
@@ -74,8 +78,11 @@ class EditorConvertToHTML extends Component {
         title: this.state.title,
         content: value,
         author: decode.user.profile.idTaiKhoan,
-        trangThai: this.state.check===true?'1':'0'
+        trangThai: this.state.check === true ? "1" : "0",
+        ghim: this.state.pin === true? "1" : "0",
+        loai: this.state.loai
       };
+
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios.post("/manager/news/add", { data: data }).then(res => {
         if (res.status === 201) {
@@ -88,10 +95,15 @@ class EditorConvertToHTML extends Component {
     }
   };
 
+  kindSelected = value => {
+    console.log(value);
+    this.setState({ loai: value });
+  };
+
   editNews = async () => {
     await refreshToken();
     var secret = JSON.parse(localStorage.getItem("secret"));
-    const decode = jwt_decode(secret.access_token);
+
 
     var value = draftToHtml(
       convertToRaw(this.state.editorState.getCurrentContent())
@@ -101,7 +113,9 @@ class EditorConvertToHTML extends Component {
       tieuDe: this.state.title,
       noiDung: value,
       id: this.state.idNews,
-      trangThai: this.state.check===true?'1':'0'
+      trangThai: this.state.check === true ? "1" : "0",
+      ghim: this.state.pin === true? "1" : "0",
+      loai: this.state.loai
     };
 
     axios.defaults.headers["x-access-token"] = secret.access_token;
@@ -116,6 +130,7 @@ class EditorConvertToHTML extends Component {
     });
   };
   componentDidMount() {
+    console.log('==didmount');
     var type = this.props.type;
     var content = this.props.content;
 
@@ -131,8 +146,12 @@ class EditorConvertToHTML extends Component {
           ),
           title: content.tieuDe,
           idNews: content._id,
-          check: content.trangThai===1?true:false
+          check: content.trangThai === 1 ? true : false,
+          pin: content.ghim === 1? true: false,
+          //TODO: checkbox chưa thay đổi theo state
+          loai: 1 //content.loai === 'Hoat Dong'? 1:0
         });
+        console.log("did",content, this.state);
       } else {
         // this.setState({
         //   editorState: EditorState.createEmpty()
@@ -140,16 +159,22 @@ class EditorConvertToHTML extends Component {
       }
     }
   }
-  changeStatus = (e) =>{
+  changeStatus = e => {
     this.setState({
       check: e.chk
-    })
-    console.log(this.state.check)
-  }
+    });
+  };
+
+  changePin = e => {
+    this.setState({
+      pin: e.chk
+    });
+  };
   render() {
+    console.log("==render",this.state);
     var type = this.props.type;
-    var content = this.props.content;
-    console.log(content)
+    var loai = this.state.loai;
+    console.log(loai);
     const { editorState } = this.state;
     const editorStyle = {
       padding: "5px",
@@ -157,7 +182,7 @@ class EditorConvertToHTML extends Component {
       width: "100%",
       backgroundColor: "white"
     };
-
+    
     return (
       <Modal size="lg" show={this.state.show} onHide={this.handleClose}>
         <ToastsContainer
@@ -189,7 +214,31 @@ class EditorConvertToHTML extends Component {
             value={""}
             onEditorStateChange={this.onEditorStateChange}
           />
-          <Checkbox isCheck={this.changeStatus} check={this.state.check} label ='Hiện thị lên bảng tin' name={'hienThi'} ></Checkbox>
+          <Row>
+            <Col sm = {1}><span>Loại:</span></Col>
+          <Col sm={3}>
+          <MySelectOption
+            //getValue={this.KindSelected}
+            //disabled={this.state.readOnly}
+            value= {loai}
+            options={this.state.typeOptions}
+            selected={this.kindSelected}
+          />
+          </Col>
+          </Row>
+          <Checkbox
+            isCheck={this.changeStatus}
+            check={this.state.check}
+            label="Hiện thị lên bảng tin"
+            name={"hienThi"}
+          />
+            <Checkbox
+            defaultChecked={this.state.pin}
+            isCheck={this.changePin}
+            check={this.state.pin}
+            label="Ghim bài viết (Hiển thị tối đa 2)"
+            name={"ghim"}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={this.handleClose}>

@@ -1,5 +1,6 @@
 .dashboard{
+    padding-top: 1000px;
     display: flex;
     flex-direction: row;
-    background-color: aliceblue
+    background-color: indigo !important
 }

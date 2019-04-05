@@ -3,43 +3,81 @@ require('../models/TaiKhoan');
 //require('../models/NganhHoc');
 const Profile = require('../models/Profile');
 const Account = require('../models/TaiKhoan');
+const Room = require('../models/Phong');
 const ReToken = require('../models/refreshToken');
 let auth = require('../repos/authRepo');
 const md5 = require('md5');
 
 exports.addStudent = (req, res) => {
-  console.log('==111')
-  let accStudent = {
-    username: req.body.mssv,
-    password: md5(req.body.mssv),
-    loai: "SV",
-    isDelete: 0
-  }
-  var acc = new Account(accStudent);
-  console.log('==2222')
+  Account.findOne({username: req.body.mssv})
+    .then(result => {
+      console.log('==find mssv: ', result)
 
-  acc.save().then((result) => {
-    console.log('==register: success', result)
-    let infoStudent = {
-      idTaiKhoan: result._id,
-      hoTen: req.body.hoTen,
-      MSSV: req.body.mssv,
-      idPhong: req.body.idPhong,
-      truong: req.body.idTruong,
-    }
-    let student = new Profile(infoStudent);
-    student.save().then(result => {
-      console.log('==register student: success', result);
-      res.status(200).json(req.body);
+      if(result)
+        res.status(409).json({msg: 'Mã số sinh viên đã tồn tại!'})
+      else {
+        Profile.findOne({maThe: req.body.maThe})
+         .then(result => {
+           console.log('==find ma The: ', result)
+
+           if(result)
+             res.status(409).json({msg: 'Mã thẻ đã tồn tại!'})
+           else {
+             let accStudent = {
+                username: req.body.mssv,
+                password: md5(req.body.mssv),
+                loai: "SV",
+                isDelete: 0
+              };
+              var acc = new Account(accStudent);
+
+              //----save account---------
+              acc.save().then((result) => {
+                let infoStudent = {
+                idTaiKhoan: result._id,
+                hoTen: req.body.hoTen,
+                MSSV: req.body.mssv,
+                idPhong: req.body.idPhong,
+                truong: req.body.idTruong,
+                maThe: req.body.maThe
+                };
+                let student = new Profile(infoStudent);
+
+                //------save profile-------
+                student.save().then(result => {
+                  console.log('==register student: success', result);
+                  res.status(200).json(req.body);
+                }).catch(err => {
+                  console.log('==register student err: ', err);
+                  res.status(500).json({msg: 'tạo profile err!'});
+                })
+               //--------end save profile----------
+              }).catch(err => {
+                console.log('==register account err: ', err);
+               res.status(500).json({msg: 'tạo account err'});
+             })
+             //-----end catch save account-------
+             Room.findOne({_id: req.body.idPhong})
+               .then(result => {
+                 result.soNguoi = result.soNguoi + 1
+                 result.save()
+               }).catch(err =>{
+                 console.log('==phong err', err)
+                res.status(500).json({msg: 'update phong err'});
+             })
+           }
+           //----------end điều kiện mã thẻ tồn tại------------
+         }).catch(err => {
+          res.status(400).json({msg: 'truy vấn mã thẻ err'})
+        })
+        //----------end catch maThe------------
+      }
+      //----------end điều kiện mssv tồn tại-------------
     }).catch(err => {
-      console.log('==register stu err: ', err);
-      res.status(500);
-    })
-  }).catch(err => {
-    console.log('==register err: ', err);
-    res.status(500);
-  })
-}
+    res.status(400).json({msg: 'truy vấn mã thẻ err!'})
+  });
+  //----------end catch mssv tồn tại----------------
+};
 
 exports.deleteStudent = (req, res) => {
   const arrDel = req.body.arrDelete;
