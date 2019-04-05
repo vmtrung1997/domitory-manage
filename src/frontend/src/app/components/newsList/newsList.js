@@ -9,14 +9,15 @@ class NewsList extends React.Component {
     this.state = {
       posts: [],
       postsAll: [],
-      pinnedPosts: []
+      pinnedPosts: [],
     };
   }
 
   componentDidMount() {
     var _post = [];
     var _pinnedPosts = [];
-    Axios.get("http://localhost:4000/news/get-news")
+    var date = new Date("2015-01-01") //Ngaỳ mặc định
+    Axios.post("http://localhost:4000/news/get-news",{data: date})
       .then(rs => {
         console.log(rs);
         if (rs.status === 200) {
@@ -55,7 +56,7 @@ class NewsList extends React.Component {
       case 1: //Show Thoong tin
         var postsNews = [];
         this.state.postsAll.map(item => {
-          if (item.loai === "Thong Tin") {
+          if (item.loai === "1") {
             postsNews.push(item);
           }
         });
@@ -66,7 +67,7 @@ class NewsList extends React.Component {
         case 2: //Show Hoat Dong
         var postsActivity = [];
         this.state.postsAll.map(item => {
-          if (item.loai === "Hoat Dong") {
+          if (item.loai === "0") {
             postsActivity.push(item);
           }
         });
@@ -78,6 +79,34 @@ class NewsList extends React.Component {
         break;
     }
   };
+
+  loadMore = () => {
+    var _post = [];
+
+    var lastPost = this.state.postsAll[this.state.postsAll.length - 1];
+    var date = new Date(lastPost.ngayTao);
+
+    Axios.post("http://localhost:4000/news/get-news",{data: date})
+    .then(rs => {
+      console.log(rs.data);
+      if (rs.status === 200) {
+        rs.data.data.map(item => {
+          _post.push(item);
+        });
+      }
+    })
+    .then(() => {
+      var posts = this.state.posts;
+      _post.map(item =>{
+        posts.push(item)
+      })
+      this.setState({
+        posts: posts,
+        postsAll: posts,
+      });
+    });
+  }
+
   render() {
     console.log(this.state.posts);
     return (
@@ -116,12 +145,12 @@ class NewsList extends React.Component {
                         <div className="post-meta">
                           <span
                             className={
-                              item.loai === "Hoat Dong"
+                              item.loai === "1"
                                 ? "post-category cat-1"
                                 : "post-category cat-2"
                             }
                           >
-                            {item.loai === "Hoat Dong"
+                            {item.loai === "1"
                               ? "Hoạt Động"
                               : "Thông tin"}
                           </span>
@@ -157,6 +186,7 @@ class NewsList extends React.Component {
                     <h2>Bài viết gần đây</h2>
                     <ButtonGroup className="section-option">
                       <Button
+                        active // TODO: acvive không hoạt đông
                         onClick={e => this.newsFilter(0)}
                         variant="light"
                         className="section-all-hover"
@@ -208,12 +238,12 @@ class NewsList extends React.Component {
                         <div className="post-meta">
                           <span
                             className={
-                              item.loai === "Hoat Dong"
+                              item.loai === "1"
                                 ? "post-category cat-1"
                                 : "post-category cat-2"
                             }
                           >
-                            {item.loai === "Hoat Dong"
+                            {item.loai === "1"
                               ? "Hoạt Động"
                               : "Thông tin"}
                           </span>
@@ -240,8 +270,8 @@ class NewsList extends React.Component {
             {/* /row */}
             <div className="col-md-12">
               <div className="section-row">
-                <button className="primary-button center-block">
-                  Load More
+                <button onClick = {this.loadMore} className="primary-button center-block">
+                  Thêm bài viết
                 </button>
               </div>
             </div>

@@ -27,8 +27,9 @@ exports.getDetailNews = (req, res) => {
 };
 
 exports.getNews = (req,res) =>{
+  var date = req.body.data;
   try {
-    BaiViet.find({trangThai: 1},(err,doc) => {
+    BaiViet.find({trangThai: 1,ngayTao: {$gt: date} },(err,doc) => {
         if(err){
             res.status(204).json({
                 message: "oke",
@@ -41,7 +42,7 @@ exports.getNews = (req,res) =>{
                 data: doc
               });
         }
-    })
+    }).limit(6)
   } catch (err) {
     console.log(err);
     res.status(204).json({
