@@ -40,6 +40,7 @@ export default class Navigation extends React.Component{
                 label={e.label}
                 icon={e.icon}
                 path={window.location.pathname}
+                subMenu={e.subMenu}
               />
             )
           })}

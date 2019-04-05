@@ -127,7 +127,7 @@ class BillStudent extends React.Component {
                                             <td>{OpitmizeNumber.OpitmizeNumber(this.state.bills[0].tongTien)}</td>
 
                                             {this.state.bills[0].trangThai === "0" ? <td className='is-dont-done'>Chưa thanh toán</td> : <td className='is-done'>Đã thanh toán</td>}
-                                            <td onClick={e => this.showDetail(this.state.bills[0])} className='detail' ><span>Xem chi tiết</span></td>
+                                            <td onClick={e => this.showDetail(this.state.bills[0])} className='detail' ><i className="far fa-eye"></i></td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -168,7 +168,7 @@ class BillStudent extends React.Component {
                                                                 <td>{item.soNuoc - item.soNuocCu}</td>
                                                                 <td>{OpitmizeNumber.OpitmizeNumber(item.tongTien)}</td>
                                                                 {item.trangThai === "0" ? <td className='is-dont-done'>Chưa thanh toán</td> : <td className='is-done'>Đã thanh toán</td>}
-                                                                <td onClick={e => this.showDetail(this.props.state[0])} className='detail' ><span>Xem chi tiết</span></td>
+                                                                <td onClick={e => this.showDetail(this.props.state[0])} className='detail' ><i className="far fa-eye"></i></td>
                                                             </tr>
                                                         )
                                                     }

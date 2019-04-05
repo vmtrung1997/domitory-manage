@@ -1,6 +1,8 @@
 var jwt = require('jsonwebtoken');
 var rndToken = require('rand-token');
 var moment = require('moment');
+var jwt_decode = require('jwt-decode');
+
 
 const dbToken = require('./refreshRepo');
 const {SECRET, AC_LIFETIME} = require('../config.js')
@@ -52,21 +54,20 @@ exports.updateRefreshToken = (userId, rfToken) => {
     });
 }
 
-exports.checkToken = (req, res, next) => {
+exports.verifyAdmin = (req, res, next) => {
     var token = req.headers['x-access-token'];
-    if (token) {
-        jwt.verify(token, SECRET, (err, payload) => {
-            if (err) {
-                next()
-            } else {
-                req.token_payload = payload;
-                console.log('verify success');
-                res.json({rs: 'ok'})
-            }
-        });
-    } else {
-        res.status(403).json({
-            msg: 'NO_TOKEN'
-        })
+    if(token){
+        const decode = jwt_decode(token)
+        if(decode.user.userEntity.loai === 'SA' || decode.user.userEntity.loai === 'AM')
+            next()
+    }
+}
+
+exports.verifySecurity = (req, res, next) => {
+    var token = req.headers['x-access-token'];
+    if(token){
+        const decode = jwt_decode(token)
+        if(decode.user.userEntity.loai === 'SA' || decode.user.userEntity.loai === 'AM' || decode.user.userEntity.loai === 'BV')
+            next()
     }
 }

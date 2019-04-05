@@ -2,12 +2,11 @@ import React, { Component } from 'react'
 import Slide from '../../../components/slideHomepage/slideHomepage'
 import News from '../../../components/news/newsHomepage'
 import Info from '../../../components/introHomepage/info'
-
-import Header from './../../../components/headerHomepage/headerHomepage'
+const ReallySmoothScroll = require('really-smooth-scroll')
 //import autoscroll from 'autoscroll-react'
 
 
-// ReallySmoothScroll.shim();
+
 class Homepage extends Component {
 
     componentDidMount() {
@@ -36,7 +35,6 @@ class Homepage extends Component {
     render() {
         return (
             <React.Fragment>
-                  <Header ></Header>
                 <Slide></Slide>
                 <News id="new"></News>
                 <Info id="info"></Info>          

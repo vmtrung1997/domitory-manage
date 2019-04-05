@@ -5,7 +5,11 @@ var baiVietSchema = new Schema({
     idTaiKhoan: {type: Schema.Types.String, ref: 'TaiKhoan'},
     tieuDe: String,
     noiDung: String,
-    img: [String]
+    ngayTao: Date,
+    ngayChinhSua: Date,
+    trangThai: {type: Number, enum: [0,1]}, //1: public 0: private,
+    loai: String,
+    ghim: {type: Number, enum: [0,1]}, //1: có 0: không,
 });
 const model = mongoose.model('BaiViet', baiVietSchema, 'BaiViet');
 module.exports = model;

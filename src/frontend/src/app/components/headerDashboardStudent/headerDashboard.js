@@ -6,7 +6,7 @@ class HeaderDashboardStudent extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <Navbar  sticky="top" bg="primary" variant="dark" expand="lg">
+                <Navbar  sticky="top"  variant="dark" expand="lg" style = {{backgroundColor: '#1B5F72'}}>
                     <Navbar.Brand >
                         Kí túc xá Trần Hưng Đạo
                     </Navbar.Brand>
@@ -28,7 +28,7 @@ class HeaderDashboardStudent extends React.Component {
                             </Nav>
                         </Form>
                     </Navbar.Collapse>
-                </Navbar>;
+                </Navbar>
             </React.Fragment>
         )
     }

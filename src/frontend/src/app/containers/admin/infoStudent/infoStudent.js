@@ -15,6 +15,7 @@ import './../../../style.css'
 import refreshToken from './../../../../utils/refresh_token'
 import InfoStudentDetail from './infoStudentDetail';
 import MyPagination from "../../../components/pagination/pagination";
+import Loader from "../../../components/loader/loader";
 
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
@@ -23,18 +24,15 @@ class InfoStudent extends Component{
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
+
       showAddPopup: false,
       showDelPopup: false,
-      showImportPopup: false,
-
       pageActive: 1,
       totalpages: 1,
       limit: 10,
 
-      mssvAdded: '',
-      nameAdded: '',
-      roomAdded: '',
-      schoolAdded: '',
+      infoAdded: {},
 
       pageList: [1,2,3,4,5],
       infoList: [],
@@ -52,8 +50,9 @@ class InfoStudent extends Component{
       flag: false,
 
       schoolOptions: [],
-      roomOptions: [],
-      floorOptions: [{value: 0, label: 1}, {value: 1, label: 2}, {value: 2, label: 3}, {value: 3, label: 4}, {value: 4, label: 5}, {value: 5, label: 6}],
+      schoolOptionsSearch: [],
+      roomOptionsSearch: [],
+      floorOptions: []
     }
   }
 
@@ -99,20 +98,12 @@ class InfoStudent extends Component{
     // )
   }
 
-  componentWillMount(){
+  componentDidMount(){
     this.getData();
     this.getElement('phong');
     this.getElement('truong');
+    this.getElement('floor');
     // this.modifyData();
-  }
-
-  modifyData = () => {
-    const roomOptions = this.state.phong.map(room => ({value: room._id, label: room.tenPhong}));
-    const schoolOptions = this.state.truong.map(truong => ({ value: truong._id, label: truong.tenTruong }));
-    this.setState({
-      roomOptions: roomOptions,
-      schoolOptions: schoolOptions
-    })
   }
 
   getElement = async(name) => {
@@ -126,15 +117,27 @@ class InfoStudent extends Component{
           const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
           roomOptions.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
-            roomOptions: roomOptions
+            roomOptionsSearch: roomOptions
           })
           break;
         case 'truong':
-          const schoolOptions = result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }));
-          schoolOptions.unshift({ value: 0, label: 'Tất cả' });
+          const schoolOptionsSearch = result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }));
+          const schoolOptions = schoolOptionsSearch;
+          schoolOptionsSearch.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
+            schoolOptionsSearch: schoolOptionsSearch,
             schoolOptions: schoolOptions
           })
+          break;
+        case 'floor':
+          let i = 0;
+          const floorList = result.data.map(floor => {
+            return {value: i++, label: floor}
+          });
+          floorList.unshift({ value: 0, label: 'Tất cả' });
+          this.setState({
+            floorOptions: floorList,
+          });
           break;
         default:
           break
@@ -174,7 +177,8 @@ class InfoStudent extends Component{
     ).then(result => {
       this.setState({
         infoList: result.data.docs,
-        totalPages: result.data.totalPages
+        totalPages: result.data.totalPages,
+        loading: false
       })
     }).catch((err) => {
     })
@@ -186,6 +190,9 @@ class InfoStudent extends Component{
   }
 
   handleSearch = () => {
+    this.setState({
+      loading: true,
+    });
     this.getData();
   }
 
@@ -199,14 +206,16 @@ class InfoStudent extends Component{
     this.setState({ floorSelected: selectedOption, pageActive: 1 })
   }
   handleSelectAddRoom = selectedOption => {
-    this.setState({ roomAdded: selectedOption })
+    console.log('==selectedOption 222', selectedOption);
+    this.setState({ infoAdded: {...this.state.infoAdded, roomAdded: selectedOption} })
   }
   handleSelectAddSchool = selectedOption => {
-    this.setState({ schoolAdded: selectedOption })
+    this.setState({ infoAdded: {...this.state.infoAdded, schoolAdded: selectedOption} })
   }
 
-  handleSubmitAddStudent = () => {
-    const { mssvAdded, nameAdded, roomAdded, schoolAdded } = this.state;
+  handleSubmitAddStudent = async() => {
+    const { mssvAdded, nameAdded, infoAdded: { roomAdded, schoolAdded }, numberCardAdded } = this.state;
+    await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
       'x-access-token': secret.access_token
@@ -215,13 +224,15 @@ class InfoStudent extends Component{
       {
         mssv: mssvAdded,
         hoTen: nameAdded,
-        idPhong: roomAdded,
-        idTruong: schoolAdded
+        idPhong: roomAdded.value,
+        idTruong: schoolAdded.value,
+        maThe: numberCardAdded
       }, { headers: headers }
     ).then(result => {
       this.handleClosePopup('add');
+      ToastsStore.success("Thêm thành công!");
     }).catch(err => {
-      this.handleClosePopup('add');
+      ToastsStore.error("Thêm không thành công!" + err.response.data.msg);
     })
   }
 
@@ -233,6 +244,7 @@ class InfoStudent extends Component{
   }
 
   handleCheckDelete = (props) => {
+    console.log('==arrDel', props)
     if(props.chk){
       let arrDel = this.state.listDelete;
       arrDel.push(props.value);
@@ -251,6 +263,7 @@ class InfoStudent extends Component{
         listDelete: arrDel
       })
     }
+    console.log('==arrDel',this.state.listDelete)
   }
 
   handleValueCheck = mssv => {
@@ -272,6 +285,7 @@ class InfoStudent extends Component{
         listDelete: []
       });
       ToastsStore.success("Xóa thành công!");
+
       this.handleClosePopup('del')
       this.getData();
     }).catch(err => {
@@ -282,6 +296,7 @@ class InfoStudent extends Component{
 
   handleReload = () => {
     this.setState({
+      loading: true,
       pageActive: 1,
       hoTen: '',
       mssv: '',
@@ -349,15 +364,17 @@ class InfoStudent extends Component{
       roomSelected,
       schoolSelected,
       floorSelected,
-      schoolAdded,
-      roomOptions,
+      roomOptionsSearch,
       schoolOptions,
+      schoolOptionsSearch,
       floorOptions,
-      roomAdded
-    } = this.state;
+      hoTen,
+      mssv,
+      infoAdded: { roomAdded, schoolAdded} } = this.state;
     let i = pageActive*limit - 10;
     return(
       <div>
+        <Loader loading={this.state.loading}/>
         <Title>
           Thông tin sinh viên
         </Title>
@@ -367,17 +384,16 @@ class InfoStudent extends Component{
             <Row>
               <Col md={1}>
                 MSSV
-
               </Col>
               <Col md={2}>
-                <Input getValue={this.onChange} name={'mssv'} />
+                <Input getValue={this.onChange} name={'mssv'} value={mssv}/>
               </Col>
 
               <Col md={1}>
                 Họ tên
               </Col>
               <Col md={4}>
-                <Input getValue={this.onChange} name={'hoTen'} />
+                <Input getValue={this.onChange} name={'hoTen'} value={hoTen}/>
               </Col>
 
               <Col md={1}>
@@ -389,7 +405,7 @@ class InfoStudent extends Component{
                   value={roomSelected}
                   // selected={this.handleSelectRoom}
                   onChange={this.handleSelectRoom}
-                  options={roomOptions}
+                  options={roomOptionsSearch}
                 />
               </Col>
             </Row>
@@ -410,7 +426,7 @@ class InfoStudent extends Component{
                   value={schoolSelected}
                   onChange={this.handleSelectSchool}
                   // selected={this.handleSelectSchool}
-                  options={schoolOptions}
+                  options={schoolOptionsSearch}
                 />
               </Col>
 
@@ -459,7 +475,6 @@ class InfoStudent extends Component{
               <div className={'is-manipulation'}>
                 <Button
                   variant={'rounded'}
-                  onClick={() => this.handleShowPopup('import')}
                 >
                   <i className="fas fa-file-import"/>
                 </Button>
@@ -515,15 +530,20 @@ class InfoStudent extends Component{
                   <Input getValue={this.onChange} name={'mssvAdded'} />
                 </Col>
                 <Col md={3}>
+                  Mã thẻ:
+                </Col>
+                <Col md={9}>
+                  <Input getValue={this.onChange} name={'numberCardAdded'} />
+                </Col>
+                <Col md={3}>
                   Phòng:
                 </Col>
                 <Col md={9}>
                   <SearchSelect
                     placeholder={''}
                     value={roomAdded}
-                    onChange={()=>this.handleSelectAddRoom()}
-                    selected={this.handleSelectAddRoom}
-                    options={roomOptions} />
+                    onChange={this.handleSelectAddRoom}
+                    options={roomOptionsSearch} />
                 </Col>
                 <Col md={3}>
                   Trường:
@@ -532,8 +552,7 @@ class InfoStudent extends Component{
                   <SearchSelect
                     placeholder={''}
                     value={schoolAdded}
-                    onChange={()=>this.handleSelectAddSchool()}
-                    selected={this.handleSelectAddSchool}
+                    onChange={this.handleSelectAddSchool}
                     options={schoolOptions} />
                 </Col>
               </Row>
