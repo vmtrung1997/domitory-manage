@@ -89,6 +89,6 @@ router.post('/account/update_account',accountController.update_Account);
 router.post('/account/delete_account',accountController.delete_Account);
 
 //Security
-router.post('/security/history',historyController.find_history);
+router.post('/security/history', historyController.find_history);
 
 module.exports = router;

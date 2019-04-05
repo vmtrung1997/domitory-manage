@@ -42,6 +42,7 @@ class Security extends Component {
 	}
 	componentDidMount() {
 		document.addEventListener("keydown", this.onKeyDown);
+
 		getHistoryList().then(result => {
 			if (result.data) {
 				var historyList = result.data.data.map(value => {
@@ -61,7 +62,6 @@ class Security extends Component {
 		}
 		if (event.keyCode >= 48 && event.keyCode <= 57) { //from 0 - 9
 			let input = this.state.cardId + String.fromCharCode(event.keyCode);
-			console.log(input)
 			this.setState({ cardId: input })
 		}
 
@@ -74,10 +74,8 @@ class Security extends Component {
 			var data = e.target.result;
 			var arr = self.fixdata(data);
 			axios.post('/user/test_file_excel', { file: arr }).then(result => {
-				if (result) {
-					console.log(result);
-				}
-			}).catch(err => console.log(err))
+				if (result) {}
+			}).catch(err => {})
 		}
 	}
 	onEnterInput = (e) => {
