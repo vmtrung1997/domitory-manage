@@ -398,7 +398,7 @@ exports.report_expense = (req, res) => {
 
 exports.get_parameter = (req, res) => {
 	ThongSo.find().sort('id').then(result => {
-		console.log(result);
+		//console.log(result);
 		res.status(200).json({
 			rs: 'success',
 			data: result
