@@ -6,9 +6,10 @@ var phongSchema = new Schema({
     lau: Number,
     soNguoi: Number,
     soNguoiToiDa: Number,
-    trangThai: String,
-    isHoDan: Number,
-    moTa: String
+    trangThai: {type: Number, enum: [0, 1]}, //0: Ngung su dung, 1: Dang su dung
+    loaiPhong: {type: Schema.Types.String, ref: 'LoaiPhong'}
+    // isHoDan: Number,
+    // moTa: String
 });
 const model = mongoose.model('Phong', phongSchema, 'Phong');
 module.exports = model;

@@ -108,20 +108,20 @@ class Example extends React.Component {
           </Row>
           <Row>
             <Col>
-            Số điện cũ
-            <Input disabled={true} value={exp.soDienCu}/>
-            </Col>
-            <Col>Số nước cũ
-            <Input disabled={true} value={exp.soNuocCu}/></Col>
-          </Row>
-          <Row>
-            <Col>
             Số điện hiện tai
             <Input name={'soDien'} type={'number'} disabled={this.state.disabled} value={this.state.soDien} getValue={this.handleChange}/>
             </Col>
             <Col>
             Số nước hiện tại
             <Input name={'soNuoc'} type={'number'} disabled={this.state.disabled} value={this.state.soNuoc} getValue={this.handleChange}/></Col>
+          </Row>
+          <Row>
+            <Col>
+            Số điện cũ
+            <Input disabled={true} value={exp.soDienCu}/>
+            </Col>
+            <Col>Số nước cũ
+            <Input disabled={true} value={exp.soNuocCu}/></Col>
           </Row>
           <Row>
             <Col>

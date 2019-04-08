@@ -21,6 +21,7 @@ var profileSchema = new Schema({
     ngayHetHan: Date,
     danToc: String,
     img:  { data: Buffer, contentType: String },
+    CMND: String,
     diemHD: Number
 });
 
