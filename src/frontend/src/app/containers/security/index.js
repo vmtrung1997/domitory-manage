@@ -83,7 +83,7 @@ class Security extends Component {
 	onEnterInput = (e) => {
 		if (e.key !== 'Enter')
 			return;
-		this.onHandleInputCard()
+		else this.onHandleInputCard()
 	}
 	onHandleInputCard = () => {
 		//var startTime = new Date()
@@ -116,7 +116,9 @@ class Security extends Component {
 		return (
 			<React.Fragment>
 				<div className='header-security'>
-					<Link to="/signin-admin" onClick={() => {logout()}}>
+					<Link to="/signin-admin" onClick={() => {logout(); 
+						document.removeEventListener("keydown",this.onKeyDown)
+						}}>
 						<i className="fas fa-sign-out-alt" />
 						<span className={"logout"}>Đăng xuất </span>
 					</Link>
