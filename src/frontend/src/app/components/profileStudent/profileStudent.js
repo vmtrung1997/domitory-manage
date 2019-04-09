@@ -5,7 +5,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./../titleStudent/titleStudent.css";
 import PersonProfile from "./person/personProfile";
 import StayProfile from "./stay/stayProfile";
-import HistoryStay from "./historyStay/historyStay";
 
 
 class ProfileStudent extends React.Component {
