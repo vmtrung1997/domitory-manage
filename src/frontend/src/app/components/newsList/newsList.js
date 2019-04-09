@@ -2,6 +2,7 @@ import React from "react";
 import "./newsList.css";
 import { Button, ButtonGroup, Pagination, Row } from "react-bootstrap";
 import Axios from "axios";
+import Loader from "react-loader-spinner";
 
 class NewsList extends React.Component {
   constructor(props) {
@@ -12,11 +13,12 @@ class NewsList extends React.Component {
       postsNews: [],
       postsActivity: [],
       pinnedPosts: [],
-      filter: 0 //0: all 1:news 2: hoat dong
+      filter: 0, //0: all 1:news 2: hoat dong
+      isLoad: true
     };
   }
 
-  loadNews = (date) => {
+  loadNews = date => {
     var _post = [];
     var _pinnedPosts = [];
     var _postsActivity = [];
@@ -41,10 +43,11 @@ class NewsList extends React.Component {
           postsActivity: _postsActivity,
           postsNews: _postsNews,
           postsAll: _post,
-          pinnedPosts: _pinnedPosts
+          pinnedPosts: _pinnedPosts,
+          isLoad: false
         });
       });
-  }
+  };
 
   componentDidMount() {
     var date = new Date("2015-01-01"); //Ngaỳ mặc định
@@ -58,14 +61,14 @@ class NewsList extends React.Component {
   newsFilter = type => {
     switch (type) {
       case 0: //Show tất cả tin tức
-        this.setState({filter: 0})
+        this.setState({ filter: 0 });
         break;
       case 1: //Show Thoong tin
-      this.setState({filter: 1})
+        this.setState({ filter: 1 });
 
         break;
       case 2: //Show Hoat Dong
-      this.setState({filter: 2})
+        this.setState({ filter: 2 });
 
         break;
       default:
@@ -73,48 +76,52 @@ class NewsList extends React.Component {
     }
   };
 
-  
   loadMore = () => {
+    this.setState({
+      isLoad: true
+    });
+
     var _post = [];
     var _postsActivity = [];
     var _postsNews = [];
     var lastPost = this.state.postsAll[this.state.postsAll.length - 1];
     var date = new Date(lastPost.ngayTao);
 
-    Axios.post("http://localhost:4000/news/get-news",{data: date})
-    .then(rs => {
-      console.log(rs.data);
-      if (rs.status === 200) {
-        rs.data.data.map(item => {
-          _post.push(item);
+    Axios.post("http://localhost:4000/news/get-news", { data: date })
+      .then(rs => {
+        console.log(rs.data);
+        if (rs.status === 200) {
+          rs.data.data.map(item => {
+            _post.push(item);
 
-          if (item.loai === "0") {
-            _postsNews.push(item);
-          } else _postsActivity.push(item);
+            if (item.loai === "0") {
+              _postsNews.push(item);
+            } else _postsActivity.push(item);
+          });
+        }
+      })
+      .then(() => {
+        var posts = this.state.postsAll;
+        var postsActivity = this.state.postsActivity;
+        var postsNews = this.state.postsNews;
+        _post.map(item => {
+          posts.push(item);
         });
-      }
-    })
-    .then(() => {
-      var posts = this.state.postsAll;
-      var postsActivity = this.state.postsActivity;
-      var postsNews = this.state.postsNews
-      _post.map(item =>{
-        posts.push(item)
-      })
-      _postsNews.map(item =>{
-        postsNews.push(item)
-      })
-      _postsActivity.map(item =>{
-        postsActivity.push(item)
-      })
-      this.setState({
-        posts: posts,
-        postsAll: posts,
-        postsActivity: postsActivity,
-        postsNews: postsNews  
+        _postsNews.map(item => {
+          postsNews.push(item);
+        });
+        _postsActivity.map(item => {
+          postsActivity.push(item);
+        });
+        this.setState({
+          posts: posts,
+          postsAll: posts,
+          postsActivity: postsActivity,
+          postsNews: postsNews,
+          isLoad: false
+        });
       });
-    });
-  }
+  };
   render() {
     var posts = [];
     switch (this.state.filter) {
@@ -130,7 +137,7 @@ class NewsList extends React.Component {
       default:
         break;
     }
-    console.log(posts)
+    console.log(posts);
     return (
       <React.Fragment>
         {/* section */}
@@ -289,6 +296,14 @@ class NewsList extends React.Component {
             {/* /row */}
             <div className="col-md-12">
               <div className="section-row">
+                {this.state.isLoad && (
+                  <Loader
+                    type="ThreeDots"
+                    color="#007bff"
+                    height={60}
+                    width={60}
+                  />
+                )}
                 <button
                   onClick={this.loadMore}
                   className="primary-button center-block"
