@@ -1,6 +1,7 @@
 .menu-student{
    
-    min-height: 85vh;
+    height: fit-content;
+    min-height: 80vh;
     background-color:#293846 ;
     display: flex;
     justify-content: flex-start;
@@ -49,7 +50,8 @@
 }
 
 .tab-panel-content{
-    height: 85vh;
+    height: fit-content;
+    min-height: 80vh;
     background-color: #ffffff;
     -webkit-box-shadow: 4px 6px 5px 0px rgba(0,0,0,0.51);
     -moz-box-shadow: 4px 6px 5px 0px rgba(0,0,0,0.51);

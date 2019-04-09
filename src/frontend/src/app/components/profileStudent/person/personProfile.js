@@ -28,8 +28,10 @@ class PersonProfile extends React.Component {
       isDisable: true,
       isLoad: true,
 
-      MSSV: "",
+      MSSV: undefined,
+      CMND: undefined,
       danToc: undefined,
+      tonGiao: undefined,
       diaChi: undefined,
       email: undefined,
       gioiTinh: undefined,
@@ -64,7 +66,9 @@ class PersonProfile extends React.Component {
   updateProfile = async () => {
     var data = {
       MSSV: this.state.MSSV,
+      CMND: this.state.CMND,
       danToc: this.state.danToc,
+      tonGiao: this.state.tonGiao,
       diaChi: this.state.diaChi,
       email: this.state.email,
       gioiTinh: this.state.gioiTinh,
@@ -137,7 +141,9 @@ class PersonProfile extends React.Component {
             //Lưu trong state
             this.setState({
               MSSV: res.data.data.MSSV,
+              CMND: res.data.data.CMND,
               danToc: res.data.data.danToc,
+              tonGiao: res.data.data.tonGiao,
               diaChi: res.data.data.diaChi,
               email: res.data.data.email,
               gioiTinh: res.data.data.gioiTinh,
@@ -243,7 +249,7 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="gioiTinh"
             getValue={this.getValue}
-            disabled={this.state.readOnly}
+            disabled
             value={this.state.gioiTinh}
             options={gender}
             selected={this.genderSelected}
@@ -254,7 +260,7 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="nganhHoc"
             getValue={this.getValue}
-            disabled={this.state.readOnly}
+            disabled
             value={this.state.nganhHoc.value}
             options={this.state.nganhOptions}
             selected={this.nganhSelected}
@@ -265,7 +271,7 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="truong"
             getValue={this.getValue}
-            disabled={this.state.readOnly}
+            disabled
             value={this.state.truong.value}
             options={this.state.truongOptions}
             selected={this.truongSelected}
@@ -276,7 +282,7 @@ class PersonProfile extends React.Component {
           <MyInput
             getValue={this.getValue}
             name="truong"
-            disabled={this.state.readOnly}
+            disabled
             value={this.state.truong.label}
             borderRadius="3px"
           />
@@ -285,7 +291,7 @@ class PersonProfile extends React.Component {
           <MyInput
             getValue={this.getValue}
             name="nganhHoc"
-            disabled={this.state.readOnly}
+            disabled
             value={this.state.nganhHoc.label}
             borderRadius="3px"
           />
@@ -294,7 +300,7 @@ class PersonProfile extends React.Component {
           <MyInput
             getValue={this.getValue}
             name="gioiTinh"
-            disabled={this.state.readOnly}
+            disabled
             value={this.state.gioiTinh === 1 ? "Nam" : "Nữ"}
             borderRadius="3px"
           />
@@ -319,6 +325,33 @@ class PersonProfile extends React.Component {
                 />
                 <Col>
                   <div className="profile-panel-content">
+                  <div>
+                      <Row>
+                        <Col>
+                          <span className="label-font">Mã số sinh viên</span>
+
+                          <MyInput
+                            getValue={this.getValue}
+                            name="MSSV"
+                            disabled
+                            value={this.state.MSSV}
+                            borderRadius="3px"
+                          />
+                        </Col>
+
+                        <Col>
+                          <span className="label-font">Chứng minh nhân dân</span>
+                          <MyInput
+                            name="CMND"
+                            getValue={this.getValue}
+                            disabled
+                            value={this.state.CMND}
+                            className="input-picker"
+                            borderRadius="3px"
+                          />
+                        </Col>
+                      </Row>
+                    </div>
                     <div>
                       <Row>
                         <Col>
@@ -327,7 +360,7 @@ class PersonProfile extends React.Component {
                           <MyInput
                             getValue={this.getValue}
                             name="hoTen"
-                            disabled={this.state.readOnly}
+                            disabled
                             value={this.state.hoTen}
                             borderRadius="3px"
                           />
@@ -355,30 +388,6 @@ class PersonProfile extends React.Component {
                         </Col>
 
                         <Col>
-                          <span className="label-font"> Dân tộc</span>
-                          <MyInput
-                            getValue={this.getValue}
-                            name="danToc"
-                            disabled={this.state.readOnly}
-                            value={this.state.danToc}
-                            borderRadius="3px"
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-
-                    <div>
-                      <Row>
-                        <Col>
-                          <span className="label-font">Địa chỉ</span>
-                          <MyInput
-                            getValue={this.getValue}
-                            name="diaChi"
-                            disabled={this.state.readOnly}
-                            value={this.state.diaChi}
-                          />
-                        </Col>
-                        <Col>
                           <span className="label-font">Email</span>
                           <MyInput
                             required
@@ -389,6 +398,34 @@ class PersonProfile extends React.Component {
                             name="email"
                             disabled={this.state.readOnly}
                             value={this.state.email}
+                            borderRadius="3px"
+                          />
+                        </Col>
+                        
+                      </Row>
+                    </div>
+
+                    <div>
+                      <Row>
+                   
+                        <Col>
+                          <span className="label-font"> Dân tộc</span>
+                          <MyInput
+                            getValue={this.getValue}
+                            name="danToc"
+                            disabled
+                            value={this.state.danToc}
+                            borderRadius="3px"
+                          />
+                        </Col>
+
+                        <Col>
+                          <span className="label-font">Tôn giáo</span>
+                          <MyInput
+                            getValue={this.getValue}
+                            name="tonGiao"
+                            disabled
+                            value={this.state.tonGiao}
                             borderRadius="3px"
                           />
                         </Col>
@@ -432,8 +469,20 @@ class PersonProfile extends React.Component {
                           {majorInput}
                         </Col>
                       </Row>
+                      <Row sm={6}>
+                        <Col  sm={6}>
+                          <span className="label-font">Địa chỉ thường trú</span>
+                          <MyInput
+                            getValue={this.getValue}
+                            name="diaChi"
+                            disabled={this.state.readOnly}
+                            value={this.state.diaChi}
+                          />
+                        </Col>
+                        <Col></Col>
+                      </Row>
                     </div>
-                    <div   style = {{display: 'flex',justifyContent: 'flex-end',marginTop: '5px'}} >
+                    <div   style = {{display: 'flex',justifyContent: 'flex-end',marginTop: '5px', marginBottom: '10px'}} >
                       <Row >
                         <div className="profile-panel-button">
                           <Button
