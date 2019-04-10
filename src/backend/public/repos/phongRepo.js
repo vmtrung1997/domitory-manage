@@ -6,7 +6,7 @@ exports.get_room = () => {
     Phong.
     find().
     sort({'tenPhong': 'asc'}).
-    select(['_id', 'tenPhong']).
+    select(['_id', 'tenPhong', 'loaiPhong']).
     then(result => {
       if (result)
       resolve(result);

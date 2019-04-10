@@ -145,3 +145,39 @@ export const submit_expense = async (exp) => {
     .catch(error => reject(error));
   })
 }
+
+export const get_room_type = async (exp) => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.get('/manager/expense/get_room_type', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const get_detail_room_type = async (exp) => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/detail_room', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const update_detail_room_type = async (exp) => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/update_room_type', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}

@@ -30,9 +30,15 @@ router.post('/expense/config', expenseController.apply_config)
 
 router.post('/expense/find',expenseController.find_expense);
 
-router.post('/expense/check', expenseController.check_expense)
+router.post('/expense/check', expenseController.check_expense);
 
-router.post('/expense/confirm_expense', expenseController.confirm)
+router.post('/expense/confirm_expense', expenseController.confirm);
+
+router.get('/expense/get_room_type',expenseController.get_type_room);
+
+router.post('/expense/detail_room', expenseController.get_detail_type_room);
+
+router.post('/expense/update_room_type', expenseController.update_detail_type_room);
 
 // Activity
 router.post('/activity/get_activity', activityController.get_list_activity);

@@ -1,10 +1,12 @@
 const ObjectId = require('mongoose').Types.ObjectId;
-const ChiPhiPhong = require('../models/ChiPhiPhong')
-const ChiPhiHienTai = require('../models/ChiSoHienTai')
-const phongRepo = require('../repos/phongRepo')
-const writeXlsx = require('../repos/xlsxRepo')
-const ThongSo = require('../models/ThongSo')
-
+const ChiPhiPhong = require('../models/ChiPhiPhong');
+const ChiPhiHienTai = require('../models/ChiSoHienTai');
+const Phong = require('../models/Phong');
+const phongRepo = require('../repos/phongRepo');
+const writeXlsx = require('../repos/xlsxRepo');
+const ThongSo = require('../models/ThongSo');
+const LoaiPhong = require('../models/LoaiPhong');
+const ThongSoLoaiPhong = require('../models/ThongSoLoaiPhong');
 exports.quan_ly_dien_nuoc = (req, res, next) => {
 	res.json({
 		msg: 'from quan ly dien nuoc'
@@ -59,7 +61,7 @@ function update_data(item, cb) {
 		})
 	}, 100)
 }
-function CalculateTien(arr, number) {
+function TinhTienDien(arr, number) {
 	let total = 0;
 	let temp = number
 	for (let i = 0; i < arr.length; i++) {
@@ -70,11 +72,29 @@ function CalculateTien(arr, number) {
 				else
 					total = total + (arr[j].giaTriCuoi - arr[j].giaTriDau) * arr[j].giaTriThuc;
 			}
-			total = total + (number - arr[i].giaTriDau +1) * arr[i].giaTriThuc;
+			total = total + (number - arr[i].giaTriDau + 1) * arr[i].giaTriThuc;
 			break;
 		}
 	}
 	return total;
+}
+function TinhTienNuoc(arr, number, soNguoi) {
+	let total = 0;
+	let temp = number;
+	for (let i = 0; i < arr.length; i++) {
+		if (i === arr.length - 1) {
+			return total + temp * arr[i].giaTriThuc
+		}
+		var diff = (arr[i].giaTriCuoi - arr[i].giaTriDau) * soNguoi
+		console.log(diff);
+		if (temp > diff) {
+			total = total + diff * arr[i].giaTriThuc;
+			temp = temp - diff
+			console.log(temp);
+		} else {
+			return total + temp * arr[i].giaTriThuc
+		}
+	}
 }
 exports.find_expense = (req, res) => {
 	var exp = req.body;
@@ -95,33 +115,106 @@ exports.find_expense = (req, res) => {
 exports.check_expense = (req, res) => {
 	var exp = req.body;
 	ChiPhiHienTai
-	.findOne({idPhong: exp.phong.value, $or: [{soDien: {$gt: exp.soDien}}, {soNuoc: {$gt:exp.soNuoc}}]})
-	.then(value => {
-		if (value) {
-			res.json({
-				rs: 'fail'
-			})
-		} else {
-			res.json({
-				rs: 'accept'
-			})
+		.findOne({ idPhong: exp.phong.value, $or: [{ soDien: { $gt: exp.soDien } }, { soNuoc: { $gt: exp.soNuoc } }] })
+		.then(value => {
+			if (value) {
+				res.json({
+					rs: 'fail'
+				})
+			} else {
+				res.json({
+					rs: 'accept'
+				})
+			}
+		})
+}
+function Calculation(phong, soDienCu, soNuocCu) {
+	return new Promise((resolve, reject) => {
+		var row = {
+			idPhong: phong.phong.value,
+			thang: phong.thang,
+			nam: phong.nam,
+			soDien: phong.soDien,
+			soNuoc: phong.soNuoc,
+			soDienCu: soDienCu,
+			soNuocCu: soNuocCu,
+			tienDien: 0,
+			tienNuoc: 0,
+			tongTien: 0,
+			tienRac: 0,
+			tongTienChu: '',
+			trangThai: 0,
 		}
+		LoaiPhong.findOne({ _id: phong.phong.loaiPhong }).then(loaiPhong => {
+			if (loaiPhong) {
+				row.tienRac = loaiPhong.tienRac;
+				if (loaiPhong.dien || loaiPhong.nuoc) {
+					ThongSoLoaiPhong.find({ idLoaiPhong: loaiPhong._id }).sort({ id: 1 }).then(async arrThongSo => {
+						if (arrThongSo.length > 0) {
+							var arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0).sort((a, b) => { return a.id > b.id }) || [];
+							var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id }) || [];
+							if (arrDien.length > 0) {
+								row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu));
+							}
+							if (arrNuoc.length > 0) {
+								await Phong.findOne({ _id: phong.phong.value }).select(['_id', 'soNguoi']).then(p => {
+									row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, p.soNguoi));
+								})
+							}
+							row.tongTien = Math.round(row.tienDien + row.tienNuoc + row.tienRac);
+							resolve(row);
+						}
+					})
+				} else {
+					resolve(row);
+				}
+			} else reject({ status: false })
+		})
 	})
 }
 exports.add_data = (req, res) => {
 	var table = req.body
 	var tableAdd = [];
+	var arrId = table.map(val => { return val.phong.value })
+	ChiPhiHienTai.find({ idPhong: { $in: arrId } }).then(vals => {
+		if (vals.length > 0) {
+			table.forEach(row => {
+				var obj = vals.find((val) => val.idPhong === row.phong.value)
+				if (obj) {
+					tableAdd.push(Calculation(row, obj.soDien, obj.soNuoc))
+				}
+			});
+			Promise.all(tableAdd).then(tableNewAdd => {
+				if (tableNewAdd.length > 0) {
+					ChiPhiPhong.insertMany(tableNewAdd).then((result) => {
+						if (result.length > 0) {
+							res.json({
+								rs: 'success',
+								data: result,
+							})
+						}
+					}).catch(err => { res.json({ rs: 'fail', msg: err }) })
+				}
+			}).catch(err => {
+				res.json({ rs: 'fail' })
+			})
+		}
+	})
+}
+add_data_v1 = (req, res) => {
+	var table = req.body
+	var tableAdd = [];
 	ThongSo.find().sort({ id: 1 }).then(thongSoArr => {
 		if (thongSoArr.length > 0) {
-			var arrDien = thongSoArr.filter(value => value.loaiChiPhi === 'dien').sort((a,b)=> {return a.id - b.id})
-			var arrNuoc = thongSoArr.filter(value => value.loaiChiPhi === 'nuoc').sort((a,b)=>{return a.id - b.id})
+			var arrDien = thongSoArr.filter(value => value.loaiChiPhi === 'dien').sort((a, b) => { return a.id - b.id })
+			var arrNuoc = thongSoArr.filter(value => value.loaiChiPhi === 'nuoc').sort((a, b) => { return a.id - b.id })
 			ChiPhiHienTai.find().then(vals => {
 				if (vals.length > 0) {
 					table.forEach(row => {
 						var obj = vals.find((val) => val.idPhong === row.phong.value)
 						if (obj) {
-							var tienDien = Math.round(CalculateTien(arrDien, row.soDien - obj.soDien) *1000)/1000
-							var tienNuoc = CalculateTien(arrNuoc, row.soNuoc - obj.soNuoc)
+							var tienDien = Math.round(TinhTienDien(arrDien, row.soDien - obj.soDien) * 1000) / 1000
+							var tienNuoc = TinhTienDien(arrNuoc, row.soNuoc - obj.soNuoc)
 							var tongTien = Math.round((tienDien + tienNuoc) * 1000) / 1000
 							tableAdd.push({
 								idPhong: row.phong.value,
@@ -161,24 +254,24 @@ exports.add_data = (req, res) => {
 };
 exports.confirm = (req, res) => {
 	var id = new ObjectId(req.body.id);
-	ChiPhiPhong.findOneAndUpdate({_id: id},{
+	ChiPhiPhong.findOneAndUpdate({ _id: id }, {
 		$set: {
 			'trangThai': 1
 		}
-	},(err, doc) => {
-		if (err){
+	}, (err, doc) => {
+		if (err) {
 			res.json({
 				rs: 'fail',
 				msg: err
 			})
 		} else {
-			ChiPhiHienTai.findOneAndUpdate({idPhong: doc.idPhong},{
-				$set:{
+			ChiPhiHienTai.findOneAndUpdate({ idPhong: doc.idPhong }, {
+				$set: {
 					soDien: doc.soDien,
 					soNuoc: doc.soNuoc
 				}
 			}, (err) => {
-				if (err){
+				if (err) {
 					res.json({
 						rs: 'fail',
 						msg: err
@@ -209,33 +302,45 @@ exports.remove_expense = (req, res) => {
 		}
 	})
 }
-exports.update_expense = (req, res) => {
-	ThongSo.find().sort({ id: 1 }).then(thongSoArr => {
-		if (thongSoArr.length > 0) {
-			var exp = req.body;
-			var id = new ObjectId(exp._id);
-			var arrDien = thongSoArr.filter(value => value.loaiChiPhi === 'dien').sort((a,b)=> {return a.id - b.id})
-			var arrNuoc = thongSoArr.filter(value => value.loaiChiPhi === 'nuoc').sort((a,b)=>{return a.id - b.id})
-			var tienDien = Math.round(CalculateTien(arrDien, exp.soDien - exp.soDienCu) *1000)/1000
-			var tienNuoc = CalculateTien(arrNuoc, exp.soNuoc - exp.soNuocCu)
-			var tongTien = Math.round((tienDien + tienNuoc) * 1000) / 1000
-			exp.tienDien = tienDien
-			exp.tienNuoc = tienNuoc
-			exp.tongTien = tongTien
-
-			ChiPhiPhong.updateOne({ _id: id }, exp, (err) => {
-				if (err) {
-					res.status(400).json({
-						rs: 'fail',
-						msg: err
-					})
-				} else {
-					res.status(201).json({
-						rs: 'success'
+exports.update_expense = async (req, res) => {
+	var exp = req.body;
+	var id = new ObjectId(exp._id);
+	Phong.findOne({ _id: exp.idPhong }).then(value => {
+		if (value) {
+			LoaiPhong.findOne({ _id: value.loaiPhong }).then(async loaiPhong => {
+				if (loaiPhong) {
+					exp.tienRac = loaiPhong.tienRac;
+					if (loaiPhong.dien || loaiPhong.nuoc) {
+						await ThongSoLoaiPhong.find({ idLoaiPhong: loaiPhong._id }).then(async arrThongSo => {
+							if (loaiPhong.dien) {
+								var arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0).sort((a, b) => { return a.id > b.id })
+								exp.tienDien = Math.round(TinhTienDien(arrDien, exp.soDien - exp.soDienCu));
+							}
+							if (loaiPhong.nuoc) {
+								var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id })
+								await Phong.findOne({ _id: exp.idPhong }).select(['_id', 'soNguoi']).then(p => {
+									exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, p.soNguoi));
+								})
+							}
+						})
+					}
+					exp.tongTien = exp.tienRac + exp.tienDien + exp.tienNuoc
+					ChiPhiPhong.updateOne({ _id: id }, exp, (err) => {
+						if (err) {
+							res.status(400).json({
+								rs: 'fail',
+								msg: err
+							})
+						} else {
+							res.status(201).json({
+								rs: 'success'
+							})
+						}
 					})
 				}
 			})
-		}})
+		}
+	})
 }
 exports.reports_expense = (req, res) => {
 	var xlsx = writeXlsx.testXlsx();
@@ -442,3 +547,125 @@ exports.refresh_data = (req, res) => {
 		})
 	}).catch(err => { console.log(err) })
 };
+
+exports.get_type_room = (req, res) => {
+	LoaiPhong.find().then(value => {
+		if (value.length > 0) {
+			res.json({
+				data: value
+			})
+		} else {
+			res.json({
+				msg: 'No data'
+			})
+		}
+	}).catch(err => res.json({ msg: err }))
+}
+
+exports.get_detail_type_room = (req, res) => {
+	ThongSoLoaiPhong.find({ idLoaiPhong: req.body.idLoaiPhong })
+		.sort({ id: 1 })
+		.then(arrThongSo => {
+			if (arrThongSo.length > 0) {
+				res.json({
+					rs: 'success',
+					data: arrThongSo
+				})
+			} else {
+				res.json({
+					rs: 'fail',
+					msg: 'No data'
+				})
+			}
+		}).catch(err => { res.json({ err: err }) })
+}
+
+exports.update_detail_type_room = (req, res) => {
+	var data = req.body;
+	console.log(data);
+	LoaiPhong.updateOne({ _id: data.idLoaiPhong },
+		{ $set: { 'tienRac': data.tienRac } },
+		(err, result) => {
+			if (err) {
+				res.json({
+					rs: 'fail'
+				})
+			} else {
+				ThongSoLoaiPhong.find({ idLoaiPhong: data.idLoaiPhong }).then(value => {
+					if (value.length > 0) {
+						ThongSoLoaiPhong.deleteMany({ idLoaiPhong: data.idLoaiPhong }, (err) => {
+							if (err) {
+								res.json({
+									rs: 'fail'
+								})
+							} else {
+								var table = data.table.map(value => {
+									return {
+										id: parseInt(value.id),
+										idLoaiPhong: value.idLoaiPhong,
+										loaiChiPhi: parseInt(value.loaiChiPhi),
+										giaTriCuoi: parseInt(value.giaTriCuoi),
+										giaTriDau: parseInt(value.giaTriDau),
+										giaTriThuc: parseFloat(value.giaTriThuc),
+										donVi: value.donVi,
+										moTa: value.moTa
+									}
+								})
+								if (table.length > 0) {
+									ThongSoLoaiPhong.insertMany(table).then(result => {
+										if (result.length > 0) {
+											res.json({
+												rs: 'success'
+											})
+										}
+									}).catch(errorInsert => {
+										res.json({
+											rs: 'fail',
+											msg: errorInsert
+										})
+									})
+								} else {
+									res.json({
+										rs: 'success'
+									})
+								}
+							}
+						})
+					} else {
+						var table = data.table.map(value => {
+							return {
+								id: parseInt(value.id),
+								idLoaiPhong: value.idLoaiPhong,
+								loaiChiPhi: parseInt(value.loaiChiPhi),
+								giaTriCuoi: parseInt(value.giaTriCuoi),
+								giaTriDau: parseInt(value.giaTriDau),
+								giaTriThuc: parseFloat(value.giaTriThuc),
+								donVi: value.donVi,
+								moTa: value.moTa
+							}
+						})
+						if (table.length > 0) {
+							ThongSoLoaiPhong.insertMany(table).then(result => {
+								if (result.length > 0) {
+									res.json({
+										rs: 'success'
+									})
+								}
+							}).catch(errorInsert => {
+								res.json({
+									rs: 'fail',
+									msg: errorInsert
+								})
+							})
+						} else {
+							res.json({
+								rs: 'success'
+							})
+						}
+					}
+				})
+
+			}
+		})
+
+}
