@@ -1,46 +1,20 @@
-import React, { Component } from 'react'
-import Slide from '../../../components/slideHomepage/slideHomepage'
-import News from '../../../components/news/newsHomepage'
-import Info from '../../../components/introHomepage/info'
-const ReallySmoothScroll = require('really-smooth-scroll')
-//import autoscroll from 'autoscroll-react'
-
-
+import React, { Component } from "react";
+import Slide from "../../../components/slideHomepage/slideHomepage";
+import News from "../../../components/news/newsHomepage";
+import Info from "../../../components/introHomepage/info";
 
 class Homepage extends Component {
+  componentDidMount() {}
 
-    componentDidMount() {
-        console.log('a');
-       // autoscroll(Info, { isScrolledDownThreshold: 150 /*default*/ })
-    }
-
-    getScroll = (evt) => {
-        switch (evt) {
-            case '1':               
-                window.scrollTo(0,0);
-                break;
-            case '2':
-               
-                window.scrollTo(0,570);
-                break;
-            case '3':
-          
-            window.scrollTo(0,1080);
-                break;
-            default:
-                break;
-        }
-    }
-
-    render() {
-        return (
-            <React.Fragment>
-                <Slide></Slide>
-                <News id="new"></News>
-                <Info id="info"></Info>          
-            </React.Fragment>
-        )
-    }
+  render() {
+    return (
+      <React.Fragment>
+        <Slide />
+        <News id="new" />
+        <Info id="info" />
+      </React.Fragment>
+    );
+  }
 }
 
-export default Homepage
+export default Homepage;

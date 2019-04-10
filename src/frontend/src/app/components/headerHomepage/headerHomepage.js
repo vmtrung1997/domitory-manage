@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import {
   Button,
-  InputGroup,
   FormControl,
   Dropdown,
-  SplitButton,
-  ButtonToolbar,
-  Nav, Form, Navbar, NavDropdown
+  Nav, Form, Navbar
 } from "react-bootstrap";
 import Login from "./../../containers/student/modalLogin/login";
 import { connect } from "react-redux";
@@ -136,7 +133,7 @@ class HeaderHomepage extends Component {
         <Navbar sticky="top" variant="dark" expand="sm" className="HeaderHomepage" style={{ backgroundColor: '#1B5F72' }}>
           <Navbar.Brand >
             <div className="nav-img">
-              <img
+              <img 
                 alt="img_header"
                 src="/images/Logo-KHTN.jpg"
               />

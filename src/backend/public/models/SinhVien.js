@@ -5,6 +5,8 @@ var Schema = mongoose.Schema;
 var sinhVienSchema = new Schema({
     idTaiKhoan: {type: Schema.Types.String, ref: 'TaiKhoan'},
     MSSV: String,
+    CMND: String,
+    tonGiao: String,
     maThe: String,
     nganh: {type: Schema.Types.String, ref: 'Nganh'},
     truong: String,

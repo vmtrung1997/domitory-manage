@@ -33,7 +33,7 @@ class EditorConvertToHTML extends Component {
       check: false,
       pin:false,
       loai: 0,
-      typeOptions: [{ value: 0, label: "Tin Tức" }, { value: 1, label: "Hoạt Động" }]
+      typeOptions: [{ value: 0, label: "Thong Tin" }, { value: 1, label: "Hoạt Động" }]
     };
   }
 
@@ -115,7 +115,7 @@ class EditorConvertToHTML extends Component {
       id: this.state.idNews,
       trangThai: this.state.check === true ? "1" : "0",
       ghim: this.state.pin === true? "1" : "0",
-      loai: this.state.loai
+      loai: this.state.loai === 1?'Hoat Dong' : 'Thong Tin'
     };
 
     axios.defaults.headers["x-access-token"] = secret.access_token;
@@ -149,7 +149,7 @@ class EditorConvertToHTML extends Component {
           check: content.trangThai === 1 ? true : false,
           pin: content.ghim === 1? true: false,
           //TODO: checkbox chưa thay đổi theo state
-          loai: 1 //content.loai === 'Hoat Dong'? 1:0
+          loai: content.loai === 'Hoat Dong'? 1:0
         });
         console.log("did",content, this.state);
       } else {
