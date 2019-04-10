@@ -11,6 +11,7 @@ import Loader from './../../../components/loader/loader'
 import refreshToken from './../../../../utils/refresh_token'
 import MyPagination from './../../../components/pagination/pagination'
 import Select from './../../../components/selectOption/select'
+import AccountAdd from './accountAdd'
 
 class Account extends Component{
 	constructor(props){
@@ -102,7 +103,9 @@ class Account extends Component{
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
+				<AccountAdd show={this.state.showAdd} handleClose={() => this.handleClose('showAdd')} handleSave={this.handleSave}/>
 				<Title> Hoạt động sinh viên </Title>
+
         		<div className={'content-body full'}>
 					<div>
 						<Row className={'m-b-10'}>
