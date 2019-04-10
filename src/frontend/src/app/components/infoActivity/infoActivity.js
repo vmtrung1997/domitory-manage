@@ -59,7 +59,6 @@ class InfoActivity extends Component{
 			dataEdit: data
 		})
 	}
-
 	handleRollCall = (data) => {
 		this.setState({
 			showRollCall: true,
@@ -114,7 +113,13 @@ class InfoActivity extends Component{
 		return(
 			<React.Fragment>
 		        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-				<Confirm show={this.state.showDelete} handleClose={() => this.handleClose('showDelete')} handleSave={() => this.handleSave()}/>
+				<Confirm 
+					show={this.state.showDelete}
+					title={'Xóa hoạt động'}
+					content={'Bạn có muốn xóa hoạt động này !'}
+					handleClose={() => this.handleClose('showDelete')}
+					handleSave={() => this.handleSave()}
+				/>
 				{this.state.showEdit ?
 					<ActivityEdit 
 						show={this.state.showEdit}

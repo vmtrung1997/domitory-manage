@@ -63,7 +63,15 @@ class SignInAdmin extends Component{
 		})
 	}
 	componentWillMount = () => {
-		localStorage.removeItem('secret');
+		const secret = JSON.parse(localStorage.getItem('secret'))
+
+		if(secret){
+	        axios.get(`http://localhost:4000/api/logout`, {
+	            headers: {
+	                'x-refresh-token': secret.refresh_token
+	            }
+	        }).then( res => localStorage.removeItem('secret') )
+    	}
 	}
 	render(){
 		return(

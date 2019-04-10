@@ -128,6 +128,7 @@ class ActivityModal extends Component{
             				<CheckBox 
                       name='isRequire'
                       style={{marginTop: '-10px', display: 'contents'}} 
+                      check={this.state.isRequire}
                       isCheck={ (obj) => this.getValue(obj.value, obj.chk)}
                     />
             			</div>

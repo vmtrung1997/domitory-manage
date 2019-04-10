@@ -1,19 +1,19 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
 import { withRouter, Link } from 'react-router-dom'
-import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
+import { ToastsContainer, ToastsContainerPosition, ToastsStore } from "react-toasts";
 import axios from './../../../config'
 
 import Confirm from './../../../components/confirm/confirm'
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
+import AccountEdit from './accountEdit'
 
 class AccountTable extends Component{
 	constructor(props){
 		super(props)
 		this.state = {
 			dataEdit: {},
-			showRollCall: false,
 			showDelete: false,
 			showEdit: false,
 			id: ''
@@ -40,16 +40,17 @@ class AccountTable extends Component{
     	var secret = JSON.parse(localStorage.getItem('secret'))
 		axios({
 	      	method: 'post',
-	      	url: `/manager/activity/delete?id=${this.state.id}`,
+	      	url: `/manager/account/delete_account?id=${this.state.id}`,
 	      	headers: { 'x-access-token': secret.access_token }
 	    }).then(res => {
-	    	ToastsStore.success("Xóa hoạt động thành công!");
+	    	ToastsStore.success("Xóa tài khoản thành công!");
 	    }).catch(err => {
-	    	ToastsStore.error("Xóa hoạt động không thành công!");
+	    	ToastsStore.error("Xóa tài khoản không thành công!");
 	    })
 	    this.setState({ showDelete: false })
 		this.props.refresh()
 	}
+
 	handleEdit = (data) => {
 		this.setState({
 			showEdit: true,
@@ -57,12 +58,6 @@ class AccountTable extends Component{
 		})
 	}
 
-	handleRollCall = (data) => {
-		this.setState({
-			showRollCall: true,
-			dataEdit: data
-		})
-	}
 	render(){
 		const table = this.props.data.map((row, index) => {
 			var rule = ''
@@ -110,7 +105,22 @@ class AccountTable extends Component{
 		return(
 			<React.Fragment>
 		        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-				<Confirm show={this.state.showDelete} handleClose={() => this.handleClose('showDelete')} handleSave={() => this.handleSave()}/>
+				<Confirm 
+					show={this.state.showDelete}
+					title={'Xóa tài khoản'}
+					content={'Bạn có muốn xóa tài khoản này !'}
+					handleClose={() => this.handleClose('showDelete')}
+					handleSave={() => this.handleSave()}
+				/>
+				{this.state.showEdit ?
+					<AccountEdit 
+						show={this.state.showEdit}
+						data={this.state.dataEdit}
+						handleClose={() => this.handleClose('showEdit')} 
+						handleSave={() => this.handleSaveEdit('showEdit')}
+					/>
+					: <React.Fragment/>
+				}
 				<Table bordered hover responsive size="sm" className="table-activity">
 					<thead style={{background: '#cfcfcf', textAlign: 'center'}}>
 						<tr>
