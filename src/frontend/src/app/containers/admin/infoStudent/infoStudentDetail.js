@@ -195,7 +195,7 @@ class InfoStudentDetail extends Component{
                     Dân tộc:
                   </Col>
                   <Col md={4}>
-                    <Input value={danToc} getValue={this.onChange} name={'danToc'} />
+                    <Input value={danToc}  getValue={this.onChange} name={'danToc'} />
                   </Col>
                   <Col md={2}>
                     Sđt người thân:

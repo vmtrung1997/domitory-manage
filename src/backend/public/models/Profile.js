@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var profileSchema = new Schema({
     idTaiKhoan: {type: Schema.Types.String, ref: 'TaiKhoan'},
+    CMND: Number,
     hoTen: String,
     ngaySinh: Date,
     gioiTinh: {type: Number, enum: [0,1]}, //1 nam 0 nu

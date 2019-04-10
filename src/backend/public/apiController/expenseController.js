@@ -47,7 +47,6 @@ exports.select_expense_table = (req, res) => {
 		})
 	}).catch(err => { console.log(err) })
 };
-
 function update_data(item, cb) {
 	var id = new ObjectId(item._id);
 	var idPhong = new ObjectId(item.idPhong);

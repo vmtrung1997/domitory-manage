@@ -121,7 +121,18 @@
     border: none !important;
   }
 
-  .nav-img img{
+.homepage-carousel-img{
+    display: inline;
+}
+
+.homepage-carousel-img img{
+    height: 80vh;
+}
+
+.homepage-carousel-caption{
+    background-color: #171717a3
+}
+.nav-img img{
     width: 9vh; height: 9vh; margin-right: 10px;   border-radius: 50%
   }
   .nav-img {

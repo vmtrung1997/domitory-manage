@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import md5 from 'md5';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
+import jwt_decode from 'jwt-decode';
 
 import Loader from './../../../components/loader/loader'
 import Input from '../../../components/input/input'
@@ -29,11 +30,28 @@ class SignInAdmin extends Component{
 		}
 	}
 	login = () => {
-		this.setState({ loading: true})
+		this.setState({ loading: true })
 		axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
 		.then(res => {
-			localStorage.setItem('secret', JSON.stringify(res.data));
-			let { from } = this.props.location.state || { from: { pathname: "/admin/student" } }
+			let from
+			if(res.data.access_token){
+				const decode = jwt_decode(res.data.access_token)
+				switch(decode.user.userEntity.loai){
+					case 'SA':
+					case 'AM':
+						localStorage.setItem('secret', JSON.stringify(res.data));
+						from = { pathname: "/admin/student" }
+						break
+					case 'BV':
+						localStorage.setItem('secret', JSON.stringify(res.data));
+						from = { pathname: "/security" }
+						break
+					default:
+						throw 'err: not found'
+						break
+				}
+			}
+
 			this.props.history.push(from)
 		})
 		.catch( err => {
@@ -43,6 +61,17 @@ class SignInAdmin extends Component{
 		}).then( () => {
 			this.setState({ loading: false})
 		})
+	}
+	componentWillMount = () => {
+		const secret = JSON.parse(localStorage.getItem('secret'))
+
+		if(secret){
+	        axios.get(`http://localhost:4000/api/logout`, {
+	            headers: {
+	                'x-refresh-token': secret.refresh_token
+	            }
+	        }).then( res => localStorage.removeItem('secret') )
+    	}
 	}
 	render(){
 		return(

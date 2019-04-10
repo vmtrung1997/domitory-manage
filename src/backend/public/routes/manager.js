@@ -1,9 +1,11 @@
 var router = require('express').Router();
+
 var expenseController = require('./../apiController/expenseController')
 var activityController = require('./../apiController/activityController')
 var newsController = require('./../apiController/newsController');
-var infoStudent = require('../apiController/infoStudentController');
-var infoDormitory = require('../apiController/infoDormitoryController');
+var infoStudent = require('./../apiController/infoStudentController');
+var infoDormitory = require('./../apiController/infoDormitoryController');
+var accountController = require('./../apiController/accountController')
 var historyController = require('../apiController/historyController')
 let repo = require('../repos/phongRepo');
 
@@ -45,6 +47,8 @@ router.post('/activity/get_activity', activityController.get_list_activity);
 
 router.post('/activity/search_activity', activityController.search_activity);
 
+router.post('/activity/export_activity', activityController.export_activity);
+
 router.get('/activity/detail', activityController.detail_activity);
 
 router.post('/activity/post', activityController.post_activity);
@@ -81,6 +85,18 @@ router.get('/news/get',newsController.getNews);
 router.post('/news/update',newsController.updateNews);
 router.post('/news/delete',newsController.deleteNews);
 
+//Accounts
+router.post('/account/get_list_account',accountController.get_List);
+
+router.get('/account/get_detail',accountController.get_Detail);
+
+router.post('/account/add_account',accountController.add_Account);
+
+router.post('/account/update_account',accountController.update_Account);
+
+router.post('/account/delete_account',accountController.delete_Account);
+
 //Security
-router.post('/security/history',historyController.find_history);
+router.post('/security/history', historyController.find_history);
+
 module.exports = router;

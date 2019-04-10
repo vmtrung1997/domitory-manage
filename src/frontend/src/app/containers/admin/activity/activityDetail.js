@@ -49,10 +49,10 @@ class ActivityDetail extends Component{
 		var strDateEnd = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 
 		this.state.data.map( (item, index) => {
-			if(item.status === 0){
+			if(item.isDK){
 				iSignup++
 			}
-			else{
+			if(item.isTG){
 				iJoin++
 			}
 

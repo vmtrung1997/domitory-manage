@@ -247,6 +247,9 @@ textarea.input {
 .section .section-title .section-option .section-news-hover:hover{
     background-color: #ff870094 !important
 }
+.section .section-title .section-option .section-news-hover:visited{
+    background-color: #ff870094 !important
+}
 
 .section .section-title .section-option .section-news-hover:focus{
     background-color: #ff8700 !important;
@@ -256,7 +259,9 @@ textarea.input {
 .section .section-title .section-option .section-all-hover:hover{
     background-color: #04326094 !important;
 }
-
+.section .section-title .section-option .section-all-hover:visited{
+    background-color: #04326094 !important;
+}
 .section .section-title .section-option .section-all-hover:focus{
     background-color: #043260 !important;
     color: #ffffff !important
@@ -265,7 +270,9 @@ textarea.input {
 .section .section-title .section-option .section-activity-hover:hover{
     background-color: #4bb92f96 !important
 }
-
+.section .section-title .section-option .section-activity-hover:visited{
+    background-color: #4bb92f96 !important
+}
 .section .section-title .section-option .section-activity-hover:focus{
     background-color: #4BB92F !important;
     color: #ffffff !important

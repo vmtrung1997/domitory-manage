@@ -1,9 +1,23 @@
+.homepage-news{
+    height: fit-content;
+}
+
 .news-title{
     text-align: center;
     margin-top: 60px;
     margin-bottom: 30px;
     font-size: 50px;
     color: #3A6C97;
+}
+
+.hompage-loadmore-news{
+    background-color: #1b5f72 !important;
+    color: #ffffff !important;
+}
+
+.hompage-loadmore-news:hover{
+    background-color: #1b5f72b0 !important;
+    color: #ffffff !important;
 }
 .news-show-all{
     margin-top: 10px;
