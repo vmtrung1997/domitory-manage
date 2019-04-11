@@ -4,13 +4,15 @@ const Truong = require('../models/Truong');
 const ChiPhiPhong = require('../models/ChiPhiPhong');
 const HoatDong = require('../models/HoatDong');
 const KetQuaHD = require('../models/KetQuaHD');
+const User = require('../models/TaiKhoan');
+
 require('../models/Phong')
 require('../models/NganhHoc')
 require('../models/Truong')
 require('../models/HoatDong');
 
 const moment = require('moment');
-const today = moment().startOf('day');
+
 
 
 exports.a = (req, res) => {
@@ -27,6 +29,8 @@ exports.getSpecialized = (req, res) => {
 		})
 	})
 }
+
+
 
 exports.getListActivities = (req, res) => {
 	var date = new Date();
@@ -99,6 +103,40 @@ exports.registerActivities = (req, res) => {
 	})
 }
 
+
+exports.changePassword = (req, res) => {
+	console.log(req.body);
+	User.findOne({username: req.body.username, password: req.body.oldPassword}).then(user=> {
+		if (user){
+			User.updateOne({ username: req.body.username, password: req.body.oldPassword, isDelete: 0 },
+				{
+					$set:{
+						password: req.body.newPassword
+		
+					}
+				},
+				function (err, place) {
+					console.log(err)
+					if (err) {
+						res.status(400).json({
+							err: err
+						})
+					} else {
+						res.status(200).json({
+							rs: 'success',
+							data: place,
+						})
+					}
+				});
+		} else {
+			res.json({
+				rs:'fail',
+				msg: 'Invalid password'
+			})
+		}
+	})
+	
+};
 
 exports.updateInfo = (req, res) => {
 

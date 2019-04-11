@@ -33,7 +33,7 @@ class EditorConvertToHTML extends Component {
       check: false,
       pin:false,
       loai: 0,
-      typeOptions: [{ value: 0, label: "Thong Tin" }, { value: 1, label: "Hoạt Động" }]
+      typeOptions: [{ value: 0, label: "Thông Tin" }, { value: 1, label: "Hoạt Động" }]
     };
   }
 
@@ -115,7 +115,7 @@ class EditorConvertToHTML extends Component {
       id: this.state.idNews,
       trangThai: this.state.check === true ? "1" : "0",
       ghim: this.state.pin === true? "1" : "0",
-      loai: this.state.loai === 1?'Hoat Dong' : 'Thong Tin'
+      loai: this.state.loai ===  '1'?'1' : '0'
     };
 
     axios.defaults.headers["x-access-token"] = secret.access_token;

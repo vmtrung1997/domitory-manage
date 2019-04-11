@@ -116,7 +116,7 @@ class BillStudent extends React.Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr >
+                                        <tr key={1} >
                                             <td>{this.state.bills[0].nam}</td>
                                             <td>{this.state.bills[0].thang}</td>
 
@@ -154,13 +154,13 @@ class BillStudent extends React.Component {
                                         </thead>
                                         <tbody>
                                             {
-                                                this.state.bills.map(item => {
+                                                this.state.bills.map((item,index) => {
                                                     if (!isFirstRow) {
                                                         isFirstRow = true;
                                                     }
                                                     else {
                                                         return (
-                                                            <tr onClick={e => this.showDetail(item)}>
+                                                            <tr key={index} onClick={e => this.showDetail(item)}>
                                                             <td>{item.nam}</td>
                                                                 <td>{item.thang}</td>
                                                                 <td>{this.props.profile.idPhong.tenPhong}</td>

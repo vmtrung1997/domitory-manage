@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var taiKhoanSchema = new Schema({
     username: {type: String, unique: true},
-    password: { type: String, select: false },
+    password: { type: String },
     loai: {type: String, enum: ['SA', 'AM', 'SV', 'BV']},
     isDelete: {type: Number, enum: [0, 1], select: false}
 });

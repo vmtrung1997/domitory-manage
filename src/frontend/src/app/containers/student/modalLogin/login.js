@@ -12,7 +12,6 @@ class StudentLogin extends React.Component {
   constructor(props, context) {
     super(props, context);
 
-    this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
 
     this.state = {
@@ -24,13 +23,15 @@ class StudentLogin extends React.Component {
     };
   }
 
+  showResetPassword = () =>{
+    this.setState({ show: false });
+    this.props.hideLogin(false);
+    this.props.showResetPassword(true);
+  }
+
   handleClose() {
     this.setState({ show: false });
     this.props.hideLogin(false);
-  }
-
-  handleShow() {
-    this.setState({ show: true });
   }
 
   getValue = obj => {
@@ -123,8 +124,8 @@ class StudentLogin extends React.Component {
                 <Button onClick={this.Login} variant="primary" className = 'btn-color form-rounded btn-hover'>
                   Đăng nhập
                 </Button>
-                <div style = {{marginTop: '10px'}}>
-                  <Link to="/">Quên mật khẩu?</Link>
+                <div onClick = {this.showResetPassword} style = {{marginTop: '10px', cursor: 'pointer'}}>
+                  <span>Quên mật khẩu?</span>
                 </div>
               </Modal.Body>
             </Container>
