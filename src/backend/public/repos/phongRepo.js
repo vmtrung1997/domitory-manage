@@ -21,20 +21,29 @@ exports.get_element = (req, res) => {
   let obj = req.params.name;
   switch (obj) {
     case 'phong':
-      Phong.find().sort({'tenPhong': 'asc'})
-        .then(result => {
+      Phong.find({isHoDan: 0}).sort({'tenPhong': 'asc'}).select(['_id', 'tenPhong']).
+      then(result => {
         res.status(200).json(result);
       }).catch(error => {
         res.status(400).json({err: error});
       });
       break;
     case 'truong':
-      Truong.find().sort({'tenTruong': 'asc'})
-        .then(result => {
+      Truong.find().sort({'tenTruong': 'asc'}).select(['_id', 'tenTruong']).
+      then(result => {
         res.status(200).json(result);
       }).catch(error => {
         res.status(400).json({err: error});
       });
+      break;
+    case 'floor':
+      Phong.distinct('lau').
+        then(result => {
+          res.status(200).json(result);
+
+      }).catch(err => {
+        res.status(400).json({err: err});
+      })
       break;
   }
 };

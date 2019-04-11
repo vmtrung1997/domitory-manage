@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 var ketQuaHDSchema = new Schema({
     idHD: {type: Schema.Types.String, ref: 'HoatDong'},
     idSV: {type: Schema.Types.String, ref: 'Profile'},
-    status: {type: String, enum: ['0', '1']}
+    isDK: {type: Boolean},
+    isTG: {type: Boolean},
 });
 const model = mongoose.model('KetQuaHD', ketQuaHDSchema, 'KetQuaHD');
 module.exports = model;

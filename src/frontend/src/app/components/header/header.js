@@ -13,9 +13,8 @@ export default class Header extends React.Component{
             headers: {
                 'x-refresh-token': secret.refresh_token
             }
-        })
+        }).then( res => localStorage.removeItem('secret') )
             
-        localStorage.removeItem('secret');
     }
     render() {
         return(

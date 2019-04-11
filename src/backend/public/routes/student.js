@@ -3,6 +3,8 @@ var studentController = require('../apiController/studentController')
 
 router.post('/get-info', studentController.getInfo);
 
+router.post('/get-info-by-idCard', studentController.getInfoByIdCard);
+
 router.get('/get-specialized', studentController.getSpecialized);
 
 router.get('/get-school',studentController.getSchool);
@@ -19,5 +21,9 @@ router.post('/my-upcoming-activities',studentController.upcomingActivities);
 
 router.post('/update-info',studentController.updateInfo);
 
-router.get('/', studentController.a)
+router.post('/change-password', studentController.changePassword);
+
+
+
+
 module.exports = router;

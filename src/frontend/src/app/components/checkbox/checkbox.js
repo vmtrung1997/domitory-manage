@@ -10,7 +10,8 @@ class Checkbox extends Component {
   static defaultProps = {
     disabled: false,
     check: false,
-    isCheck: () => {}
+    type: 'checkbox',
+    isCheck: () => {},
   }
   constructor(props){
     super(props)
@@ -18,12 +19,13 @@ class Checkbox extends Component {
       check: this.props.check,
       name: this.props.name || null
     }
-  }
+  } 
   handleChangeChk = () => {
     var temp = !this.state.check
     this.setState({check: temp})
     this.props.isCheck({value: this.props.name, chk: temp});
   }
+
   render() {
     var label = this.props.label;
     return (
@@ -31,10 +33,9 @@ class Checkbox extends Component {
       <div style={this.props.style}>
         <label className="container-checkbox">{label}
           <input 
-            type="checkbox" 
-            defaultChecked={this.state.check} 
+            checked={this.props.check}
+            type={this.props.type}
             onChange={this.handleChangeChk} 
-            value={this.state.check}
             disabled={this.props.disabled}
           />
           <span className="checkmark"></span>

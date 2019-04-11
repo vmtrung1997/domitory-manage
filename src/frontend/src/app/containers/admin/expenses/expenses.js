@@ -13,6 +13,8 @@ import {get_month, get_year, get_status} from './expenseRepo'
 import Loader from './../../../components/loader/loader'
 import ModalConfig from './expenseConfig'
 import ModalExport from './expenseExport'
+
+
 class Expenses extends Component {
 	static propTypes = {
 		label: PropTypes.string,
@@ -20,7 +22,6 @@ class Expenses extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			//required: false,
 			dataTable: { docs: [] },
 			rooms: [],
 			sendRoom: [],
@@ -40,7 +41,6 @@ class Expenses extends Component {
 		var self = this;
 		getData().then(result => {
 			if (result.data) {
-				console.log(result)
 				var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong }))
 				roomOptions.unshift({ value: 0, label: 'Tất cả' });
 				self.setState({ rooms: roomOptions });
@@ -61,7 +61,6 @@ class Expenses extends Component {
 		options.options.page=page
 		search(options).then(result => {
 			if (result.data) {
-				console.log(result.data);
 				this.setState({ dataTable: result.data.rs, loading: false,options: {page: 1} })
 			}
 		}).catch(error => {});
@@ -89,7 +88,6 @@ class Expenses extends Component {
 		var self = this;
 		getData().then(result => {
 			if (result.data) {
-				console.log(result)
 				var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong }))
 				roomOptions.unshift({ value: 0, label: 'Tất cả' });
 				self.setState({ rooms: roomOptions });
@@ -118,8 +116,7 @@ class Expenses extends Component {
 							</Col>
 							<Col md={4} xs={12}>
 								Phòng
-								<SSelect 
-									placeholder={''}
+								<Select 
 									isSearchable={true}
 									value={this.state.roomSelected}
 									onChange={this.roomSelected}
@@ -139,7 +136,6 @@ class Expenses extends Component {
 							<ModalExport loading={this.handleLoading} roomList={this.state.rooms}/>
 							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)}/>
 						</div>
-						
 						<ExpenseTable table={this.state.dataTable} 
 												pageChange={e => this.pageChange(e)} 
 												retriveSearch={() => this.pageChange(1)}

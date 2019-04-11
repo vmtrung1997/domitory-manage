@@ -1,22 +1,54 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const Activity = require('./../models/HoatDong');
 const resultActivity = require('./../models/KetQuaHD');
-const Profile = require('./../models/Profile')
+const Profile = require('./../models/Profile');
+const phong = require('./../models/Phong.js');
+const writeXlsx = require('../repos/xlsxRepo')
 
-exports.get_activity = (req, res) => {
+
+exports.get_list_activity = (req, res) => {
 	const option = {
-		options: { sort: { ngay: -1 }},
+		options: { 
+			sort: { ngayBD: -1 }
+		},
 		page: req.query.page
 	}
-	Activity.paginate({}, option).then( result => {
+	var last = {}
+
+	var query = {}
+	if(req.body.search){ 
+		query = {
+			//ten: { $regex: '.*' + req.body.search + '.*', $options: 'i' },
+			$text: { $search: req.body.search },
+		}
+	}
+	if(parseInt(req.body.month) !== 0){
+		query.thang = parseInt(req.body.month)
+	}
+	if(parseInt(req.body.year) !== 0){
+		query.nam = parseInt(req.body.year)
+	}
+
+	if(req.body.require === 'true' || req.body.require === 'false'){
+		query.batBuoc = req.body.require === 'true' ? true : false
+	} 
+	                                            
+	Activity.paginate( {} , { sort: {ngayBD : 1}})
+	.then( result => {
+		if(result.docs){
+			last = result.docs[0]
+		}
+	})
+	.then(Activity.paginate( query , option).then( result => {
 		console.log('==get_activity: success')
 		res.json({
-			rs: result
+			rs: result,
+			last: last
 		})
 	}).catch(err => {
 		console.log('==get_activity: ',err)
 		res.status(500)
-	})	
+	}))
 };
 
 exports.detail_activity = (req, res) => {
@@ -33,12 +65,27 @@ exports.post_activity = (req, res) => {
 	var tmp = {
 		ten: req.body.name,
     	diaDiem: req.body.location,
-    	ngay: req.body.time,
+    	ngayBD: req.body.date,
+    	ngayKT: req.body.dateEnd,
+    	thang: new Date(req.body.date).getMonth() + 1,
+    	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
     	soLuong: 0,
     	diem: req.body.point,
     	moTa: req.body.des
 	}
+	var timeFirst = req.body.time.split(':')
+	var timeFinal = req.body.timeEnd.split(':')
+
+	var dateFirst = new Date(tmp.ngayBD)
+	var dateFinal = new Date(tmp.ngayKT)
+
+	dateFirst.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
+	dateFinal.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
+
+	tmp.ngayBD = dateFirst
+	tmp.ngayKT = dateFinal
+	
 	var act = new Activity(tmp)
 	act.save().then(() => {
 		console.log('==post_activity: success')
@@ -69,11 +116,26 @@ exports.update_activity = (req, res) => {
 	var data = {
 		ten: req.body.name,
     	diaDiem: req.body.location,
-    	ngay: req.body.time,
+    	ngayBD: req.body.date,
+    	ngayKT: req.body.dateEnd,
+    	thang: new Date(req.body.date).getMonth() + 1,
+    	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
     	diem: req.body.point,
     	moTa: req.body.des
 	}
+
+	var timeFirst = req.body.time.split(':')
+	var timeFinal = req.body.timeEnd.split(':')
+
+	var dateFirst = new Date(data.ngayBD)
+	var dateFinal = new Date(data.ngayKT)
+
+	dateFirst.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
+	dateFinal.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
+
+	data.ngayBD = dateFirst
+	data.ngayKT = dateFinal
 
 	Activity.update({ _id: id }, data, (err, val) => {
 		if(!err){
@@ -101,7 +163,6 @@ exports.rollcall_activity = async (req, res) => {
 			res.status(500)
 		}
 		if(!val){
-			console.log(1)
 			res.status(200).json({rs: 'not found student'})
 		}
 		data.sv = val
@@ -116,15 +177,15 @@ exports.rollcall_activity = async (req, res) => {
 				var rs = new resultActivity({
 					idHD: data.hd,
 					idSV: data.sv._id,
-					status: 1 
+					isTG: true
 				})
 				rs.save()
 			} else {
-				if(val.status === 1){
+				if(val.isTG === true){
 					res.status(200).json({ rs: 'ok'})
 					return true
 				}
-				val.status = 1
+				val.isTG = true
 				val.save()
 			}
 			data.sv.diemHD = (data.sv.diemHD || 0) + data.diem
@@ -133,5 +194,73 @@ exports.rollcall_activity = async (req, res) => {
 			console.log('==rollcall_activity: success')
 		})
 	}
-
 };
+
+exports.search_activity = (req, res) => {
+	var query = {}
+	if(req.body.search){ 
+		query = { 
+			$text: { $search: req.body.search },
+		}
+	} else {
+		res.status(200).json({
+			rs: [],
+		})
+	}
+
+	Activity.find( query ).then( result => {
+		console.log('==search_activity: success')
+		res.json({
+			rs: result,
+		})
+	}).catch(err => {
+		console.log('==search_activity: ',err)
+		res.status(500)
+	})
+};
+
+exports.export_activity = async (req, res) => {
+	
+	var limit = []
+	if(req.body.year){
+		limit = req.body.year.map( (item, index) => {
+			return [new Date(`08-01-${parseInt(item) - 1}`), new Date(`07-31-${item}`)]
+		} )
+	}
+	
+	var result = []
+	result = await limit.map( (item, index) => {
+		// resultActivity.find({idHD: {$ne: null}})
+		// .populate({
+		// 	path: 'idHD',
+		// 	match: {ngayBD: {$gte: item[0], $lte: item[1]}}
+		// })
+		// .populate({path: 'idSV'})
+		// .where({ idHD: {$ne: null}})
+		// .exec( (err, val) => {
+		// 	console.log(val)
+		// })
+	
+		// Profile.find({ idTaiKhoan: { $ne: null } })
+		// .populate({
+		// 	path: 'idTaiKhoan',
+		// 	match: {isDelete: 0}
+		// })
+		// .then( val => {
+		// 	console.log(val.length)
+		// })
+		var header = [
+			['', '',`Điểm phong trào ktx Trần Hưng Đạo năm học ${item[0].getFullYear()} - ${item[1].getFullYear()}`],
+			[]
+		]
+		var opts = { row: 3, col: 2}
+		var xlsx = writeXlsx.save(header, opts);
+		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		res.status(200).json({ filename: 'Report.xlsx', file: xlsx });
+	})
+	
+};
+
+const getReport = (limit) =>{
+
+}

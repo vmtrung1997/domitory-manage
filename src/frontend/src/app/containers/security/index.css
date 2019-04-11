@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css?family=Podkova');
+.security.title{
+    color: #286090;
+    background: white;
+    padding: 10px 50px;
+    margin: auto -15px;
+}
+.content-body-security{
+  background-color: #ffffff;
+    border-color: #e7eaec;
+    -webkit-border-image: none;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 4px 0 0;
+    padding: 14px 15px 7px;
+  overflow: auto;
+}
+.img-css{
+  float: right;
+}
+.img-css img{
+  height: 90vh;
+}
+.info{
+  font-family: 'Podkova', serif;
+  font-size: 2em;
+  padding: auto 0;
+}
+.info span{
+  color: blue;
+}
+.id-back{
+  margin-bottom: 15px;
+}
+
+.id-back span, .id-back i{
+  text-decoration: none;
+  color: #999c9e;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.id-back i{
+  margin-right: 5px;
+}
+
+.item-history{
+  display: flex;
+  margin:10px;
+  border: 1px solid #999c9e;
+  border-radius: 10px;
+  padding: 10px;
+  width: 90%;
+  -webkit-box-shadow: 6px 10px 10px -9px rgba(179,179,179,1);
+-moz-box-shadow: 6px 10px 10px -9px rgba(179,179,179,1);
+box-shadow: 6px 10px 10px -9px rgba(179,179,179,1);
+}
+.item-image{
+  max-height: 100px;
+}
+.item-image img{
+  max-height:100px;
+}
+.item-text{
+  margin: auto;
+  padding-left: 10px;
+  font-size: 0.8em;
+}
+.max-height-history{
+  max-height: 500px;
+}
+
+.header-security{
+  background-color: #ededed;
+  border-bottom: 1px solid #dbdbdb !important;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+}
+.header-security a{
+  cursor: pointer;
+  text-decoration: none;
+  color: #999c9e;
+  font-weight: bold;
+}
+/* .header-security a:not([href]):not([tabindex]) {
+
+} */
+.header-security a:hover{
+  color: #5D6B77;
+}
+.logout{
+  text-align: center;
+  margin-right: 20px;
+}

@@ -1,0 +1,53 @@
+.id-content{
+    padding: 5px 15px 15px;
+}
+
+.id-floor{
+    height: 400px;
+    overflow: auto;
+    background-color: #f5f5f5;
+}
+
+.id-floor_item{
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.id-room{
+    height: 400px;
+    padding: 5px 15px;
+    background-color: #f5f5f5;
+    overflow: auto;
+}
+
+.id-room_item{
+    padding: 10px;
+    display: inline-block;
+    width: 25%;
+}
+
+.id-room_item i{
+    font-size: 20px;
+    padding-right: 5px;
+}
+
+.id-room_item button{
+    width: 85%;
+}
+
+.id-addFloor_text{
+    padding: 15px 15px 10px;
+    font-weight: bold;
+    color: #FF9800;
+}
+
+.id-add{
+    width: 150px;
+    padding: 10px 5px;
+}
+
+.id-add button{
+    width: 100%;
+}
+

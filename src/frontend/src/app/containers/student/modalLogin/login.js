@@ -12,7 +12,6 @@ class StudentLogin extends React.Component {
   constructor(props, context) {
     super(props, context);
 
-    this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
 
     this.state = {
@@ -24,13 +23,15 @@ class StudentLogin extends React.Component {
     };
   }
 
+  showResetPassword = () =>{
+    this.setState({ show: false });
+    this.props.hideLogin(false);
+    this.props.showResetPassword(true);
+  }
+
   handleClose() {
     this.setState({ show: false });
     this.props.hideLogin(false);
-  }
-
-  handleShow() {
-    this.setState({ show: true });
   }
 
   getValue = obj => {
@@ -55,7 +56,9 @@ class StudentLogin extends React.Component {
         console.log(res.data);
         if (res.data) {
           localStorage.setItem("secret", JSON.stringify(res.data));
+          
           this.props.hideLogin(false);
+          this.props.dataLogin(res.data);
         } else {
           this.setState({
             wrongLogin: true
@@ -108,7 +111,7 @@ class StudentLogin extends React.Component {
                 {this.state.isLoad &&
                 <Loader
                   type="ThreeDots"
-                  color="#007bff"
+                  color=" #293846"
                   height={50}
                   width={50}
                 />
@@ -118,11 +121,11 @@ class StudentLogin extends React.Component {
                     *Tên tài khoản hoặc mật khẩu không đúng!
                   </p>
                 )}
-                <Button onClick={this.Login} variant="primary">
+                <Button onClick={this.Login} variant="primary" className = 'btn-color form-rounded btn-hover'>
                   Đăng nhập
                 </Button>
-                <div style = {{marginTop: '10px'}}>
-                  <Link to="/">Quên mật khẩu?</Link>
+                <div onClick = {this.showResetPassword} style = {{marginTop: '10px', cursor: 'pointer'}}>
+                  <span>Quên mật khẩu?</span>
                 </div>
               </Modal.Body>
             </Container>

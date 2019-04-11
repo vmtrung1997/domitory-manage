@@ -1,5 +1,5 @@
 import React from "react";
-import { InputGroup, Row, Col, Button } from "react-bootstrap";
+import { InputGroup, Row, Col, Table } from "react-bootstrap";
 import "./../profileStudent.css";
 import "react-datepicker/dist/react-datepicker.css";
 import MyInput from "../../input/input";
@@ -64,8 +64,7 @@ class StayProfile extends React.Component {
     var data = {
       idPhong: this.state.tenPhong._id,
       ngayHetHan: this.state.ngayHetHan,
-      ngayVaoO: this.state.ngayVaoO,
-
+      ngayVaoO: this.state.ngayVaoO
     };
 
     this.setState({ isDisable: !this.state.isDisable });
@@ -113,13 +112,11 @@ class StayProfile extends React.Component {
 
             //Lưu trong state
             this.setState({
-           
               tenPhong: res.data.data.idPhong,
-             
-              ngayHetHan: res.data.data.ngayHetHan,
-             
-              ngayVaoO: res.data.data.ngayVaoO,
 
+              ngayHetHan: res.data.data.ngayHetHan,
+
+              ngayVaoO: res.data.data.ngayVaoO
             });
 
             this.setState({
@@ -130,10 +127,6 @@ class StayProfile extends React.Component {
         .catch(err => {
           console.log(err);
         });
-
-   
-
-    
     } else {
       console.log("ko co data");
     }
@@ -150,8 +143,6 @@ class StayProfile extends React.Component {
       var d = new Date(this.state.ngayHetHan);
       var month = d.getMonth() + 1;
       var dayOutFormat = d.getDate() + "/" + month + "/" + d.getFullYear();
-
-      
     }
 
     return (
@@ -219,6 +210,25 @@ class StayProfile extends React.Component {
                       </Row>
                     </div>
                   </div>
+                </Col>
+                <Col sm={10}>
+                  <Table bordered hover responsive size="sm">
+                    <thead className="thread-student">
+                      <tr>
+                        <th>Từ ngày</th>
+                        <th>Đến Ngày</th>
+
+                        <th>Phòng</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td />
+                        <td />
+                        <td />
+                      </tr>
+                    </tbody>
+                  </Table>
                 </Col>
               </Row>
             </div>

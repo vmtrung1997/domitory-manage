@@ -7,7 +7,7 @@ import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
 import SignInAdmin from './containers/admin/signIn/signinAdmin'
 import Student from './containers/student'
-import Security from './containers/security'
+import Security from './containers/security/index'
 
 var isAdmin = false
 var isSecurity = false
@@ -16,10 +16,10 @@ const checkAuth = () => {
     const secret = JSON.parse(localStorage.getItem('secret'))
     if(secret){
         const decode = jwt_decode(secret.access_token)
-
         switch(decode.user.userEntity.loai)
         {
             case 'SA':
+            case 'AM':
                 isAdmin = true
                 break
             case 'BV':
@@ -68,7 +68,6 @@ class App extends Component {
                 <Switch>
                     <AdminRoute path="/admin" component={Admin} />
                     <SecurityRoute path='/security' component={Security} />
-                    {/*<SecurityRoute path='/security' component={Security} />*/}
                     <Route path="/signin-admin" component={SignInAdmin} />
                     <Route path='/' component = {Student}/>
                     <Route component={NotFound} />

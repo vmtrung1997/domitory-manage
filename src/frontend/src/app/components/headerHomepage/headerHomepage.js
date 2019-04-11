@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import {
   Button,
-  InputGroup,
   FormControl,
   Dropdown,
-  SplitButton,
-  ButtonToolbar
+  Nav,
+  Form,
+  Navbar
 } from "react-bootstrap";
 import Login from "./../../containers/student/modalLogin/login";
+import ChangePassword from "./../../containers/student/modalResetPassword/modelPassword";
+import ResetPassword from "./../../containers/student/modalForgotPassword/modalForgotPassword"
 import { connect } from "react-redux";
 import "./headerHomepage.css";
 import { Link } from "react-router-dom";
@@ -19,6 +21,8 @@ class HeaderHomepage extends Component {
     super(props);
     this.state = {
       showLoginModal: false,
+      showResetPasswordModal: false,
+      showPasswordModal: false,
       isLogin: false,
       name: ""
     };
@@ -34,19 +38,40 @@ class HeaderHomepage extends Component {
     });
   };
 
-  dataLogin = data => {
-    console.log(data);
+
+  abc = show =>{
+    console.log('vo day');
     this.setState({
-      username: data.username
+      showResetPasswordModal: show
     });
+  }
+
+  showResetPassword = () =>{
+    this.setState({
+      showResetPasswordModal: true
+    })
+  }
+  dataLogin = data => {
+    this.setUserName(data);
   };
+
+  setUserName = secret => {
+    const decode = jwt_decode(secret);
+    console.log(decode);
+    var name = decode.user.profile.hoTen.split(" ");
+    this.setState({ name: name[name.length - 1] });
+  };
+  changePass = () =>{
+    this.setState({
+      showPasswordModal: true
+    })
+  }
+
   setActive = () => {};
   handleSelect = event => {
     console.log(event);
   };
-  getScroll = event => {
-    this.props.getScroll(event.target.value);
-  };
+
 
   logOut = () => {
     const secret = JSON.parse(localStorage.getItem("secret"));
@@ -64,14 +89,16 @@ class HeaderHomepage extends Component {
   componentDidMount() {
     var secret = localStorage.getItem("secret");
     if (secret) {
-      const decode = jwt_decode(secret);
-      var name = decode.user.profile.hoTen.split(" ");
-      this.setState({ name: name[name.length - 1] });
+      this.setUserName(secret);
     }
   }
 
+  hideChangePassword = (value) =>{
+    this.setState({
+      showPasswordModal: false
+    })
+  }
   render() {
-    var { state } = this.props;
     let isLogin;
     const secret = JSON.parse(localStorage.getItem("secret"));
     if (secret && !this.state.isLogin) {
@@ -82,120 +109,124 @@ class HeaderHomepage extends Component {
     if (!this.state.isLogin) {
       isLogin = (
         <Button
+          variant="light"
           onClick={this.Login}
-          variant="primary"
-          className="form-rounded menu-item btn-menu"
+          className="form-rounded btn-hover"
         >
-          <span>Đăng nhập</span>
+          Đăng nhập
         </Button>
       );
     } else {
       isLogin = (
-        <ButtonToolbar>
-          {["Primary"].map(variant => (
-            <SplitButton
-              title={this.state.name}
-              variant="link"
-              id={`dropdown-split-variants-${variant}`}
-              key={variant}
-              onSelect={this.handleSelect}
-            >
-              <Dropdown.Item eventKey="1">
-                <Link to="/dashboard" className='list-item-link'>
-                  <i className="fas fa-user-circle" />
-                  <span className="list-menu-sub">Trang cá nhân</span>
-                </Link>
-              </Dropdown.Item>
+        <Dropdown>
+          <Dropdown.Toggle
+            variant="light"
+            id="dropdown-basic"
+            className="form-rounded btn-hover"
+          >
+            <span> {this.state.name}</span>
+          </Dropdown.Toggle>
 
-              <Dropdown.Item eventKey="2">
-                <Link to="/dashboard#list" className='list-item-link'>
-                  <i className="fas fa-snowboarding" />
-                  <span className="list-menu-sub">Hoạt động</span>
-                </Link>
-              </Dropdown.Item>
-              <Dropdown.Item eventKey="3">
-                <Link to="/dashboard#list" className='list-item-link'>
-                  <i className="fas fa-file-invoice" />
-                  <span className="list-menu-sub">Điện nước</span>
-                </Link>
-              </Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item onClick={this.logOut} eventKey="4">
-                <i className="fas fa-sign-out-alt" />
-                <span className="list-menu-sub">Thoát</span>
-              </Dropdown.Item>
-            </SplitButton>
-          ))}
-        </ButtonToolbar>
+          <Dropdown.Menu alignRight>
+            <Dropdown.Item eventKey="1">
+              <Link to="/dashboard" className="list-item-link">
+                <i className="fas fa-user-circle" />
+                <span className="list-menu-sub">Dashboard</span>
+              </Link>
+            </Dropdown.Item>
+
+            <Dropdown.Item onClick={this.changePass} eventKey="1">
+              <Link to="/dashboard" className="list-item-link">
+                <i className="fas fa-lock" />
+                <span className="list-menu-sub">Đổi mật khẩu</span>
+              </Link>
+            </Dropdown.Item>
+
+            <Dropdown.Divider />
+            <Dropdown.Item onClick={this.logOut} eventKey="4">
+              <i className="fas fa-sign-out-alt" />
+              <span className="list-menu-sub">Thoát</span>
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       );
     }
+    console.log(this.props.location);
     return (
-      <div>
+      <React.Fragment>
         {this.state.showLoginModal && (
-          <Login dataLogin={this.dataLogin} hideLogin={this.hideLogin} />
+          <Login dataLogin={this.dataLogin} hideLogin={this.hideLogin} showResetPassword = {this.showResetPassword}/>
         )}
-        <div className="HeaderHomepage">
-          <div className="option">
-            <div>
-              <Button
-                className="outline btn-menu"
-                variant="light"
-                onClick={this.getScroll}
-                value="1"
-              >
-                TRANG CHỦ
-              </Button>
+        {this.state.showPasswordModal && (
+          <ChangePassword hideChangePassword={this.hideChangePassword} />
+        )}
+        {this.state.showResetPasswordModal && (
+          <ResetPassword hideResetPassword={this.abc}></ResetPassword>
+        )}
+
+        <Navbar
+          sticky="top"
+          variant="dark"
+          expand="sm"
+          className="HeaderHomepage"
+          style={{ backgroundColor: "#1B5F72" }}
+        >
+          <Navbar.Brand>
+            <div className="nav-img">
+              <img alt="img_header" src="/images/Logo-KHTN.jpg" />
             </div>
-            <div>
-              <Button
-                className="outline btn-menu"
-                variant="light"
-                onClick={this.getScroll}
-                value="2"
-              >
-                TIN TỨC
-              </Button>
-            </div>
-            <div>
-              <Button
-                className="outline btn-menu"
-                variant="light"
-                onClick={this.getScroll}
-                value="3"
-              >
-                THÔNG TIN
-              </Button>
-            </div>
-          </div>
-          <div className="logoHeader">
-            <img
-              alt="img_header"
-              className="img-header"
-              style={{ width: "100px", height: "100px", borderRadius: "50%" }}
-              src="/images/Logo-KHTN.jpg"
-            />
-          </div>
-          <div className="option">
-            <div className="right-content">
-              <InputGroup className="">
+            <span className="header-title">Kí túc xá Trần Hưng Đạo</span>
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link>
+                {" "}
+                <Link to="/">
+                  <span className="list-item-menu"> Trang chủ </span>
+                </Link>
+              </Nav.Link>
+              <Nav.Link>
+                <Link to="/news">
+                  <span className="list-item-menu"> Tin tức </span>
+                </Link>
+              </Nav.Link>
+              <Nav.Link>
+                <Link to="/about">
+                  <span className="list-item-menu"> Giới thiệu </span>
+                </Link>
+              </Nav.Link>
+            </Nav>
+            <Form inline>
+              <Form inline className="search-area">
                 <FormControl
-                  className="form-rounded btn-menu"
-                  placeholder="Tìm kiếm..."
-                  aria-label=""
-                  aria-describedby="basic-addon2"
+                  type="text"
+                  placeholder="Tìm kiếm"
+                  className="mr-sm-2 search-control form-rounded "
                 />
-              </InputGroup>
-            </div>
-            <div className="right-content ">{isLogin}</div>
-          </div>
-        </div>
-      </div>
+                <Button variant="light" className="form-rounded btn-hover">
+                  <i className="fas fa-search" />
+                </Button>
+              </Form>
+              {/* <Nav className="mr-auto">
+              <NavDropdown title="Chào bạn" id="basic-nav-dropdown">
+                <NavDropdown.Item href="#action/3.1">Đổi mật khẩu</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="#action/3.2">Đăng xuất</NavDropdown.Item>
+              </NavDropdown>
+            </Nav> */}
+              {isLogin}
+              {/* <Button variant="light" className='form-rounded btn-hover'>Đăng nhập</Button> */}
+            </Form>
+          </Navbar.Collapse>
+        </Navbar>
+      </React.Fragment>
     );
   }
 }
 var mapStateToProps = state => {
   return {
-    state: state
+    userProfile: state.userProfile
   };
 };
 

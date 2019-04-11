@@ -20,7 +20,7 @@ class Example extends React.Component {
   }
   componentDidMount(){
     var {expenseDetail} = this.props;
-    this.setState({exp: expenseDetail})
+    this.setState({exp: expenseDetail,soDien: expenseDetail.soDien, soNuoc: expenseDetail.soNuoc})
   }
   handleClose() {
     this.setState({ show: false, disabled: true, capNhat: false });
@@ -108,20 +108,20 @@ class Example extends React.Component {
           </Row>
           <Row>
             <Col>
+            Số điện hiện tai
+            <Input name={'soDien'} type={'number'} disabled={this.state.disabled} value={this.state.soDien} getValue={this.handleChange}/>
+            </Col>
+            <Col>
+            Số nước hiện tại
+            <Input name={'soNuoc'} type={'number'} disabled={this.state.disabled} value={this.state.soNuoc} getValue={this.handleChange}/></Col>
+          </Row>
+          <Row>
+            <Col>
             Số điện cũ
             <Input disabled={true} value={exp.soDienCu}/>
             </Col>
             <Col>Số nước cũ
             <Input disabled={true} value={exp.soNuocCu}/></Col>
-          </Row>
-          <Row>
-            <Col>
-            Số điện hiện tai
-            <Input name={'soDien'} type={'number'} disabled={this.state.disabled} value={exp.soDien} getValue={this.handleChange}/>
-            </Col>
-            <Col>
-            Số nước hiện tại
-            <Input name={'soNuoc'} type={'number'} disabled={this.state.disabled} value={exp.soNuoc} getValue={this.handleChange}/></Col>
           </Row>
           <Row>
             <Col>
@@ -139,16 +139,16 @@ class Example extends React.Component {
             </Col>
             <Col>
             Trạng thái
-            <Input color={exp.trangThai===1?'success':'danger'} disabled={true} value={exp.trangThai === 1?'Đã thanh toán':'Chưa thanh toán'}/>
+            <Input color={exp.trangThai===1?'success':'warning'} disabled={true} value={exp.trangThai === 1?'Đã thanh toán':'Chưa thanh toán'}/>
             </Col>
           </Row>
           <Row>
             <Col>
             Tổng tiền
-            <Input color={'info'} disabled={true} value={Optimize.OpitmizeNumber(exp.tongTien)}/></Col>
+            <Input color={'danger'} disabled={true} value={Optimize.OpitmizeNumber(exp.tongTien)}/></Col>
             <Col>
             Tổng tiền chữ
-            <Input color={'info'} disabled={true} value={exp.tongTienChu}/></Col>
+            <Input color={'danger'} disabled={true} value={exp.tongTienChu}/></Col>
           </Row>
         </Modal.Body>
         <Modal.Footer>

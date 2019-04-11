@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table } from 'react-bootstrap'
+import { Table, Col } from 'react-bootstrap'
 import axios from 'axios'
 
 import './activityDetail.css'
@@ -39,104 +39,99 @@ class ActivityDetail extends Component{
 		})
 	}
 	render(){
-		var joinTable = []
-		var signUpTable = []
+		var table = []
 		var iSignup = 0
 		var iJoin = 0
-		var date = new Date(this.state.hd.ngay);
-		var strDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+
+		var date = new Date(this.state.hd.ngayBD);
+		var strDateStart = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+		date = new Date(this.state.hd.ngayKT);
+		var strDateEnd = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 
 		this.state.data.map( (item, index) => {
-			if(item.status === 0){
+			if(item.isDK){
 				iSignup++
-				signUpTable.push(
-					<tr key={index}>
-						<td>{iSignup}</td>
-						<td>{item.idSV.MSSV}</td>
-						<td>{item.idSV.hoTen}</td>
-					</tr>
-				)
-			} else {
-				iJoin++
-				joinTable.push(
-					<tr key={index}>
-						<td>{iJoin}</td>
-						<td>{item.idSV.MSSV}</td>
-						<td>{item.idSV.hoTen}</td>
-					</tr>
-				)
 			}
-			
+			if(item.isTG){
+				iJoin++
+			}
+
+			table.push(
+				<tr key={index}>
+					<td>{index + 1}</td>
+					<td>{item.idSV.MSSV}</td>
+					<td>{item.idSV.hoTen}</td>
+					{item.isDK ? (
+						<td style={{textAlign: 'center', color: '#04C913'}}> 
+							<i className="fas fa-check"></i> 
+						</td>
+					) : (<td> </td>)}
+					{item.isTG ? (
+						<td style={{textAlign: 'center', color: '#04C913'}}> 
+							<i className="fas fa-check"></i> 
+						</td>
+					) : (<td> </td>)}
+				</tr>
+			)
+			return true
 		})
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
 				<Title> Hoạt động sinh viên </Title>
-        		<div className={'content-body full'}>
+        		<div style={{height: '500px', overflow: 'auto'}} className={'content-body full'}>
         			<Link to={'/admin/activity'} className="back">
                 		<i className="fas fa-chevron-left"/>
                 		<span>Trở về</span>
               		</Link>
-					<div>
-						<div style={{margin: '0 100px'}}>
-							<div>
-								<span style={{fontWeight: 'bold'}}> Hoạt động: </span>
-								{this.state.hd.ten}
-							</div>
-							<div>
-								<span style={{fontWeight: 'bold'}}>Thời gian: </span>
-								{strDate}
-							</div>
-							<div>
-								<span style={{fontWeight: 'bold'}}> Địa điểm: </span>
-								{this.state.hd.diaDiem}
-							</div>
-							<div>
-								<span style={{fontWeight: 'bold'}}> Điểm: </span>
-								{this.state.hd.diem}
-							</div>
-							<div>
-								<span style={{fontWeight: 'bold'}}> Bắt buộc: </span>
-								{this.state.hd.batBuoc ? 'có' : 'không'}
-							</div>
-							<div>
-								<span style={{fontWeight: 'bold'}}> Mô tả: </span>
-							</div>
+              		<div className="title-detail"> Chi tiết hoạt động </div>
+					<div className="detail-activity">
+						<Col md={3} style={{textAlign: 'right'}}>
+							<p style={{fontWeight: 'bold'}}> Hoạt động </p>
+							<p style={{fontWeight: 'bold'}}> Thời gian bắt đầu </p>
+							<p style={{fontWeight: 'bold'}}> Thời gian kết thúc </p>
+							<p style={{fontWeight: 'bold'}}> Địa điểm </p>
+							<p style={{fontWeight: 'bold'}}> Điểm </p>
+							<p style={{fontWeight: 'bold'}}> Bắt buộc </p>
+							<p style={{fontWeight: 'bold'}}> Mô tả </p>
+						</Col>
+						<Col>
+							<p>	{this.state.hd.ten} </p>
+							<p> {strDateStart} </p>
+							<p> {strDateEnd} </p>
+							{this.state.hd.diaDiem ?
+								<p> {this.state.hd.diaDiem} </p>
+								:
+								<p> &nbsp; </p>
+							}
+							{this.state.hd.diem ?
+								<p> {this.state.hd.diem} </p>
+								:
+								<p> &nbsp; </p>
+							}
+							<p> {this.state.hd.batBuoc ? 'có' : 'không'} </p>
 							<textarea rows={this.state.hd.moTa ? 4:1} value={this.state.hd.moTa} disabled={true}/>
-						</div>
-						<div> 
-							 <span style={{fontWeight: 'bold'}}> Đăng ký: </span>
-							{iSignup}
-						</div>
-						<Table bordered hover responsive size="sm" className="table-activity">
-							<thead >
-								<tr>
-									<th>STT</th>
-									<th>MSSV</th>
-									<th>Họ tên</th>
-								</tr>
-							</thead>
-							<tbody>
-								{signUpTable}
-							</tbody>
-						</Table>
-						<div>
-							<span style={{fontWeight: 'bold'}}> Tham gia: </span>
-							{iJoin}
-						</div>
-						<Table bordered hover responsive size="sm" className="table-activity">
-							<thead >
-								<tr>
-									<th>STT</th>
-									<th>Họ tên</th>
-									<th>MSSV</th>
-								</tr>
-							</thead>
-							<tbody>
-								{joinTable}
-							</tbody>
-						</Table>
+						</Col>
 					</div>
+					<Table bordered hover responsive size="sm" className="table-activity">
+						<thead style={{background: '#cfcfcf', textAlign: 'center'}}>
+							<tr>
+								<th>STT</th>
+								<th>MSSV</th>
+								<th>Họ tên</th>
+								<th>Đăng ký</th>
+								<th>Tham gia</th>
+							</tr>
+						</thead>
+						<tbody>
+							{table}
+							<tr>
+								<td colSpan="3" style={{border: 'none'}}></td>
+								<td>Đăng ký: {iSignup}</td>
+								<td>Tham gia: {iJoin}</td>
+							</tr>
+						</tbody>
+					</Table>
 				</div>
 
 			</React.Fragment>

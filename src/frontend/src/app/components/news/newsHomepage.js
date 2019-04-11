@@ -1,74 +1,144 @@
-import React from 'react';
-import { Container, Col, Row } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import './newsHomepage.css'
-const fadeImages = [
-    '/images/01_ataulfohouse_apaloosa.jpg',
-    '/images/26_ataulfohouse_apaloosa.jpg',
-    '/images/26_ataulfohouse_apaloosa.jpg',
-];
+import React from "react";
+import { Nav } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import "./newsHomepage.css";
+import Axios from "axios";  
 
 
 class NewsHomepage extends React.Component {
-    render() {
-        return (
-            <Container>
-                <div className='news-title'>
+  constructor(props) {
+    super(props);
+    this.state = {
+      postsAll: []
+    };
+  }
+
+  loadNews = date => {
+    var _post = [];
+
+    Axios.post("http://localhost:4000/news/get-news", { data: date })
+      .then(rs => {
+        console.log(rs);
+        if (rs.status === 200) {
+          rs.data.data.map((item, index) => {
+            if (index < 3) _post.push(item);
+          });
+        }
+      })
+      .then(() => {
+        this.setState({
+          postsAll: _post
+        });
+      });
+  };
+
+  componentDidMount() {
+    var date = new Date("2015-01-01"); //Ngaỳ mặc định
+    this.loadNews(date);
+  }
+  onViewDetail = id => {
+    var address = "http://localhost:3000/news/detail?id=" + id;
+    window.open(address, "_blank");
+  };
+
+
+  render() {
+    var posts = [];
+    posts = this.state.postsAll;
+    return (
+      <React.Fragment>
+        {/* section */}
+        <div className="homepage-news">
+
+
+          {/* container */}
+          <div className="container">
+            {/* row */}
+            <div className="row">
+              <div className="col-md-12">
+                <div className="section-title">
+                  <div style={{ fontSize: "50px", textAlign: "center" }}>
                     <span>TIN TỨC</span>
+                  </div>
                 </div>
-                <Row>
-                    <Col sm={4} className='news-item'>
-                        <div className='news-img'>
-                            <img alt='news' style={{ height: '200px', width: '100%' }} src={fadeImages[0]}/>
+              </div>
+              {/* post */}
+
+              {posts.map(item => {
+                var day = new Date(item.ngayTao);
+                var month = day.getMonth() + 1;
+                var formatDay =
+                  day.getDate() +
+                  "/" +
+                  month +
+                  "/" +
+                  day.getFullYear() +
+                  " " +
+                  day.getHours() +
+                  ":" +
+                  day.getMinutes();
+                return (
+                  <div className="col-md-4">
+                    <div style={{ marginTop: "40px" }}>
+                      <div className="post">
+                        <div
+                          className="post-img"
+                          onClick={e => this.onViewDetail(item._id)}
+                        >
+                          <img src="/img/st.jpg" alt />
                         </div>
-                        <div className='news-time'>
-                            <i className="far fa-clock"></i>
-                            <span style={{ color: '#33333382' }}>18 : 10 | Thứ 7, 20-1-2018</span>
+                        <div className="post-body">
+                          <div className="post-meta">
+                            <span
+                              className={
+                                item.loai === "1"
+                                  ? "post-category cat-1"
+                                  : "post-category cat-2"
+                              }
+                            >
+                              {item.loai === "1" ? "Hoạt Động" : "Thông tin"}
+                            </span>
+
+                            <span className="post-date">
+                              <i className="far fa-clock" />
+                              &nbsp;{formatDay}
+                            </span>
+                          </div>
+                          <h3 className="post-title">
+                            <a
+                              onClick={e => this.onViewDetail(item._id)}
+                              href="#"
+                            >
+                              {item.tieuDe}
+                            </a>
+                          </h3>
                         </div>
-                        <div className='news-item-p'>
-                            <span>   Saepe dicta erat. Dictum corrupti labore habit
-                                        se duis excepturi sapien, morbi ….</span>
-                        </div>
-                    </Col>
-                    <Col sm={4} className='news-item'>
-                        <div className='news-img'>
-                            <img alt="home" style={{ height: '200px', width: '100%' }} src={fadeImages[0]}></img>
-                        </div>
-                        <div className='news-time'>
-                            <i className="far fa-clock"></i>
-                            <span style={{ color: '#33333382' }}>18 : 10 | Thứ 7, 20-1-2018</span>
-                        </div>
-                        <div className='news-item-p'>
-                            <span>   Saepe dicta erat. Dictum corrupti labore habit
-                                        se duis excepturi sapien, morbi ….</span>
-                        </div>
-                    </Col>
-                    <Col sm={4} className='news-item'>
-                        <div className='news-img'>
-                            <img alt="home" style={{ height: '200px', width: '100%' }} src={fadeImages[0]}></img>
-                        </div>
-                        <div className='news-time'>
-                            <i className="far fa-clock"></i>
-                            <span style={{ color: '#33333382' }}>18 : 10 | Thứ 7, 20-1-2018</span>
-                        </div>
-                        <div className='news-item-p'>
-                            <span>   Saepe dicta erat. Dictum corrupti labore habit
-                                        se duis excepturi sapien, morbi ….</span>
-                        </div>
-                    </Col>
-                </Row>
-                <Link to='/news' style={{textDecoration: 'none'}}>
-                    <div className='news-show-all'>
-                        <span>Xem tất cả >></span>
+                      </div>
                     </div>
-                </Link>
-
-            </Container>
-
-   
-        )
-
-    }
+                  </div>
+                );
+              })}
+            </div>
+            {/* /row */}
+            <div className="col-md-12">
+              <div className="section-row">
+                <button className="primary-button hompage-loadmore-news center-block">
+                  <Nav.Link>
+                    <Link to="/news">
+                      <span className="list-item-menu"> Thêm bài viết </span>
+                    </Link>
+                  </Nav.Link>
+                </button>
+              </div>
+            </div>
+            {/* row */}
+            {/* /row */}
+          </div>
+          {/* /container */}
+        </div>
+      </React.Fragment>
+    );
+  }
 }
 
 export default NewsHomepage;
