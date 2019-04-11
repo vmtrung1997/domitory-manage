@@ -325,8 +325,9 @@ class InfoStudent extends Component{
   }
 
   render(){
-    let i = 0;
     const {
+      limit,
+      pageActive,
       infoList,
       roomSelected,
       schoolSelected,
