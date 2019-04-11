@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-bootstrap'
-import SSelect from 'react-select';
 
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
@@ -13,7 +12,7 @@ import {get_month, get_year, get_status} from './expenseRepo'
 import Loader from './../../../components/loader/loader'
 import ModalConfig from './expenseTypeDetail'
 import ModalExport from './expenseExport'
-
+import ModalReset from './expenseReset'
 
 class Expenses extends Component {
 	static propTypes = {
@@ -132,6 +131,7 @@ class Expenses extends Component {
 							</Col>
 						</Row>
 						<div className="flex-row-end m-b-10">
+							<ModalReset loading={this.handleLoading} />
 							<ModalConfig loading={this.handleLoading}/>
 							<ModalExport loading={this.handleLoading} roomList={this.state.rooms}/>
 							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)}/>

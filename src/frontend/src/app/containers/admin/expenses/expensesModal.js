@@ -3,8 +3,8 @@ import { Table, Row, Col, Modal } from 'react-bootstrap'
 import Input from '../../../components/input/input'
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
-import { getData, add_expense, find_expense, check_expense } from '../expenses/expensesAction'
-import { get_month, get_year } from './expenseRepo'
+import { getData, add_expense, find_expense, check_expense, info_room } from '../expenses/expensesAction'
+import { get_month, get_year,  } from './expenseRepo'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 class Example extends React.Component {
   static defaultProps = {
@@ -25,14 +25,15 @@ class Example extends React.Component {
       soDien: 0,
       soNuoc: 0,
       submit: false,
-      tableErr: []
+      tableErr: [],
+      infoRoom: {}
     };
   }
   componentDidMount() {
     
   }
   handleClose() {
-    this.setState({ show: false, table: [], room: this.state.rooms[0], month: this.props.currentMonth, year: this.props.currentYear, soDien: 0, soNuoc: 0 });
+    this.setState({ show: false, table: [], room: 0, month: this.props.currentMonth, year: this.props.currentYear, soDien: 0, soNuoc: 0 });
   }
 
   handleShow() {
@@ -42,7 +43,8 @@ class Example extends React.Component {
       if (result.data) {
         console.log(result.data);
         var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong, loaiPhong: room.loaiPhong }))
-        self.setState({ rooms: roomOptions, room: roomOptions[0] });
+        self.setState({ rooms: roomOptions});
+        this.selected(roomOptions[0].value);
       }
     }).catch(err => {
       // ToastsStore.error(err);
@@ -51,8 +53,12 @@ class Example extends React.Component {
   }
   selected = (value) => {
     var room = this.state.rooms.find(obj => obj.value === value)
-    console.log(room);
-    this.setState({ room: room })
+    info_room({idPhong: value}).then(result => {
+      if (result.data)
+        {console.log(result.data.data)
+        this.setState({ room: room, infoRoom: result.data.data })}
+
+    })
   }
   monthSelected = value => {
     this.setState({ month: value })
@@ -97,7 +103,6 @@ class Example extends React.Component {
     }
     this.props.loading(true)
     add_expense(table).then(result => {
-      console.log('result data: ', result)
       if (result.data) {
         self.props.loading(false)
         if (result.data.rs ==='fail') {
@@ -111,7 +116,6 @@ class Example extends React.Component {
         }
       }
     }).catch(err => {
-      console.log(err)
       ToastsStore.error("Thêm chi phí thất bại");
       self.handleClose();
     })
@@ -155,7 +159,7 @@ class Example extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <div className={'p-10'}>
-              <Row className={'m-b-10'}>
+              <Row>
                 <Col md={2}>
                   Tháng
                   <Select options={monthOptions} selected={this.monthSelected} />
@@ -170,17 +174,28 @@ class Example extends React.Component {
                 </Col>
                 <Col md={2}>
                   Số điện
-                  <Input type="number" value={this.state.soDien} getValue={this.onChange} name={'soDien'} />
+                  <Input type="number" value={this.state.soDien} getValue={this.onChange} name={'soDien'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.dien}/>
                 </Col>
                 <Col md={2}>
                   Số nước
-                  <Input type="number" value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'} />
+                  <Input type="number" value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.nuoc}/>
                 </Col>
                 <Col md={2}>
                   &nbsp;
                 <Col md={12}><Button color={'warning'} size={'md'} onClick={this.addRow}><i className="fas fa-plus" /></Button></Col>
                 </Col>
               </Row>
+              { Object.keys(this.state.infoRoom).length && <Row className={'m-b-10'}>
+                <Col md={4}>
+                  Loại: {this.state.infoRoom.loaiPhong.loai}
+                </Col>
+                <Col md={4}>
+                  Số điện hiện tại: {this.state.infoRoom.chiPhi.soDien}
+                </Col>
+                <Col md={4}>
+                  Số nước hiện tại: {this.state.infoRoom.chiPhi.soNuoc}
+                </Col>
+              </Row>}
               <Row>
                 <Col>
                   <div className={'maxHeight'}>

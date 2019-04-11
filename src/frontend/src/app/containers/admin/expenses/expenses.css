@@ -2,13 +2,12 @@
     display: flex;
     justify-content: space-between;
 }
-.link{
+.link-table{
     color: #007bff;
     cursor: pointer;
 }
-.link:hover{
+.link-table:hover{
     color: #0056b3;
-    text-decoration: underline;
 }
 .flex-row-end{
     display: flex;
