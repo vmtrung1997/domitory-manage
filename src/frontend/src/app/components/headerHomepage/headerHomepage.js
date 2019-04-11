@@ -3,9 +3,13 @@ import {
   Button,
   FormControl,
   Dropdown,
-  Nav, Form, Navbar
+  Nav,
+  Form,
+  Navbar
 } from "react-bootstrap";
 import Login from "./../../containers/student/modalLogin/login";
+import ChangePassword from "./../../containers/student/modalResetPassword/modelPassword";
+import ResetPassword from "./../../containers/student/modalForgotPassword/modalForgotPassword"
 import { connect } from "react-redux";
 import "./headerHomepage.css";
 import { Link } from "react-router-dom";
@@ -17,6 +21,8 @@ class HeaderHomepage extends Component {
     super(props);
     this.state = {
       showLoginModal: false,
+      showResetPasswordModal: false,
+      showPasswordModal: false,
       isLogin: false,
       name: ""
     };
@@ -32,23 +38,40 @@ class HeaderHomepage extends Component {
     });
   };
 
+
+  abc = show =>{
+    console.log('vo day');
+    this.setState({
+      showResetPasswordModal: show
+    });
+  }
+
+  showResetPassword = () =>{
+    this.setState({
+      showResetPasswordModal: true
+    })
+  }
   dataLogin = data => {
     this.setUserName(data);
   };
 
-  setUserName = (secret) => {
+  setUserName = secret => {
     const decode = jwt_decode(secret);
+    console.log(decode);
     var name = decode.user.profile.hoTen.split(" ");
     this.setState({ name: name[name.length - 1] });
+  };
+  changePass = () =>{
+    this.setState({
+      showPasswordModal: true
+    })
   }
 
-  setActive = () => { };
+  setActive = () => {};
   handleSelect = event => {
     console.log(event);
   };
-  getScroll = event => {
-    this.props.getScroll(event.target.value);
-  };
+
 
   logOut = () => {
     const secret = JSON.parse(localStorage.getItem("secret"));
@@ -70,11 +93,12 @@ class HeaderHomepage extends Component {
     }
   }
 
-  test = () => {
-    console.log(this.props.location);
-  };
+  hideChangePassword = (value) =>{
+    this.setState({
+      showPasswordModal: false
+    })
+  }
   render() {
-
     let isLogin;
     const secret = JSON.parse(localStorage.getItem("secret"));
     if (secret && !this.state.isLogin) {
@@ -84,83 +108,105 @@ class HeaderHomepage extends Component {
     }
     if (!this.state.isLogin) {
       isLogin = (
-        <Button variant="light" onClick={this.Login} className='form-rounded btn-hover'>Đăng nhập</Button>
+        <Button
+          variant="light"
+          onClick={this.Login}
+          className="form-rounded btn-hover"
+        >
+          Đăng nhập
+        </Button>
       );
     } else {
       isLogin = (
         <Dropdown>
-          <Dropdown.Toggle variant="light" id="dropdown-basic"  className='form-rounded btn-hover'>
+          <Dropdown.Toggle
+            variant="light"
+            id="dropdown-basic"
+            className="form-rounded btn-hover"
+          >
             <span> {this.state.name}</span>
-  </Dropdown.Toggle>
+          </Dropdown.Toggle>
 
           <Dropdown.Menu alignRight>
-          <Dropdown.Item eventKey="1">
-                  <Link to="/dashboard" className='list-item-link'>
-                    <i className="fas fa-user-circle" />
-                    <span className="list-menu-sub">Trang cá nhân</span>
-                  </Link>
-                </Dropdown.Item>
+            <Dropdown.Item eventKey="1">
+              <Link to="/dashboard" className="list-item-link">
+                <i className="fas fa-user-circle" />
+                <span className="list-menu-sub">Dashboard</span>
+              </Link>
+            </Dropdown.Item>
 
-                <Dropdown.Item eventKey="2">
-                  <Link to="/dashboard#list" className='list-item-link'>
-                    <i className="fas fa-snowboarding" />
-                    <span className="list-menu-sub">Hoạt động</span>
-                  </Link>
-                </Dropdown.Item>
-                <Dropdown.Item eventKey="3">
-                  <Link to="/dashboard#list" className='list-item-link'>
-                    <i className="fas fa-file-invoice" />
-                    <span className="list-menu-sub">Điện nước</span>
-                  </Link>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item onClick={this.logOut} eventKey="4">
-                  <i className="fas fa-sign-out-alt" />
-                  <span className="list-menu-sub">Thoát</span>
-                </Dropdown.Item>
+            <Dropdown.Item onClick={this.changePass} eventKey="1">
+              <Link to="/dashboard" className="list-item-link">
+                <i className="fas fa-lock" />
+                <span className="list-menu-sub">Đổi mật khẩu</span>
+              </Link>
+            </Dropdown.Item>
+
+            <Dropdown.Divider />
+            <Dropdown.Item onClick={this.logOut} eventKey="4">
+              <i className="fas fa-sign-out-alt" />
+              <span className="list-menu-sub">Thoát</span>
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-      
       );
     }
     console.log(this.props.location);
     return (
-
       <React.Fragment>
         {this.state.showLoginModal && (
-          <Login dataLogin={this.dataLogin} hideLogin={this.hideLogin} />
+          <Login dataLogin={this.dataLogin} hideLogin={this.hideLogin} showResetPassword = {this.showResetPassword}/>
         )}
-        <Navbar sticky="top" variant="dark" expand="sm" className="HeaderHomepage" style={{ backgroundColor: '#1B5F72' }}>
-          <Navbar.Brand >
+        {this.state.showPasswordModal && (
+          <ChangePassword hideChangePassword={this.hideChangePassword} />
+        )}
+        {this.state.showResetPasswordModal && (
+          <ResetPassword hideResetPassword={this.abc}></ResetPassword>
+        )}
+
+        <Navbar
+          sticky="top"
+          variant="dark"
+          expand="sm"
+          className="HeaderHomepage"
+          style={{ backgroundColor: "#1B5F72" }}
+        >
+          <Navbar.Brand>
             <div className="nav-img">
-              <img 
-                alt="img_header"
-                src="/images/Logo-KHTN.jpg"
-              />
+              <img alt="img_header" src="/images/Logo-KHTN.jpg" />
             </div>
-            <span className='header-title'>Kí túc xá Trần Hưng Đạo</span>
+            <span className="header-title">Kí túc xá Trần Hưng Đạo</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-
-
-              <Nav.Link > <Link to="/">
-                <span className='list-item-menu'> Trang chủ </span>
-              </Link></Nav.Link>
-              <Nav.Link><Link to="/news">
-                <span className='list-item-menu'> Tin tức </span>
-              </Link>
+              <Nav.Link>
+                {" "}
+                <Link to="/">
+                  <span className="list-item-menu"> Trang chủ </span>
+                </Link>
               </Nav.Link>
-              <Nav.Link ><Link to="/about">
-                <span className='list-item-menu'> Giới thiệu </span>
-              </Link></Nav.Link>
-
+              <Nav.Link>
+                <Link to="/news">
+                  <span className="list-item-menu"> Tin tức </span>
+                </Link>
+              </Nav.Link>
+              <Nav.Link>
+                <Link to="/about">
+                  <span className="list-item-menu"> Giới thiệu </span>
+                </Link>
+              </Nav.Link>
             </Nav>
-            <Form inline >
-              <Form inline className='search-area'>
-                <FormControl type="text" placeholder="Tìm kiếm" className="mr-sm-2 search-control form-rounded " />
-                <Button variant="light" className='form-rounded btn-hover'><i className="fas fa-search"></i></Button>
+            <Form inline>
+              <Form inline className="search-area">
+                <FormControl
+                  type="text"
+                  placeholder="Tìm kiếm"
+                  className="mr-sm-2 search-control form-rounded "
+                />
+                <Button variant="light" className="form-rounded btn-hover">
+                  <i className="fas fa-search" />
+                </Button>
               </Form>
               {/* <Nav className="mr-auto">
               <NavDropdown title="Chào bạn" id="basic-nav-dropdown">
