@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var loaiPhongSchema = new Schema({
-    loai: Numbber,
+    loai: Number,
     ten: String,
     dien: Boolean, //true: co tinh tien dien
     nuoc: Boolean, //true: co tinh tien nuoc
