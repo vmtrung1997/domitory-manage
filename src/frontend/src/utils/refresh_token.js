@@ -2,6 +2,7 @@ import axios from 'axios'
 import jwt_decode from 'jwt-decode';
 
 const refreshToken = async () => {
+  console.log('==refresh token')
     var secret = JSON.parse(localStorage.getItem('secret'))
     if( secret ){
         const exp = jwt_decode(secret.access_token).exp
@@ -19,6 +20,8 @@ const refreshToken = async () => {
           }
         }
     }
+  console.log('==refresh token end')
+
 }
 
 export default refreshToken

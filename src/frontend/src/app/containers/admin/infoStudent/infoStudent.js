@@ -25,11 +25,13 @@ class InfoStudent extends Component{
     this.state = {
       loading: true,
 
+      showRoomHistoryPopup: false,
       showAddPopup: false,
       showDelPopup: false,
       pageActive: 1,
       totalpages: 1,
       limit: 10,
+      isOld: false,
 
       infoAdded: {},
 
@@ -63,6 +65,9 @@ class InfoStudent extends Component{
       case 'del':
         this.setState({ showDelPopup: false });
         break;
+      case 'history':
+        this.setState({ showRoomHistoryPopup: false });
+        break;
       default:
         break
     }
@@ -75,6 +80,9 @@ class InfoStudent extends Component{
         break;
       case 'del':
         this.setState({ showDelPopup: true });
+        break;
+      case 'history':
+        this.setState({ showRoomHistoryPopup: true });
         break;
       default:
         break
@@ -93,8 +101,8 @@ class InfoStudent extends Component{
 
   componentDidMount(){
     this.getData();
-    this.getElement('phong');
-    this.getElement('truong');
+    this.getElement('room');
+    this.getElement('school');
     this.getElement('floor');
     // this.modifyData();
   }
@@ -106,16 +114,17 @@ class InfoStudent extends Component{
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
       switch (name) {
-        case 'phong':
+        case 'room':
           const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
           roomOptions.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
             roomOptionsSearch: roomOptions
           })
+
           break;
-        case 'truong':
+        case 'school':
           const schoolOptionsSearch = result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }));
-          const schoolOptions = schoolOptionsSearch;
+          const schoolOptions = [...schoolOptionsSearch];
           schoolOptionsSearch.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
             schoolOptionsSearch: schoolOptionsSearch,
@@ -145,7 +154,7 @@ class InfoStudent extends Component{
       'x-access-token': secret.access_token
     };
 
-    const { mssv, hoTen, roomSelected, schoolSelected } = this.state;
+    const { mssv, hoTen, roomSelected, schoolSelected, isOld } = this.state;
     let idPhong = roomSelected.value;
     let idTruong = schoolSelected.value;
     const options = {
@@ -164,7 +173,8 @@ class InfoStudent extends Component{
         mssv: mssv,
         hoTen: hoTen,
         idPhong: idPhong,
-        idTruong: idTruong
+        idTruong: idTruong,
+        isOld: isOld,
       }, { headers: headers }
     ).then(result => {
       this.setState({
@@ -253,7 +263,6 @@ class InfoStudent extends Component{
       }, { headers: headers }
     ).then(result => {
       this.handleClosePopup('add');
-      ToastsStore.success("Thêm thành công!");
     }).catch(err => {
       ToastsStore.error("Thêm không thành công!" + err.response.data.msg);
     })
@@ -289,10 +298,7 @@ class InfoStudent extends Component{
 
   handleValueCheck = mssv => {
     const i = this.state.listDelete.indexOf(mssv);
-    if(i !== -1)
-      return true
-    else
-      return false
+    return i !== -1;
   };
 
   handleDelStudent = async()  => {
@@ -303,6 +309,10 @@ class InfoStudent extends Component{
         arrDelete: this.state.listDelete
       }, { headers: {'x-access-token': secret.access_token} }
     ).then(result => {
+      console.log('==del success', result)
+      this.setState({
+        listDelete: []
+      });
       ToastsStore.success("Xóa thành công!");
       this.getData();
       this.handleClosePopup('del')
@@ -326,9 +336,17 @@ class InfoStudent extends Component{
     this.getData();
   }
 
+  handleChooseOption = (prop) => {
+    this.setState({isOld: prop});
+    this.getData();
+  };
+
   render(){
-    let i = 0;
+    console.log('==render state: ', this.state);
+
     const {
+      limit,
+      pageActive,
       infoList,
       roomSelected,
       schoolSelected,
@@ -339,7 +357,9 @@ class InfoStudent extends Component{
       floorOptions,
       hoTen,
       mssv,
+      isOld,
       infoAdded: { roomAdded, schoolAdded} } = this.state;
+    let i = pageActive*limit - 10;
     return(
       <div>
         <Loader loading={this.state.loading}/>
@@ -436,47 +456,48 @@ class InfoStudent extends Component{
               </Button>
             </Col>
             </Row>
+
+            <Row>
+              <Col md={6} className={''}>
+                <div className={'is-manipulation'}>
+                  <Button
+                    variant={'rounded'}
+                  >
+                    <i className="fas fa-file-import"/>
+                  </Button>
+                  <Button
+                    variant={'rounded'}
+                  >
+                    <i className="fas fa-file-export"/>
+                  </Button>
+                  <Button
+                    variant={'rounded'}
+                    color={'success'}
+                  >
+                    <i className="fas fa-address-card"/>
+                  </Button>
+                  <Button
+                    variant={'rounded'}
+                    color={'success'}
+                  >
+                    <i className="fas fa-print"/>
+                  </Button>
+                </div>
+              </Col>
+
+              <Col md={6} >
+                <div className={'is-manipulation'} style={{float: 'right'}}>
+                  <Button color={'warning'} onClick={() => this.handleShowPopup('add')}>
+                    <i className="fas fa-plus"/>
+                  </Button>
+                  <Button color={'danger'}>
+                    <i className="fas fa-trash-alt" onClick={() => this.handleShowPopup('del')}/>
+                  </Button>
+                </div>
+              </Col>
+            </Row>
           </div>
 
-          <Row>
-            <Col md={6} className={''}>
-              <div className={'is-manipulation'}>
-                <Button
-                  variant={'rounded'}
-                >
-                  <i className="fas fa-file-import"/>
-                </Button>
-                <Button
-                  variant={'rounded'}
-                >
-                  <i className="fas fa-file-export"/>
-                </Button>
-                <Button
-                  variant={'rounded'}
-                  color={'success'}
-                >
-                  <i className="fas fa-address-card"/>
-                </Button>
-                <Button
-                  variant={'rounded'}
-                  color={'success'}
-                >
-                  <i className="fas fa-print"/>
-                </Button>
-              </div>
-            </Col>
-
-            <Col md={6} >
-              <div className={'is-manipulation'} style={{float: 'right'}}>
-                <Button color={'warning'} onClick={() => this.handleShowPopup('add')}>
-                  <i className="fas fa-plus"/>
-                </Button>
-                <Button color={'danger'}>
-                  <i className="fas fa-trash-alt" onClick={() => this.handleShowPopup('del')}/>
-                </Button>
-              </div>
-            </Col>
-          </Row>
 
           {/*modal popup add student*/}
           <Modal show={this.state.showAddPopup} onHide={() =>this.handleClosePopup('add')}>
@@ -538,24 +559,78 @@ class InfoStudent extends Component{
 
           {/*end modal*/}
 
-          {/*modal popup edit student*/}
+          {/*modal popup delete student*/}
           <Modal show={this.state.showDelPopup} onHide={() =>this.handleClosePopup('del')}>
             <Modal.Header closeButton>
-              <Modal.Title>Bạn có chắc chắn muốn xóa những sinh viên này?</Modal.Title>
+              <Modal.Title>Sau khi xóa những sinh viên này sẽ là sinh viên cũ!</Modal.Title>
             </Modal.Header>
             {/*<Modal.Body>Bạn có chắc chắn muốn xóa những sinh viên này?</Modal.Body>*/}
             <Modal.Footer>
               <Button variant="outline" onClick={() =>this.handleClosePopup('del')}>
-                Cancel
+                Hủy
               </Button>
               <Button  onClick={() =>this.handleDelStudent()}>
-                OK
+                Đồng ý
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {/*end modal*/}
+
+          {/*modal popup room history student*/}
+          <Modal show={this.state.showRoomHistoryPopup} onHide={() =>this.handleClosePopup('history')}>
+            <Modal.Header closeButton>
+              <Modal.Title>Lịch sử chuyển phòng</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Table responsive bordered >
+                <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Thời gian</th>
+                  <th>Phòng</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>01/01/2018 - 01/01/2019</td>
+                  <td>100</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>01/01/2019 - Hiện tại</td>
+                  <td>102</td>
+                </tr>
+                </tbody>
+              </Table>;
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={() =>this.handleClosePopup('history')}>
+                Thoát
               </Button>
             </Modal.Footer>
           </Modal>
           {/*end modal*/}
 
           <div className={'is-body'}>
+            <Row className={'is-btn-option'}>
+              <Col>
+                <Button
+                  variant={isOld ? 'outline' :  'default'}
+                  color={'default'}
+                  onClick={() => this.handleChooseOption(false)}
+                >
+                  Hiện tại
+                </Button>
+                <Button
+                  color={isOld ? 'default' : 'outline'}
+                  onClick={() => this.handleChooseOption(true)}
+                >
+                  Sinh viên cũ
+                </Button>
+              </Col>
+            </Row>
+
             <Table responsive hover bordered size="sm">
               <thead>
 
@@ -578,7 +653,12 @@ class InfoStudent extends Component{
                     <td>{info.MSSV}</td>
                     <td>{info.hoTen}</td>
                     <td>{info.truong.tenTruong}</td>
-                    <td>{info.idPhong.tenPhong}</td>
+                    <td>
+                      {info.idPhong.tenPhong}
+                      <Button color={'info'} variant={'outline'} style={{marginLeft: '15px'}} onClick={() => this.handleShowPopup('history')}>
+                        <i className="fas fa-history"/>
+                      </Button>
+                      </td>
                     <td style={{display: 'flex', justifyContent: 'center'}}>
                       <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.onViewDetail(info)}>
                         <i className="fas fa-edit"/>
@@ -597,22 +677,7 @@ class InfoStudent extends Component{
               </Col>
               <Col md={9}>
                 <div className={'is-pagination'}>
-                {/*<Pagination>*/}
-                  {/*<Pagination.First />*/}
-                  {/*<Pagination.Prev />*/}
-                  {/*{pageList && pageList.map((page, index) => {*/}
-                    {/*if(pageActive === page)*/}
-                      {/*return(*/}
-                        {/*<Pagination.Item active key={index}>{page}</Pagination.Item>*/}
-                      {/*);*/}
-                    {/*else*/}
-                      {/*return(*/}
-                        {/*<Pagination.Item key={index}>{page}</Pagination.Item>*/}
-                      {/*)*/}
-                  {/*})}*/}
-                  {/*<Pagination.Next />*/}
-                  {/*<Pagination.Last />*/}
-                {/*</Pagination>*/}
+
                   <MyPagination page={this.state.pageActive} totalPages={this.state.totalPages} clickPage={this.clickPage}/>
 
                 </div>

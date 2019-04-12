@@ -4,6 +4,7 @@ require('../models/TaiKhoan');
 const Profile = require('../models/Profile');
 const Account = require('../models/TaiKhoan');
 const Room = require('../models/Phong');
+const RoomHistory = require('../models/LichSuPhong');
 const ReToken = require('../models/refreshToken');
 let auth = require('../repos/authRepo');
 const md5 = require('md5');
@@ -135,7 +136,7 @@ exports.getListStudent = (req, res) => {
   options.populate = ['idTaiKhoan','idPhong', 'truong', 'nganhHoc'];
 
   console.log('==query', query);
-  Account.find({isDelete: 0, loai: 'SV'}).select('_id').then(accs => {
+  Account.find({isDelete: params.isOld, loai: 'SV'}).select('_id').then(accs => {
     var arr = [];
     accs.forEach(acc => {
       arr.push(acc._id)
@@ -155,4 +156,14 @@ exports.getListStudent = (req, res) => {
 
   //}
 };
+
+exports.getRoomHistory = (req, res) => {
+  const id = req.params.id;
+  RoomHistory.find({id: id}).sort({ ngayChuyen: -1 }).
+    then(result => {
+      res.status(200).json(result)
+  }).catch(err =>
+    res.status(400)
+  )
+}
 
