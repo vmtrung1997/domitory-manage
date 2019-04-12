@@ -1,22 +1,35 @@
 const Room = require('../models/Phong');
+require('../models/LoaiPhong');
 
 exports.getRoom = async(req, res) => {
   const floor = req.params.floor;
+  console.log('==floor', floor)
   let roomList = {};
-  await Room.find({lau: floor, isHoDan: 0}).then(result => {
-    roomList.normal = result;
-    console.log('====', roomList)
-  }).catch(err => {
-    res.status(400)
-  });
-  await Room.find({lau: floor, isHoDan: -1}).then(result => {
-    roomList.service = result;
-  }).catch(err => {
-    res.status(400)
+  Room.find({ lau: floor }).populate({
+    path: 'loaiPhong',
+    match: { loai: 0 },
+    options: { sort: { name: -1 } }
+  }).exec(function (err, kittens) {
+    if (err)
+      res.status(400)
+    console.log(kittens[0]) // Zoopa
+    res.status(200).json(kittens)
   })
-  console.log('11111', roomList)
+  //   .then(result => {
+  //   roomList.normal = result;
+  //   console.log('====', roomList)
+  // }).catch(err => {
+  //   res.status(400)
+  // });
 
-  res.status(200).json(roomList)
+  // await Room.find({lau: floor, isHoDan: -1}).then(result => {
+  //   roomList.service = result;
+  // }).catch(err => {
+  //   res.status(400)
+  // })
+  // console.log('11111', roomList)
+  //
+  // res.status(200).json(roomList)
 };
 
 exports.addRoom = (req, res) => {

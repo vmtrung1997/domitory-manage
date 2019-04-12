@@ -158,10 +158,10 @@ class Example extends React.Component {
           {exp.trangThai===0 && <Button color="danger" onClick={this.handleDelete}>
             Xóa
             </Button>}
-            {exp.trangThai===0 && !this.state.capNhat && <Button color="warning" onClick={this.handleEdit}>
+            {!this.state.capNhat && <Button color="warning" onClick={this.handleEdit}>
             Chỉnh sửa
             </Button>}
-            {exp.trangThai===0 && this.state.capNhat && <Button color="warning" onClick={this.handleUpdate}>
+            {this.state.capNhat && <Button color="warning" onClick={this.handleUpdate}>
             Cập nhật
             </Button>}
           { exp.trangThai===0 && <Button variant="default" onClick={this.handleSubmit}>

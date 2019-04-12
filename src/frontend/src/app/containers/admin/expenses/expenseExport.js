@@ -153,12 +153,12 @@ class Example extends React.Component {
               <Select options={trangThai} selected={this.statusSelected} /></Col>
             </Row>
             <Row>
-              <Col><Checkbox label={'Số điện'} check={true} name={'soDien'} isCheck={this.handleCheck}/></Col>
-              <Col><Checkbox label={'Số nước'} check={true} name={'soNuoc'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Số điện'} check={this.state.soDien} name={'soDien'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Số nước'} check={this.state.soNuoc} name={'soNuoc'} isCheck={this.handleCheck}/></Col>
             </Row>
             <Row>
-              <Col><Checkbox label={'Tiền rác'} check={true} name={'tienRac'} isCheck={this.handleCheck}/></Col>
-              <Col><Checkbox label={'Tổng tiền'} check={true} name={'tongTien'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Tiền rác'} check={this.state.tienRac} name={'tienRac'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Tổng tiền'} check={this.state.tongTien} name={'tongTien'} isCheck={this.handleCheck}/></Col>
             </Row>
           </Modal.Body>
           <Modal.Footer>

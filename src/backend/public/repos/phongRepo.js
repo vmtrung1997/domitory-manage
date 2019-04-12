@@ -6,7 +6,7 @@ exports.get_room = () => {
     Phong.
     find().
     sort({'tenPhong': 'asc'}).
-    select(['_id', 'tenPhong']).
+    select(['_id', 'tenPhong', 'loaiPhong']).
     then(result => {
       if (result)
       resolve(result);
@@ -20,15 +20,15 @@ exports.get_room = () => {
 exports.get_element = (req, res) => {
   let obj = req.params.name;
   switch (obj) {
-    case 'phong':
+    case 'room':
       Phong.find({isHoDan: 0}).sort({'tenPhong': 'asc'}).select(['_id', 'tenPhong']).
       then(result => {
         res.status(200).json(result);
       }).catch(error => {
         res.status(400).json({err: error});
-      })
+      });
       break;
-    case 'truong':
+    case 'school':
       Truong.find().sort({'tenTruong': 'asc'}).select(['_id', 'tenTruong']).
       then(result => {
         res.status(200).json(result);

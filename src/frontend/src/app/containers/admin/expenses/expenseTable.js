@@ -39,7 +39,7 @@ export default class ExpenseTable extends React.Component {
 					<td>{index + 1}</td>
 					<td>{row.thang}</td>
 					<td>{row.nam}</td>
-					<td><span className={'link'} onClick={() => this.onHandleClick(row)}>{row.idPhong.tenPhong}</span></td>
+					<td><span className={'link-table'} onClick={() => this.onHandleClick(row)}>{row.idPhong.tenPhong}</span></td>
 					<td className={'text-right'}>{row.soDien>0?row.soDien - row.soDienCu:row.soDien}</td>
 					<td className={'text-right'}>{row.soNuoc>0?row.soNuoc - row.soNuocCu:row.soNuoc}</td>
 					<td className={'text-right'}>{Optimize.OpitmizeNumber(row.tienRac)}</td>

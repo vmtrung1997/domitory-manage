@@ -11,7 +11,7 @@
     color: #FFFFFF;
 }
 	.bt-default.bt-outline {
-		color: #1ab394;
+		color: #c2c2c2;
 		border: 1px solid #c2c2c2;
 	}
 	.bt-default:hover{
@@ -92,7 +92,7 @@
 		border-color: #21b9bb;
 		color: #FFFFFF;
 	}
-	.bt-info.bt-outline {
+	.bt-info.bt-3d {
 		box-shadow: inset 0px 0px 0px #1eacae, 0px 5px 0px 0px #1eacae, 0px 10px 5px #999999;
 	}
 

@@ -168,7 +168,7 @@ class News extends Component {
                     <tr key={index}>
                       <td>{index}</td>
                       <td style = {{width:'250px'}}>{item.tieuDe}</td>
-                      <td>{item.loai === "1"?"Hoạt động":"Tin tức"}</td>
+                      <td>{item.loai === "1"?"Hoạt động":"Thông tin"}</td>
                    
                       <td>{formatDayEdit}</td>
                       <td>{item.hoTen}</td>

@@ -2,7 +2,7 @@ import React from 'react';
 import './infoDormitory.css';
 import Title from "../../../components/title/title";
 import Button from "../../../components/button/button";
-import {Col, Modal, Row} from 'react-bootstrap';
+import {Col, Modal, Row, Tabs, Tab} from 'react-bootstrap';
 import refreshToken from './../../../../utils/refresh_token'
 import axios from "axios";
 import Input from "../../../components/input/input";
@@ -432,46 +432,167 @@ class InfoDormitory extends React.Component{
 
               </Col>
               <Col md={10}>
-                <div className={'id-room'}>
-                  <div>
-                  {roomList.normal && roomList.normal.map(room => {
-                    return(
-                      <div className={'id-room_item'} key={room.key}>
-                        <Button
-                          shadow
-                          variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
-                          color={'warning'}
-                          onClick={()=>this.handleShowDetail(room.data)}
-                        >
-                          <i className="fas fa-home"/>
-                          {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
-                        </Button>
+                <Tabs defaultActiveKey="all" id="uncontrolled-tab-example">
+                  <Tab eventKey="all" title="Tất cả">
+                    <div className={'id-room'}>
+                      <div>
+                        {roomList.normal && roomList.normal.map(room => {
+                          return(
+                            <div className={'id-room_item'} key={room.key}>
+                              <Button
+                                shadow
+                                variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                                color={'warning'}
+                                onClick={()=>this.handleShowDetail(room.data)}
+                              >
+                                <i className="fas fa-home"/>
+                                {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                              </Button>
+                            </div>
+                          )
+                        })}
                       </div>
-                    )
-                  })}
-                  </div>
-                  <div>
-                    {roomList.service && roomList.service.map(room => {
-                      return(
-                        <div className={'id-room_item'} key={room.key}>
-                          <Button
-                            shadow
-                            variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
-                            onClick={()=>this.handleShowDetail(room.data)}
-                          >
-                            <i className="fas fa-home 7x"/>
-                            {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
-                          </Button>
-                        </div>
-                      )
-                    })}
-                  </div>
+                      <div>
+                        {roomList.service && roomList.service.map(room => {
+                          return(
+                            <div className={'id-room_item'} key={room.key}>
+                              <Button
+                                shadow
+                                variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                                onClick={()=>this.handleShowDetail(room.data)}
+                              >
+                                <i className="fas fa-home 7x"/>
+                                {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                              </Button>
+                            </div>
+                          )
+                        })}
+                      </div>
 
 
-                </div>
+                    </div>
+                  </Tab>
+                  <Tab eventKey="studentRoom" title="Phòng sinh viên">
+                    <div className={'id-room'}>
+                      <div>
+                        {roomList.normal && roomList.normal.map(room => {
+                          return(
+                            <div className={'id-room_item'} key={room.key}>
+                              <Button
+                                shadow
+                                variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                                color={'warning'}
+                                onClick={()=>this.handleShowDetail(room.data)}
+                              >
+                                <i className="fas fa-home"/>
+                                {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                              </Button>
+                            </div>
+                          )
+                        })}
+                      </div>
+                      <div>
+                        {roomList.service && roomList.service.map(room => {
+                          return(
+                            <div className={'id-room_item'} key={room.key}>
+                              <Button
+                                shadow
+                                variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                                onClick={()=>this.handleShowDetail(room.data)}
+                              >
+                                <i className="fas fa-home 7x"/>
+                                {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                              </Button>
+                            </div>
+                          )
+                        })}
+                      </div>
+
+
+                    </div>
+                  </Tab>
+                  <Tab eventKey="proRoom" title="Phòng dịch vụ">
+                    <div className={'id-room'}>
+                      <div>
+                        {roomList.normal && roomList.normal.map(room => {
+                          return(
+                            <div className={'id-room_item'} key={room.key}>
+                              <Button
+                                shadow
+                                variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                                color={'warning'}
+                                onClick={()=>this.handleShowDetail(room.data)}
+                              >
+                                <i className="fas fa-home"/>
+                                {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                              </Button>
+                            </div>
+                          )
+                        })}
+                      </div>
+                      <div>
+                        {roomList.service && roomList.service.map(room => {
+                          return(
+                            <div className={'id-room_item'} key={room.key}>
+                              <Button
+                                shadow
+                                variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                                onClick={()=>this.handleShowDetail(room.data)}
+                              >
+                                <i className="fas fa-home 7x"/>
+                                {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                              </Button>
+                            </div>
+                          )
+                        })}
+                      </div>
+
+
+                    </div>
+                  </Tab>
+                  <Tab eventKey="functionRoom" title="Phòng chức năng">
+                    <div className={'id-room'}>
+                      <div>
+                        {roomList.normal && roomList.normal.map(room => {
+                          return(
+                            <div className={'id-room_item'} key={room.key}>
+                              <Button
+                                shadow
+                                variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                                color={'warning'}
+                                onClick={()=>this.handleShowDetail(room.data)}
+                              >
+                                <i className="fas fa-home"/>
+                                {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                              </Button>
+                            </div>
+                          )
+                        })}
+                      </div>
+                      <div>
+                        {roomList.service && roomList.service.map(room => {
+                          return(
+                            <div className={'id-room_item'} key={room.key}>
+                              <Button
+                                shadow
+                                variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                                onClick={()=>this.handleShowDetail(room.data)}
+                              >
+                                <i className="fas fa-home 7x"/>
+                                {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                              </Button>
+                            </div>
+                          )
+                        })}
+                      </div>
+
+
+                    </div>
+                  </Tab>
+                </Tabs>
+
               </Col>
             </Row>
-
 
             <Row style={{justifyContent: 'center'}}>
               <div className={'id-add'}>
