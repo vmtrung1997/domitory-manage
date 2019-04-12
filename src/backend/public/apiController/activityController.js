@@ -5,7 +5,6 @@ const Profile = require('./../models/Profile');
 const phong = require('./../models/Phong.js');
 const writeXlsx = require('../repos/xlsxRepo')
 
-
 exports.get_list_activity = (req, res) => {
 	const option = {
 		options: { 

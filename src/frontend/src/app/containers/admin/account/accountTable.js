@@ -4,18 +4,22 @@ import { withRouter, Link } from 'react-router-dom'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from "react-toasts";
 import axios from './../../../config'
 
+import './accountTable.css'
 import Confirm from './../../../components/confirm/confirm'
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
 import AccountEdit from './accountEdit'
+import AccountDetail from './accountDetail'
 
 class AccountTable extends Component{
 	constructor(props){
 		super(props)
 		this.state = {
 			dataEdit: {},
+			dataDetail: {},
 			showDelete: false,
 			showEdit: false,
+			showDetail: false,
 			id: ''
 		}
 	}
@@ -28,14 +32,23 @@ class AccountTable extends Component{
 			id: id
 		})
 	}
-	handleClose = (state) => {
-		this.setState({ [state]: false })
+	handleEdit = (data) => {
+		this.setState({
+			showEdit: true,
+			dataEdit: data
+		})
+	}
+	handleDetail = (data) => {
+		this.setState({ 
+			showDetail: true,
+			dataDetail: data
+		})
 	}
 	handleSaveEdit = (state) => {
 		this.setState({ [state]: false })
 		this.props.refresh()
 	}
-	handleSave = async () => {
+	handleSaveDelete = async () => {
 		await refreshToken()
     	var secret = JSON.parse(localStorage.getItem('secret'))
 		axios({
@@ -50,18 +63,13 @@ class AccountTable extends Component{
 	    this.setState({ showDelete: false })
 		this.props.refresh()
 	}
-
-	handleEdit = (data) => {
-		this.setState({
-			showEdit: true,
-			dataEdit: data
-		})
+	handleClose = (state) => {
+		this.setState({ [state]: false })
 	}
-
+	
 	render(){
 		const table = this.props.data.map((row, index) => {
 			var rule = ''
-			var url = `/admin/activity/detail/${row._id}`
 			switch(row.loai){
 				case 'SA':
 					rule = 'Trưởng quản lý'
@@ -81,8 +89,8 @@ class AccountTable extends Component{
 			return (
 				<tr key={index} >
 					<td>{index + 1}</td>
-					<td style={{maxWidth: '500px'}}>
-						<Link to={url}>{row.username}</Link>						
+					<td className="lb-username" onClick={(e) => {this.handleDetail(row)}}>
+						{row.username}						
 					</td>
 					{ row.idProfile ? 
 						<td>{row.idProfile.hoTen}</td>
@@ -110,7 +118,7 @@ class AccountTable extends Component{
 					title={'Xóa tài khoản'}
 					content={'Bạn có muốn xóa tài khoản này !'}
 					handleClose={() => this.handleClose('showDelete')}
-					handleSave={() => this.handleSave()}
+					handleSave={() => this.handleSaveDelete()}
 				/>
 				{this.state.showEdit ?
 					<AccountEdit 
@@ -121,8 +129,16 @@ class AccountTable extends Component{
 					/>
 					: <React.Fragment/>
 				}
+				{this.state.showDetail ?
+					<AccountDetail 
+						show={this.state.showDetail}
+						data={this.state.dataDetail}
+						handleClose={() => this.handleClose('showDetail')} 
+					/>
+					: <React.Fragment/>
+				}
 				<Table bordered hover responsive size="sm" className="table-activity">
-					<thead style={{background: '#cfcfcf', textAlign: 'center'}}>
+					<thead className="title-table">
 						<tr>
 							<th>STT</th>
 							<th>Tài khoản</th>

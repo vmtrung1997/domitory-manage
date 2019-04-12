@@ -79,7 +79,7 @@ class ActivityDetail extends Component{
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
 				<Title> Hoạt động sinh viên </Title>
-        		<div style={{height: '500px', overflow: 'auto'}} className={'content-body full'}>
+        		<div className={'content-body full'}>
         			<Link to={'/admin/activity'} className="back">
                 		<i className="fas fa-chevron-left"/>
                 		<span>Trở về</span>

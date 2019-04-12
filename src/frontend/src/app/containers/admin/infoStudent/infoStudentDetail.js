@@ -8,7 +8,6 @@ import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import './infoStudentDetail.css';
-import './../../../style.css'
 import refreshToken from "../../../../utils/refresh_token";
 import Select from "../../../components/selectOption/select";
 import {imageFile} from '../../../function/imageFunction'

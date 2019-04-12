@@ -17,7 +17,6 @@ import {
 } from "react-toasts";
 import Loader from "react-loader-spinner";
 import refreshToken from "./../../../../utils/refresh_token";
-import "./../../../style.css";
 
 class PersonProfile extends React.Component {
   constructor(props) {

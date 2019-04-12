@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import App from './app/App';
-import './app/style.css'
+import './style.css'
 import rootReducer from './app/reducers/index';
 
 

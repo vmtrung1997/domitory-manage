@@ -3,15 +3,13 @@ import { Row, Col, Table, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
 import { withRouter } from 'react-router-dom';
-import SearchSelect from 'react-select';
 
-
+import SearchSelect from '../../../components/selectOption/select'
 import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import CheckBox from './../../../components/checkbox/checkbox';
 import './infoStudent.css';
-import './../../../style.css'
 import refreshToken from './../../../../utils/refresh_token'
 import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
@@ -369,6 +367,7 @@ class InfoStudent extends Component{
               </Col>
               <Col md={2}>
                 <SearchSelect
+                  isSearchable={true}
                   placeholder={''}
                   value={roomSelected}
                   // selected={this.handleSelectRoom}
@@ -390,6 +389,7 @@ class InfoStudent extends Component{
               </Col>
               <Col md={4}>
                 <SearchSelect
+                  isSearchable={true}
                   placeholder={''}
                   value={schoolSelected}
                   onChange={this.handleSelectSchool}
@@ -403,6 +403,7 @@ class InfoStudent extends Component{
               </Col>
               <Col md={2}>
                 <SearchSelect
+                  isSearchable={true}
                   placeholder={''}
                   value={floorSelected}
                   onChange={this.handleSelectFloor}
@@ -508,6 +509,7 @@ class InfoStudent extends Component{
                 </Col>
                 <Col md={9}>
                   <SearchSelect
+                    isSearchable={true}
                     placeholder={''}
                     value={roomAdded}
                     onChange={this.handleSelectAddRoom}
@@ -518,6 +520,7 @@ class InfoStudent extends Component{
                 </Col>
                 <Col md={9}>
                   <SearchSelect
+                    isSearchable={true}
                     placeholder={''}
                     value={schoolAdded}
                     onChange={this.handleSelectAddSchool}
@@ -557,10 +560,9 @@ class InfoStudent extends Component{
 
           <div className={'is-body'}>
             <Table responsive hover bordered size="sm">
-              <thead>
-
+              <thead className="title-table">
               <tr>
-                <th>#</th>
+                <th>STT</th>
                 <th>MSSV</th>
                 <th>Họ và Tên</th>
                 <th>Trường</th>

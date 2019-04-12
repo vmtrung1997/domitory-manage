@@ -53,7 +53,7 @@ export default class ExpenseTable extends React.Component {
 			<React.Fragment>
 				{this.state.showDetail && <ExpenseDetail expenseDetail={this.state.detail} show={this.showDetail} retriveSearch={this.retriveSearch} loading={this.handleLoading}/>}
 				<Table bordered hover responsive size="sm">
-					<thead >
+					<thead className="title-table">
 						<tr>
 							<th>STT</th>
 							<th>Tháng</th>

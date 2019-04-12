@@ -61,3 +61,8 @@ select:disabled {
 input:disabled {
     background: #eee
 }
+
+.title-table{
+    background: #778899;
+    color: white
+}

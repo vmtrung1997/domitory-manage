@@ -1,6 +1,5 @@
 import React from 'react';
 import './infoDormitory.css';
-import './../../../style.css'
 import Title from "../../../components/title/title";
 import Button from "../../../components/button/button";
 import {Col, Modal, Row} from 'react-bootstrap';

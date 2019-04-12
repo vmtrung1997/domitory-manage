@@ -34,4 +34,5 @@ box-shadow: 6px 10px 10px -9px rgba(179,179,179,1);
   flex-wrap: wrap;
   flex-direction: row;
   align-content: space-between;
+  padding: 5px
 }

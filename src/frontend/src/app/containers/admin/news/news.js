@@ -136,7 +136,7 @@ class News extends Component {
             <Table  bordered hover responsive size="sm">
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th>STT</th>
                   <th>Tiêu đề</th>
                   <th>Loại</th>
                 

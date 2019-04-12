@@ -20,9 +20,7 @@ exports.get_List = (req, res) => {
 	}
 	
 	if(req.body.search){ 
-		query = { 
-			username: { $regex: '.*' + req.body.search + '.*', $options: 'i' },
-		}
+		query.username = { $regex: '.*' + req.body.search + '.*', $options: 'i' }
 	}
 	switch(req.body.rule){
 		case 'SA':
@@ -51,11 +49,15 @@ exports.get_List = (req, res) => {
 		console.log('==get_account: ',err)
 		res.status(500)
 	})                             
-	
 }
 
 exports.get_Detail = (req, res) => {
-
+	const id = req.query.id
+	Account.findOne({ _id: id })
+	.populate('idProfile')
+	.then( data => {
+		res.json({rs: data})
+	})
 }
 
 exports.add_Account = (req, res) => {
@@ -105,6 +107,7 @@ exports.add_Account = (req, res) => {
 		}
 	})
 }
+
 exports.update_Account = (req, res) => {
 	const id = req.query.id
 	if(req.body){
