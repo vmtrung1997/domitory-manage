@@ -7,7 +7,6 @@ exports.getRoom = async(req, res) => {
   let roomList = {};
   Room.find({ lau: floor }).populate({
     path: 'loaiPhong',
-    match: { loai: 0 },
     options: { sort: { name: -1 } }
   }).exec(function (err, kittens) {
     if (err)
