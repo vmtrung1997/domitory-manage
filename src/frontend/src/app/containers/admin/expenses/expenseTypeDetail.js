@@ -46,7 +46,7 @@ class Example extends React.Component {
     this.setState({ show: true });
     get_room_type().then(result => {
       var selectType = result.data.data.map(value => {
-        return { value: value._id, label: value.loai }
+        return { value: value._id, label: value.ten }
       })
       this.setState({ roomType: result.data.data, selectType: selectType });
       this.getDetailRoomType(selectType[0].value);
@@ -122,7 +122,7 @@ class Example extends React.Component {
   tableRender = (table, type) => {
     return (
       <Table bordered hover responsive size="sm">
-        <thead >
+        <thead className="title-table">
           <tr>
             <th>STT</th>
             <th>Giá trị đầu</th>

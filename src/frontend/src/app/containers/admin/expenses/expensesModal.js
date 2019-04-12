@@ -187,7 +187,7 @@ class Example extends React.Component {
               </Row>
               { Object.keys(this.state.infoRoom).length && <Row className={'m-b-10'}>
                 <Col md={4}>
-                  Loại: {this.state.infoRoom.loaiPhong.loai}
+                  Loại: {this.state.infoRoom.loaiPhong.ten}
                 </Col>
                 <Col md={4}>
                   Số điện hiện tại: {this.state.infoRoom.chiPhi.soDien}

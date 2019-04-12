@@ -82,7 +82,6 @@ class Example extends React.Component {
     if (report.room === '0')
       report.room = 0;
     report_expense(report).then(result=> {
-      self.props.loading(false);
       var byteCharacters = window.atob(result.data.file);
       var byteNumbers = new Array(byteCharacters.length);
       for (var i = 0; i < byteCharacters.length; i++) {
@@ -90,6 +89,7 @@ class Example extends React.Component {
       }
       var byteArray = new Uint8Array(byteNumbers);
       var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      self.props.loading(false);
       
       saveAs(blob, result.data.filename)
       
