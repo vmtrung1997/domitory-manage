@@ -86,7 +86,7 @@ router.get('/infoDormitory/delRoom/:id', infoDormitory.delRoom);
 //News
 router.post('/news/add',newsController.addNews);
 
-router.get('/news/get',newsController.getNews);
+router.post('/news/get',newsController.getNews);
 
 router.post('/news/update',newsController.updateNews);
 

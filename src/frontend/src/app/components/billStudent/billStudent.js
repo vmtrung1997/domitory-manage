@@ -11,6 +11,7 @@ import DetailBill from './detailBill'
 import OpitmizeNumber from '../../optimization/optimizationNumber/optimizationNumber'
 import Loader from 'react-loader-spinner'
 import refreshToken from './../../../utils/refresh_token'
+import MyPagination from './../pagination/pagination'
 
 class BillStudent extends React.Component {
 
@@ -177,6 +178,9 @@ class BillStudent extends React.Component {
                                             }
                                         </tbody>
                                     </Table>
+                                    <div className = 'pagination-position'>
+                                        <MyPagination></MyPagination>
+                                    </div>
                                 </div>
                             </div>
                         </div>

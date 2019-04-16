@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate-v2');
 var Schema = mongoose.Schema;
 
 var baiVietSchema = new Schema({
@@ -11,5 +12,7 @@ var baiVietSchema = new Schema({
     loai: String,
     ghim: {type: Number, enum: [0,1]}, //1: có 0: không,
 });
+baiVietSchema.plugin(mongoosePaginate);
+
 const model = mongoose.model('BaiViet', baiVietSchema, 'BaiViet');
 module.exports = model;

@@ -66,3 +66,9 @@ input:disabled {
     background: #778899;
     color: white
 }
+
+.pagination-position{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}

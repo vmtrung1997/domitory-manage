@@ -30,8 +30,9 @@ class EditorConvertToHTML extends Component {
       body: undefined,
       editorState: undefined,
       idNews: undefined,
-      check: false,
+      check: true,
       pin:false,
+      sendEmail: false,
       loai: 0,
       typeOptions: [{ value: 0, label: "Thông Tin" }, { value: 1, label: "Hoạt Động" }]
     };
@@ -170,6 +171,12 @@ class EditorConvertToHTML extends Component {
       pin: e.chk
     });
   };
+
+  changeSendEmail = e =>{
+    this.setState({
+      sendEmail: e.chk
+    })
+  }
   render() {
     console.log("==render",this.state);
     var type = this.props.type;
@@ -238,6 +245,13 @@ class EditorConvertToHTML extends Component {
             check={this.state.pin}
             label="Ghim bài viết (Hiển thị tối đa 2)"
             name={"ghim"}
+          />
+            <Checkbox
+            defaultChecked={this.state.sendEmail}
+            isCheck={this.changeSendEmail}
+            check={this.state.sendEmail}
+            label="Gửi thông báo tới sinh viên qua email"
+            name={"guiEmail"}
           />
         </Modal.Body>
         <Modal.Footer>

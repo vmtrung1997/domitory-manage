@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as UserAction from "./../../actions/studentAction";
 import Loader from "react-loader-spinner";
+import MyPagination from './../pagination/pagination'
 import {
   ToastsContainer,
   ToastsContainerPosition,
@@ -226,6 +227,9 @@ class IncomingStudentActivity extends React.Component {
                     </div>
                   </div>
                   <div className="register-activity">
+                  <div className = 'pagination-position'>
+                  <MyPagination></MyPagination>
+                  </div>
                     {/* <Button
                       style={{ marginRight: "20px" }}
                       onClick={this.refresh}
