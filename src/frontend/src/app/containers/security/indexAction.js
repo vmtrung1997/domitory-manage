@@ -53,5 +53,5 @@ export const logout = () => {
       localStorage.removeItem('secret');
     }
     
-  }).catch(err => console.log(err))
+  }).catch(err => {})
 }

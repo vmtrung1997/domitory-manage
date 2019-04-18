@@ -10,7 +10,7 @@ import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import * as StudentAction from '../../actions/studentAction';
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
-import Loader from 'react-loader-spinner'
+import Loader from './../loader/loader'
 import refreshToken from './../../../utils/refresh_token'
 
 class ListActivity extends React.Component {
@@ -143,7 +143,8 @@ class ListActivity extends React.Component {
 
                 {this.state.isLoad ?
                     <div className='loading-student'>
-                        <Loader type="Triangle" color="#007bff" height={60} width={60} /></div> :
+                        <Loader loading={this.state.isLoad} />
+                    </div> :
                     <div>
                         {this.state.activities.length === 0 ?
 

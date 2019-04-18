@@ -36,13 +36,11 @@ class InfoStudentDetail extends Component{
   }
 
   getElement = async(name) => {
-    console.log('==get el')
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getElement/` + name,  {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
-      console.log('==result',result)
 
       switch (name) {
         case 'room':
@@ -65,7 +63,6 @@ class InfoStudentDetail extends Component{
           break
       }
     }).catch(err => {
-      console.log(err)
     })
   }
 
@@ -77,11 +74,9 @@ class InfoStudentDetail extends Component{
   };
 
   onChange = (event) => {
-    console.log('==event', event.value, typeof(event.value));
     this.setState({
       info: {...this.state.info, [event.name]: event.value}
     })
-    console.log('==state', this.state)
   }
 
   onChangeNumber = (event) => {
@@ -97,16 +92,13 @@ class InfoStudentDetail extends Component{
       { info: this.state.info
       }, { headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
-      console.log('==up success', result)
       ToastsStore.success("Cập nhật thành công!");
     }).catch(err => {
-      console.log('==up err', err)
       ToastsStore.error("Cập nhật không thành công!");
     })
   }
 
   handleSelectGender = selectedOption => {
-    console.log('==gender', selectedOption)
     this.setState({ info: {...this.state.info, gioiTinh: parseInt(selectedOption)} })
   };
 
@@ -128,7 +120,6 @@ class InfoStudentDetail extends Component{
   }
 
   render(){
-    console.log('==state render', this.state);
     const { info, genderOptions, schoolOptions, roomOptions } = this.state;
     const {
       hoTen,
@@ -149,7 +140,6 @@ class InfoStudentDetail extends Component{
       img,
 
     } = info;
-    console.log('img = ', img)
     var imgFile = imageFile(img)
 
     return(

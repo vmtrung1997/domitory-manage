@@ -15,8 +15,10 @@ import {
   ToastsContainerPosition,
   ToastsStore
 } from "react-toasts";
-import Loader from "react-loader-spinner";
+import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
+
+import { css } from '@emotion/core';
 
 class PersonProfile extends React.Component {
   constructor(props) {
@@ -53,7 +55,6 @@ class PersonProfile extends React.Component {
   }
 
   getValue = obj => {
-    console.log(obj.name);
     this.setState({ [obj.name]: obj.value });
   };
 
@@ -105,11 +106,9 @@ class PersonProfile extends React.Component {
     this.setState({
       startDate: date
     });
-    console.log(date);
   }
 
   componentDidMount = async () => {
-    console.log("aaaaaa");
     await refreshToken();
 
     var secret = localStorage.getItem("secret");
@@ -125,7 +124,6 @@ class PersonProfile extends React.Component {
         .then(res => {
           if (res) {
             //Lưu trong redux
-            console.log(res.data.data);
             this.props.getUserAction(res.data.data);
 
             var nganhHoc = {
@@ -166,7 +164,6 @@ class PersonProfile extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
         });
 
       //Lấy danh sách các ngành học
@@ -184,7 +181,6 @@ class PersonProfile extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
         });
 
       //Lấy danh sách các trường
@@ -202,15 +198,12 @@ class PersonProfile extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
         });
     } else {
-      console.log("ko co data");
     }
   };
 
   nganhSelected = value => {
-    console.log(value);
     var nganh = this.state.nganhOptions.find(obj => obj.value === value);
     this.setState({
       nganhHoc: nganh
@@ -229,7 +222,6 @@ class PersonProfile extends React.Component {
   };
 
   render() {
-    console.log(this.props.state);
     if (!this.state.isLoad) {
       var { state } = this.props;
 
@@ -311,7 +303,7 @@ class PersonProfile extends React.Component {
       <React.Fragment>
         {this.state.isLoad ? (
           <div className="loading-student">
-            <Loader type="Triangle" color="#007bff" height={60} width={60} />
+            <Loader loading={this.state.isLoad} />
           </div>
         ) : (
           <div>

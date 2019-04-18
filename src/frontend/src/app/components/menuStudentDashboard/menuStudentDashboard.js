@@ -25,7 +25,7 @@ class MenuStudent extends React.Component {
                 <div className='student-dashboard'>
                     <Tab.Container id="list-group-tabs-example" defaultActiveKey="profile">
                         <Row>
-                            <Col sm={3}>
+                            <Col sm={3} style={{zIndex: '200'}}>
                                 <div className='menu-student'>
 
                                     <div className='menu-student-content'>
@@ -48,7 +48,7 @@ class MenuStudent extends React.Component {
                                 </div>
 
                             </Col>
-                            <Col sm={8} className = 'tab-panel-content'>
+                            <Col className = 'tab-panel-content'>
                                 <Tab.Content>
                                     <Tab.Pane eventKey="profile">
                                         <Profile />

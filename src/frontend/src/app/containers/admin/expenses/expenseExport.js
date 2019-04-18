@@ -93,10 +93,9 @@ class Example extends React.Component {
       
       saveAs(blob, result.data.filename)
       
-    }).catch(err => console.log(err));
+    }).catch(err => {});
   }
   handleCheck = (obj) => {
-    console.log('check value ', obj)
     this.setState({[obj.value]: obj.chk})
   }
   statusSelected = (value) => {

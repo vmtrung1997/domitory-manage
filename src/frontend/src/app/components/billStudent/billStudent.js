@@ -9,7 +9,7 @@ import * as StudentAction from '../../actions/studentAction';
 import { bindActionCreators } from 'redux'
 import DetailBill from './detailBill'
 import OpitmizeNumber from '../../optimization/optimizationNumber/optimizationNumber'
-import Loader from 'react-loader-spinner'
+import Loader from './../loader/loader'
 import refreshToken from './../../../utils/refresh_token'
 
 class BillStudent extends React.Component {
@@ -34,7 +34,6 @@ class BillStudent extends React.Component {
 
         secret = JSON.parse(secret);
         var id = decode.user.userEntity._id;
-        console.log(decode);
 
         axios.defaults.headers['x-access-token'] = secret.access_token;
         var bill = [];
@@ -76,8 +75,6 @@ class BillStudent extends React.Component {
 
     render() {
         var isFirstRow = false;
-        console.log(this.props.profile);
-
         return (
 
             <React.Fragment>
@@ -94,7 +91,8 @@ class BillStudent extends React.Component {
                 <div className='title-header-line'></div>
                 {this.state.isLoad ?
                     <div className='loading-student'>
-                        <Loader type="Triangle" color="#007bff" height={60} width={60} /></div> :
+                        <Loader  loading={this.state.isLoad}/>
+                    </div> :
 
                     <div>
                         <div className='time-bill'>

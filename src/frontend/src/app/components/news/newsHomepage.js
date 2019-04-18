@@ -18,7 +18,6 @@ class NewsHomepage extends React.Component {
 
     Axios.post("http://localhost:4000/news/get-news", { data: date })
       .then(rs => {
-        console.log(rs);
         if (rs.status === 200) {
           rs.data.data.map((item, index) => {
             if (index < 3) _post.push(item);
@@ -64,7 +63,7 @@ class NewsHomepage extends React.Component {
               </div>
               {/* post */}
 
-              {posts.map(item => {
+              {posts.map((item, index) => {
                 var day = new Date(item.ngayTao);
                 var month = day.getMonth() + 1;
                 var formatDay =
@@ -78,14 +77,14 @@ class NewsHomepage extends React.Component {
                   ":" +
                   day.getMinutes();
                 return (
-                  <div className="col-md-4">
+                  <div className="col-md-4" key={index}>
                     <div style={{ marginTop: "40px" }}>
                       <div className="post">
                         <div
                           className="post-img"
                           onClick={e => this.onViewDetail(item._id)}
                         >
-                          <img src="/img/st.jpg" alt />
+                          <img src="/img/st.jpg" alt='content' />
                         </div>
                         <div className="post-body">
                           <div className="post-meta">
@@ -119,22 +118,14 @@ class NewsHomepage extends React.Component {
                 );
               })}
             </div>
-            {/* /row */}
             <div className="col-md-12">
               <div className="section-row">
-                <button className="primary-button hompage-loadmore-news center-block">
-                  <Nav.Link>
-                    <Link to="/news">
-                      <span className="list-item-menu"> Thêm bài viết </span>
-                    </Link>
-                  </Nav.Link>
-                </button>
+                  <Link to="/news">
+                    <span className="list-item-menu"> Xem thêm bài viết </span>
+                  </Link>
               </div>
             </div>
-            {/* row */}
-            {/* /row */}
           </div>
-          {/* /container */}
         </div>
       </React.Fragment>
     );

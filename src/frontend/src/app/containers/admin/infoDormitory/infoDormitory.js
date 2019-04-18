@@ -56,7 +56,6 @@ class InfoDormitory extends React.Component{
     axios.get(`/manager/getElement/floor`,  {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
-      console.log('==get lau', result);
       let i = 0;
       const floorList = result.data.map(floor => {
         return {key: i++, label: floor}
@@ -65,7 +64,6 @@ class InfoDormitory extends React.Component{
         floorList: floorList,
       })
     }).catch(err => {
-      console.log('==get lau err', err);
     });
   };
 
@@ -74,7 +72,6 @@ class InfoDormitory extends React.Component{
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/infoDormitory/getRoom/` + this.state.floorActive, { headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
-      console.log('==get infoDormitory success', result);
       let i = 0;
       // const normalRooms = result.data.normal.map(room => {
       //   return {key: i++, data: room}
@@ -90,7 +87,6 @@ class InfoDormitory extends React.Component{
       })
 
     }).catch((err) => {
-      console.log('get infoDormitory Student err', err);
     })
   };
 
@@ -168,13 +164,11 @@ class InfoDormitory extends React.Component{
       lau: floorActive,
       },{ headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
-      console.log('==add room suc', result);
       ToastsStore.success("Thêm phòng thành công!");
       this.handleClosePopup('addRoom');
       this.handleClosePopup('addFloor');
       this.getData();
     }).catch(err => {
-      console.log('==add room err', err.response);
       ToastsStore.error( err.response.data.msg);
     })
   };
@@ -197,12 +191,10 @@ class InfoDormitory extends React.Component{
     axios.get(`/manager/infoDormitory/delRoom/` + id
         ,{ headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
-      console.log('==del success:', result);
       ToastsStore.success("Xóa phòng thành công!");
       this.getData();
       this.handleClosePopup('room');
     }).catch(err => {
-      console.log('==del err:', err);
       ToastsStore.error("Xóa phòng không thành công!");
       ToastsStore.error(err.response.data.msg);
     })
@@ -252,7 +244,6 @@ class InfoDormitory extends React.Component{
       </div>
     )
 
-    // console.log('==ahuhu', option, room)
     // if(option === PHONG_SV)
     //   return(
     //     <span>aaa</span>
@@ -264,7 +255,6 @@ class InfoDormitory extends React.Component{
     //
     // switch(option){
     //   case PHONG_SV:
-    //     console.log('==ahihi')
     //     return(
     //       <span>aaa</span>
     //     )
@@ -284,7 +274,6 @@ class InfoDormitory extends React.Component{
     //
     //   case PHONG_DVU:
     //   {
-    //     console.log('==dvu')
     //     return(
     //       <div className={'id-room_item'} key={room.key}>
     //         abc
@@ -337,7 +326,6 @@ class InfoDormitory extends React.Component{
       roomActive
     } = this.state;
 
-    console.log('==render state', this.state)
     return(
       <div>
         <Title>
@@ -537,7 +525,6 @@ class InfoDormitory extends React.Component{
                       <div>
                         {
                           roomList && roomList.map(room => {
-                            console.log('==room ahih', room)
                             if(room.data.loaiPhong.loai === PHONG_SV)
                               return(
                                 <div className={'id-room_item'} key={room.key}>

@@ -82,13 +82,11 @@ class IdentityVerification extends React.Component {
             onHide={this.handleClose}
             dialogClassName="title-modal"
           >
-            <Modal.Header closeButton />
+            <Modal.Header closeButton>
+              <Modal.Title bsPrefix="title-center">Xác nhận</Modal.Title>
+            </Modal.Header>
             <Container>
               <Modal.Body style={{ textAlign: "center" }}>
-                <div style={{ paddingBottom: "10px" }}>
-                  <h2>Xác nhận</h2>
-                </div>
-
                 <Input
                   name="mssv"
                   placeholder="Nhập MSSV của bạn..."
@@ -113,7 +111,7 @@ class IdentityVerification extends React.Component {
                 <Button
                   onClick={this.nextStep}
                   variant="primary"
-                  className="btn-color form-rounded btn-hover"
+                  className="btn-hover"
                   style={{ marginTop: "20px" }}
                 >
                   Tiếp theo
@@ -160,7 +158,7 @@ class VerifyEmail extends React.Component {
               <Button
                 onClick={this.handleClose}
                 variant="primary"
-                className="btn-color form-rounded btn-hover"
+                className="btn-color btn-hover"
                 style = {{marginTop:'20px'}}
               >
                 Đóng
@@ -192,14 +190,7 @@ class ForgotPassword extends React.Component {
     //this.props.hideResetPassword(value);
   };
 
-  hideNotification = value => {
-    console.log(value)
-    // this.setState({
-    //   showNoti: value
-    // });
-  };
   render() {
-    console.log(this.state.success);
     return (
       <React.Fragment>
         {this.state.success && 
@@ -209,7 +200,7 @@ class ForgotPassword extends React.Component {
           />
         }
         {!this.state.success && 
-          <VerifyEmail hideNotification={this.hideNotification} />
+          <VerifyEmail />
         }
       </React.Fragment>
     );

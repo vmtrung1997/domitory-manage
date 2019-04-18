@@ -1,3 +1,9 @@
 .title-modal{
     text-align: center !important;
 }
+
+.title-center{
+	margin-right: -46px;
+	width: 100%;
+	align-items: center;
+}

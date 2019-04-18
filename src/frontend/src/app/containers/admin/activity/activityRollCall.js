@@ -56,7 +56,6 @@ class ActivityRollCall extends Component{
         }
       }
     })
-    console.log(this.state.idThe)
     this.setState({
       idThe: ''
     })

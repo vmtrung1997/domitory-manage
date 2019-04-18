@@ -49,7 +49,6 @@ class EditorConvertToHTML extends Component {
   };
 
   getTitle = e => {
-    console.log(e.value);
     this.setState({
       title: e.value
     });
@@ -65,9 +64,6 @@ class EditorConvertToHTML extends Component {
     );
 
     var value1 = convertToRaw(this.state.editorState.getCurrentContent());
-
-    console.log(value1.blocks[0].text);
-    console.log(this.state.title);
 
     if (!this.state.title || value1.blocks[0].text === "") {
       ToastsStore.warning("Tiêu đề hoặc nội dung không được để trống!");
@@ -96,7 +92,6 @@ class EditorConvertToHTML extends Component {
   };
 
   kindSelected = value => {
-    console.log(value);
     this.setState({ loai: value });
   };
 
@@ -120,7 +115,6 @@ class EditorConvertToHTML extends Component {
 
     axios.defaults.headers["x-access-token"] = secret.access_token;
     axios.post("/manager/news/update", { data: data }).then(res => {
-      console.log("1");
       if (res.status === 200) {
         this.props.showPopup("update");
         this.handleClose();
@@ -130,7 +124,6 @@ class EditorConvertToHTML extends Component {
     });
   };
   componentDidMount() {
-    console.log('==didmount');
     var type = this.props.type;
     var content = this.props.content;
 
@@ -151,7 +144,6 @@ class EditorConvertToHTML extends Component {
           //TODO: checkbox chưa thay đổi theo state
           loai: content.loai === 'Hoat Dong'? 1:0
         });
-        console.log("did",content, this.state);
       } else {
         // this.setState({
         //   editorState: EditorState.createEmpty()
@@ -171,10 +163,8 @@ class EditorConvertToHTML extends Component {
     });
   };
   render() {
-    console.log("==render",this.state);
     var type = this.props.type;
     var loai = this.state.loai;
-    console.log(loai);
     const { editorState } = this.state;
     const editorStyle = {
       padding: "5px",

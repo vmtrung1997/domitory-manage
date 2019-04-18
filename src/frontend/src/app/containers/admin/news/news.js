@@ -91,7 +91,6 @@ class News extends Component {
     axios.defaults.headers["x-access-token"] = secret.access_token;
     axios.get("/manager/news/get").then(res => {
       if (res.data.message === "succes") {
-        console.log(res);
         this.setState({
           news: res.data.data,
           loading: false
@@ -126,15 +125,19 @@ class News extends Component {
         </div>
         <div className={"content-body full"}>
           <div className="header-news-admin">
-          <Button onClick = {e=>this.editorModal('add')} color="success">
-            Thêm mới <i className="fas fa-plus" />
+          <Button 
+            title={'Thêm mới'} color={'warning'} 
+            onClick={ e =>this.editorModal('add')} 
+            style={{padding: '5px 20px'}}
+          > 
+                <i className="fas fa-plus"/>
           </Button>
           </div>
           {this.state.news.length === 0 && !this.state.loading ? (
             <span>Bạn chưa có bài viết nào</span>
           ) : (
-            <Table  bordered hover responsive size="sm">
-              <thead>
+            <Table bordered hover responsive size="sm">
+              <thead className="title-table">
                 <tr>
                   <th>STT</th>
                   <th>Tiêu đề</th>
@@ -166,7 +169,7 @@ class News extends Component {
                     dayEdit.getSeconds();
                   return (
                     <tr key={index}>
-                      <td>{index}</td>
+                      <td>{index + 1}</td>
                       <td style = {{width:'250px'}}>{item.tieuDe}</td>
                       <td>{item.loai === "1"?"Hoạt động":"Thông tin"}</td>
                    
@@ -182,29 +185,28 @@ class News extends Component {
                         {item.trangThai === 1 ? "Công khai" : "Riêng tư"}
                       </td>
                       <td className ='news-status-public'>{item.ghim===1?"Có":""}</td>
-                      <td>
-                      <MyButton
-                          color={"success"}
-                          style={{ marginRight: "15px" }}
-                          onClick={() => this.onViewDetail(item._id)}
-                        >
-                          <i className="far fa-eye" />
-                        </MyButton>
+                      <td style={{textAlign: 'center'}}>
                         <MyButton
-                          color={"warning"}
-                          style={{ marginRight: "15px" }}
-                          onClick={() => this.editorModal("edit", item)}
-                        >
-                          <i className="fas fa-edit" />
-                        </MyButton>
-                      
-                        <MyButton
-                          color={"danger"}
-                          style={{ marginRight: "15px" }}
-                          onClick={() => this.onDetete(item._id)}
-                        >
-                          <i className=" fas fa-trash-alt" />
-                        </MyButton>
+                            color={"primary"}
+                            style={{ marginRight: "15px" }}
+                            onClick={() => this.onViewDetail(item._id)}
+                          >
+                            <i className="far fa-eye" />
+                          </MyButton>
+                          <MyButton
+                            color={"warning"}
+                            style={{ marginRight: "15px" }}
+                            onClick={() => this.editorModal("edit", item)}
+                          >
+                            <i className="fas fa-edit" />
+                          </MyButton>
+                        
+                          <MyButton
+                            color={"danger"}
+                            onClick={() => this.onDetete(item._id)}
+                          >
+                            <i className=" fas fa-trash-alt" />
+                          </MyButton>
                       </td>
                     </tr>
                   );

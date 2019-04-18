@@ -66,7 +66,6 @@ class ModalContent extends React.Component {
   }
   handleClickOutside = (event) => {
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      console.log('==> click out side', event);
       const { onHide } = this.props;
       if (onHide) {
         onHide();
