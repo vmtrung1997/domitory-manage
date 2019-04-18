@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Row, Col, Tabs, Tab, Table} from 'react-bootstrap';
 import { Link } from 'react-router-dom'
-import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
+import { ToastsContainer, ToastsContainerPosition, ToastsStore } from "react-toasts";
 import axios from "axios";
 
 import Input from './../../../components/input/input';
@@ -11,14 +11,15 @@ import './infoStudentDetail.css';
 import refreshToken from "../../../../utils/refresh_token";
 import Select from "../../../components/selectOption/select";
 import SearchSelect from '../../../components/selectOption/select'
-import {imageFile} from '../../../function/imageFunction'
+import {imageFile, defaultStudentImg} from '../../../function/imageFunction'
 import DatePicker from "react-datepicker/es/index";
-class InfoStudentDetail extends Component{
+import './infoStudentFile.css';
+class InfoStudentDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       info: {},
-      genderOptions: [{value: 0, label: 'nữ'}, {value: 1, label: 'nam'}],
+      genderOptions: [{ value: 0, label: 'nữ' }, { value: 1, label: 'nam' }],
       roomOptions: [],
       schoolOptions: [],
 
@@ -33,20 +34,20 @@ class InfoStudentDetail extends Component{
     var birthDate = info.ngaySinh ? new Date(info.ngaySinh) : new Date();
     //var stringDate = new DbirthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     this.setState({
-      info: {...info, ngaySinh: birthDate}
+      info: { ...info, ngaySinh: birthDate }
     })
   }
 
   getElement = async(name) => {
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
-    axios.get(`/manager/getElement/` + name,  {
+    axios.get(`/manager/getElement/` + name, {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
 
       switch (name) {
         case 'room':
-          const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
+          const roomOptions = result.data.map(room => ({ value: room._id, label: room.tenPhong }));
           roomOptions.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
             roomOptions: roomOptions
@@ -77,21 +78,22 @@ class InfoStudentDetail extends Component{
 
   onChange = (event) => {
     this.setState({
-      info: {...this.state.info, [event.name]: event.value}
+      info: { ...this.state.info, [event.name]: event.value }
     })
   }
 
   onChangeNumber = (event) => {
     this.setState({
-      info: {...this.state.info, [event.name]: parseInt(event.value) }
+      info: { ...this.state.info, [event.name]: parseInt(event.value) }
     })
   }
 
-  handleSaveChange = async() => {
+  handleSaveChange = async () => {
     await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.post(`/manager/infoStudent/update`,
-      { info: this.state.info
+      {
+        info: this.state.info
       }, { headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
       ToastsStore.success("Cập nhật thành công!");
@@ -114,14 +116,37 @@ class InfoStudentDetail extends Component{
   }
 
   handleSelectSchool = selectedOption => {
-    this.setState({ info: {...this.state.info, tenTruong: selectedOption} })
+    this.setState({ info: { ...this.state.info, tenTruong: selectedOption } })
   }
 
   handleSelectRoom = selectedOption => {
-    this.setState({ info: {...this.state.info, tenPhong: selectedOption} })
+    this.setState({ info: { ...this.state.info, tenPhong: selectedOption } })
   }
-
-  render(){
+  fixdata = (data) => {
+		var o = "", l = 0, w = 10240;
+		for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+		o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+		return o;
+	}
+  onUpload = () => {
+    var fileReader = new FileReader();
+    var self = this;
+    fileReader.readAsDataURL(this.uploadFile.files[0]);
+    fileReader.onload = (e) => {
+      var data = e.target.result;
+      var testImg = new Image();
+      testImg.src = data;
+      testImg.onload = (event) => {
+        console.log(e.target);
+        this.setState({info: {...this.state.info, img: e.target.result}})
+      }
+      testImg.onerror = () => {
+        alert('Lỗi ảnh')
+      }
+		}
+  }
+  render() {
+    console.log('==state render', this.state);
     const { info, genderOptions, schoolOptions, roomOptions } = this.state;
     const {
       hoTen,
@@ -135,18 +160,18 @@ class InfoStudentDetail extends Component{
       ngaySinh,
       sdtNguoiThan,
       gioiTinh,
-      idPhong: {tenPhong},
-      idTaiKhoan: {username},
-      truong: {tenTruong},
+      idPhong: { tenPhong },
+      idTaiKhoan: { username },
+      truong: { tenTruong },
       diemHD,
       img,
 
     } = info;
-    var imgFile = imageFile(img) ? imageFile(img) : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfQ1VAlKwxbHKlI-K2auBgRM4fYSBd-MJDyc3CnbkbpJnvdUNx';
+    var imgFile = typeof img === 'string'?img: (imageFile(img)?imageFile(img):defaultStudentImg)
 
-    return(
+    return (
       <div>
-        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
+        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground />
         <Title>
           Thông tin sinh viên
         </Title>
@@ -154,14 +179,25 @@ class InfoStudentDetail extends Component{
           <div className={'infoDetail'}>
             <div className={'id-back'}>
               <Link to={'/admin/student'}>
-              <i className="fas fa-chevron-left"/>
-              <span>Trở về</span>
+                <i className="fas fa-chevron-left" />
+                <span>Trở về</span>
               </Link>
             </div>
             <Row>
               <Col md={2}>
                 <div className={'id-avt'}>
-                  <img alt='avater student' src={imgFile}/>
+                  <img alt='avater student' src={imgFile} />
+                </div>
+                <div className="box">
+                  <input type="file"
+                    name="file-1[]"
+                    id="file-1"
+                    className="inputfile inputfile-1"
+                    ref={file => file?this.uploadFile = file:{files:['']}}
+                    onChange={this.onUpload} />
+                  <label htmlFor="file-1">
+                    <span>Tải ảnh</span>
+                  </label>
                 </div>
               </Col>
               <Col md={10}>
@@ -404,7 +440,7 @@ class InfoStudentDetail extends Component{
 
           </div>
           <Row className={'isc-footer-btn'}>
-            <Button onClick={() =>this.handleSaveChange()}>
+            <Button onClick={() => this.handleSaveChange()}>
               Lưu thay đổi
             </Button>
           </Row>
