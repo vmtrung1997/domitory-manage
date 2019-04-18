@@ -8,6 +8,7 @@ import Title from "../../../components/title/title";
 import refreshToken from "../../../.././utils/refresh_token";
 import Loader from "./../../../components/loader/loader";
 import axios from "axios";
+import MyPagination from "./../../../components/pagination/pagination";
 
 import {
   ToastsContainer,
@@ -19,6 +20,9 @@ class News extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      pageActive: 1,
+      totalPages: 1,
+      limit: 10,
       showEditorModal: false,
       news: [],
       loading: false,
@@ -87,16 +91,26 @@ class News extends Component {
     });
 
     await refreshToken();
+    const options = {
+      skip: (this.state.pageActive - 1) * this.state.limit,
+      limit: this.state.limit
+    };
     var secret = JSON.parse(localStorage.getItem("secret"));
     axios.defaults.headers["x-access-token"] = secret.access_token;
-    axios.get("/manager/news/get").then(res => {
+    axios.post("/manager/news/get", { options: options }).then(res => {
       if (res.data.message === "succes") {
         this.setState({
           news: res.data.data,
-          loading: false
+          loading: false,
+          totalPages: res.data.totalPages
         });
       }
     });
+  };
+
+  clickPage = e => {
+    this.setState({ pageActive: e });
+    this.getNews();
   };
 
   componentDidMount = async () => {
@@ -142,7 +156,7 @@ class News extends Component {
                   <th>STT</th>
                   <th>Tiêu đề</th>
                   <th>Loại</th>
-                
+
                   <th>Lần chỉnh sửa cuối</th>
                   <th>Người tạo</th>
                   <th>Trạng thái</th>
@@ -152,7 +166,6 @@ class News extends Component {
               </thead>
               <tbody>
                 {this.state.news.map((item, index) => {
-              
                   var dayEdit = new Date(item.ngayChinhSua);
                   var monthEdit = dayEdit.getMonth() + 1;
                   var formatDayEdit =
@@ -172,7 +185,6 @@ class News extends Component {
                       <td>{index + 1}</td>
                       <td style = {{width:'250px'}}>{item.tieuDe}</td>
                       <td>{item.loai === "1"?"Hoạt động":"Thông tin"}</td>
-                   
                       <td>{formatDayEdit}</td>
                       <td>{item.hoTen}</td>
                       <td
@@ -214,6 +226,13 @@ class News extends Component {
               </tbody>
             </Table>
           )}
+          <div className="pagination-position">
+            <MyPagination
+              page={this.state.pageActive}
+              totalPages={this.state.totalPages}
+              clickPage={this.clickPage}
+            />
+          </div>
         </div>
       </React.Fragment>
     );

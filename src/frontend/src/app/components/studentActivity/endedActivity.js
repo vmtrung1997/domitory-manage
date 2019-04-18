@@ -5,6 +5,7 @@ import "./../tableStudentTextStyle/tableStudentTextStyle.css";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import Loader from "./../loader/loader";
+import MyPagination from "./../pagination/pagination"
 import {
   ToastsContainer,
   ToastsContainerPosition,
@@ -17,7 +18,10 @@ class EndedStudentActivity extends React.Component {
     super(props);
     this.state = {
       oldActivities: [],
-      isLoad: true
+      isLoad: true,
+      pageActive: 1,
+      totalPages: 1,
+      limit: 1
     };
   }
 
@@ -27,6 +31,10 @@ class EndedStudentActivity extends React.Component {
     });
     
     await refreshToken();
+    const options = {
+      skip: (this.state.pageActive - 1) * this.state.limit,
+      limit: this.state.limit
+    };
     var secret = localStorage.getItem("secret");
     const decode = jwt_decode(secret);
     var id = decode.user.profile._id;
@@ -34,9 +42,13 @@ class EndedStudentActivity extends React.Component {
     var oldActivities = [];
     axios
       .post(`http://localhost:4000/api/student/my-upcoming-activities`, {
-        id: id
+        id: id,
+        options: options
       })
       .then(res => {
+        this.setState({
+          totalPages: res.data.totalPages
+        });
         res.data.data.map(item => {
             var d = new Date(item.idHD.ngayBD);
           var today = new Date();
@@ -57,7 +69,12 @@ class EndedStudentActivity extends React.Component {
       });
   };
 
-
+  clickPage = e => {
+    this.setState({
+      pageActive: e
+    });
+    this.getActivities();
+  };
 
   refresh = () => {
     this.getActivities();
@@ -156,7 +173,15 @@ class EndedStudentActivity extends React.Component {
                         </Table>
                       </div>
                     </div>
+                    <div className="pagination-position">
+                      <MyPagination
+                        page={this.state.pageActive}
+                        totalPages={this.state.totalPages}
+                        clickPage={this.clickPage}
+                      />
+                    </div>
                   </div>
+                  
                 )}
               </div>
             </div>

@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as UserAction from "./../../actions/studentAction";
 import Loader from "./../loader/loader";
+import MyPagination from "./../pagination/pagination";
 import {
   ToastsContainer,
   ToastsContainerPosition,
@@ -20,7 +21,10 @@ class IncomingStudentActivity extends React.Component {
     super(props);
     this.state = {
       incomingActivities: [],
-      isLoad: true
+      isLoad: true,
+      pageActive: 1,
+      totalPages: 1,
+      limit: 1
     };
   }
 
@@ -28,8 +32,12 @@ class IncomingStudentActivity extends React.Component {
     this.setState({
       isLoad: true
     });
-    
+
     await refreshToken();
+    const options = {
+      skip: (this.state.pageActive - 1) * this.state.limit,
+      limit: this.state.limit
+    };
     var secret = localStorage.getItem("secret");
     const decode = jwt_decode(secret);
     var id = decode.user.profile._id;
@@ -37,9 +45,13 @@ class IncomingStudentActivity extends React.Component {
     var incomingActivities = [];
     axios
       .post(`http://localhost:4000/api/student/my-upcoming-activities`, {
-        id: id
+        id: id,
+        options: options
       })
       .then(res => {
+        this.setState({
+          totalPages: res.data.totalPages
+        });
         res.data.data.map(item => {
           var d = new Date(item.idHD.ngayBD);
           var today = new Date();
@@ -47,15 +59,13 @@ class IncomingStudentActivity extends React.Component {
           if (d >= today) {
             item.check = false;
             incomingActivities.push(item);
-          } 
+          }
           return true;
         });
       })
       .then(() => {
         this.setState({
           incomingActivities: incomingActivities,
-        });
-        this.setState({
           isLoad: false
         });
       });
@@ -125,6 +135,12 @@ class IncomingStudentActivity extends React.Component {
     this.setState({ incomingActivities: act });
   };
 
+  clickPage = e => {
+    this.setState({
+      pageActive: e
+    });
+    this.getActivities();
+  };
   refresh = () => {
     this.getActivities();
   };
@@ -146,7 +162,6 @@ class IncomingStudentActivity extends React.Component {
           </div>
         ) : (
           <div>
-           
             <div className="time-bill">
               {this.state.incomingActivities.length === 0 ? (
                 <div style={{ marginTop: "20px" }}>
@@ -154,7 +169,7 @@ class IncomingStudentActivity extends React.Component {
                 </div>
               ) : (
                 <div>
-                  <div className="profile-panel" >
+                  <div className="profile-panel">
                     <div className="text-style">
                       <Table responsive bordered size="sm" hover>
                         <thead className="thread-student">
@@ -224,6 +239,13 @@ class IncomingStudentActivity extends React.Component {
                     </div>
                   </div>
                   <div className="register-activity">
+                    <div className="pagination-position">
+                      <MyPagination
+                        page={this.state.pageActive}
+                        totalPages={this.state.totalPages}
+                        clickPage={this.clickPage}
+                      />
+                    </div>
                     {/* <Button
                       style={{ marginRight: "20px" }}
                       onClick={this.refresh}
@@ -256,9 +278,7 @@ var mapDispatchToProps = dispatch => {
   };
 };
 
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps
- )(IncomingStudentActivity);
-
+)(IncomingStudentActivity);
