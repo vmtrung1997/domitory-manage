@@ -17,7 +17,7 @@ class InfoDormitory extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      floorActive: 1,
+      floorActive: 0,
       roomActive: {
         soNguoiToiDa: 0,
         moTa: ''
@@ -40,12 +40,16 @@ class InfoDormitory extends React.Component{
     }
   }
 
-  componentWillMount(){
+  componentWillMount() {
     this.getData();
+
   }
 
   getData = async() => {
     await this.getFloor();
+    // this.setState({
+    //   floorActive: this.state.floorList[0].label
+    // })
     this.getRoom();
   }
 
@@ -58,7 +62,8 @@ class InfoDormitory extends React.Component{
     }).then(result => {
       console.log('==get lau', result);
       let i = 0;
-      const floorList = result.data.map(floor => {
+      let floorList = result.data.sort();
+      floorList = floorList.map(floor => {
         return {key: i++, label: floor}
       });
       this.setState({
@@ -598,25 +603,27 @@ class InfoDormitory extends React.Component{
                     </div>
                   </Tab>
                   <Tab eventKey="studentRoom" title="Phòng sinh viên">
-                    <div>
-                      {
-                        roomList && roomList.map(room => {
-                          if(room.data.loaiPhong.loai === PHONG_SV)
-                            return(
-                              <div className={'id-room_item'} key={room.key}>
-                                <Button
-                                  shadow
-                                  variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
-                                  color={'info'}
-                                  onClick={()=>this.handleShowDetail(room.data)}
-                                >
-                                  <i className="fas fa-home"/>
-                                  {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
-                                </Button>
-                              </div>
-                            )
-                        })
-                      }
+                    <div className={'id-room'}>
+                      <div>
+                        {
+                          roomList && roomList.map(room => {
+                            if(room.data.loaiPhong.loai === PHONG_SV)
+                              return(
+                                <div className={'id-room_item'} key={room.key}>
+                                  <Button
+                                    shadow
+                                    variant={(room.data.soNguoiToiDa-room.data.soNguoi) ? 'outline' : 'default'}
+                                    color={'info'}
+                                    onClick={()=>this.handleShowDetail(room.data)}
+                                  >
+                                    <i className="fas fa-home"/>
+                                    {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                                  </Button>
+                                </div>
+                              )
+                          })
+                        }
+                      </div>
                     </div>
                   </Tab>
                   <Tab eventKey="proRoom" title="Phòng dịch vụ">

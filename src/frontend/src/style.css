@@ -66,3 +66,7 @@ input:disabled {
     background: #778899;
     color: white
 }
+
+.css-1u3n887{
+    box-shadow: 0 0 0 1px transparent !important;
+}

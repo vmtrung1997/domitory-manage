@@ -10,6 +10,10 @@ let auth = require('../repos/authRepo');
 const md5 = require('md5');
 
 exports.addStudent = (req, res) => {
+  const params = rerq.body;
+  if( !params.mssv && !params.hoTen && !params.idTruong)
+    res.status(400).json({msg: 'Thiếu thông tin'});
+
   Account.findOne({username: req.body.mssv})
     .then(result => {
       console.log('==find mssv: ', result)
