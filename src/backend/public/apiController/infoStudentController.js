@@ -35,12 +35,13 @@ exports.addStudent = (req, res) => {
               //----save account---------
               acc.save().then((result) => {
                 let infoStudent = {
-                idTaiKhoan: result._id,
-                hoTen: req.body.hoTen,
-                MSSV: req.body.mssv,
-                idPhong: req.body.idPhong,
-                truong: req.body.idTruong,
-                maThe: req.body.maThe
+                  idTaiKhoan: result._id,
+                  hoTen: req.body.hoTen,
+                  MSSV: req.body.mssv,
+                  idPhong: req.body.idPhong,
+                  truong: req.body.idTruong,
+                  maThe: req.body.maThe,
+                  ngayVaoO: new Date() // <--MTrung
                 };
                 let student = new Profile(infoStudent);
 
@@ -167,3 +168,9 @@ exports.getRoomHistory = (req, res) => {
   )
 }
 
+exports.uploadImage = (req, res) => {
+  console.log(req.body);
+  res.json({
+    rs: 'success',
+  })
+}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
-import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
+import { ToastsContainer, ToastsContainerPosition, ToastsStore } from "react-toasts";
 import axios from "axios";
 
 import Input from './../../../components/input/input';
@@ -11,14 +11,15 @@ import './infoStudentDetail.css';
 import refreshToken from "../../../../utils/refresh_token";
 import Select from "../../../components/selectOption/select";
 import SearchSelect from 'react-select';
-import {imageFile} from '../../../function/imageFunction'
+import { imageFile } from '../../../function/imageFunction'
 import DatePicker from "react-datepicker/es/index";
-class InfoStudentDetail extends Component{
+import './infoStudentFile.css';
+class InfoStudentDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       info: {},
-      genderOptions: [{value: 0, label: 'nữ'}, {value: 1, label: 'nam'}],
+      genderOptions: [{ value: 0, label: 'nữ' }, { value: 1, label: 'nam' }],
       roomOptions: [],
       schoolOptions: []
     }
@@ -31,22 +32,22 @@ class InfoStudentDetail extends Component{
     var birthDate = info.ngaySinh ? new Date(info.ngaySinh) : new Date();
     //var stringDate = new DbirthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     this.setState({
-      info: {...info, ngaySinh: birthDate}
+      info: { ...info, ngaySinh: birthDate }
     })
   }
 
-  getElement = async(name) => {
+  getElement = async (name) => {
     console.log('==get el')
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
-    axios.get(`/manager/getElement/` + name,  {
+    axios.get(`/manager/getElement/` + name, {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
-      console.log('==result',result)
+      console.log('==result', result)
 
       switch (name) {
         case 'room':
-          const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
+          const roomOptions = result.data.map(room => ({ value: room._id, label: room.tenPhong }));
           roomOptions.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
             roomOptions: roomOptions
@@ -77,24 +78,25 @@ class InfoStudentDetail extends Component{
   };
 
   onChange = (event) => {
-    console.log('==event', event.value, typeof(event.value));
+    console.log('==event', event.value, typeof (event.value));
     this.setState({
-      info: {...this.state.info, [event.name]: event.value}
+      info: { ...this.state.info, [event.name]: event.value }
     })
     console.log('==state', this.state)
   }
 
   onChangeNumber = (event) => {
     this.setState({
-      info: {...this.state.info, [event.name]: parseInt(event.value) }
+      info: { ...this.state.info, [event.name]: parseInt(event.value) }
     })
   }
 
-  handleSaveChange = async() => {
+  handleSaveChange = async () => {
     await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.post(`/manager/infoStudent/update`,
-      { info: this.state.info
+      {
+        info: this.state.info
       }, { headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
       console.log('==up success', result)
@@ -107,7 +109,7 @@ class InfoStudentDetail extends Component{
 
   handleSelectGender = selectedOption => {
     console.log('==gender', selectedOption)
-    this.setState({ info: {...this.state.info, gioiTinh: parseInt(selectedOption)} })
+    this.setState({ info: { ...this.state.info, gioiTinh: parseInt(selectedOption) } })
   };
 
   getValue = (name, val) => {
@@ -120,14 +122,36 @@ class InfoStudentDetail extends Component{
   }
 
   handleSelectSchool = selectedOption => {
-    this.setState({ info: {...this.state.info, tenTruong: selectedOption} })
+    this.setState({ info: { ...this.state.info, tenTruong: selectedOption } })
   }
 
   handleSelectRoom = selectedOption => {
-    this.setState({ info: {...this.state.info, tenPhong: selectedOption} })
+    this.setState({ info: { ...this.state.info, tenPhong: selectedOption } })
   }
-
-  render(){
+  fixdata = (data) => {
+		var o = "", l = 0, w = 10240;
+		for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+		o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+		return o;
+	}
+  onUpload = () => {
+    var fileReader = new FileReader();
+    var self = this;
+    fileReader.readAsDataURL(this.uploadFile.files[0]);
+    fileReader.onload = (e) => {
+      var data = e.target.result;
+      var testImg = new Image();
+      testImg.src = data;
+      testImg.onload = (e) => {
+        alert('Ảnh đúng')
+      }
+      testImg.onerror = () => {
+        alert('Lỗi ảnh')
+      }
+			console.log(data);
+		}
+  }
+  render() {
     console.log('==state render', this.state);
     const { info, genderOptions, schoolOptions, roomOptions } = this.state;
     const {
@@ -142,9 +166,9 @@ class InfoStudentDetail extends Component{
       ngaySinh,
       sdtNguoiThan,
       gioiTinh,
-      idPhong: {tenPhong},
-      idTaiKhoan: {username},
-      truong: {tenTruong},
+      idPhong: { tenPhong },
+      idTaiKhoan: { username },
+      truong: { tenTruong },
       diemHD,
       img,
 
@@ -152,9 +176,9 @@ class InfoStudentDetail extends Component{
     console.log('img = ', img)
     var imgFile = imageFile(img)
 
-    return(
+    return (
       <div>
-        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
+        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground />
         <Title>
           Thông tin sinh viên
         </Title>
@@ -162,14 +186,25 @@ class InfoStudentDetail extends Component{
           <div className={'infoDetail'}>
             <div className={'id-back'}>
               <Link to={'/admin/student'}>
-              <i className="fas fa-chevron-left"/>
-              <span>Trở về</span>
+                <i className="fas fa-chevron-left" />
+                <span>Trở về</span>
               </Link>
             </div>
             <Row>
               <Col md={2}>
                 <div className={'id-avt'}>
-                  <img alt='avater student' src={imgFile}/>
+                  <img alt='avater student' src={imgFile} />
+                </div>
+                <div className="box">
+                  <input type="file"
+                    name="file-1[]"
+                    id="file-1"
+                    className="inputfile inputfile-1"
+                    ref={file => this.uploadFile = file}
+                    onChange={this.onUpload} />
+                  <label htmlFor="file-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" /></svg>
+                    {/* <span>Choose a file&hellip;</span> */}
+                  </label>
                 </div>
               </Col>
               <Col md={10}>
@@ -250,7 +285,7 @@ class InfoStudentDetail extends Component{
                     Dân tộc:
                   </Col>
                   <Col md={4}>
-                    <Input value={danToc}  getValue={this.onChange} name={'danToc'} />
+                    <Input value={danToc} getValue={this.onChange} name={'danToc'} />
                   </Col>
                   <Col md={2}>
                     Sđt người thân:
@@ -265,13 +300,13 @@ class InfoStudentDetail extends Component{
                     Ngày vào:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input />
                   </Col>
                   <Col md={2}>
                     Ngày hết hạn:
                   </Col>
                   <Col md={4}>
-                    <Input/>
+                    <Input />
                   </Col>
                 </Row>
 
@@ -280,7 +315,7 @@ class InfoStudentDetail extends Component{
                     Điểm hoạt động:
                   </Col>
                   <Col md={4}>
-                    <Input value={diemHD ? diemHD : '0'} type={'number'} getValue={this.onChangeNumber} name={'diemHD'}/>
+                    <Input value={diemHD ? diemHD : '0'} type={'number'} getValue={this.onChangeNumber} name={'diemHD'} />
                   </Col>
                   <Col md={2}>
                     Phòng:
@@ -308,7 +343,7 @@ class InfoStudentDetail extends Component{
                     Ngành học:
                   </Col>
                   <Col md={10}>
-                    <Input/>
+                    <Input />
                   </Col>
                 </Row>
                 <Row>
@@ -337,7 +372,7 @@ class InfoStudentDetail extends Component{
 
           </div>
           <Row className={'isc-footer-btn'}>
-            <Button onClick={() =>this.handleSaveChange()}>
+            <Button onClick={() => this.handleSaveChange()}>
               Lưu thay đổi
             </Button>
           </Row>

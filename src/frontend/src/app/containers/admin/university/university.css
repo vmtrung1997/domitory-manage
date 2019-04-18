@@ -1,0 +1,34 @@
+.school-item{
+  border: 1px solid #c0c0c0;
+  border-radius: 2px;
+  padding: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.school-item-cursor{
+  cursor: pointer;
+}
+.school-item:hover{
+  background-color: #18A689;
+  color: white;
+}
+.is-active-school{
+  background-color: #18A689;
+  color: white;
+}
+.school-item-trash{
+  float: right;
+  padding: 3px;
+}
+
+.school-item-trash:hover{
+  color: #ed5565;
+}
+
+.school-item-edit{
+  float: right;
+  padding: 3px;
+}
+.school-item-edit:hover{
+  color: #f8ac59
+}
