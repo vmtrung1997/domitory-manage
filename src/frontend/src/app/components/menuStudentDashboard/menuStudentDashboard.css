@@ -1,7 +1,7 @@
 .menu-student{
    
     height: fit-content;
-    min-height: 80vh;
+    min-height: 100vh;
     background-color:#293846 ;
     display: flex;
     justify-content: flex-start;

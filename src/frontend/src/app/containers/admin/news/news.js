@@ -8,6 +8,7 @@ import Title from "../../../components/title/title";
 import refreshToken from "../../../.././utils/refresh_token";
 import Loader from "./../../../components/loader/loader";
 import axios from "axios";
+import MyPagination from "./../../../components/pagination/pagination";
 
 import {
   ToastsContainer,
@@ -19,6 +20,9 @@ class News extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      pageActive: 1,
+      totalPages: 1,
+      limit: 10,
       showEditorModal: false,
       news: [],
       loading: false,
@@ -87,17 +91,27 @@ class News extends Component {
     });
 
     await refreshToken();
+    const options = {
+      skip: (this.state.pageActive - 1) * this.state.limit,
+      limit: this.state.limit
+    };
     var secret = JSON.parse(localStorage.getItem("secret"));
     axios.defaults.headers["x-access-token"] = secret.access_token;
-    axios.get("/manager/news/get").then(res => {
+    axios.post("/manager/news/get", { options: options }).then(res => {
       if (res.data.message === "succes") {
-        console.log(res);
+        console.log(res.data);
         this.setState({
           news: res.data.data,
-          loading: false
+          loading: false,
+          totalPages: res.data.totalPages
         });
       }
     });
+  };
+
+  clickPage = e => {
+    this.setState({ pageActive: e });
+    this.getNews();
   };
 
   componentDidMount = async () => {
@@ -126,20 +140,20 @@ class News extends Component {
         </div>
         <div className={"content-body full"}>
           <div className="header-news-admin">
-          <Button onClick = {e=>this.editorModal('add')} color="success">
-            Thêm mới <i className="fas fa-plus" />
-          </Button>
+            <Button onClick={e => this.editorModal("add")} color="success">
+              Thêm mới <i className="fas fa-plus" />
+            </Button>
           </div>
           {this.state.news.length === 0 && !this.state.loading ? (
             <span>Bạn chưa có bài viết nào</span>
           ) : (
-            <Table  bordered hover responsive size="sm">
+            <Table bordered hover responsive size="sm">
               <thead>
                 <tr>
                   <th>STT</th>
                   <th>Tiêu đề</th>
                   <th>Loại</th>
-                
+
                   <th>Lần chỉnh sửa cuối</th>
                   <th>Người tạo</th>
                   <th>Trạng thái</th>
@@ -149,7 +163,6 @@ class News extends Component {
               </thead>
               <tbody>
                 {this.state.news.map((item, index) => {
-              
                   var dayEdit = new Date(item.ngayChinhSua);
                   var monthEdit = dayEdit.getMonth() + 1;
                   var formatDayEdit =
@@ -167,9 +180,9 @@ class News extends Component {
                   return (
                     <tr key={index}>
                       <td>{index}</td>
-                      <td style = {{width:'250px'}}>{item.tieuDe}</td>
-                      <td>{item.loai === "1"?"Hoạt động":"Thông tin"}</td>
-                   
+                      <td style={{ width: "250px" }}>{item.tieuDe}</td>
+                      <td>{item.loai === "1" ? "Hoạt động" : "Thông tin"}</td>
+
                       <td>{formatDayEdit}</td>
                       <td>{item.hoTen}</td>
                       <td
@@ -181,9 +194,11 @@ class News extends Component {
                       >
                         {item.trangThai === 1 ? "Công khai" : "Riêng tư"}
                       </td>
-                      <td className ='news-status-public'>{item.ghim===1?"Có":""}</td>
+                      <td className="news-status-public">
+                        {item.ghim === 1 ? "Có" : ""}
+                      </td>
                       <td>
-                      <MyButton
+                        <MyButton
                           color={"success"}
                           style={{ marginRight: "15px" }}
                           onClick={() => this.onViewDetail(item._id)}
@@ -197,7 +212,7 @@ class News extends Component {
                         >
                           <i className="fas fa-edit" />
                         </MyButton>
-                      
+
                         <MyButton
                           color={"danger"}
                           style={{ marginRight: "15px" }}
@@ -212,6 +227,13 @@ class News extends Component {
               </tbody>
             </Table>
           )}
+          <div className="pagination-position">
+            <MyPagination
+              page={this.state.pageActive}
+              totalPages={this.state.totalPages}
+              clickPage={this.clickPage}
+            />
+          </div>
         </div>
       </React.Fragment>
     );
