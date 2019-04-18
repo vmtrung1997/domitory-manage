@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Table } from "react-bootstrap";
+import { Table, Row, Col } from "react-bootstrap";
+import Input from './../../../components/input/input'
 import MyButton from "../../../components/button/button";
 import NewsEditor from "./newsEditor";
 import Button from "./../../../components/button/button";
@@ -92,6 +93,7 @@ class News extends Component {
 
     await refreshToken();
     const options = {
+      query: this.state.query,
       skip: (this.state.pageActive - 1) * this.state.limit,
       limit: this.state.limit
     };
@@ -117,6 +119,10 @@ class News extends Component {
     this.getNews();
   };
 
+  getValue = (key, val) => {
+    this.setState({ [key] : val})
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -138,6 +144,20 @@ class News extends Component {
           <Title>Quản lý bài viết</Title>
         </div>
         <div className={"content-body full"}>
+          <Row className={'m-b-10'}>
+              <Col>
+                <span> Tài khoản </span>
+                <Input 
+                  placeholder={'Tìm kiếm'} 
+                  getValue={ (obj) => this.getValue('query', obj.value)}
+                  onKeyPress={ (e) => {if(e.key === 'Enter') this.getNews()}}
+                />
+              </Col>
+              <Col md={2} xs={12}>
+                <div>&nbsp;</div>
+                <Button title={'Tìm kiếm'} style={{padding: '7px 15px'}} onClick={this.getNews}><i className="fas fa-search" /></Button>
+              </Col>
+            </Row>  
           <div className="header-news-admin">
           <Button 
             title={'Thêm mới'} color={'warning'} 
@@ -168,18 +188,8 @@ class News extends Component {
                 {this.state.news.map((item, index) => {
                   var dayEdit = new Date(item.ngayChinhSua);
                   var monthEdit = dayEdit.getMonth() + 1;
-                  var formatDayEdit =
-                    dayEdit.getDate() +
-                    "/" +
-                    monthEdit +
-                    "/" +
-                    dayEdit.getFullYear() +
-                    " " +
-                    dayEdit.getHours() +
-                    ":" +
-                    dayEdit.getMinutes() +
-                    ":" +
-                    dayEdit.getSeconds();
+                  var formatDayEdit = dayEdit.getDate() + "/"
+                      + monthEdit + "/" + dayEdit.getFullYear()
                   return (
                     <tr key={index}>
                       <td>{index + 1}</td>

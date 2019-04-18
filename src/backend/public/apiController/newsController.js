@@ -16,12 +16,16 @@ exports.deleteNews = (req, res) => {
 exports.getNews = (req, res) => {
   var skip = req.body.options.skip;
   var limit = req.body.options.limit;
+  var query = {};
+  if(req.body.options.query)
+    query = { $text: { $search: req.body.options.query }}
   var totalPages = 1;
-  BaiViet.countDocuments({}, (err, data) => {
+  BaiViet.countDocuments(query, (err, data) => {
     totalPages = parseInt(data) / limit;
   });
 
   BaiViet.aggregate([
+    { $match: query },
     {
       $lookup: {
         from: "Profile",
