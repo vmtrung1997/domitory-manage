@@ -25,7 +25,6 @@ class NewsList extends React.Component {
     var _postsNews = [];
     Axios.post("http://localhost:4000/news/get-news", { data: date })
       .then(rs => {
-        console.log(rs);
         if (rs.status === 200) {
           rs.data.data.map(item => {
             _post.push(item);
@@ -89,7 +88,6 @@ class NewsList extends React.Component {
 
     Axios.post("http://localhost:4000/news/get-news", { data: date })
       .then(rs => {
-        console.log(rs.data);
         if (rs.status === 200) {
           rs.data.data.map(item => {
             _post.push(item);
@@ -137,7 +135,6 @@ class NewsList extends React.Component {
       default:
         break;
     }
-    console.log(posts);
     return (
       <React.Fragment>
         {/* section */}
@@ -308,7 +305,7 @@ class NewsList extends React.Component {
                   onClick={this.loadMore}
                   className="primary-button center-block"
                 >
-                  Thêm bài viết
+                  Xem thêm bài viết
                 </button>
               </div>
             </div>

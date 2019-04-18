@@ -191,7 +191,6 @@ class InfoStudent extends Component{
     axios.get(`/manager/getElement/floor`,  {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
-      console.log('==get lau', result);
       let i = 0;
       const floorList = result.data.map(floor => {
         return {key: i++, label: floor}
@@ -200,7 +199,6 @@ class InfoStudent extends Component{
         floorList: floorList,
       })
     }).catch(err => {
-      console.log('==get lau err', err);
     });
   };
 
@@ -212,11 +210,17 @@ class InfoStudent extends Component{
   //   }).then
   // }
 
+  onChangeAdd = (event) => {
+    this.setState({
+      infoAdded: {...this.state.infoAdded, [event.name]: event.value}
+    })
+  };
+
   onChange = (event) => {
     this.setState({
       [event.name]: event.value
     })
-  }
+  };
 
   handleSearch = () => {
     this.setState({
@@ -229,7 +233,6 @@ class InfoStudent extends Component{
     this.setState({ roomSelected: selectedOption, pageActive: 1 })
   }
   handleSelectSchool = selectedOption => {
-    console.log('==selectedOption 111', selectedOption);
     this.setState({ schoolSelected: selectedOption, pageActive: 1 })
   }
   handleSelectFloor = selectedOption => {
@@ -237,7 +240,6 @@ class InfoStudent extends Component{
   }
 
   handleSelectAddRoom = selectedOption => {
-    console.log('==selectedOption 222', selectedOption);
     this.setState({ infoAdded: {...this.state.infoAdded, roomAdded: selectedOption} })
   }
   handleSelectAddSchool = selectedOption => {
@@ -245,7 +247,17 @@ class InfoStudent extends Component{
   }
 
   handleSubmitAddStudent = async() => {
-    const { mssvAdded, nameAdded, infoAdded: { roomAdded, schoolAdded }, numberCardAdded } = this.state;
+    const { infoAdded: { schoolAdded, mssvAdded, nameAdded } } = this.state;
+    console.log('==submit add', this.state.infoAdded)
+    if(!schoolAdded && !mssvAdded && nameAdded)
+    {
+      console.log('==please fill');
+      this.setState({
+        notiAdd: 'Vui lòng điền đầy đủ thông tin!!'
+      });
+      return;
+    }
+
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
@@ -253,16 +265,14 @@ class InfoStudent extends Component{
     };
     axios.post(`/manager/infoStudent/add`,
       {
-        mssv: mssvAdded,
-        hoTen: nameAdded,
-        idPhong: roomAdded.value,
-        idTruong: schoolAdded.value,
-        maThe: numberCardAdded
+        mssv: mssvAdded ? mssvAdded : '',
+        hoTen: nameAdded ? nameAdded : '',
+        idTruong: schoolAdded.value ? schoolAdded.value : ''
       }, { headers: headers }
     ).then(result => {
       this.handleClosePopup('add');
     }).catch(err => {
-      ToastsStore.error("Thêm không thành công!" + err.response.data.msg);
+      ToastsStore.error(err.response.data.msg);
     })
   }
 
@@ -307,7 +317,6 @@ class InfoStudent extends Component{
         arrDelete: this.state.listDelete
       }, { headers: {'x-access-token': secret.access_token} }
     ).then(result => {
-      console.log('==del success', result)
       this.setState({
         listDelete: []
       });
@@ -315,7 +324,7 @@ class InfoStudent extends Component{
       this.getData();
       this.handleClosePopup('del')
     }).catch(err => {
-      ToastsStore.error("Xóa  không thành công!");
+      ToastsStore.error("Xóa không thành công!");
       this.handleClosePopup('del')
     })
   };
@@ -340,8 +349,6 @@ class InfoStudent extends Component{
   };
 
   render(){
-    console.log('==render state: ', this.state);
-
     const {
       limit,
       pageActive,
@@ -413,7 +420,6 @@ class InfoStudent extends Component{
                   placeholder={''}
                   value={schoolSelected}
                   onChange={this.handleSelectSchool}
-                  // selected={this.handleSelectSchool}
                   options={schoolOptionsSearch}
                 />
               </Col>
@@ -511,30 +517,14 @@ class InfoStudent extends Component{
                   Họ và Tên:
                 </Col>
                 <Col md={9}>
-                  <Input getValue={this.onChange} name={'nameAdded'} />
+                  <Input getValue={this.onChangeAdd} name={'nameAdded'} />
                 </Col>
+
                 <Col md={3}>
                   MSSV:
                 </Col>
                 <Col md={9}>
-                  <Input getValue={this.onChange} name={'mssvAdded'} />
-                </Col>
-                <Col md={3}>
-                  Mã thẻ:
-                </Col>
-                <Col md={9}>
-                  <Input getValue={this.onChange} name={'numberCardAdded'} />
-                </Col>
-                <Col md={3}>
-                  Phòng:
-                </Col>
-                <Col md={9}>
-                  <SearchSelect
-                    isSearchable={true}
-                    placeholder={''}
-                    value={roomAdded}
-                    onChange={this.handleSelectAddRoom}
-                    options={roomOptionsSearch} />
+                  <Input getValue={this.onChangeAdd} name={'mssvAdded'} />
                 </Col>
                 <Col md={3}>
                   Trường:
@@ -547,6 +537,9 @@ class InfoStudent extends Component{
                     onChange={this.handleSelectAddSchool}
                     options={schoolOptions} />
                 </Col>
+              </Row>
+              <Row style={{color: 'red'}}>
+                {this.state.notiAdd}
               </Row>
             </Modal.Body>
             <Modal.Footer>

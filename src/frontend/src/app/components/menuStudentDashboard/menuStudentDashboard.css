@@ -1,12 +1,9 @@
 .menu-student{
-   
-    height: fit-content;
-    min-height: 100vh;
+    height: 100%;
     background-color:#293846 ;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
-    /* padding-top: 120px; */
 }
 
 .menu-student-avatar{
@@ -29,7 +26,6 @@
 }
 .menu-student-content{
     font-size: 2.5vh;
-   
 }
 
 .menu-student-style{
@@ -53,9 +49,8 @@
     height: fit-content;
     min-height: 80vh;
     background-color: #ffffff;
-    -webkit-box-shadow: 4px 6px 5px 0px rgba(0,0,0,0.51);
-    -moz-box-shadow: 4px 6px 5px 0px rgba(0,0,0,0.51);
-    box-shadow: 4px 6px 5px 0px rgba(0,0,0,0.51);
+    margin-right: 30px;
+
 }
 .menu-student-style:hover{
     background-color: #2668A1;

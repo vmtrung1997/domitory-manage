@@ -9,7 +9,7 @@ import * as StudentAction from "../../actions/studentAction";
 import { bindActionCreators } from "redux";
 import DetailBill from "./detailBill";
 import OpitmizeNumber from "../../optimization/optimizationNumber/optimizationNumber";
-import Loader from "react-loader-spinner";
+import Loader from './../loader/loader'
 import refreshToken from "./../../../utils/refresh_token";
 import MyPagination from "./../pagination/pagination";
 

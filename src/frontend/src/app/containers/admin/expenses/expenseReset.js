@@ -49,7 +49,6 @@ class Example extends React.Component {
     this.setState({ show: true });
     getData().then(value => {
       if (value.data){
-        console.log(value.data);
         var rooms = value.data.result.map(v => {
           return {value: v._id, label: v.tenPhong}
         })

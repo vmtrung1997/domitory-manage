@@ -12,6 +12,7 @@ var baiVietSchema = new Schema({
     loai: String,
     ghim: {type: Number, enum: [0,1]}, //1: có 0: không,
 });
+baiVietSchema.index({tieuDe: 'text'});
 baiVietSchema.plugin(mongoosePaginate);
 
 const model = mongoose.model('BaiViet', baiVietSchema, 'BaiViet');

@@ -2,13 +2,14 @@ import React from "react";
 import { Modal, Button, Container } from "react-bootstrap";
 import md5 from "md5";
 import { connect } from "react-redux";
-import Input from "../../../components/input/input";
 import jwt_decode from "jwt-decode";
-import refreshToken from "./../../../../utils/refresh_token";
+import Loader from "react-loader-spinner";
 
 import axios from "axios";
+import Input from "../../../components/input/input";
+import refreshToken from "./../../../../utils/refresh_token";
+import './css.css'
 
-import Loader from "react-loader-spinner";
 
 class ResetPassword extends React.Component {
   constructor(props, context) {
@@ -98,13 +99,11 @@ class ResetPassword extends React.Component {
             onHide={this.handleClose}
             dialogClassName="title-modal"
           >
-            <Modal.Header closeButton />
+            <Modal.Header closeButton>
+              <Modal.Title bsPrefix="title-center">Đổi mật khẩu</Modal.Title>
+            </Modal.Header>
             <Container>
               <Modal.Body style={{ textAlign: "center" }}>
-                <div style={{ paddingBottom: "10px" }}>
-                  <h2>Đổi mật khẩu</h2>
-                </div>
-
                 <Input
                   name="oldPassword"
                   placeholder="Nhập mật khẩu  cũ ..."
@@ -139,7 +138,7 @@ class ResetPassword extends React.Component {
                 <Button
                   onClick={this.changePassword}
                   variant="primary"
-                  className="btn-color form-rounded btn-hover"
+                  className="btn-hover"
                 >
                   Đổi mật khẩu
                 </Button>

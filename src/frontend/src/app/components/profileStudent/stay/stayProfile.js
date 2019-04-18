@@ -15,7 +15,7 @@ import {
   ToastsContainerPosition,
   ToastsStore
 } from "react-toasts";
-import Loader from "react-loader-spinner";
+import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
 
 class StayProfile extends React.Component {
@@ -51,7 +51,6 @@ class StayProfile extends React.Component {
   }
 
   getValue = obj => {
-    console.log(obj.name);
     this.setState({ [obj.name]: obj.value });
   };
 
@@ -89,7 +88,6 @@ class StayProfile extends React.Component {
     this.setState({
       startDate: date
     });
-    console.log(date);
   }
 
   componentDidMount = async () => {
@@ -125,10 +123,8 @@ class StayProfile extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
         });
     } else {
-      console.log("ko co data");
     }
   };
 
@@ -140,8 +136,8 @@ class StayProfile extends React.Component {
       var dayInFormat = d.getDate() + "/" + month + "/" + d.getFullYear();
 
       //Định dạng ngày ra
-      var d = new Date(this.state.ngayHetHan);
-      var month = d.getMonth() + 1;
+      d = new Date(this.state.ngayHetHan);
+      month = d.getMonth() + 1;
       var dayOutFormat = d.getDate() + "/" + month + "/" + d.getFullYear();
     }
 
@@ -149,7 +145,7 @@ class StayProfile extends React.Component {
       <React.Fragment>
         {this.state.isLoad ? (
           <div className="loading-student">
-            <Loader type="Triangle" color="#007bff" height={60} width={60} />
+            <Loader loading={this.state.isLoad} />
           </div>
         ) : (
           <div>

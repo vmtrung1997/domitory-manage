@@ -41,23 +41,19 @@ class Example extends React.Component {
     var self = this;
     getData().then(result => {
       if (result.data) {
-        console.log(result.data);
         var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong, loaiPhong: room.loaiPhong }))
         self.setState({ rooms: roomOptions});
         this.selected(roomOptions[0].value);
       }
     }).catch(err => {
-      // ToastsStore.error(err);
-      console.log(err)
     })
   }
   selected = (value) => {
     var room = this.state.rooms.find(obj => obj.value === value)
     info_room({idPhong: value}).then(result => {
-      if (result.data)
-        {console.log(result.data.data)
-        this.setState({ room: room, infoRoom: result.data.data })}
-
+      if (result.data) {
+        this.setState({ room: room, infoRoom: result.data.data })
+      }
     })
   }
   monthSelected = value => {

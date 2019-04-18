@@ -67,6 +67,10 @@ input:disabled {
     color: white
 }
 
+.css-1u3n887{
+    box-shadow: 0 0 0 1px transparent !important;
+}
+
 .pagination-position{
     display: flex;
     justify-content: flex-end;

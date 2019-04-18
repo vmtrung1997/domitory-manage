@@ -12,8 +12,8 @@ class Security extends Component{
 	constructor(props) {
 			super(props);
 			this.state ={
-				fromDate: new Date('02/02/2016'),
-				toDate: new Date( new Date('02/10/2016').valueOf() + 1000*3600*24),
+				fromDate: new Date(),
+				toDate: new Date( new Date().valueOf() + 1000*3600*24),
 				page: 1,
 				limit: 10,
 				totalPages: 0,
@@ -83,7 +83,6 @@ class Security extends Component{
 			}
 		}).catch(err => {
 			this.setState({loading: false})
-			console.log(err)
 		})
 	}
 	render(){

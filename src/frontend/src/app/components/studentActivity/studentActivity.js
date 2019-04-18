@@ -41,7 +41,6 @@ class StudentActivity extends React.Component {
       })
       .then(res => {
         res.data.data.map(item => {
-          console.log(item);
           var d = new Date(item.idHD.ngayBD);
           var today = new Date();
 
