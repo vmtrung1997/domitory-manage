@@ -197,7 +197,6 @@ class InfoStudent extends Component{
     axios.get(`/manager/getElement/floor`,  {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
-      console.log('==get lau', result);
       let i = 0;
       const floorList = result.data.map(floor => {
         return {key: i++, label: floor}
@@ -206,7 +205,6 @@ class InfoStudent extends Component{
         floorList: floorList,
       })
     }).catch(err => {
-      console.log('==get lau err', err);
     });
   };
 
@@ -241,7 +239,6 @@ class InfoStudent extends Component{
     this.setState({ roomSelected: selectedOption, pageActive: 1 })
   }
   handleSelectSchool = selectedOption => {
-    console.log('==selectedOption 111', selectedOption);
     this.setState({ schoolSelected: selectedOption, pageActive: 1 })
   }
   handleSelectFloor = selectedOption => {
@@ -320,7 +317,6 @@ class InfoStudent extends Component{
         arrDelete: this.state.listDelete
       }, { headers: {'x-access-token': secret.access_token} }
     ).then(result => {
-      console.log('==del success', result)
       this.setState({
         listDelete: []
       });
@@ -328,7 +324,7 @@ class InfoStudent extends Component{
       this.getData();
       this.handleClosePopup('del')
     }).catch(err => {
-      ToastsStore.error("Xóa  không thành công!");
+      ToastsStore.error("Xóa không thành công!");
       this.handleClosePopup('del')
     })
   };
@@ -379,8 +375,6 @@ class InfoStudent extends Component{
   }
 
   render(){
-    console.log('==render state: ', this.state);
-
     const {
       limit,
       pageActive,

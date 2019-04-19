@@ -7,7 +7,7 @@ import jwt_decode from "jwt-decode";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as UserAction from "./../../actions/studentAction";
-import Loader from "react-loader-spinner";
+import Loader from "./../loader/loader";
 import MyPagination from "./../pagination/pagination";
 import {
   ToastsContainer,
@@ -53,7 +53,6 @@ class IncomingStudentActivity extends React.Component {
           totalPages: res.data.totalPages
         });
         res.data.data.map(item => {
-          console.log(item);
           var d = new Date(item.idHD.ngayBD);
           var today = new Date();
 
@@ -150,7 +149,6 @@ class IncomingStudentActivity extends React.Component {
   }
 
   render() {
-    console.log(this.props.activity);
     return (
       <React.Fragment>
         <ToastsContainer
@@ -160,7 +158,7 @@ class IncomingStudentActivity extends React.Component {
         />
         {this.state.isLoad ? (
           <div className="loading-student">
-            <Loader type="Triangle" color="#007bff" height={60} width={60} />
+            <Loader loading={this.state.isLoad} />
           </div>
         ) : (
           <div>

@@ -7,14 +7,15 @@ import {
   Form,
   Navbar
 } from "react-bootstrap";
+import { connect } from "react-redux";
+import { Link, withRouter } from "react-router-dom";
+import axios from "axios";
+import jwt_decode from "jwt-decode";
+
+import "./headerHomepage.css";
 import Login from "./../../containers/student/modalLogin/login";
 import ChangePassword from "./../../containers/student/modalResetPassword/modelPassword";
 import ResetPassword from "./../../containers/student/modalForgotPassword/modalForgotPassword"
-import { connect } from "react-redux";
-import "./headerHomepage.css";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import jwt_decode from "jwt-decode";
 
 class HeaderHomepage extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class HeaderHomepage extends Component {
       showResetPasswordModal: false,
       showPasswordModal: false,
       isLogin: false,
-      name: ""
+      name: ''
     };
   }
 
@@ -40,7 +41,6 @@ class HeaderHomepage extends Component {
 
 
   abc = show =>{
-    console.log('vo day');
     this.setState({
       showResetPasswordModal: show
     });
@@ -52,26 +52,19 @@ class HeaderHomepage extends Component {
     })
   }
   dataLogin = data => {
-    this.setUserName(data);
+    this.setUserName(data.access_token);
   };
 
   setUserName = secret => {
     const decode = jwt_decode(secret);
-    console.log(decode);
     var name = decode.user.profile.hoTen.split(" ");
-    this.setState({ name: name[name.length - 1] });
+    this.setState({ name: name[name.length - 2] + ' ' + name[name.length - 1]});
   };
   changePass = () =>{
     this.setState({
       showPasswordModal: true
     })
   }
-
-  setActive = () => {};
-  handleSelect = event => {
-    console.log(event);
-  };
-
 
   logOut = () => {
     const secret = JSON.parse(localStorage.getItem("secret"));
@@ -80,10 +73,15 @@ class HeaderHomepage extends Component {
       headers: {
         "x-refresh-token": secret.refresh_token
       }
-    });
+    })
 
-    localStorage.removeItem("secret");
-    this.setState({ isLogin: false });
+    localStorage.removeItem("secret")
+    
+    this.setState({ isLogin: false })
+
+    this.props.history.push({
+      pathname: '/',
+    });
   };
 
   componentDidMount() {
@@ -109,9 +107,8 @@ class HeaderHomepage extends Component {
     if (!this.state.isLogin) {
       isLogin = (
         <Button
-          variant="light"
           onClick={this.Login}
-          className="form-rounded btn-hover"
+          className="bt-sign"
         >
           Đăng nhập
         </Button>
@@ -122,28 +119,24 @@ class HeaderHomepage extends Component {
           <Dropdown.Toggle
             variant="light"
             id="dropdown-basic"
-            className="form-rounded btn-hover"
+            className="form-rounded btn-sign"
           >
             <span> {this.state.name}</span>
           </Dropdown.Toggle>
 
           <Dropdown.Menu alignRight>
-            <Dropdown.Item eventKey="1">
-              <Link to="/dashboard" className="list-item-link">
+              <Dropdown.Item eventKey="1" as={Link} to='/dashboard' >
                 <i className="fas fa-user-circle" />
                 <span className="list-menu-sub">Dashboard</span>
-              </Link>
-            </Dropdown.Item>
+              </Dropdown.Item>
 
-            <Dropdown.Item onClick={this.changePass} eventKey="1">
-              <Link to="/dashboard" className="list-item-link">
-                <i className="fas fa-lock" />
-                <span className="list-menu-sub">Đổi mật khẩu</span>
-              </Link>
-            </Dropdown.Item>
+              <Dropdown.Item onClick={this.changePass} eventKey="2" className="list-item-link">
+                  <i className="fas fa-lock" />
+                  <span className="list-menu-sub">Đổi mật khẩu</span>
+              </Dropdown.Item>
 
             <Dropdown.Divider />
-            <Dropdown.Item onClick={this.logOut} eventKey="4">
+            <Dropdown.Item onClick={this.logOut} eventKey="3">
               <i className="fas fa-sign-out-alt" />
               <span className="list-menu-sub">Thoát</span>
             </Dropdown.Item>
@@ -151,7 +144,6 @@ class HeaderHomepage extends Component {
         </Dropdown>
       );
     }
-    console.log(this.props.location);
     return (
       <React.Fragment>
         {this.state.showLoginModal && (
@@ -166,10 +158,10 @@ class HeaderHomepage extends Component {
 
         <Navbar
           sticky="top"
-          variant="dark"
           expand="sm"
           className="HeaderHomepage"
-          style={{ backgroundColor: "#1B5F72" }}
+          style={{ backgroundColor: "#fffffff7", height: '60px'}}
+
         >
           <Navbar.Brand>
             <div className="nav-img">
@@ -180,43 +172,18 @@ class HeaderHomepage extends Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link>
-                {" "}
-                <Link to="/">
-                  <span className="list-item-menu"> Trang chủ </span>
-                </Link>
-              </Nav.Link>
-              <Nav.Link>
-                <Link to="/news">
-                  <span className="list-item-menu"> Tin tức </span>
-                </Link>
-              </Nav.Link>
-              <Nav.Link>
-                <Link to="/about">
-                  <span className="list-item-menu"> Giới thiệu </span>
-                </Link>
-              </Nav.Link>
+              <Link to="/" className="list-item-menu">
+                Trang chủ
+              </Link>
+              <Link to="/news" className="list-item-menu">
+                Tin tức
+              </Link>
+              <Link to="/about" className="list-item-menu">
+                Giới thiệu
+              </Link>
             </Nav>
             <Form inline>
-              <Form inline className="search-area">
-                <FormControl
-                  type="text"
-                  placeholder="Tìm kiếm"
-                  className="mr-sm-2 search-control form-rounded "
-                />
-                <Button variant="light" className="form-rounded btn-hover">
-                  <i className="fas fa-search" />
-                </Button>
-              </Form>
-              {/* <Nav className="mr-auto">
-              <NavDropdown title="Chào bạn" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Đổi mật khẩu</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.2">Đăng xuất</NavDropdown.Item>
-              </NavDropdown>
-            </Nav> */}
               {isLogin}
-              {/* <Button variant="light" className='form-rounded btn-hover'>Đăng nhập</Button> */}
             </Form>
           </Navbar.Collapse>
         </Navbar>
@@ -230,7 +197,7 @@ var mapStateToProps = state => {
   };
 };
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   null
-)(HeaderHomepage);
+)(HeaderHomepage));

@@ -25,9 +25,7 @@ class Example extends React.Component {
   handleSubmit = () => {
     var self = this;
     var pass = this.state.pass
-    console.log(pass)
     require_expense({pass: pass}).then(result => {
-      console.log('result ', result);
       if (result.data.rs === 'success'){
         ToastsStore.success("Yêu cầu thành công");
         this.props.require(true);

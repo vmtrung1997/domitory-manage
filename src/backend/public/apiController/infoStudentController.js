@@ -209,3 +209,9 @@ exports.getRoomHistory = async(req, res) => {
 
 }
 
+exports.uploadImage = (req, res) => {
+  console.log(req.body);
+  res.json({
+    rs: 'success',
+  })
+}

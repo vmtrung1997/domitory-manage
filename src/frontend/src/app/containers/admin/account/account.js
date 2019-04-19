@@ -99,7 +99,7 @@ class Account extends Component{
 	
 	render(){
 		var rule = this.getRule()
-
+		
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>

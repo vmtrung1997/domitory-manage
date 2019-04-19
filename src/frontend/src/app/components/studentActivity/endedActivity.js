@@ -4,8 +4,8 @@ import "./../titleStudent/titleStudent.css";
 import "./../tableStudentTextStyle/tableStudentTextStyle.css";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import Loader from "./../loader/loader";
 import MyPagination from "./../pagination/pagination"
-import Loader from "react-loader-spinner";
 import {
   ToastsContainer,
   ToastsContainerPosition,
@@ -96,7 +96,7 @@ class EndedStudentActivity extends React.Component {
         />
         {this.state.isLoad ? (
           <div className="loading-student">
-            <Loader type="Triangle" color="#007bff" height={60} width={60} />
+            <Loader loading={this.state.isLoad} />
           </div>
         ) : (
           <div>

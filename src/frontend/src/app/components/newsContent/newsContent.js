@@ -13,7 +13,6 @@ class NewsContent extends React.Component {
     };
   }
   componentDidMount() {
-    console.log(this.props.location.search);
     if (this.props.location.search === "") {
       //--TODO-- Redirect sang trang tin tức
     } else {
