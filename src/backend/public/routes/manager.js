@@ -75,6 +75,8 @@ router.post('/infoStudent/update', infoStudent.updateInfo);
 
 router.get('/getElement/:name', repo.get_element);
 
+router.get('/getRoomHistory/:id', infoStudent.getRoomHistory);
+
 //Info dormitory
 router.get('/infoDormitory/getRoom/:floor', infoDormitory.getRoom);
 

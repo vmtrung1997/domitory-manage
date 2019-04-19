@@ -19,7 +19,9 @@ class InfoStudentDetail extends Component {
     super(props);
     this.state = {
       info: {},
-      genderOptions: [{ value: 0, label: 'nữ' }, { value: 1, label: 'nam' }],
+      truong: {},
+      phong: {},
+      genderOptions: [{value: 0, label: 'nữ'}, {value: 1, label: 'nam'}],
       roomOptions: [],
       schoolOptions: [],
 
@@ -31,6 +33,20 @@ class InfoStudentDetail extends Component {
     this.getElement('room');
     this.getElement('school');
     const { info } = this.props.location.state;
+    if(info.truong)
+      this.setState({
+        truong: {
+          value: info.truong._id,
+          label: info.truong.tenTruong
+        }
+      })
+    if(info.idPhong)
+      this.setState({
+        phong: {
+          value: info.idPhong._id,
+          label: info.idPhong.tenPhong
+        }
+      })
     var birthDate = info.ngaySinh ? new Date(info.ngaySinh) : new Date();
     //var stringDate = new DbirthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     this.setState({
@@ -47,8 +63,7 @@ class InfoStudentDetail extends Component {
 
       switch (name) {
         case 'room':
-          const roomOptions = result.data.map(room => ({ value: room._id, label: room.tenPhong }));
-          roomOptions.unshift({ value: 0, label: 'Tất cả' });
+          const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
           this.setState({
             roomOptions: roomOptions
           })
@@ -116,11 +131,29 @@ class InfoStudentDetail extends Component {
   }
 
   handleSelectSchool = selectedOption => {
-    this.setState({ info: { ...this.state.info, tenTruong: selectedOption } })
+    this.setState({
+      info: {
+        ...this.state.info,
+        truong: {
+          tenTruong: selectedOption.label,
+          _id: selectedOption.value
+        }
+      },
+      truong: selectedOption
+    })
   }
 
   handleSelectRoom = selectedOption => {
-    this.setState({ info: { ...this.state.info, tenPhong: selectedOption } })
+    this.setState({
+      info: {
+        ...this.state.info,
+        idPhong: {
+          tenPhong: selectedOption.label,
+          _id: selectedOption.value
+        }
+      },
+      phong: selectedOption
+    })
   }
   fixdata = (data) => {
 		var o = "", l = 0, w = 10240;
@@ -147,12 +180,14 @@ class InfoStudentDetail extends Component {
   }
   render() {
     console.log('==state render', this.state);
-    const { info, genderOptions, schoolOptions, roomOptions } = this.state;
+    const { info, genderOptions, schoolOptions, roomOptions, truong, phong } = this.state;
     const {
       hoTen,
       MSSV,
       diaChi,
       maThe,
+      ngayVaoO,
+      ngayHetHan,
       moTa,
       danToc,
       sdt,
@@ -160,9 +195,8 @@ class InfoStudentDetail extends Component {
       ngaySinh,
       sdtNguoiThan,
       gioiTinh,
-      idPhong: { tenPhong },
-      idTaiKhoan: { username },
-      truong: { tenTruong },
+      idPhong,
+      idTaiKhoan: {username},
       diemHD,
       img,
 
@@ -310,13 +344,18 @@ class InfoStudentDetail extends Component {
                           Ngày vào:
                         </Col>
                         <Col md={4}>
-                          <Input/>
+                          <Input value={ngayVaoO} getValue={this.onChange} name={'ngayVaoO'} disabled/>
                         </Col>
                         <Col md={2}>
                           Ngày hết hạn:
                         </Col>
                         <Col md={4}>
-                          <Input/>
+                          <DatePicker
+                            dateFormat='dd/MM/yyyy'
+                            selected={ngayHetHan}
+                            onChange={(val) => this.getValue('ngayHetHan', val)}
+                            className='input-datepicker'
+                          />
                         </Col>
                       </Row>
 
@@ -332,8 +371,9 @@ class InfoStudentDetail extends Component {
                         </Col>
                         <Col md={4}>
                           <SearchSelect
+                            isSearchable
                             placeholder={''}
-                            value={tenPhong}
+                            value={phong}
                             onChange={this.handleSelectRoom}
                             options={roomOptions}
                           />
@@ -355,7 +395,7 @@ class InfoStudentDetail extends Component {
                           <SearchSelect
                             isSearchable={true}
                             placeholder={''}
-                            value={tenTruong}
+                            value={truong}
                             onChange={this.handleSelectSchool}
                             options={schoolOptions} />
                         </Col>
