@@ -17,7 +17,7 @@ const customStyle = {
 		border: state.isFocused ? '1px solid #1ab394 !important' : '1px solid #e5e6e7 !important',
 		borderRadius: '1px',
 		height: 0,
-		outline: state.isFocused ? 'transparent !important' : 'transparent !important'
+		marginBottom: '10px'
 	}),
 	input: styles => ({
 		...styles,
