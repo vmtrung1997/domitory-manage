@@ -33,7 +33,6 @@ class InfoStudent extends Component{
 
       infoAdded: {},
 
-      pageList: [1,2,3,4,5],
       infoList: [],
 
       mssv: '',
@@ -246,12 +245,10 @@ class InfoStudent extends Component{
     this.setState({ infoAdded: {...this.state.infoAdded, schoolAdded: selectedOption} })
   }
 
-  handleSubmitAddStudent = async() => {
+  handleSubmitAddStudent = async () => {
     const { infoAdded: { schoolAdded, mssvAdded, nameAdded } } = this.state;
-    console.log('==submit add', this.state.infoAdded)
     if(!schoolAdded && !mssvAdded && nameAdded)
     {
-      console.log('==please fill');
       this.setState({
         notiAdd: 'Vui lòng điền đầy đủ thông tin!!'
       });
@@ -667,8 +664,8 @@ class InfoStudent extends Component{
             </Table>
             <Row>
               <Col md={3} className={'page-input'}>
-                <label style={{marginRight:'3px'}}>Page</label>
-                <Input width={'50px'}/>
+                <label style={{marginRight:'3px'}}>Trang</label>
+                <Input width={'50px'} value={this.state.pageActive}/>
               </Col>
               <Col md={9}>
                 <div className={'is-pagination'}>

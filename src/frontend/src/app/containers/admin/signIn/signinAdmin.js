@@ -7,6 +7,7 @@ import jwt_decode from 'jwt-decode';
 import Loader from './../../../components/loader/loader'
 import Input from '../../../components/input/input'
 import Button from './../../../components/button/button'
+import ForgotPassword from './modalForgotPassword'
 import './signIn.css'
 import logo_HCMUS from './../../../../utils/image/logo_HCMUS.jpg'
 
@@ -20,6 +21,7 @@ class SignInAdmin extends Component{
 			password: '',
 			isNotify: false,
 			loading: false,
+			show: false
 		}
 	}
 	getValue = (obj) => {
@@ -76,6 +78,7 @@ class SignInAdmin extends Component{
 	render(){
 		return(
 			<React.Fragment>
+				<ForgotPassword show={this.state.show} />
 				<div className='header-sgin-admin'>
 					<Link to='/'><img alt="logo_hcmus" className='logo' src={logo_HCMUS} /></Link>
 					<span> Chào mừng đến với ký túc xá Trần Hưng Đạo </span>
@@ -107,7 +110,7 @@ class SignInAdmin extends Component{
 						</Button>
 					</div>
 					<Loader loading={this.state.loading}/>
-					<Link to='/'> Bạn quên mật khẩu ?</Link>
+					<h5 className="lb-forgot" onClick={ e => this.setState({show: true})}> Bạn quên mật khẩu ?</h5>
 				</div>
 			</React.Fragment>
 		)

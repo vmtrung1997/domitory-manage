@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import {Collapse} from 'react-bootstrap';
+import Logo from './../../../utils/image/logo_HCMUS.jpg'
 
 import './menuButton.css';
 
@@ -53,10 +54,10 @@ export default class MenuButton extends React.Component {
 }
 
 export const MenuButtonHeader = (props) => {
-  const { avt, name, role } = props;
+  const { name, role } = props;
   return(
-    <div style={{color: 'white', textAlign: 'center', marginTop: '-15px'}}>
-      <img alt="avatar" className="img-circle center" src={avt}/>
+    <div style={{color: 'white', textAlign: 'center', marginTop: '-30px'}}>
+      <img alt="avatar" className="img-circle center" src={Logo} style={{width: '80px', height: '80px'}}/>
       <div style={{fontWeight: 'bold'}}> {name} </div>
       <div style={{fontSize: '14px', marginBottom: '5px'}}> {role} </div>
     </div>
