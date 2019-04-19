@@ -29,3 +29,19 @@
 .prefix{
     outline: transparent;
 }
+
+.danger-text{
+    color: #ed5565
+}
+
+.info-text{
+    color: #23c6c8;
+}
+
+.success-text{
+    color: #1ab394;
+}
+
+.warning-text{
+    color: #f7a54a;
+}
