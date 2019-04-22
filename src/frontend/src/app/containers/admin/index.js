@@ -12,7 +12,7 @@ import AccountDetail from './account/accountDetail'
 import InfoDormitory from "./infoDormitory/infoDormitory";
 import History from './securityHistory/history'
 import News from './news/news';
-
+import University from './university/university'
 class Admin extends Component{
 	render(){
 		return(
@@ -27,6 +27,8 @@ class Admin extends Component{
        			<Route exact path={`${this.props.match.url}/account`} component={Account} />
         		<Route exact path={`${this.props.match.url}/account/detail/:id`} component={AccountDetail} />
        			<Route exact path={`${this.props.match.url}/dormitory`} component={InfoDormitory} />
+       			<Route exact path={`${this.props.match.url}/university`} component={University} />
+						 
 	    	</Layout>
   		)
 	}

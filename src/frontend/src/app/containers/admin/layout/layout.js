@@ -42,6 +42,7 @@ export default class Layout extends React.Component{
               {key: 4, link: '/admin/account', label: 'Tài khoản', icon: 'fas fa-users'},
               {key: 5, link: '/admin/news', label: 'Bài viết', icon: 'far fa-newspaper'},
               {key: 6, link: '/admin/history', label: 'Lịch sử', icon: 'fas fa-history'},
+              {key: 7, link: '/admin/university', label: 'Trường - ngành', icon: 'fas fa-university'}
             ]}
         />
         </div>

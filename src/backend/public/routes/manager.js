@@ -5,9 +5,10 @@ var activityController = require('./../apiController/activityController')
 var newsController = require('./../apiController/newsController');
 var infoStudent = require('./../apiController/infoStudentController');
 var infoDormitory = require('./../apiController/infoDormitoryController');
-var accountController = require('./../apiController/accountController')
-var historyController = require('../apiController/historyController')
+var accountController = require('./../apiController/accountController');
+var historyController = require('../apiController/historyController');
 let repo = require('../repos/phongRepo');
+var universityController = require('../apiController/universityController');
 
 // Expense
 router.get('/expense', expenseController.quan_ly_dien_nuoc);
@@ -74,6 +75,8 @@ router.post('/infoStudent/update', infoStudent.updateInfo);
 
 router.get('/getElement/:name', repo.get_element);
 
+router.get('/getRoomHistory/:id', infoStudent.getRoomHistory);
+
 //Info dormitory
 router.get('/infoDormitory/getRoom/:floor', infoDormitory.getRoom);
 
@@ -105,5 +108,22 @@ router.post('/account/delete_account',accountController.delete_Account);
 
 //Security
 router.post('/security/history', historyController.find_history);
+
+//University
+router.get('/university/getSchools', universityController.getSchoolList);
+
+router.post('/university/insertSchool',universityController.insertSchool);
+
+router.post('/university/updateSchool',universityController.editSchool);
+
+router.post('/university/removeSchool',universityController.removeSchool);
+
+router.post('/university/getMajor', universityController.getMajor);
+
+router.post('/university/insertMajor',universityController.insertMajor);
+
+router.post('/university/updateMajor',universityController.updateMajor);
+
+router.post('/university/removeMajor',universityController.removeMajor);
 
 module.exports = router;

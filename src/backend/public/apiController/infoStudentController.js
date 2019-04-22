@@ -10,41 +10,32 @@ let auth = require('../repos/authRepo');
 const md5 = require('md5');
 
 exports.addStudent = (req, res) => {
-  const params = rerq.body;
-  if( !params.mssv && !params.hoTen && !params.idTruong)
+  const params = req.body;
+  if( !params.mssv && !params.hoTen)
     res.status(400).json({msg: 'Thiếu thông tin'});
 
-  Account.findOne({username: req.body.mssv})
+  Account.findOne({username: params.mssv})
     .then(result => {
       console.log('==find mssv: ', result)
 
       if(result)
         res.status(409).json({msg: 'Mã số sinh viên đã tồn tại!'})
       else {
-        Profile.findOne({maThe: req.body.maThe})
-         .then(result => {
-           console.log('==find ma The: ', result)
-
-           if(result)
-             res.status(409).json({msg: 'Mã thẻ đã tồn tại!'})
-           else {
              let accStudent = {
                 username: req.body.mssv,
                 password: md5(req.body.mssv),
                 loai: "SV",
-                isDelete: 0
+                isDelete: 0,
               };
               var acc = new Account(accStudent);
-
               //----save account---------
               acc.save().then((result) => {
                 let infoStudent = {
                 idTaiKhoan: result._id,
                 hoTen: req.body.hoTen,
                 MSSV: req.body.mssv,
-                idPhong: req.body.idPhong,
-                truong: req.body.idTruong,
-                maThe: req.body.maThe
+                ngaySinh: params.ngaySinh,
+                ngayVaoO: new Date()
                 };
                 let student = new Profile(infoStudent);
 
@@ -62,24 +53,19 @@ exports.addStudent = (req, res) => {
                res.status(500).json({msg: 'tạo account err'});
              })
              //-----end catch save account-------
-             Room.findOne({_id: req.body.idPhong})
-               .then(result => {
-                 result.soNguoi = result.soNguoi + 1
-                 result.save()
-               }).catch(err =>{
-                 console.log('==phong err', err)
-                res.status(500).json({msg: 'update phong err'});
-             })
+             // Room.findOne({_id: req.body.idPhong})
+             //   .then(result => {
+             //     result.soNguoi = result.soNguoi + 1
+             //     result.save()
+             //   }).catch(err =>{
+             //     console.log('==phong err', err)
+             //    res.status(500).json({msg: 'update phong err'});
+             // })
            }
-           //----------end điều kiện mã thẻ tồn tại------------
-         }).catch(err => {
-          res.status(400).json({msg: 'truy vấn mã thẻ err'})
-        })
-        //----------end catch maThe------------
-      }
       //----------end điều kiện mssv tồn tại-------------
     }).catch(err => {
-    res.status(400).json({msg: 'truy vấn mã thẻ err!'})
+      console.log('==err mssv', err)
+    res.status(400).json({msg: 'truy vấn mssv thẻ err!'})
   });
   //----------end catch mssv tồn tại----------------
 };
@@ -96,8 +82,21 @@ exports.deleteStudent = (req, res) => {
       console.log('==id', id);
       Account.findOneAndUpdate({username: id},{ $set: {isDelete: 1} })
         .then(result => {
-          console.log('find success', result);
-          res.status(200).json({msg: 'Bạn đã xóa thành công'})
+          Profile.findOneAndUpdate({MSSV: id},{ $set: {idPhong: null} })
+            .then(result => {
+              console.log('==ahihi', result);
+              if(result.idPhong){
+                Room.findOne({_id:result.idPhong})
+                  .then(result => {
+                    console.log('==Phong', result)
+                    result.soNguoi = result.soNguoi - 1;
+                    result.save()
+                  })
+              }
+              res.status(200).json({msg: 'Bạn đã xóa thành công'})
+            }).catch(err =>
+            res.status(400).json({msg: 'Xóa thất bại 222'})
+          )
         }).catch(err => {
         res.status(400).json({msg: 'Xóa thất bại'})
       })
@@ -110,6 +109,39 @@ exports.updateInfo = (req,res) => {
   const info = req.body.info;
   Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info })
     .then(result => {
+      // if change room
+      if(info.idPhong._id !== result.idPhong){
+        //update number of person in old room
+        if(result.idPhong)
+          Room.findOne({_id : result.idPhong})
+            .then(result => {
+              result.soNguoi = result.soNguoi - 1;
+              result.save()
+            }).catch(err => {
+            res.status(400).json({msg: 'Cập nhật phòng cũ không thành công!'})
+          })
+        //update number of person in new room
+        Room.findOne({_id : info.idPhong._id})
+          .then(result => {
+            result.soNguoi = result.soNguoi + 1;
+            result.save()
+          }).catch(err => {
+          res.status(400).json({msg: 'Cập nhật phòng mới không thành công!'})
+        })
+        //create room history
+        const history  = {
+          idTaiKhoan: info.idTaiKhoan._id,
+          idPhong: info.idPhong._id,
+          ngayChuyen: new Date()
+        }
+        let his = new RoomHistory(history);
+        his.save().then(result => {
+          res.status(200).json({msg: 'Cập nhật thành công!'})
+        }).catch(err => {
+          console.log('==roomHis', err);
+          res.status(400).json({msg: 'Cập nhật lịch sử phòng không thành công'})
+        })
+      }
       console.log('==success', result)
       res.status(200).json({msg: 'Cập nhật thành công!'})
     }).catch(err => {
@@ -161,13 +193,25 @@ exports.getListStudent = (req, res) => {
   //}
 };
 
-exports.getRoomHistory = (req, res) => {
+exports.getRoomHistory = async(req, res) => {
+  console.log('==his', req.params.id)
   const id = req.params.id;
-  RoomHistory.find({id: id}).sort({ ngayChuyen: -1 }).
-    then(result => {
-      res.status(200).json(result)
-  }).catch(err =>
-    res.status(400)
-  )
+
+  await RoomHistory.find({idTaiKhoan: id}).populate('idPhong').sort({ ngayChuyen: 1 }).
+    then(async(result) => {
+      console.log('==his', result);
+    res.status(200).json(result)
+
+  }).catch(err => {
+      console.log('==err', err)
+      res.status(400)
+  })
+
 }
 
+exports.uploadImage = (req, res) => {
+  console.log(req.body);
+  res.json({
+    rs: 'success',
+  })
+}
