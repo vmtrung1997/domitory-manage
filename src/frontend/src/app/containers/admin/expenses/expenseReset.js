@@ -68,10 +68,10 @@ class Example extends React.Component {
     var submit = {
       idPhong: this.state.idPhong,
       dienCheck: this.state.dienCheck,
-      dienCu: this.state.dienCu,
+      //dienCu: this.state.dienCu,
       dienMoi: this.state.dienMoi,
       nuocCheck: this.state.nuocCheck,
-      nuocCu: this.state.nuocCu,
+      //nuocCu: this.state.nuocCu,
       nuocMoi: this.state.nuocMoi
     }
     if (!submit.dienCheck && !submit.nuocCheck)
@@ -122,10 +122,10 @@ class Example extends React.Component {
                   <Checkbox label={'Reset số điện'} check={this.state.dienCheck} isCheck={val => this.setState({dienCheck: val.chk})}/>
                   </Col>
               </Col>
-              <Col>
+              {/* <Col>
                 Số điện đồng hồ cũ
                 <Input type='number' value={this.state.dienCu} name='dienCu' disabled={!this.state.dienCheck} getValue={this.getValue}/>
-              </Col>
+              </Col> */}
               <Col>
                 Số điện đồng hồ mới
                 <Input type='number' value={this.state.dienMoi} name='dienMoi' disabled={!this.state.dienCheck} getValue={this.getValue}/>
@@ -142,10 +142,10 @@ class Example extends React.Component {
                 <Checkbox label={'Reset số nước'} check={this.state.nuocCheck} isCheck={val => this.setState({nuocCheck: val.chk})}/>
               </Col>
               </Col>
-              <Col>
+              {/* <Col>
                 Số nước đồng hồ cũ
                 <Input type='number' value={this.state.nuocCu} name='nuocCu' disabled={!this.state.nuocCheck} getValue={this.getValue}/>
-              </Col>
+              </Col> */}
               <Col>
                 Số nước đồng hồ mới
                 <Input  type='number' value={this.state.nuocMoi} name='nuocMoi' disabled={!this.state.nuocCheck} getValue={this.getValue}/>
@@ -160,12 +160,9 @@ class Example extends React.Component {
             <Button variant="default" color="default" onClick={this.handleClose}>
               Đóng
             </Button>
-            {!this.state.edit && <Button variant="default" color="warning" onClick={this.handleEdit}>
-              Chỉnh sửa
-            </Button>}
-            {this.state.edit && <Button variant="default" color="success" onClick={this.handleSubmit}>
+            <Button variant="default" color="success" onClick={this.handleSubmit}>
               Lưu
-            </Button>}
+            </Button>
           </Modal.Footer>
         </Modal>
       </>
