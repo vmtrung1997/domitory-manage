@@ -9,7 +9,7 @@ var baiVietSchema = new Schema({
     ngayTao: Date,
     ngayChinhSua: Date,
     trangThai: {type: Number, enum: [0,1]}, //1: public 0: private,
-    loai: String,
+    loai: Number,
     ghim: {type: Number, enum: [0,1]}, //1: có 0: không,
 });
 baiVietSchema.index({tieuDe: 'text'});

@@ -1,5 +1,12 @@
 import React, { Component } from "react";
 import { Table, Row, Col } from "react-bootstrap";
+import axios from "axios";
+import {
+  ToastsContainer,
+  ToastsContainerPosition,
+  ToastsStore
+} from "react-toasts";
+
 import Input from './../../../components/input/input'
 import MyButton from "../../../components/button/button";
 import NewsEditor from "./newsEditor";
@@ -8,14 +15,9 @@ import "./news.css";
 import Title from "../../../components/title/title";
 import refreshToken from "../../../.././utils/refresh_token";
 import Loader from "./../../../components/loader/loader";
-import axios from "axios";
 import MyPagination from "./../../../components/pagination/pagination";
+import Select from './../../../components/selectOption/select'
 
-import {
-  ToastsContainer,
-  ToastsContainerPosition,
-  ToastsStore
-} from "react-toasts";
 
 class News extends Component {
   constructor(props) {
@@ -28,7 +30,8 @@ class News extends Component {
       news: [],
       loading: false,
       typeEdit: undefined,
-      selectedItem: undefined
+      selectedItem: undefined,
+      type: -1
     };
   }
 
@@ -95,7 +98,8 @@ class News extends Component {
     const options = {
       query: this.state.query,
       skip: (this.state.pageActive - 1) * this.state.limit,
-      limit: this.state.limit
+      limit: this.state.limit,
+      type: parseInt(this.state.type)
     };
     var secret = JSON.parse(localStorage.getItem("secret"));
     axios.defaults.headers["x-access-token"] = secret.access_token;
@@ -124,6 +128,11 @@ class News extends Component {
   }
 
   render() {
+    var type = [
+      {value: -1, label: 'Tất cả'},
+      {value: 0, label: 'Thông tin'},
+      {value: 1, label: 'Hoạt động'},
+    ]
     return (
       <React.Fragment>
         <ToastsContainer
@@ -151,6 +160,14 @@ class News extends Component {
                   placeholder={'Tìm kiếm'} 
                   getValue={ (obj) => this.getValue('query', obj.value)}
                   onKeyPress={ (e) => {if(e.key === 'Enter') this.getNews()}}
+                />
+              </Col>
+              <Col md={3} xs={12}>
+                <span> Loại bài </span>
+                <Select 
+                  options={type} 
+                  value={this.state.type} 
+                  selected={val => this.getValue('type',val)} 
                 />
               </Col>
               <Col md={2} xs={12}>
@@ -194,7 +211,7 @@ class News extends Component {
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td style = {{width:'250px'}}>{item.tieuDe}</td>
-                      <td>{item.loai === "1"?"Hoạt động":"Thông tin"}</td>
+                      <td>{item.loai === 1 ? "Hoạt động":"Thông tin"}</td>
                       <td>{formatDayEdit}</td>
                       <td>{item.hoTen}</td>
                       <td

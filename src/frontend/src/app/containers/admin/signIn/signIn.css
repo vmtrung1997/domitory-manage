@@ -68,3 +68,10 @@ a{
 	  	margin-left: 10px;
 	}
 }
+.lb-forgot{
+	cursor: pointer;
+	color: #36c;
+}
+.lb-forgot:hover{
+	color: #01458E;
+}
