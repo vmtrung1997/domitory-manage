@@ -17,6 +17,7 @@ class Input extends Component {
     placeholder: '',
     padding: '6px 12px',
     borderRadius: '1px',
+    textAlign: '',
     disabled: false,
     autoFocus: false,
     getValue: () => {},
@@ -36,7 +37,7 @@ class Input extends Component {
     return (
       <React.Fragment>
         <input 
-          style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`}}
+          style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`, textAlign: `${this.props.textAlign}`}}
           className={`input-control input-${color}`}
           name={this.props.name}
           onChange={this.onChange}

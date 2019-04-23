@@ -72,9 +72,12 @@ class ActivityRollCall extends Component{
     } else {
       ToastsStore.error("Thời gian này không cho phép điểm danh!");
     }
-    this.setState({
-      idThe: ''
-    })
+    this.setState({ idThe: '' })
+  }
+
+  handleClose = () => {
+    this.setState({ idThe: '' })
+    this.props.handleClose()
   }
   
 	render(){
@@ -93,7 +96,7 @@ class ActivityRollCall extends Component{
 		return(
       <React.Fragment>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-  			<Modal show={this.props.show} onHide={this.props.handleClose} >
+  			<Modal show={this.props.show} onHide={this.handleClose} >
           		<Modal.Header closeButton>
               		<Modal.Title>Điểm danh hoạt động</Modal.Title>
             		</Modal.Header>
@@ -129,7 +132,7 @@ class ActivityRollCall extends Component{
                   </Table>
             		</Modal.Body>
             		<Modal.Footer>
-  	            	<Button variant='default' color='default' onClick={this.props.handleClose}>
+  	            	<Button variant='default' color='default' onClick={this.handleClose}>
   	            		Đóng
   	            	</Button>
           		</Modal.Footer>

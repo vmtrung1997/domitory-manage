@@ -1,12 +1,11 @@
 const ObjectId = require("mongoose").mongo.ObjectId;
 const md5 = require("md5");
-const TaiKhoan = require("../models/TaiKhoan");
 const User = require("../models/TaiKhoan");
 const Profile = require("../models/Profile");
 const ReToken = require("../models/refreshToken");
-var auth = require("../repos/authRepo");
-var nodemailer = require("nodemailer");
-var smtpTransport = nodemailer.createTransport({
+const auth = require("../repos/authRepo");
+const nodemailer = require("nodemailer");
+const smtpTransport = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
   secure: true,
@@ -70,14 +69,13 @@ exports.login = (req, res) => {
 };
 
 exports.resetPassword = (req, res) => {
-  console.log(req.body);
   Profile.findOne({ MSSV: req.body.mssv, CMND: req.body.cmnd })
     .then(result => {
       if (result) {
         var pass = Math.floor(Math.random() * 100000).toString();
         var md5Pass = md5(pass);
         console.log(pass,md5Pass);
-        TaiKhoan.findOneAndUpdate(
+        User.findOneAndUpdate(
           { _id: result.idTaiKhoan },
           {
             $set:{
@@ -98,8 +96,7 @@ exports.resetPassword = (req, res) => {
             }
           }
         );
-        // console.log(result.idTaiKhoan);
-        //
+        
         let mailOptions = {
           from: ' "KTX Trần Hưng Đạo" <ktx135btranhungdao@gmail.com>',
           to: "tainguyen197.ntt@gmail.com",
@@ -131,6 +128,72 @@ exports.resetPassword = (req, res) => {
     .catch(err => {
       console.log(err);
     });
+};
+
+exports.resetPasswordAdmin = (req, res) => {
+  const email = req.body.email
+  const username = req.body.username
+  var msg = ''
+  User.findOne({username: username})
+  .populate('idProfile')
+  .then( result => {
+    if(result && result.idProfile){
+      if(result.isDelete === 1){
+        res.status(401).json({
+          msg: "Tài khoản đã bị xóa!"          
+        })
+      } else if( !result.idProfile.email ){
+        res.status(401).json({
+          msg: "Tài khoản không tồn tại email xác thực!"
+        })
+      } else if( result.idProfile.email !== email){
+        res.status(401).json({
+          msg: 'Email không khớp với tài khoản'
+        })
+      } else {
+        var pass = Math.floor(Math.random() * 100000).toString();
+        var md5Pass = md5(pass)
+        result.password = md5Pass
+        result.save()
+        let mailOptions = {
+          from: ' "KTX Trần Hưng Đạo" <ktx135btranhungdao@gmail.com>',
+          to: result.idProfile.email,
+          subject: "Mật khẩu của bạn đã được thay đổi",
+          html:
+            "Chào " +
+            result.idProfile.hoTen +
+            " , <br> Đây là mật khẩu mới của bạn: <strong>" +
+            pass +
+            "</strong>"
+        };
+        res.status(200).json({
+          msg: 'success'
+        })
+        smtpTransport.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log('--sendEmailChangePass: ', error)
+            res.status(500).json({
+              msg: 'Hệ thống không gửi được email'
+            })
+          } else {
+            console.log('--sendEmailChangePass: success')
+          }
+        });
+      }
+    } else {  
+      res.status(401).json({
+        msg: "Không tìm thấy tên tài khoản tương ứng!",
+      })
+    }
+  
+  }) 
+  .catch( err => {
+    console.log('--resetPasswordAdmin:', err)
+    res.status(500).json({
+      msg: 'Lỗi server'
+    });
+  })
+  
 };
 
 exports.me_access = (req, res) => {
