@@ -8,6 +8,7 @@ class Confirm extends Component{
 	static defaultProps = {
 		show: false,
 		content: '',
+		title: '',
 		handleClose: () => {},
 		handleSave: () => {},
 	}
@@ -16,11 +17,11 @@ class Confirm extends Component{
 		return(
 			<Modal show={this.props.show} onHide={this.props.handleClose}>
         		<Modal.Header closeButton>
-            		<Modal.Title>Xóa hoạt động</Modal.Title>
+            		<Modal.Title>{this.props.title}</Modal.Title>
           		</Modal.Header>
           		<Modal.Body>
           			<div>
-          				<span>Bạn có muốn xóa hoạt động này !</span>
+          				<span>{this.props.content}</span>
           			</div>
           		</Modal.Body>
           		<Modal.Footer>

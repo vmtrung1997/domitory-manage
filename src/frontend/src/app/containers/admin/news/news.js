@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Table } from "react-bootstrap";
+import { Table, Row, Col } from "react-bootstrap";
+import axios from "axios";
+import {
+  ToastsContainer,
+  ToastsContainerPosition,
+  ToastsStore
+} from "react-toasts";
+
+import Input from './../../../components/input/input'
 import MyButton from "../../../components/button/button";
 import NewsEditor from "./newsEditor";
 import Button from "./../../../components/button/button";
@@ -7,23 +15,23 @@ import "./news.css";
 import Title from "../../../components/title/title";
 import refreshToken from "../../../.././utils/refresh_token";
 import Loader from "./../../../components/loader/loader";
-import axios from "axios";
+import MyPagination from "./../../../components/pagination/pagination";
+import Select from './../../../components/selectOption/select'
 
-import {
-  ToastsContainer,
-  ToastsContainerPosition,
-  ToastsStore
-} from "react-toasts";
 
 class News extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      pageActive: 1,
+      totalPages: 1,
+      limit: 10,
       showEditorModal: false,
       news: [],
       loading: false,
       typeEdit: undefined,
-      selectedItem: undefined
+      selectedItem: undefined,
+      type: -1
     };
   }
 
@@ -87,24 +95,44 @@ class News extends Component {
     });
 
     await refreshToken();
+    const options = {
+      query: this.state.query,
+      skip: (this.state.pageActive - 1) * this.state.limit,
+      limit: this.state.limit,
+      type: parseInt(this.state.type)
+    };
     var secret = JSON.parse(localStorage.getItem("secret"));
     axios.defaults.headers["x-access-token"] = secret.access_token;
-    axios.get("/manager/news/get").then(res => {
+    axios.post("/manager/news/get", { options: options }).then(res => {
       if (res.data.message === "succes") {
-        console.log(res);
         this.setState({
           news: res.data.data,
-          loading: false
+          loading: false,
+          totalPages: res.data.totalPages
         });
       }
     });
+  };
+
+  clickPage = e => {
+    this.setState({ pageActive: e });
+    this.getNews();
   };
 
   componentDidMount = async () => {
     this.getNews();
   };
 
+  getValue = (key, val) => {
+    this.setState({ [key] : val})
+  }
+
   render() {
+    var type = [
+      {value: -1, label: 'Tất cả'},
+      {value: 0, label: 'Thông tin'},
+      {value: 1, label: 'Hoạt động'},
+    ]
     return (
       <React.Fragment>
         <ToastsContainer
@@ -125,21 +153,47 @@ class News extends Component {
           <Title>Quản lý bài viết</Title>
         </div>
         <div className={"content-body full"}>
+          <Row className={'m-b-10'}>
+              <Col>
+                <span> Tài khoản </span>
+                <Input 
+                  placeholder={'Tìm kiếm'} 
+                  getValue={ (obj) => this.getValue('query', obj.value)}
+                  onKeyPress={ (e) => {if(e.key === 'Enter') this.getNews()}}
+                />
+              </Col>
+              <Col md={3} xs={12}>
+                <span> Loại bài </span>
+                <Select 
+                  options={type} 
+                  value={this.state.type} 
+                  selected={val => this.getValue('type',val)} 
+                />
+              </Col>
+              <Col md={2} xs={12}>
+                <div>&nbsp;</div>
+                <Button title={'Tìm kiếm'} style={{padding: '7px 15px'}} onClick={this.getNews}><i className="fas fa-search" /></Button>
+              </Col>
+            </Row>  
           <div className="header-news-admin">
-          <Button onClick = {e=>this.editorModal('add')} color="success">
-            Thêm mới <i className="fas fa-plus" />
+          <Button 
+            title={'Thêm mới'} color={'warning'} 
+            onClick={ e =>this.editorModal('add')} 
+            style={{padding: '5px 20px'}}
+          > 
+                <i className="fas fa-plus"/>
           </Button>
           </div>
           {this.state.news.length === 0 && !this.state.loading ? (
             <span>Bạn chưa có bài viết nào</span>
           ) : (
-            <Table  bordered hover responsive size="sm">
-              <thead>
+            <Table bordered hover responsive size="sm">
+              <thead className="title-table">
                 <tr>
-                  <th>#</th>
+                  <th>STT</th>
                   <th>Tiêu đề</th>
                   <th>Loại</th>
-                
+
                   <th>Lần chỉnh sửa cuối</th>
                   <th>Người tạo</th>
                   <th>Trạng thái</th>
@@ -149,27 +203,15 @@ class News extends Component {
               </thead>
               <tbody>
                 {this.state.news.map((item, index) => {
-              
                   var dayEdit = new Date(item.ngayChinhSua);
                   var monthEdit = dayEdit.getMonth() + 1;
-                  var formatDayEdit =
-                    dayEdit.getDate() +
-                    "/" +
-                    monthEdit +
-                    "/" +
-                    dayEdit.getFullYear() +
-                    " " +
-                    dayEdit.getHours() +
-                    ":" +
-                    dayEdit.getMinutes() +
-                    ":" +
-                    dayEdit.getSeconds();
+                  var formatDayEdit = dayEdit.getDate() + "/"
+                      + monthEdit + "/" + dayEdit.getFullYear()
                   return (
                     <tr key={index}>
-                      <td>{index}</td>
+                      <td>{index + 1}</td>
                       <td style = {{width:'250px'}}>{item.tieuDe}</td>
-                      <td>{item.loai === "Hoat Dong"?"Hoạt động":"Tin tức"}</td>
-                   
+                      <td>{item.loai === 1 ? "Hoạt động":"Thông tin"}</td>
                       <td>{formatDayEdit}</td>
                       <td>{item.hoTen}</td>
                       <td
@@ -182,29 +224,28 @@ class News extends Component {
                         {item.trangThai === 1 ? "Công khai" : "Riêng tư"}
                       </td>
                       <td className ='news-status-public'>{item.ghim===1?"Có":""}</td>
-                      <td>
-                      <MyButton
-                          color={"success"}
-                          style={{ marginRight: "15px" }}
-                          onClick={() => this.onViewDetail(item._id)}
-                        >
-                          <i className="far fa-eye" />
-                        </MyButton>
+                      <td style={{textAlign: 'center'}}>
                         <MyButton
-                          color={"warning"}
-                          style={{ marginRight: "15px" }}
-                          onClick={() => this.editorModal("edit", item)}
-                        >
-                          <i className="fas fa-edit" />
-                        </MyButton>
-                      
-                        <MyButton
-                          color={"danger"}
-                          style={{ marginRight: "15px" }}
-                          onClick={() => this.onDetete(item._id)}
-                        >
-                          <i className=" fas fa-trash-alt" />
-                        </MyButton>
+                            color={"primary"}
+                            style={{ marginRight: "15px" }}
+                            onClick={() => this.onViewDetail(item._id)}
+                          >
+                            <i className="far fa-eye" />
+                          </MyButton>
+                          <MyButton
+                            color={"warning"}
+                            style={{ marginRight: "15px" }}
+                            onClick={() => this.editorModal("edit", item)}
+                          >
+                            <i className="fas fa-edit" />
+                          </MyButton>
+                        
+                          <MyButton
+                            color={"danger"}
+                            onClick={() => this.onDetete(item._id)}
+                          >
+                            <i className=" fas fa-trash-alt" />
+                          </MyButton>
                       </td>
                     </tr>
                   );
@@ -212,6 +253,13 @@ class News extends Component {
               </tbody>
             </Table>
           )}
+          <div className="pagination-position">
+            <MyPagination
+              page={this.state.pageActive}
+              totalPages={this.state.totalPages}
+              clickPage={this.clickPage}
+            />
+          </div>
         </div>
       </React.Fragment>
     );

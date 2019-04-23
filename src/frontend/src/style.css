@@ -5,7 +5,9 @@
 .m-20{
     margin: 20px
 }
-
+.m-b-0{
+    margin-bottom: 0!important;
+}
 .m-b-10{
     margin-bottom: 10px;
 }
@@ -60,4 +62,19 @@ select:disabled {
 }
 input:disabled {
     background: #eee
+}
+
+.title-table{
+    background: #778899;
+    color: white
+}
+
+.css-1u3n887{
+    box-shadow: 0 0 0 1px transparent !important;
+}
+
+.pagination-position{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
 }

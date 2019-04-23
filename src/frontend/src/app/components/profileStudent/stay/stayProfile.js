@@ -1,5 +1,5 @@
 import React from "react";
-import { InputGroup, Row, Col, Button } from "react-bootstrap";
+import { InputGroup, Row, Col, Table } from "react-bootstrap";
 import "./../profileStudent.css";
 import "react-datepicker/dist/react-datepicker.css";
 import MyInput from "../../input/input";
@@ -15,7 +15,7 @@ import {
   ToastsContainerPosition,
   ToastsStore
 } from "react-toasts";
-import Loader from "react-loader-spinner";
+import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
 
 class StayProfile extends React.Component {
@@ -51,7 +51,6 @@ class StayProfile extends React.Component {
   }
 
   getValue = obj => {
-    console.log(obj.name);
     this.setState({ [obj.name]: obj.value });
   };
 
@@ -64,8 +63,7 @@ class StayProfile extends React.Component {
     var data = {
       idPhong: this.state.tenPhong._id,
       ngayHetHan: this.state.ngayHetHan,
-      ngayVaoO: this.state.ngayVaoO,
-
+      ngayVaoO: this.state.ngayVaoO
     };
 
     this.setState({ isDisable: !this.state.isDisable });
@@ -90,7 +88,6 @@ class StayProfile extends React.Component {
     this.setState({
       startDate: date
     });
-    console.log(date);
   }
 
   componentDidMount = async () => {
@@ -113,13 +110,11 @@ class StayProfile extends React.Component {
 
             //Lưu trong state
             this.setState({
-           
               tenPhong: res.data.data.idPhong,
-             
-              ngayHetHan: res.data.data.ngayHetHan,
-             
-              ngayVaoO: res.data.data.ngayVaoO,
 
+              ngayHetHan: res.data.data.ngayHetHan,
+
+              ngayVaoO: res.data.data.ngayVaoO
             });
 
             this.setState({
@@ -128,14 +123,8 @@ class StayProfile extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
         });
-
-   
-
-    
     } else {
-      console.log("ko co data");
     }
   };
 
@@ -147,18 +136,16 @@ class StayProfile extends React.Component {
       var dayInFormat = d.getDate() + "/" + month + "/" + d.getFullYear();
 
       //Định dạng ngày ra
-      var d = new Date(this.state.ngayHetHan);
-      var month = d.getMonth() + 1;
+      d = new Date(this.state.ngayHetHan);
+      month = d.getMonth() + 1;
       var dayOutFormat = d.getDate() + "/" + month + "/" + d.getFullYear();
-
-      
     }
 
     return (
       <React.Fragment>
         {this.state.isLoad ? (
           <div className="loading-student">
-            <Loader type="Triangle" color="#007bff" height={60} width={60} />
+            <Loader loading={this.state.isLoad} />
           </div>
         ) : (
           <div>
@@ -219,6 +206,25 @@ class StayProfile extends React.Component {
                       </Row>
                     </div>
                   </div>
+                </Col>
+                <Col sm={10}>
+                  <Table bordered hover responsive size="sm">
+                    <thead className="thread-student">
+                      <tr>
+                        <th>Từ ngày</th>
+                        <th>Đến Ngày</th>
+
+                        <th>Phòng</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td />
+                        <td />
+                        <td />
+                      </tr>
+                    </tbody>
+                  </Table>
                 </Col>
               </Row>
             </div>

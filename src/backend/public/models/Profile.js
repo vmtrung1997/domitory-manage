@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var profileSchema = new Schema({
     idTaiKhoan: {type: Schema.Types.String, ref: 'TaiKhoan'},
+    CMND: Number,
     hoTen: String,
     ngaySinh: Date,
     gioiTinh: {type: Number, enum: [0,1]}, //1 nam 0 nu
@@ -21,7 +22,9 @@ var profileSchema = new Schema({
     ngayHetHan: Date,
     danToc: String,
     img:  { data: Buffer, contentType: String },
-    diemHD: Number
+    CMND: String,
+    diemHD: Number,
+    expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
 });
 
 profileSchema.plugin(mongoosePaginate);

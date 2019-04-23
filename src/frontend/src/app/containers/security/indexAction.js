@@ -52,5 +52,6 @@ export const logout = () => {
     if (result.data.logout){
       localStorage.removeItem('secret');
     }
-  }).catch(err => console.log(err))
+    
+  }).catch(err => {})
 }

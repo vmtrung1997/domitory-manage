@@ -1,0 +1,10 @@
+.body-modal-add{
+    display: flex;
+    justify-content: space-evenly;
+}
+.field-add p{
+    font-size: 14px;
+    padding: 7px 0;
+    margin-bottom: 10px;
+}
+

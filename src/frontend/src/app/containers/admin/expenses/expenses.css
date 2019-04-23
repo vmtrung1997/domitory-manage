@@ -2,13 +2,12 @@
     display: flex;
     justify-content: space-between;
 }
-.link{
+.link-table{
     color: #007bff;
     cursor: pointer;
 }
-.link:hover{
+.link-table:hover{
     color: #0056b3;
-    text-decoration: underline;
 }
 .flex-row-end{
     display: flex;
@@ -18,9 +17,9 @@
 .flex-row-end button{
     margin-left: 10px;
 }
-.content-body{
-    overflow: auto
-}
+/*.content-body{*/
+    /*overflow: auto*/
+/*}*/
 .maxHeight .table-responsive{
     max-height: 300px;
 }
@@ -29,4 +28,20 @@
 }
 .prefix{
     outline: transparent;
+}
+
+.danger-text{
+    color: #ed5565
+}
+
+.info-text{
+    color: #23c6c8;
+}
+
+.success-text{
+    color: #1ab394;
+}
+
+.warning-text{
+    color: #f7a54a;
 }

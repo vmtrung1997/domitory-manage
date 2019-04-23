@@ -9,8 +9,14 @@
 }
 
 .is-header{
-
+    border-bottom: 1px solid #ddd;
 }
+
+.is-body{
+    margin-top: 15px;
+}
+
+
 
 .is-pagination{
     float: right;

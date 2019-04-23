@@ -3,6 +3,7 @@
 }
 
 .layout-sub{
+	z-index: 200;
     width: 20%;
 	height: 100vh;
 	background-color: #2f4050;

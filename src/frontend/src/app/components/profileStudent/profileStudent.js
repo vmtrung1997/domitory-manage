@@ -6,6 +6,7 @@ import "./../titleStudent/titleStudent.css";
 import PersonProfile from "./person/personProfile";
 import StayProfile from "./stay/stayProfile";
 
+
 class ProfileStudent extends React.Component {
   constructor(props) {
     super(props);
@@ -31,6 +32,7 @@ class ProfileStudent extends React.Component {
               <Tab eventKey="stay" title="Lưu trú">
                 <StayProfile />
               </Tab>
+             
             </Tabs>
           </div>
         </div>

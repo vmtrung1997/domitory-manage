@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'react-bootstrap'
-import SSelect from 'react-select';
 
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
@@ -11,9 +10,9 @@ import ExpenseTable from '../expenses/expenseTable'
 import { search, getData } from '../expenses/expensesAction'
 import {get_month, get_year, get_status} from './expenseRepo'
 import Loader from './../../../components/loader/loader'
-import ModalConfig from './expenseConfig'
+import ModalConfig from './expenseTypeDetail'
 import ModalExport from './expenseExport'
-
+import ModalReset from './expenseReset'
 
 class Expenses extends Component {
 	static propTypes = {
@@ -41,7 +40,7 @@ class Expenses extends Component {
 		var self = this;
 		getData().then(result => {
 			if (result.data) {
-				var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong }))
+				var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong, idLoaiPhong: room.idLoaiPhong }))
 				roomOptions.unshift({ value: 0, label: 'Tất cả' });
 				self.setState({ rooms: roomOptions });
 				self.searchTable(1);
@@ -132,6 +131,7 @@ class Expenses extends Component {
 							</Col>
 						</Row>
 						<div className="flex-row-end m-b-10">
+							<ModalReset loading={this.handleLoading} />
 							<ModalConfig loading={this.handleLoading}/>
 							<ModalExport loading={this.handleLoading} roomList={this.state.rooms}/>
 							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)}/>

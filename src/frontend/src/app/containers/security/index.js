@@ -42,6 +42,7 @@ class Security extends Component {
 	}
 	componentDidMount() {
 		document.addEventListener("keydown", this.onKeyDown);
+
 		getHistoryList().then(result => {
 			if (result.data) {
 				var historyList = result.data.data.map(value => {
@@ -61,7 +62,6 @@ class Security extends Component {
 		}
 		if (event.keyCode >= 48 && event.keyCode <= 57) { //from 0 - 9
 			let input = this.state.cardId + String.fromCharCode(event.keyCode);
-			console.log(input)
 			this.setState({ cardId: input })
 		}
 
@@ -74,16 +74,14 @@ class Security extends Component {
 			var data = e.target.result;
 			var arr = self.fixdata(data);
 			axios.post('/user/test_file_excel', { file: arr }).then(result => {
-				if (result) {
-					console.log(result);
-				}
-			}).catch(err => console.log(err))
+				if (result) {}
+			}).catch(err => {})
 		}
 	}
 	onEnterInput = (e) => {
 		if (e.key !== 'Enter')
 			return;
-		this.onHandleInputCard()
+		else this.onHandleInputCard()
 	}
 	onHandleInputCard = () => {
 		//var startTime = new Date()
@@ -116,7 +114,9 @@ class Security extends Component {
 		return (
 			<React.Fragment>
 				<div className='header-security'>
-					<Link to="/signin-admin" onClick={() => {logout()}}>
+					<Link to="/signin-admin" onClick={() => {logout(); 
+						document.removeEventListener("keydown",this.onKeyDown)
+						}}>
 						<i className="fas fa-sign-out-alt" />
 						<span className={"logout"}>Đăng xuất </span>
 					</Link>

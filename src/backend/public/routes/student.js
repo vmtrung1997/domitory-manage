@@ -11,6 +11,8 @@ router.get('/get-school',studentController.getSchool);
 
 router.post('/get-bill',studentController.getBill);
 
+router.post('/get-last-bill',studentController.getLastBill);
+
 router.post('/get-list-activities',studentController.getListActivities);
 
 router.post('/register-activities',studentController.registerActivities);
@@ -21,5 +23,9 @@ router.post('/my-upcoming-activities',studentController.upcomingActivities);
 
 router.post('/update-info',studentController.updateInfo);
 
-router.get('/', studentController.a)
+router.post('/change-password', studentController.changePassword);
+
+
+
+
 module.exports = router;

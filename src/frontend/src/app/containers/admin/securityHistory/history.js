@@ -12,8 +12,8 @@ class Security extends Component{
 	constructor(props) {
 			super(props);
 			this.state ={
-				fromDate: '2016-3-1',
-				toDate: '2016-3-1',
+				fromDate: new Date(),
+				toDate: new Date( new Date().valueOf() + 1000*3600*24),
 				page: 1,
 				limit: 10,
 				totalPages: 0,
@@ -22,6 +22,36 @@ class Security extends Component{
 			}
 	}
 	componentDidMount(){
+		this.setState({
+			loading: true
+		})
+		var parameter = {
+			time: {
+				fromDate: this.state.fromDate,
+				toDate: this.state.toDate
+			},
+			options: {
+				page: 1,
+				limit: this.state.limit
+			}
+		}
+		findHistory(parameter).then(result => {
+			if (result.data){
+				var table = result.data.data.docs.map(value => {
+					var profile = value.profile
+					value.imgFile = profile && ('img' in profile)?imageFile(value.profile.img):''
+					return value;
+				})
+				this.setState({
+					table: table,
+					page: 1,
+					totalPages: result.data.data.totalPages
+				})
+				this.setState({loading: false})
+			}
+		}).catch(err => {
+			this.setState({loading: false})
+		})
 	}
 	
 	onHandleSubmit = (page) => {
@@ -37,9 +67,7 @@ class Security extends Component{
 				limit: state.limit
 			}
 		}
-		console.log(parameter);
 		findHistory(parameter).then(result => {
-			console.log(result);
 			if (result.data){
 				var table = result.data.data.docs.map(value => {
 					var profile = value.profile
@@ -55,7 +83,7 @@ class Security extends Component{
 			}
 		}).catch(err => {
 			this.setState({loading: false})
-			console.log(err)})
+		})
 	}
 	render(){
 		return(
@@ -66,16 +94,25 @@ class Security extends Component{
 					<Row>
 						<Col>
 						Từ ngày
-						<div><DatePicker getValue={(date) => {this.setState({fromDate: date})}}/></div>
+						<div>
+							<DatePicker 
+								startDate={this.state.fromDate}
+								getValue={(date) => {this.setState({fromDate: date})}}
+							/>
+						</div>
 						</Col>
 						<Col>
 						Đến ngày
-						<div><DatePicker getValue={(date) => {this.setState({toDate: date})}}/></div>
+						<div>
+							<DatePicker
+								startDate={this.state.toDate}
+								getValue={(date) => {this.setState({toDate: date})}}
+							/>
+						</div>
 						</Col>
 						<Col>&nbsp;<Col><Button onClick={e => this.onHandleSubmit(1)}><i className="fas fa-search" /></Button></Col></Col>
 					</Row>
-					<Row>
-					<div>
+					<div style={{display: 'flex', justifyContent: 'center'}}>
 						{this.state.table.length>0 && <div className={'table-history'}>
 							{this.state.table.map((value, index) => {
 								let thoiGian = new Date(value.thoiGian)
@@ -96,13 +133,12 @@ class Security extends Component{
 							})}
 						</div>}
 						</div>
-				<div className="float-right">
-				{
-				this.state.table && this.state.table.length > 0?
-				<MyPagination page={this.state.page} totalPages={this.state.totalPages} clickPage={this.onHandleSubmit}/>:''
-				}
+				<div style={{width: '100%', display: 'flex', justifyContent: 'flex-end', marginRight: '20px'}}>
+					{
+					this.state.table && this.state.table.length > 0?
+					<MyPagination page={this.state.page} totalPages={this.state.totalPages} clickPage={this.onHandleSubmit}/>:''
+					}
 				</div>
-					</Row>
 				</div>
       </React.Fragment>
 

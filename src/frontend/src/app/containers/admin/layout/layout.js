@@ -33,21 +33,16 @@ export default class Layout extends React.Component{
       <div className={'layout'}>
         <div className={'layout-sub'}>
           <Navigation
-            owner= {{avt: 'https://akns-images.eonline.com/eol_images/Entire_Site/20181026/rs_600x600-181126230834-e-asia-iu-things-to-know-thumbnail.jpg?fit=around|700:700&crop=700:700;center,top&output-quality=90',
-                    name: `${name}`,
-                    role: `${rule}` }}
+            owner= {{ name: `${name}`, role: `${rule}` }}
             menuList={[
               {key: 0, link: '/admin/student', label: 'Sinh viên',icon: 'fas fa-user-graduate'},
               {key: 1, link: '/admin/expense', label: 'Chi phí', icon: 'fas fa-dollar-sign'},
               {key: 2, link: '/admin/activity', label: 'Hoạt động', icon: 'fas fa-running'},
-              {
-                key: 3,
-                link: '/admin/dormitory',
-                label: 'Ký túc xá',
-                icon: 'fas fa-tasks',
-              },
-            {key: 4, link: '/admin/news', label: 'Bài viết', icon: 'far fa-newspaper'},
-            {key: 5, link: '/admin/history', label: 'Lịch sử', icon: 'fas fa-history'},
+              {key: 3, link: '/admin/dormitory', label: 'Ký túc xá', icon: 'fas fa-tasks'},
+              {key: 4, link: '/admin/account', label: 'Tài khoản', icon: 'fas fa-users'},
+              {key: 5, link: '/admin/news', label: 'Bài viết', icon: 'far fa-newspaper'},
+              {key: 6, link: '/admin/history', label: 'Lịch sử', icon: 'fas fa-history'},
+              {key: 7, link: '/admin/university', label: 'Trường - ngành', icon: 'fas fa-university'}
             ]}
         />
         </div>

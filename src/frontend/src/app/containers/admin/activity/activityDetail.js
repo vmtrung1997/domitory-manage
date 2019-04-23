@@ -49,10 +49,10 @@ class ActivityDetail extends Component{
 		var strDateEnd = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 
 		this.state.data.map( (item, index) => {
-			if(item.status === 0){
+			if(item.isDK){
 				iSignup++
 			}
-			else{
+			if(item.isTG){
 				iJoin++
 			}
 
@@ -79,7 +79,7 @@ class ActivityDetail extends Component{
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
 				<Title> Hoạt động sinh viên </Title>
-        		<div style={{height: '500px', overflow: 'auto'}} className={'content-body full'}>
+        		<div className={'content-body full'}>
         			<Link to={'/admin/activity'} className="back">
                 		<i className="fas fa-chevron-left"/>
                 		<span>Trở về</span>
@@ -114,7 +114,7 @@ class ActivityDetail extends Component{
 						</Col>
 					</div>
 					<Table bordered hover responsive size="sm" className="table-activity">
-						<thead style={{background: '#cfcfcf', textAlign: 'center'}}>
+						<thead className="title-table">
 							<tr>
 								<th>STT</th>
 								<th>MSSV</th>

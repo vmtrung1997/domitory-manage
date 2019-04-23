@@ -9,7 +9,8 @@
 .background{
     background-color: #2668A1;
     width: 100%;
-    height: 650px;
+    height: fit-content;
+    min-height: 85vh;
 }
 .info-text{
     color: white;

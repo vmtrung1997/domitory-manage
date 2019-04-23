@@ -5,9 +5,7 @@ class StudenDashboard extends React.Component {
     render() {
         return (
             <React.Fragment>
-              
-                    <StudentMenu></StudentMenu>
-
+                <StudentMenu></StudentMenu>
             </React.Fragment>
         )
     }

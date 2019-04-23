@@ -3,7 +3,6 @@ import './avatar.css'
 
 class Avatar extends Component{
 	render(){
-		console.log(this.props.height)
 		return(
 			<React.Fragment>
 				<img src={this.props.link} alt={this.props.alt}

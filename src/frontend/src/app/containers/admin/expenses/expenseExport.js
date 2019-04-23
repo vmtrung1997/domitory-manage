@@ -82,7 +82,6 @@ class Example extends React.Component {
     if (report.room === '0')
       report.room = 0;
     report_expense(report).then(result=> {
-      self.props.loading(false);
       var byteCharacters = window.atob(result.data.file);
       var byteNumbers = new Array(byteCharacters.length);
       for (var i = 0; i < byteCharacters.length; i++) {
@@ -90,13 +89,13 @@ class Example extends React.Component {
       }
       var byteArray = new Uint8Array(byteNumbers);
       var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      self.props.loading(false);
       
       saveAs(blob, result.data.filename)
       
-    }).catch(err => console.log(err));
+    }).catch(err => {});
   }
   handleCheck = (obj) => {
-    console.log('check value ', obj)
     this.setState({[obj.value]: obj.chk})
   }
   statusSelected = (value) => {
@@ -153,12 +152,12 @@ class Example extends React.Component {
               <Select options={trangThai} selected={this.statusSelected} /></Col>
             </Row>
             <Row>
-              <Col><Checkbox label={'Số điện'} check={true} name={'soDien'} isCheck={this.handleCheck}/></Col>
-              <Col><Checkbox label={'Số nước'} check={true} name={'soNuoc'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Số điện'} check={this.state.soDien} name={'soDien'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Số nước'} check={this.state.soNuoc} name={'soNuoc'} isCheck={this.handleCheck}/></Col>
             </Row>
             <Row>
-              <Col><Checkbox label={'Tiền rác'} check={true} name={'tienRac'} isCheck={this.handleCheck}/></Col>
-              <Col><Checkbox label={'Tổng tiền'} check={true} name={'tongTien'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Tiền rác'} check={this.state.tienRac} name={'tienRac'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Tổng tiền'} check={this.state.tongTien} name={'tongTien'} isCheck={this.handleCheck}/></Col>
             </Row>
           </Modal.Body>
           <Modal.Footer>

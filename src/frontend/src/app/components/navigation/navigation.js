@@ -28,7 +28,6 @@ export default class Navigation extends React.Component{
       <div className={"nav-wrapper"}>
         <ul>
           <MenuButtonHeader 
-            avt = {this.props.owner.avt}
             name= {this.props.owner.name}
             role= {this.props.owner.role}
           />

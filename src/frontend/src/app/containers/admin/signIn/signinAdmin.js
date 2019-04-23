@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import md5 from 'md5';
 import axios from 'axios';
 import { Link } from 'react-router-dom'
+import jwt_decode from 'jwt-decode';
 
 import Loader from './../../../components/loader/loader'
 import Input from '../../../components/input/input'
 import Button from './../../../components/button/button'
+import ForgotPassword from './modalForgotPassword'
 import './signIn.css'
 import logo_HCMUS from './../../../../utils/image/logo_HCMUS.jpg'
 
@@ -19,6 +21,7 @@ class SignInAdmin extends Component{
 			password: '',
 			isNotify: false,
 			loading: false,
+			show: false
 		}
 	}
 	getValue = (obj) => {
@@ -29,11 +32,28 @@ class SignInAdmin extends Component{
 		}
 	}
 	login = () => {
-		this.setState({ loading: true})
+		this.setState({ loading: true })
 		axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
 		.then(res => {
-			localStorage.setItem('secret', JSON.stringify(res.data));
-			let { from } = this.props.location.state || { from: { pathname: "/admin/student" } }
+			let from
+			if(res.data.access_token){
+				const decode = jwt_decode(res.data.access_token)
+				switch(decode.user.userEntity.loai){
+					case 'SA':
+					case 'AM':
+						localStorage.setItem('secret', JSON.stringify(res.data));
+						from = { pathname: "/admin/student" }
+						break
+					case 'BV':
+						localStorage.setItem('secret', JSON.stringify(res.data));
+						from = { pathname: "/security" }
+						break
+					default:
+						throw 'err: not found'
+						break
+				}
+			}
+
 			this.props.history.push(from)
 		})
 		.catch( err => {
@@ -44,9 +64,21 @@ class SignInAdmin extends Component{
 			this.setState({ loading: false})
 		})
 	}
+	componentWillMount = () => {
+		const secret = JSON.parse(localStorage.getItem('secret'))
+
+		if(secret){
+	        axios.get(`http://localhost:4000/api/logout`, {
+	            headers: {
+	                'x-refresh-token': secret.refresh_token
+	            }
+	        }).then( res => localStorage.removeItem('secret') )
+    	}
+	}
 	render(){
 		return(
 			<React.Fragment>
+				<ForgotPassword show={this.state.show} />
 				<div className='header-sgin-admin'>
 					<Link to='/'><img alt="logo_hcmus" className='logo' src={logo_HCMUS} /></Link>
 					<span> Chào mừng đến với ký túc xá Trần Hưng Đạo </span>
@@ -78,7 +110,7 @@ class SignInAdmin extends Component{
 						</Button>
 					</div>
 					<Loader loading={this.state.loading}/>
-					<Link to='/'> Bạn quên mật khẩu ?</Link>
+					<h5 className="lb-forgot" onClick={ e => this.setState({show: true})}> Bạn quên mật khẩu ?</h5>
 				</div>
 			</React.Fragment>
 		)
