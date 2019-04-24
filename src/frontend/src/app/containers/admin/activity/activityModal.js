@@ -11,6 +11,20 @@ import Button from './../../../components/button/button'
 import Input from './../../../components/input/input'
 import CheckBox from './../../../components/checkbox/checkbox'
 
+const today = new Date()
+const time = today.getHours() + ':' + today.getMinutes()
+const initialState = {
+  name: '',
+  location: '',
+  date: today,
+  time: time,
+  dateEnd: today,
+  timeEnd: time,
+  isRequire: false,
+  des: '',
+  point: 0
+}
+
 class ActivityModal extends Component{
 	static defaultProps = {
 		show: false,
@@ -19,19 +33,7 @@ class ActivityModal extends Component{
 	}
   constructor(props){
     super(props)
-    var today = new Date()
-    var time = today.getHours() + ':' + today.getMinutes()
-    this.state = {
-      name: '',
-      location: '',
-      date: today,
-      time: time,
-      dateEnd: today,
-      timeEnd: time,
-      isRequire: false,
-      des: '',
-      point: 0
-    }
+    this.state = initialState
   }
   getValue = (name, val) => {
     this.setState({ [name]: val })
@@ -63,14 +65,19 @@ class ActivityModal extends Component{
       ToastsStore.error("Thêm hoạt động không thành công!");
     })
 
+    this.setState(initialState)
     this.props.handleSave()
+  }
+  handleClose = () => {
+    this.setState(initialState)
+    this.props.handleClose()
   }
 
 	render(){
 		return(
       <React.Fragment>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-  			<Modal show={this.props.show} onHide={this.props.handleClose} style={{marginTop: '-20px'}}>
+  			<Modal show={this.props.show} onHide={this.handleClose} style={{marginTop: '-20px'}}>
           		<Modal.Header closeButton>
               		<Modal.Title>Thêm hoạt động</Modal.Title>
             		</Modal.Header>
@@ -134,7 +141,7 @@ class ActivityModal extends Component{
             			</div>
             		</Modal.Body>
             		<Modal.Footer>
-  	            	<Button variant='default' color='default' onClick={this.props.handleClose}>
+  	            	<Button variant='default' color='default' onClick={this.handleClose}>
   	            		Đóng
   	            	</Button>
   	            	<Button variant='default' onClick={this.handleSave}>

@@ -1,0 +1,39 @@
+.choose-room{
+    margin-right: 9px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 60px;
+    border: none
+}
+
+.normal-room{
+    background-color: #0c846b
+}
+
+.normal-room:hover{
+    background-color: #0c846b8f
+}
+
+.vip-room{
+    background-color: #08f53e
+}
+
+.normal-room:active{
+    background-color: #0c846b8f !important
+}
+
+.normal-room:focus{
+    background-color: #0c846b8f !important
+}
+
+
+.vip-room:hover{
+    background-color: #08f53ea3
+}
+.vip-room:active{
+    background-color: #08f53ea3 !important
+}
+
+.vip-room:focus{
+    background-color: #08f53ea3 !important
+}
