@@ -139,10 +139,6 @@ class PersonProfile extends React.Component {
         .then(res => {
           if (res) {
             //Lưu trong redux
-<<<<<<< HEAD
-
-=======
->>>>>>> a2bda447c9e066380e40c3f28b54a526b2cdd2b1
             this.props.getUserAction(res.data.data);
 
             //Nếu res chưa có data
@@ -258,10 +254,6 @@ class PersonProfile extends React.Component {
   };
 
   render() {
-<<<<<<< HEAD
-    console.log(this.state.flag);
-=======
->>>>>>> a2bda447c9e066380e40c3f28b54a526b2cdd2b1
     if (!this.state.isLoad) {
       var gender = [
         { value: "-1", label: "Chọn giới tính" },

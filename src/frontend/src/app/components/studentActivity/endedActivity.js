@@ -4,13 +4,9 @@ import "./../titleStudent/titleStudent.css";
 import "./../tableStudentTextStyle/tableStudentTextStyle.css";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import Loader from "./../loader/loader";
 import MyPagination from "./../pagination/pagination"
-<<<<<<< HEAD
 import Loader from "react-loader-spinner";
 import { connect } from "react-redux";
-=======
->>>>>>> a2bda447c9e066380e40c3f28b54a526b2cdd2b1
 import {
   ToastsContainer,
   ToastsContainerPosition,
