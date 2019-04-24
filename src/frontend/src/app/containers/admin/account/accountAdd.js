@@ -12,6 +12,16 @@ import Input from './../../../components/input/input'
 import CheckBox from './../../../components/checkbox/checkbox'
 import Select from './../../../components/selectOption/select'
 
+const initialState = {
+  username: '',
+  password: '',
+  confirmPassword: '',
+  name: '',
+  CMND: '',
+  Email: '',
+  rule: 'SA', 
+}
+
 class AccountAdd extends Component{
 	static defaultProps = {
 		show: false,
@@ -22,19 +32,19 @@ class AccountAdd extends Component{
     super(props)
     var today = new Date()
     var time = today.getHours() + ':' + today.getMinutes()
-    this.state = {
-      username: '',
-      password: '',
-      confirmPassword: '',
-      name: '',
-      CMND: '',
-      Email: '',
-      rule: 'SA',
-    }
+    this.state = initialState
   }
 
   getValue = (name, val) => {
     this.setState({ [name]: val })
+  }
+
+  getRule = () => {
+    return [
+      {value: 'SA', label: 'Trưởng quản lý'},
+      {value: 'AM', label: 'Quản lý'},
+      {value: 'BV', label: 'Bảo vệ'},
+    ]
   }
 
   handleSave = async () => {
@@ -59,21 +69,18 @@ class AccountAdd extends Component{
       }).then(res => {
         ToastsStore.success("Thêm tài khoản thành công!");
       }).catch(err => {
-        console.log(err.response)
          ToastsStore.error( err.response.data.ms );
       })
+      this.setState(initialState)
       this.props.handleSave()
     } else {
       ToastsStore.error("Mật khẩu không trùng khớp!");
     }
   }
 
-  getRule = () => {
-    return [
-      {value: 'SA', label: 'Trưởng quản lý'},
-      {value: 'AM', label: 'Quản lý'},
-      {value: 'BV', label: 'Bảo vệ'},
-    ]
+  handleClose = () => {
+    this.setState(initialState)
+    this.props.handleClose()
   }
   
 	render(){
@@ -82,7 +89,7 @@ class AccountAdd extends Component{
 		return(
       <React.Fragment>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-  			<Modal show={this.props.show} onHide={this.props.handleClose}>
+  			<Modal show={this.props.show} onHide={this.handleClose}>
           		<Modal.Header closeButton>
               		<Modal.Title>Thêm tài khoản</Modal.Title>
             		</Modal.Header>
@@ -131,7 +138,7 @@ class AccountAdd extends Component{
                   </div>
             		</Modal.Body>
             		<Modal.Footer>
-  	            	<Button variant='default' color='default' onClick={this.props.handleClose}>
+  	            	<Button variant='default' color='default' onClick={this.handleClose}>
   	            		Đóng
   	            	</Button>
   	            	<Button variant='default' onClick={this.handleSave}>

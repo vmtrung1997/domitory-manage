@@ -64,32 +64,7 @@ class Activity extends Component{
 			this.setState({ loading: false })
 		})
 	}
-	
-	handleSearch = () => {
-		this.setState({ page: 1 })
-		this.getData()
-	}
 
-	handleShow = (nameModal) => {
-		this.setState({ [nameModal]: true })
-	}
-	handleClose = (nameModal) => {
-		this.setState({ [nameModal]: false })
-	}
-	clickPage = (page) => {
-		this.setState({ 
-			page: page,
-		})
-		this.getData()
-	}
-	handleSave = () => {
-		this.getData()
-	}
-	getValue = (state, value) => {
-		this.setState({ 
-			[state]: value, 
-		})
-	}
 	getMonth = () => {
 		var month = [{value: 0, label: 'Tất cả'}]
 		for(var i = 0; i < 12; i++){
@@ -97,6 +72,7 @@ class Activity extends Component{
 		}
 		return month
 	}
+
 	getYear = () => {
 		var year = [{value: 0, label: 'Tất cả'}]
 		if(this.state.last){
@@ -108,6 +84,16 @@ class Activity extends Component{
 		}
 		return year
 	}
+
+	changeState = (key, value) => {
+		this.setState({ [key]: value })
+	}
+
+	handleSearch = (page) => {
+		this.setState({ page: page})
+		this.getData()
+	}
+
 	render(){
 		var month = this.getMonth()
 		var year = this.getYear()
@@ -123,8 +109,17 @@ class Activity extends Component{
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
-				<ActivityModal show={this.state.showAdd} handleClose={() => this.handleClose('showAdd')} handleSave={this.handleSave}/>
-				<ActivityExport last={lastDate} show={this.state.showExport} handleClose={() =>this.handleClose('showExport')} handleSave={this.handleSave}/>
+				<ActivityModal 
+					show={this.state.showAdd}
+					handleClose={() => this.changeState('showAdd', false)}
+					handleSave={this.getData}
+				/>
+				<ActivityExport 
+					last={lastDate}
+					show={this.state.showExport}
+					handleClose={() => this.changeState('showExport', true)}
+					handleSave={this.getData}
+				/>
 				<Title> Hoạt động sinh viên </Title>
         		<div className={'content-body full'}>
 					<div>
@@ -133,8 +128,8 @@ class Activity extends Component{
 								<span> Hoạt động </span>
 								<Input 
 									placeholder={'Tìm kiếm'} 
-									getValue={ (obj) => this.getValue('query', obj.value)}
-									onKeyPress={ (e) => {if(e.key === 'Enter') this.handleSearch()}}
+									getValue={ (obj) => this.changeState('query', obj.value)}
+									onKeyPress={ (e) => {if(e.key === 'Enter') this.handleSearch(1)}}
 								/>
 							</Col>
 							<Col md={2} xs={12}>
@@ -142,7 +137,7 @@ class Activity extends Component{
 								<Select 
 									options={month} 
 									value={this.state.monthSelected} 
-									selected={val => this.getValue('monthSelected',val)} 
+									selected={val => this.changeState('monthSelected',val)} 
 								/>
 							</Col>
 							<Col md={2} xs={12}>
@@ -150,7 +145,7 @@ class Activity extends Component{
               					<Select 
               						options={year} 
               						value={this.state.yearSelected}
-              						selected={val => this.getValue('yearSelected', val)}
+              						selected={val => this.changeState('yearSelected', val)}
               					/>	
               				</Col>
               				<Col md={2} xs={12}>
@@ -158,26 +153,30 @@ class Activity extends Component{
               					<Select 
               						options={require} 
               						value={this.state.require}
-              						selected={val => this.getValue('require', val)}
+              						selected={val => this.changeState('require', val)}
               					/>	
               				</Col>
               				<Col md={1} xs={12}>
               					<div>&nbsp;</div>
-              					<Button title={'Tìm kiếm'} style={{padding: '7px 15px'}} onClick={this.handleSearch}><i className="fas fa-search" /></Button>
+              					<Button title={'Tìm kiếm'} style={{padding: '7px 15px'}} onClick={e => this.handleSearch(1)}><i className="fas fa-search" /></Button>
               				</Col>
               			</Row>		
 						<div className='bts-header'>
-							<Button title={'Thêm mới'} color={'warning'} onClick={() => this.handleShow('showAdd')} style={{padding: '5px 20px'}}> 
+							<Button title={'Thêm mới'} color={'warning'} onClick={() => this.changeState('showAdd', true)} style={{padding: '5px 20px'}}> 
 								<i className="fas fa-plus"/>
 							</Button>
-							<Button title={'Xuất báo cáo'} onClick={() => this.handleShow('showExport')}  style={{margin: '0 5px', padding: '5px 20px'}}>
+							<Button title={'Xuất báo cáo'} onClick={() => this.changeState('showExport', true)}  style={{margin: '0 5px', padding: '5px 20px'}}>
                 				<i className="fas fa-file-export"/>
                 			</Button>
 						</div>
 					</div>
 					<InfoActivity data={this.state.data} refresh={this.getData}/>
 					<div className={'is-pagination'}>
-						<MyPagination page={this.state.page} totalPages={this.state.totalPages} clickPage={this.clickPage}/>
+						<MyPagination 
+							page={this.state.page}
+							totalPages={this.state.totalPages}
+							clickPage={this.handleSearch}
+						/>
 	            	</div>
 				</div>
 

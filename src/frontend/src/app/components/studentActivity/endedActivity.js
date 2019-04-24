@@ -4,8 +4,9 @@ import "./../titleStudent/titleStudent.css";
 import "./../tableStudentTextStyle/tableStudentTextStyle.css";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import Loader from "./../loader/loader";
 import MyPagination from "./../pagination/pagination"
+import Loader from "react-loader-spinner";
+import { connect } from "react-redux";
 import {
   ToastsContainer,
   ToastsContainerPosition,
@@ -21,7 +22,7 @@ class EndedStudentActivity extends React.Component {
       isLoad: true,
       pageActive: 1,
       totalPages: 1,
-      limit: 1
+      limit: 1,
     };
   }
 
@@ -41,7 +42,7 @@ class EndedStudentActivity extends React.Component {
     //Lấy thông tin hoạt động
     var oldActivities = [];
     axios
-      .post(`http://localhost:4000/api/student/my-upcoming-activities`, {
+      .post(`/student/my-upcoming-activities`, {
         id: id,
         options: options
       })
@@ -86,7 +87,6 @@ class EndedStudentActivity extends React.Component {
 
 
   render() {
-
     return (
       <React.Fragment>
         <ToastsContainer
@@ -192,4 +192,14 @@ class EndedStudentActivity extends React.Component {
   }
 }
 
-export default EndedStudentActivity;
+var mapStateToProps = state => {
+  return {
+    userProfile: state.userProfile
+  };
+};
+
+
+export default connect(
+  mapStateToProps
+)(EndedStudentActivity);
+

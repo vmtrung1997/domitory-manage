@@ -12,6 +12,7 @@ var profileSchema = new Schema({
     diaChi: String,
     sdt: String,
     MSSV: String,
+    tonGiao: String,
     maThe: String,
     nganhHoc: {type: Schema.Types.String, ref: 'NganhHoc'},
     truong: {type: Schema.Types.String, ref: 'Truong'},
@@ -25,6 +26,7 @@ var profileSchema = new Schema({
     CMND: String,
     diemHD: Number,
     //expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
+    flag: Boolean
 });
 
 profileSchema.plugin(mongoosePaginate);
