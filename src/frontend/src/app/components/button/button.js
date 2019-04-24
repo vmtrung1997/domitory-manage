@@ -9,7 +9,7 @@ class Button extends Component{
 		variant: 'default',
 		className: '',
 		title: null,
-		onClick: () => {},
+		onClick: () => {}
 	};
 
 	static propTypes = {
