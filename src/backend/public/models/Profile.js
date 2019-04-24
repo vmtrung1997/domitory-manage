@@ -12,6 +12,7 @@ var profileSchema = new Schema({
     diaChi: String,
     sdt: String,
     MSSV: String,
+    tonGiao: String,
     maThe: String,
     nganhHoc: {type: Schema.Types.String, ref: 'NganhHoc'},
     truong: {type: Schema.Types.String, ref: 'Truong'},
@@ -23,7 +24,8 @@ var profileSchema = new Schema({
     danToc: String,
     img:  { data: Buffer, contentType: String },
     CMND: String,
-    diemHD: Number
+    diemHD: Number,
+    flag: Boolean
 });
 
 profileSchema.plugin(mongoosePaginate);

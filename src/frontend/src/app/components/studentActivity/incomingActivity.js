@@ -24,7 +24,7 @@ class IncomingStudentActivity extends React.Component {
       isLoad: true,
       pageActive: 1,
       totalPages: 1,
-      limit: 1
+      limit: 5
     };
   }
 
@@ -44,7 +44,7 @@ class IncomingStudentActivity extends React.Component {
     //Lấy thông tin hoạt động
     var incomingActivities = [];
     axios
-      .post(`http://localhost:4000/api/student/my-upcoming-activities`, {
+      .post(`/student/my-upcoming-activities`, {
         id: id,
         options: options
       })
@@ -99,7 +99,7 @@ class IncomingStudentActivity extends React.Component {
       await refreshToken();
       var secret = localStorage.getItem("secret");
       const decode = jwt_decode(secret);
-      var id = decode.user.profile._id;
+      var id = this.props.profile._id;
 
       var info = {
         activity: data,
@@ -108,7 +108,7 @@ class IncomingStudentActivity extends React.Component {
 
       //Hủy Đăng ký tham gia hoạt động
       axios
-        .post("http://localhost:4000/api/student/cancel-register-activities", {
+        .post("/student/cancel-register-activities", {
           data: info
         })
         .then(res => {
@@ -270,7 +270,8 @@ class IncomingStudentActivity extends React.Component {
 
 var mapStateToProps = state => {
   return {
-    activity: state.activity
+    activity: state.activity,
+    profile: state.userProfile
   };
 };
 
