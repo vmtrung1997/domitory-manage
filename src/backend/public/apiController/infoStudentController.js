@@ -176,28 +176,30 @@ exports.updateInfo = (req,res) => {
   Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info })
     .then(result => {
       // if change room
-      if(info.idPhong._id !== result.idPhong){
+      if(info.idPhong !== result.idPhong) {
         //update number of person in old room
-        if(result.idPhong)
-          Room.findOne({_id : result.idPhong})
+        if (result.idPhong) {
+          Room.findOne({_id: result.idPhong})
             .then(result => {
               result.soNguoi = result.soNguoi - 1;
               result.save()
             }).catch(err => {
             res.status(400).json({msg: 'Cập nhật phòng cũ không thành công!'})
           })
+        }
         //update number of person in new room
-        Room.findOne({_id : info.idPhong._id})
+        Room.findOne({_id : info.idPhong})
           .then(result => {
             result.soNguoi = result.soNguoi + 1;
             result.save()
           }).catch(err => {
           res.status(400).json({msg: 'Cập nhật phòng mới không thành công!'})
         })
+
         //create room history
         const history  = {
-          idTaiKhoan: info.idTaiKhoan._id,
-          idPhong: info.idPhong._id,
+          idTaiKhoan: info.idTaiKhoan,
+          idPhong: info.idPhong,
           ngayChuyen: new Date()
         }
         let his = new RoomHistory(history);

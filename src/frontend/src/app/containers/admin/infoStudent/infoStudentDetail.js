@@ -14,16 +14,20 @@ import SearchSelect from '../../../components/selectOption/select'
 import {imageFile, defaultStudentImg} from '../../../function/imageFunction'
 import DatePicker from "react-datepicker/es/index";
 import './infoStudentFile.css';
+import { getSchools, getMajor } from './../university/universityAction'
+
 class InfoStudentDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       info: {},
-      truong: {},
-      phong: {},
+      school: {},
+      room: {},
+      major: {},
       genderOptions: [{value: 0, label: 'nữ'}, {value: 1, label: 'nam'}],
       roomOptions: [],
       schoolOptions: [],
+      majorOptions: [],
 
       custom: false,
     }
@@ -33,20 +37,32 @@ class InfoStudentDetail extends Component {
     this.getElement('room');
     this.getElement('school');
     const { info } = this.props.location.state;
-    if(info.truong)
+    if(info.truong){
       this.setState({
-        truong: {
+        school: {
           value: info.truong._id,
           label: info.truong.tenTruong
         }
       })
+      this.getMajorOptions(info.truong._id);
+    }
+
     if(info.idPhong)
       this.setState({
-        phong: {
+        room: {
           value: info.idPhong._id,
           label: info.idPhong.tenPhong
         }
       })
+
+    if(info.nganhHoc)
+      this.setState({
+        major: {
+          value: info.nganhHoc._id,
+          label: info.nganhHoc.tenNganh
+        }
+      })
+
     var birthDate = info.ngaySinh ? new Date(info.ngaySinh) : new Date();
     //var stringDate = new DbirthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     this.setState({
@@ -108,7 +124,13 @@ class InfoStudentDetail extends Component {
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.post(`/manager/infoStudent/update`,
       {
-        info: this.state.info
+        info: {
+          ...this.state.info,
+          idTaiKhoan: this.state.info.idTaiKhoan._id,
+          nganhHoc: this.state.info.nganhHoc && this.state.info.nganhHoc._id,
+          truong: this.state.info.truong && this.state.info.truong._id,
+          idPhong: this.state.info.idPhong && this.state.info.idPhong._id
+        }
       }, { headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
       ToastsStore.success("Cập nhật thành công!");
@@ -130,7 +152,7 @@ class InfoStudentDetail extends Component {
     })
   }
 
-  handleSelectSchool = selectedOption => {
+  handleSelectSchool = (selectedOption) => {
     this.setState({
       info: {
         ...this.state.info,
@@ -139,7 +161,21 @@ class InfoStudentDetail extends Component {
           _id: selectedOption.value
         }
       },
-      truong: selectedOption
+      school: selectedOption
+    })
+
+    this.getMajorOptions(selectedOption.value);
+  };
+
+  getMajorOptions = (idSchool) => {
+    getMajor({id: idSchool}).then(result =>{
+      console.log('==get major', idSchool, result)
+      if (result.data.rs === 'success') {
+        let majorList = result.data.data.map(major => ({ value: major.idNganhHoc._id, label: major.idNganhHoc.tenNganh }))
+        this.setState({
+          majorOptions: majorList,
+        })
+      }
     })
   }
 
@@ -152,9 +188,25 @@ class InfoStudentDetail extends Component {
           _id: selectedOption.value
         }
       },
-      phong: selectedOption
+      room: selectedOption
     })
+
+
   }
+
+  handleSelectMajor = selectedOption => {
+    this.setState({
+      info: {
+        ...this.state.info,
+        nganhHoc: {
+          tenNganh: selectedOption.label,
+          _id: selectedOption.value
+        }
+      },
+      major: selectedOption
+    })
+  };
+
   fixdata = (data) => {
 		var o = "", l = 0, w = 10240;
 		for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
@@ -180,7 +232,7 @@ class InfoStudentDetail extends Component {
   }
   render() {
     console.log('==state render', this.state);
-    const { info, genderOptions, schoolOptions, roomOptions, truong, phong } = this.state;
+    const { info, genderOptions, schoolOptions, roomOptions, majorOptions, school, room, major } = this.state;
     const {
       hoTen,
       MSSV,
@@ -335,7 +387,7 @@ class InfoStudentDetail extends Component {
                           Mã thẻ:
                         </Col>
                         <Col md={4}>
-                          <Input value={maThe} getValue={this.onChange} name={'username'} />
+                          <Input value={maThe} getValue={this.onChange} name={'maThe'} />
                         </Col>
                       </Row>
 
@@ -373,7 +425,7 @@ class InfoStudentDetail extends Component {
                           <SearchSelect
                             isSearchable
                             placeholder={''}
-                            value={phong}
+                            value={room}
                             onChange={this.handleSelectRoom}
                             options={roomOptions}
                           />
@@ -385,17 +437,10 @@ class InfoStudentDetail extends Component {
                           Trường:
                         </Col>
                         <Col md={10}>
-                          {/*<SearchSelect*/}
-                            {/*isSearchable={true}*/}
-                            {/*placeholder={''}*/}
-                            {/*value={schoolSelected}*/}
-                            {/*onChange={this.handleSelectSchool}*/}
-                            {/*options={schoolOptionsSearch}*/}
-                          {/*/>*/}
                           <SearchSelect
                             isSearchable={true}
                             placeholder={''}
-                            value={truong}
+                            value={school}
                             onChange={this.handleSelectSchool}
                             options={schoolOptions} />
                         </Col>
@@ -406,7 +451,12 @@ class InfoStudentDetail extends Component {
                           Ngành học:
                         </Col>
                         <Col md={10}>
-                          <Input/>
+                          <SearchSelect
+                            isSearchable={true}
+                            placeholder={''}
+                            value={major}
+                            onChange={this.handleSelectMajor}
+                            options={majorOptions} />
                         </Col>
                       </Row>
 
