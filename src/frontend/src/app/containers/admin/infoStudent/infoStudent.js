@@ -743,41 +743,95 @@ class InfoStudent extends Component{
 
           {/*modal popup upload file*/}
           <Modal
-            size={'md'}
+            size={'lg'}
             show={this.state.showImportPopup}
             onHide={() =>this.handlePopup('import', false)}
           >
             <Modal.Body>
               <input type="file" name="file" onChange={this.filesOnChange}/>
-              <p><b>{this.state.justFileServiceResponse}</b></p>
+              <p className={'noti-text-style'}><b>{this.state.justFileServiceResponse}</b></p>
 
-              {this.state.listExpired &&
+              {this.state.listExpired ?
+                <Table responsive bordered size="sm">
+                  <thead className="title-table">
+                  <tr>
+                    <th>STT</th>
+                    <th>MSSV</th>
+                    <th>Họ và Tên</th>
+                    <th>Lỗi</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {this.state.listExpired.map(info => {
+                    return (
+                      <tr key={info.key}>
+                        <td>{i++}</td>
+                        <td>{info.data.mssv || ''}</td>
+                        <td>{info.data.hoTen || ''}</td>
+                        <td className={'noti-text-style'}>{info.msg || ''}</td>
 
-              <Table responsive hover bordered size="sm">
-                <thead className="title-table">
-                <tr>
-                  <th>STT</th>
-                  <th>MSSV</th>
-                  <th>Họ và Tên</th>
-                  <th>Lỗi</th>
-                </tr>
-                </thead>
-                <tbody>
+                      </tr>
+                    )
+                  })}
 
-                {this.state.listExpired.map(info => {
-                  return (
-                    <tr key={info.key}>
-                      <td>{i++}</td>
-                      <td>{info.data.mssv || ''}</td>
-                      <td>{info.data.hoTen || ''}</td>
-                      <td>{info.msg || ''}</td>
+                  </tbody>
+                </Table>
+                :
+                <div>
+                  <i className={'noti-text-style'}><u>Lưu ý:</u> file excel(.xlsx) cần có dạng như sau</i>
+                <Table responsive hover bordered size="sm">
+                  <thead className="title-excel">
+                  <tr>
+                    <td></td>
+                    <td>A</td>
+                    <td>B</td>
+                    <td>C</td>
+                    <td>D</td>
+                    <td>E</td>
 
-                    </tr>
-                  )
-                })}
+                  </tr>
+                  </thead>
+                  <tbody>
 
-                </tbody>
-              </Table>
+                  <tr key={0}>
+                    <td className="title-excel">1</td>
+                    <td>STT</td>
+                    <td>Họ Tên</td>
+                    <td>MSSV</td>
+                    <td>Ngày sinh</td>
+                    <td></td>
+                  </tr>
+
+                  <tr key={1}>
+                    <td className="title-excel">2</td>
+                    <td>1</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>1512519</td>
+                    <td>29/10/1997</td>
+                    <td></td>
+                  </tr>
+
+                  <tr key={2}>
+                    <td className="title-excel">3</td>
+                    <td>2</td>
+                    <td>Nguyễn Văn B</td>
+                    <td>1512510</td>
+                    <td>01/11/1997</td>
+                    <td></td>
+                  </tr>
+
+                  <tr key={3}>
+                    <td className="title-excel">4</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+
+                  </tbody>
+                </Table>
+                </div>
               }
             </Modal.Body>
             <Modal.Footer>
