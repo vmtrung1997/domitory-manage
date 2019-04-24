@@ -24,7 +24,7 @@ var profileSchema = new Schema({
     img:  { data: Buffer, contentType: String },
     CMND: String,
     diemHD: Number,
-    expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
+    //expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
 });
 
 profileSchema.plugin(mongoosePaginate);

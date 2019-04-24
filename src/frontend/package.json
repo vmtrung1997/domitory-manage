@@ -39,7 +39,8 @@
     "react-toasts": "^3.0.1",
     "really-smooth-scroll": "^2.1.1",
     "redux": "^4.0.1",
-    "styled-components": "^4.2.0"
+    "styled-components": "^4.2.0",
+    "xlsx": "^0.14.2"
   },
   "scripts": {
     "start": "react-scripts start",

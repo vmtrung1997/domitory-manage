@@ -15,6 +15,9 @@ import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
 import DatePicker from "react-datepicker/es/index";
 
+import XLSX from 'xlsx'
+import Checkbox from "../../../components/checkbox/checkbox";
+
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
 
@@ -57,42 +60,46 @@ class InfoStudent extends Component{
       roomOptionsSearch: [],
       floorOptions: [],
 
-      roomHistory: []
+      roomHistory: [],
+
+      valueExport: {
+        hoTenEx: true,
+        mssvEx: true,
+        ngaySinhEx: false,
+        gioiTinhEx: false,
+        diaChiEx: false,
+        emailEx: false,
+        sdtEx: false,
+        sdtNguoiThanEx: false,
+        tonGiaoEx: false,
+        danTocEx: false,
+        ngayVaoOEx: false,
+        ngayHetHanEx: false,
+        diemHDEx: false,
+        phongEx: false,
+        truongEx: false,
+        nganhHocEx: false,
+        ghiChuEx: false
+      }
     }
   }
 
-  handleClosePopup = (type) => {
+  handlePopup = (type, state) => {
     switch(type){
       case 'add':
-        this.setState({ showAddPopup: false });
+        this.setState({ showAddPopup: state });
         break;
       case 'del':
-        this.setState({ showDelPopup: false });
+        this.setState({ showDelPopup: state });
         break;
       case 'history':
-        this.setState({ showRoomHistoryPopup: false });
+        this.setState({ showRoomHistoryPopup: state });
         break;
       case 'import':
-        this.setState({ showImportPopup: false });
+        this.setState({ showImportPopup: state });
         break;
-      default:
-        break
-    }
-  };
-
-  handleShowPopup = (type) => {
-    switch(type){
-      case 'add':
-        this.setState({ showAddPopup: true });
-        break;
-      case 'del':
-        this.setState({ showDelPopup: true });
-        break;
-      case 'import':
-        this.setState({ showImportPopup: true });
-        break;
-      case 'history':
-        this.setState({ showRoomHistoryPopup: true });
+      case 'export':
+        this.setState({ showExportPopup: state });
         break;
       default:
         break
@@ -104,9 +111,6 @@ class InfoStudent extends Component{
       pathname: '/admin/student/detail',
       state: { info: info }
     });
-    // return (
-    //   <Route path={`${this.props.match.url}/id`} component={InfoStudentDetail} />
-    // )
   }
 
   componentDidMount(){
@@ -126,7 +130,9 @@ class InfoStudent extends Component{
       switch (name) {
         case 'room':
           const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
+          roomOptions.unshift({ value: -1, label: 'Chưa xác định' });
           roomOptions.unshift({ value: 0, label: 'Tất cả' });
+
           this.setState({
             roomOptionsSearch: roomOptions
           })
@@ -135,6 +141,7 @@ class InfoStudent extends Component{
         case 'school':
           const schoolOptionsSearch = result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }));
           const schoolOptions = [...schoolOptionsSearch];
+          schoolOptionsSearch.unshift({ value: -1, label: 'Chưa xác định' });
           schoolOptionsSearch.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
             schoolOptionsSearch: schoolOptionsSearch,
@@ -196,32 +203,6 @@ class InfoStudent extends Component{
     })
   }
 
-  getFloor = async() => {
-    await refreshToken();
-    let secret = JSON.parse(localStorage.getItem('secret'));
-
-    axios.get(`/manager/getElement/floor`,  {
-      headers: { 'x-access-token': secret.access_token }
-    }).then(result => {
-      let i = 0;
-      const floorList = result.data.map(floor => {
-        return {key: i++, label: floor}
-      });
-      this.setState({
-        floorList: floorList,
-      })
-    }).catch(err => {
-    });
-  };
-
-  // getRoomAvailable = async() => {
-  //   await refreshToken();
-  //   let secret = JSON.parse(localStorage.getItem('secret'));
-  //   axios.get(`/manager/getElement/` + name,  {
-  //     headers: { 'x-access-token': secret.access_token }
-  //   }).then
-  // }
-
   onChangeAdd = (event) => {
     this.setState({
       infoAdded: {...this.state.infoAdded, [event.name]: event.value}
@@ -276,7 +257,8 @@ class InfoStudent extends Component{
         expiredAt: expiredDateAdded ? expiredDateAdded : new Date(),
       }, { headers: headers }
     ).then(result => {
-      this.handleClosePopup('add');
+      ToastsStore.success("Thêm thành công!");
+      this.handlePopup('add', false);
     }).catch(err => {
       ToastsStore.error("Thêm không thành công!" + err.response.data.msg);
     })
@@ -310,6 +292,12 @@ class InfoStudent extends Component{
     }
   }
 
+  handleCheckValueExport = (obj) => {
+    //this.setState({[obj.value]: obj.chk})
+
+    this.setState({valueExport: {...this.state.valueExport, [obj.value]: obj.chk}})
+  }
+
   handleValueCheck = mssv => {
     const i = this.state.listDelete.indexOf(mssv);
     return i !== -1;
@@ -328,10 +316,10 @@ class InfoStudent extends Component{
       });
       ToastsStore.success("Xóa thành công!");
       this.getData();
-      this.handleClosePopup('del')
+      this.handlePopup('del', false)
     }).catch(err => {
       ToastsStore.error("Xóa không thành công!");
-      this.handleClosePopup('del')
+      this.handlePopup('del', false)
     })
   };
 
@@ -364,7 +352,7 @@ class InfoStudent extends Component{
   }
 
   handleRoomHistory = async(id) => {
-    this.handleShowPopup('history')
+    this.handlePopup('history', true)
     await refreshToken();
     var secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getRoomHistory/` + id, { headers: {'x-access-token': secret.access_token} }
@@ -380,15 +368,35 @@ class InfoStudent extends Component{
     }).catch()
   }
 
-  filesOnChange = (sender) =>{
-    let file = sender.target.files[0];
+  filesOnChange = (e) =>{
+    let file = e.target.files[0];
 
     this.setState({
       fileImport: file
     });
-  }
+  };
 
-  uploadJustFile = async(props) => {
+  convertData = async (file) => {
+    return new Promise ( (resolve, reject) => {
+      let reader = new FileReader();
+      let temp = [];
+      reader.onload =  function (e) {
+        let data = new Uint8Array(e.target.result);
+        let workbook = XLSX.read(data, {type: 'array'});
+
+        let worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","hoTen","mssv","ngaySinh"]});
+        console.log('==file', listNewStudent);
+
+        resolve(listNewStudent)
+      };
+      reader.readAsArrayBuffer(file);
+
+    })
+
+  };
+
+  handleImportData = async(props) => {
 
     if (!this.state.hasOwnProperty('fileImport')) {
       this.setState({
@@ -396,36 +404,38 @@ class InfoStudent extends Component{
       });
       return;
     }
-    console.log('==eeee', props.e, this.state.fileImport);
-    props.e.preventDefault();
+    //props.e.preventDefault();
     this.setState({
       justFileServiceResponse: 'Vui lòng chờ!!'
     });
 
+    // const dataImport = await this.convertData(this.state.fileImport);
+    this.convertData(this.state.fileImport).then(async(resolve) => {
+      console.log('==file 2222', resolve);
+      resolve.shift();
 
-    let form = new FormData();
-    form.append('file', this.state.fileImport);
-
-    await refreshToken()
-    let secret = JSON.parse(localStorage.getItem('secret'));
-
-    axios.post('/manager/infoStudent/importFile', form, { headers: {
-        'x-access-token': secret.access_token,
-        'content-type': 'multipart/form-data'
-      } })
-      .then((result) => {
-        // let message = "Success!"
-        // if (!result.data.success) {
-        //   message = result.data.message;
-        // }
-        console.log('==import file success', result);
-        ToastsStore.error("Success!");
+      await refreshToken();
+      var secret = JSON.parse(localStorage.getItem('secret'));
+      axios.post(`/manager/infoStudent/importFile`,{
+          data: resolve,
+          expireDay: new Date()
+        }, { headers: {'x-access-token': secret.access_token} }
+      ).then(result => {
+        console.log('==import success', result);
+        this.setState({
+          justFileServiceResponse: 'Thêm thành công!!'
+        });
+      }).catch(err => {
+        console.log('==import err', err.response.data);
+        this.setState({
+          justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
+          listExpired: err.response.data.list
+        });
       })
-      .catch((err) => {
-        ToastsStore.error("Error!");
-        console.log(err);
-      });
-  }
+    })
+  };
+
+
   render(){
     console.log('==render state', this.state);
     const {
@@ -442,7 +452,27 @@ class InfoStudent extends Component{
       mssv,
       isOld,
       roomHistory,
-      infoAdded: { dateAdded, expiredDateAdded} } = this.state;
+      infoAdded: { dateAdded, expiredDateAdded},
+      valueExport :{
+        hoTenEx,
+        mssvEx,
+        ngaySinhEx,
+        gioiTinhEx,
+        diaChiEx,
+        emailEx,
+        sdtEx,
+        sdtNguoiThanEx,
+        tonGiaoEx,
+        danTocEx,
+        ngayVaoOEx,
+        ngayHetHanEx,
+        diemHDEx,
+        phongEx,
+        truongEx,
+        nganhHocEx,
+        ghiChuEx,
+      }
+    } = this.state;
     let i = pageActive*limit - 10;
     return(
       <div>
@@ -548,11 +578,13 @@ class InfoStudent extends Component{
                 <div className={'is-manipulation'}>
                   <Button
                     variant={'rounded'}
+                    onClick={()=>this.handlePopup('import', true)}
                   >
                     <i className="fas fa-file-import"/>
                   </Button>
                   <Button
                     variant={'rounded'}
+                    onClick={()=>this.handlePopup('export', true)}
                   >
                     <i className="fas fa-file-export"/>
                   </Button>
@@ -573,11 +605,11 @@ class InfoStudent extends Component{
 
               <Col md={6} >
                 <div className={'is-manipulation'} style={{float: 'right'}}>
-                  <Button color={'warning'} onClick={() => this.handleShowPopup('add')}>
+                  <Button color={'warning'} onClick={() => this.handlePopup('add',true)}>
                     <i className="fas fa-plus"/>
                   </Button>
                   <Button color={'danger'}>
-                    <i className="fas fa-trash-alt" onClick={() => this.handleShowPopup('del')}/>
+                    <i className="fas fa-trash-alt" onClick={() => this.handlePopup('del', true)}/>
                   </Button>
                 </div>
               </Col>
@@ -585,7 +617,7 @@ class InfoStudent extends Component{
           </div>
 
           {/*modal popup add student*/}
-          <Modal show={this.state.showAddPopup} onHide={() =>this.handleClosePopup('add')}>
+          <Modal show={this.state.showAddPopup} onHide={() =>this.handlePopup('add', false)}>
             <Modal.Header closeButton>
               <Modal.Title>Thêm sinh viên</Modal.Title>
             </Modal.Header>
@@ -640,7 +672,7 @@ class InfoStudent extends Component{
               </Row>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handleClosePopup('add')}>
+              <Button variant="outline" onClick={() =>this.handlePopup('add', false)}>
                 Close
               </Button>
               <Button  onClick={() =>this.handleSubmitAddStudent()}>
@@ -653,13 +685,13 @@ class InfoStudent extends Component{
           {/*end modal*/}
 
           {/*modal popup delete student*/}
-          <Modal show={this.state.showDelPopup} onHide={() =>this.handleClosePopup('del')}>
+          <Modal show={this.state.showDelPopup} onHide={() =>this.handlePopup('del', false)}>
             <Modal.Header closeButton>
               <Modal.Title>Sau khi xóa những sinh viên này sẽ là sinh viên cũ!</Modal.Title>
             </Modal.Header>
             {/*<Modal.Body>Bạn có chắc chắn muốn xóa những sinh viên này?</Modal.Body>*/}
             <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handleClosePopup('del')}>
+              <Button variant="outline" onClick={() =>this.handlePopup('del', false)}>
                 Hủy
               </Button>
               <Button  onClick={() =>this.handleDelStudent()}>
@@ -670,7 +702,7 @@ class InfoStudent extends Component{
           {/*end modal*/}
 
           {/*modal popup room history student*/}
-          <Modal show={this.state.showRoomHistoryPopup} onHide={() =>this.handleClosePopup('history')}>
+          <Modal show={this.state.showRoomHistoryPopup} onHide={() =>this.handlePopup('history', false)}>
             <Modal.Header closeButton>
               <Modal.Title>Lịch sử chuyển phòng</Modal.Title>
             </Modal.Header>
@@ -702,7 +734,7 @@ class InfoStudent extends Component{
 
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={() =>this.handleClosePopup('history')}>
+              <Button onClick={() =>this.handlePopup('history', false)}>
                 Thoát
               </Button>
             </Modal.Footer>
@@ -710,19 +742,222 @@ class InfoStudent extends Component{
           {/*end modal*/}
 
           {/*modal popup upload file*/}
-          <Modal show={this.state.showImportPopup} onHide={() =>this.handleClosePopup('import')}>
-            {/*<Modal.Header closeButton>*/}
-              {/*<Modal.Title>Bạn có chắc chắn muốn xóa những sinh viên này?</Modal.Title>*/}
-            {/*</Modal.Header>*/}
+          <Modal
+            size={'md'}
+            show={this.state.showImportPopup}
+            onHide={() =>this.handlePopup('import', false)}
+          >
             <Modal.Body>
               <input type="file" name="file" onChange={this.filesOnChange}/>
               <p><b>{this.state.justFileServiceResponse}</b></p>
+
+              {this.state.listExpired &&
+
+              <Table responsive hover bordered size="sm">
+                <thead className="title-table">
+                <tr>
+                  <th>STT</th>
+                  <th>MSSV</th>
+                  <th>Họ và Tên</th>
+                  <th>Lỗi</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {this.state.listExpired.map(info => {
+                  return (
+                    <tr key={info.key}>
+                      <td>{i++}</td>
+                      <td>{info.data.mssv || ''}</td>
+                      <td>{info.data.hoTen || ''}</td>
+                      <td>{info.msg || ''}</td>
+
+                    </tr>
+                  )
+                })}
+
+                </tbody>
+              </Table>
+              }
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handleClosePopup('import')}>
+              <Button variant="outline" onClick={() =>this.handlePopup('import', false)}>
                 Cancel
               </Button>
-              <Button  onClick={this.uploadJustFile}>
+              <Button  onClick={() => this.handleImportData()}>
+                Upload
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {/*end modal*/}
+
+          {/*modal popup export file*/}
+          <Modal show={this.state.showExportPopup} onHide={() =>this.handlePopup('export', false)}>
+            <Modal.Header closeButton>
+            <Modal.Title>Xuất file</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Row>
+                <Col md={6}>
+                  <Checkbox
+                    check={true}
+                    label={'Họ và tên'}
+                    name={'hoTenEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Checkbox
+                    check={danTocEx}
+                    label={'Dân tộc'}
+                    name={'danTocEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Checkbox
+                    check={mssvEx}
+                    label={'MSSV'}
+                    name={'mssvEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Checkbox
+                    check={ngayVaoOEx}
+                    label={'Ngày vào'}
+                    name={'ngayVaoOEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Checkbox
+                    check={ngaySinhEx}
+                    label={'Ngày sinh'}
+                    name={'ngaySinhEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Checkbox
+                    check={ngayHetHanEx}
+                    label={'Ngày hết hạn'}
+                    name={'ngayHetHanEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Checkbox
+                    check={gioiTinhEx}
+                    label={'Giới tính'}
+                    name={'gioiTinhEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Checkbox
+                    check={diemHDEx}
+                    label={'Điểm hoạt động'}
+                    name={'diemHDEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Checkbox
+                    check={diaChiEx}
+                    label={'Địa chỉ'}
+                    name={'diaChiEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Checkbox
+                    check={phongEx}
+                    label={'Phòng'}
+                    name={'phongEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Checkbox
+                    check={emailEx}
+                    label={'Email'}
+                    name={'emailEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Checkbox
+                    check={truongEx}
+                    label={'Trường'}
+                    name={'truongEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Checkbox
+                    check={sdtEx}
+                    label={'Số điện thoại'}
+                    name={'sdtEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Checkbox
+                    check={nganhHocEx}
+                    label={'Ngành học'}
+                    name={'nganhHocEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Checkbox
+                    check={sdtNguoiThanEx}
+                    label={'Số điện thoại người thân'}
+                    name={'sdtNguoiThanEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Checkbox
+                    check={ghiChuEx}
+                    label={'Ghi chú'}
+                    name={'ghiChuEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Checkbox
+                    check={tonGiaoEx}
+                    label={'Tôn giáo'}
+                    name={'tonGiaoEx'}
+                    isCheck={this.handleCheckValueExport}
+                  />
+                </Col>
+              </Row>
+
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="outline" onClick={() =>this.handlePopup('import', false)}>
+                Cancel
+              </Button>
+              <Button  onClick={() => this.handleImportData()}>
                 Upload
               </Button>
             </Modal.Footer>
