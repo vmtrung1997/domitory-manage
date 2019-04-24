@@ -108,7 +108,6 @@ exports.cancelRegisterActivities = (req, res) => {
 };
 
 exports.registerActivities = (req, res) => {
-  console.log("aaaaaa");
   req.body.data.activity.forEach(item => {
     try {
       var data = {

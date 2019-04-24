@@ -31,3 +31,11 @@
 .react-datepicker__input-container{
     width: 100%;
 }
+
+.id-tab_frame{
+    padding: 15px;
+}
+
+.id-tab-activities_total-frame{
+    padding: 0 15px;
+}

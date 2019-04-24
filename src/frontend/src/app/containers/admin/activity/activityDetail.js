@@ -114,7 +114,7 @@ class ActivityDetail extends Component{
 						</Col>
 					</div>
 					<Table bordered hover responsive size="sm" className="table-activity">
-						<thead style={{background: '#cfcfcf', textAlign: 'center'}}>
+						<thead className="title-table">
 							<tr>
 								<th>STT</th>
 								<th>MSSV</th>

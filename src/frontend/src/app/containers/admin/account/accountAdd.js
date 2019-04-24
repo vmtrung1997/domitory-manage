@@ -12,6 +12,16 @@ import Input from './../../../components/input/input'
 import CheckBox from './../../../components/checkbox/checkbox'
 import Select from './../../../components/selectOption/select'
 
+const initialState = {
+  username: '',
+  password: '',
+  confirmPassword: '',
+  name: '',
+  CMND: '',
+  Email: '',
+  rule: 'SA', 
+}
+
 class AccountAdd extends Component{
 	static defaultProps = {
 		show: false,
@@ -22,33 +32,19 @@ class AccountAdd extends Component{
     super(props)
     var today = new Date()
     var time = today.getHours() + ':' + today.getMinutes()
-    this.state = {
-      username: '',
-      password: '',
-      confirmPassword: '',
-      name: '',
-      CMND: '',
-      Email: '',
-      rule: 'SA',
-      school: '',
-      MSSV: ''
-    }
+    this.state = initialState
   }
 
-  componentWillMount = async () => {
-    await refreshToken()
-    let secret = JSON.parse(localStorage.getItem('secret'))
-    axios.get('/manager/getElement/truong',  {
-      headers: { 'x-access-token': secret.access_token }
-    }).then(result => {
-      this.setState({ 
-        listSchool: result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }))
-      })
-
-    }).catch(err => {})
-  }
   getValue = (name, val) => {
     this.setState({ [name]: val })
+  }
+
+  getRule = () => {
+    return [
+      {value: 'SA', label: 'Trưởng quản lý'},
+      {value: 'AM', label: 'Quản lý'},
+      {value: 'BV', label: 'Bảo vệ'},
+    ]
   }
 
   handleSave = async () => {
@@ -69,42 +65,31 @@ class AccountAdd extends Component{
           CMND: this.state.CMND,
           Email: this.state.Email,
           rule: this.state.rule,
-          school: this.state.school,
-          MSSV: this.state.MSSV
         }
       }).then(res => {
         ToastsStore.success("Thêm tài khoản thành công!");
       }).catch(err => {
-        if(err.response.status === 409){
-          ToastsStore.error("Tài khoản đã tồn tại!");
-        }
-        else{
-          ToastsStore.error("Thêm tài khoản không thành công!");
-        }
+         ToastsStore.error( err.response.data.ms );
       })
+      this.setState(initialState)
       this.props.handleSave()
     } else {
       ToastsStore.error("Mật khẩu không trùng khớp!");
     }
   }
 
-  getRule = () => {
-    return [
-      {value: 'SA', label: 'Trưởng quản lý'},
-      {value: 'AM', label: 'Quản lý'},
-      {value: 'BV', label: 'Bảo vệ'},
-      {value: 'SV', label: 'Sinh viên'},
-    ]
+  handleClose = () => {
+    this.setState(initialState)
+    this.props.handleClose()
   }
   
 	render(){
     var rule = this.getRule()
-    var school = this.state.listSchool
 
 		return(
       <React.Fragment>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-  			<Modal show={this.props.show} onHide={this.props.handleClose}>
+  			<Modal show={this.props.show} onHide={this.handleClose}>
           		<Modal.Header closeButton>
               		<Modal.Title>Thêm tài khoản</Modal.Title>
             		</Modal.Header>
@@ -117,14 +102,6 @@ class AccountAdd extends Component{
                     <p> Mật khẩu </p>
             		    <p> Nhập lại mật khẩu </p>
                     <p> Loại tài khoản </p>
-                    { this.state.rule === 'SV' ?
-                      <React.Fragment>
-                        <p> Trường </p>
-                        <p> MSSV </p>
-                      </React.Fragment>
-                      :
-                      <React.Fragment/>
-                    }
                   </div>
                   <div style={{width: '60%'}}>
                     <Input
@@ -158,25 +135,10 @@ class AccountAdd extends Component{
                       value={this.state.rule} 
                       selected={val => this.getValue('rule',val)} 
                     />
-                    { this.state.rule === 'SV' ?
-                      <React.Fragment>
-                        <Select 
-                          options={school} 
-                          value={this.state.school} 
-                          selected={val => this.getValue('school',val)} 
-                        />
-                        <Input
-                          getValue={ (obj) => this.getValue(obj.name, obj.value)}
-                          name='MSSV'
-                        />
-                      </React.Fragment>
-                      :
-                      <React.Fragment/>
-                    }
                   </div>
             		</Modal.Body>
             		<Modal.Footer>
-  	            	<Button variant='default' color='default' onClick={this.props.handleClose}>
+  	            	<Button variant='default' color='default' onClick={this.handleClose}>
   	            		Đóng
   	            	</Button>
   	            	<Button variant='default' onClick={this.handleSave}>

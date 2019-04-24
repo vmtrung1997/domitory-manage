@@ -11,6 +11,11 @@ import Input from './../../../components/input/input'
 import CheckBox from './../../../components/checkbox/checkbox'
 import Select from './../../../components/selectOption/select'
 
+const initialState = {
+  name: '',
+  rule: '',
+}
+
 class AccountEdit extends Component{
 	static defaultProps = {
 		show: false,
@@ -20,10 +25,7 @@ class AccountEdit extends Component{
 
   constructor(props){
     super(props)
-    this.state = {
-      name: '',
-      rule: '',
-    }
+    this.state = initialState
   }
 
   componentWillMount(){
@@ -33,8 +35,17 @@ class AccountEdit extends Component{
     })
   }
 
-  getValue = (name, val) => {
-    this.setState({ [name]: val })
+  getValue = (key, val) => {
+    this.setState({ [key]: val })
+  }
+
+  getRule = () => {
+    return [
+      {value: 'SA', label: 'Trưởng quản lý'},
+      {value: 'AM', label: 'Quản lý'},
+      {value: 'BV', label: 'Bảo vệ'},
+      {value: 'SV', label: 'Sinh viên'},
+    ]
   }
 
   handleSave = async () => {
@@ -55,19 +66,13 @@ class AccountEdit extends Component{
     }).catch(err => {
       ToastsStore.error("Chỉnh sửa tài khoản không thành công!");
     })
-
+    this.setState(initialState)
     this.props.handleSave()
   }
 
-  
-
-  getRule = () => {
-    return [
-      {value: 'SA', label: 'Trưởng quản lý'},
-      {value: 'AM', label: 'Quản lý'},
-      {value: 'BV', label: 'Bảo vệ'},
-      {value: 'SV', label: 'Sinh viên'},
-    ]
+  handleClose = () => {
+    this.setState(initialState)
+    this.props.handleClose()
   }
 
 	render(){
@@ -76,7 +81,7 @@ class AccountEdit extends Component{
 		return(
       <React.Fragment>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-  			<Modal show={this.props.show} onHide={this.props.handleClose} style={{marginTop: '-20px'}}>
+  			<Modal show={this.props.show} onHide={this.handleClose} style={{marginTop: '-20px'}}>
           		<Modal.Header closeButton>
               		<Modal.Title>Chỉnh sửa tài khoản</Modal.Title>
             		</Modal.Header>
@@ -100,7 +105,7 @@ class AccountEdit extends Component{
             			</div>              
             		</Modal.Body>
             		<Modal.Footer>
-  	            	<Button variant='default' color='default' onClick={this.props.handleClose}>
+  	            	<Button variant='default' color='default' onClick={this.handleClose}>
   	            		Đóng
   	            	</Button>
   	            	<Button variant='default' onClick={this.handleSave}>

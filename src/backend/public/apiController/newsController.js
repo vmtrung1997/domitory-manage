@@ -16,12 +16,21 @@ exports.deleteNews = (req, res) => {
 exports.getNews = (req, res) => {
   var skip = req.body.options.skip;
   var limit = req.body.options.limit;
+  var query = {};
+
+  if(req.body.options.query)
+    query = { $text: { $search: req.body.options.query }}
+
+  if(req.body.options.type !== -1)
+    query.loai = req.body.options.type
+
   var totalPages = 1;
-  BaiViet.countDocuments({}, (err, data) => {
+  BaiViet.countDocuments(query, (err, data) => {
     totalPages = parseInt(data) / limit;
   });
 
   BaiViet.aggregate([
+    { $match: query },
     {
       $lookup: {
         from: "Profile",
@@ -90,7 +99,7 @@ exports.updateNews = (req, res) => {
         ngayChinhSua: date,
         trangThai: data.trangThai,
         ghim: data.ghim,
-        loai: data.loai
+        loai: parseInt(data.loai)
       }
     }
   )
@@ -121,10 +130,9 @@ exports.addNews = (req, res) => {
       ngayChinhSua: new Date(),
       noiDung: req.body.data.content,
       trangThai: req.body.data.trangThai,
-      loai: req.body.data.loai,
+      loai: parseInt(req.body.data.loai),
       ghim: req.body.data.ghim
     };
-    console.log(data);
     var register = new BaiViet(data);
     register
       .save()

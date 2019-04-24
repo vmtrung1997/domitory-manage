@@ -15,8 +15,10 @@ import {
   ToastsContainerPosition,
   ToastsStore
 } from "react-toasts";
-import Loader from "react-loader-spinner";
+import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
+
+import { css } from '@emotion/core';
 
 class PersonProfile extends React.Component {
   constructor(props) {
@@ -54,7 +56,6 @@ class PersonProfile extends React.Component {
   }
 
   getValue = obj => {
-    console.log(obj.name);
     this.setState({ [obj.name]: obj.value });
   };
 
@@ -120,7 +121,6 @@ class PersonProfile extends React.Component {
     this.setState({
       startDate: date
     });
-    console.log(date);
   }
 
   componentDidMount = async () => {
@@ -139,7 +139,10 @@ class PersonProfile extends React.Component {
         .then(res => {
           if (res) {
             //Lưu trong redux
+<<<<<<< HEAD
 
+=======
+>>>>>>> a2bda447c9e066380e40c3f28b54a526b2cdd2b1
             this.props.getUserAction(res.data.data);
 
             //Nếu res chưa có data
@@ -190,7 +193,6 @@ class PersonProfile extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
         });
 
       //Lấy danh sách các ngành học
@@ -212,7 +214,6 @@ class PersonProfile extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
         });
 
       //Lấy danh sách các trường
@@ -233,10 +234,8 @@ class PersonProfile extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
         });
     } else {
-      console.log("ko co data");
     }
   };
 
@@ -259,7 +258,10 @@ class PersonProfile extends React.Component {
   };
 
   render() {
+<<<<<<< HEAD
     console.log(this.state.flag);
+=======
+>>>>>>> a2bda447c9e066380e40c3f28b54a526b2cdd2b1
     if (!this.state.isLoad) {
       var gender = [
         { value: "-1", label: "Chọn giới tính" },
@@ -343,7 +345,7 @@ class PersonProfile extends React.Component {
       <React.Fragment>
         {this.state.isLoad ? (
           <div className="loading-student">
-            <Loader type="Triangle" color="#007bff" height={60} width={60} />
+            <Loader loading={this.state.isLoad} />
           </div>
         ) : (
           <div>

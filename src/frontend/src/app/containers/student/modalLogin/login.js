@@ -53,7 +53,6 @@ class StudentLogin extends React.Component {
         password: this.state.password
       })
       .then(res => {
-        console.log(res.data);
         if (res.data) {
           localStorage.setItem("secret", JSON.stringify(res.data));
           
@@ -90,13 +89,11 @@ class StudentLogin extends React.Component {
             onHide={this.handleClose}
             dialogClassName="title-modal"
           >
-            <Modal.Header closeButton />
+            <Modal.Header closeButton>
+              <Modal.Title bsPrefix="title-center">Đăng nhập</Modal.Title>
+            </Modal.Header>
             <Container>
               <Modal.Body style={{ textAlign: "center" }}>
-                <div style={{ paddingBottom: "10px" }}>
-                  <h2>Đăng Nhập</h2>
-                </div>
-
                 <Input
                   name="username"
                   placeholder="Tên đăng nhập"
@@ -121,7 +118,7 @@ class StudentLogin extends React.Component {
                     *Tên tài khoản hoặc mật khẩu không đúng!
                   </p>
                 )}
-                <Button onClick={this.Login} variant="primary" className = 'btn-color form-rounded btn-hover'>
+                <Button onClick={this.Login} variant="primary" className = 'btn-hover'>
                   Đăng nhập
                 </Button>
                 <div onClick = {this.showResetPassword} style = {{marginTop: '10px', cursor: 'pointer'}}>

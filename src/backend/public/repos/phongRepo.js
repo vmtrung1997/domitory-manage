@@ -17,11 +17,15 @@ exports.get_room = () => {
   })
 };
 
+exports.get_room_enable = (req, res) => {
+  Phong.find({})
+}
+
 exports.get_element = (req, res) => {
   let obj = req.params.name;
   switch (obj) {
     case 'room':
-      Phong.find({isHoDan: 0}).sort({'tenPhong': 'asc'}).select(['_id', 'tenPhong']).
+      Phong.find().sort({'tenPhong': 'asc'}).select(['_id', 'tenPhong']).
       then(result => {
         res.status(200).json(result);
       }).catch(error => {

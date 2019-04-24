@@ -13,6 +13,7 @@ import './infoStudent.css';
 import refreshToken from './../../../../utils/refresh_token'
 import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
+import DatePicker from "react-datepicker/es/index";
 
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
@@ -31,9 +32,11 @@ class InfoStudent extends Component{
       limit: 10,
       isOld: false,
 
-      infoAdded: {},
+      infoAdded: {
+        dateAdded : new Date(),
+        expiredDateAdded: new Date()
+      },
 
-      pageList: [1,2,3,4,5],
       infoList: [],
 
       mssv: '',
@@ -51,7 +54,9 @@ class InfoStudent extends Component{
       schoolOptions: [],
       schoolOptionsSearch: [],
       roomOptionsSearch: [],
-      floorOptions: []
+      floorOptions: [],
+
+      roomHistory: []
     }
   }
 
@@ -191,7 +196,6 @@ class InfoStudent extends Component{
     axios.get(`/manager/getElement/floor`,  {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
-      console.log('==get lau', result);
       let i = 0;
       const floorList = result.data.map(floor => {
         return {key: i++, label: floor}
@@ -200,7 +204,6 @@ class InfoStudent extends Component{
         floorList: floorList,
       })
     }).catch(err => {
-      console.log('==get lau err', err);
     });
   };
 
@@ -212,11 +215,17 @@ class InfoStudent extends Component{
   //   }).then
   // }
 
+  onChangeAdd = (event) => {
+    this.setState({
+      infoAdded: {...this.state.infoAdded, [event.name]: event.value}
+    })
+  };
+
   onChange = (event) => {
     this.setState({
       [event.name]: event.value
     })
-  }
+  };
 
   handleSearch = () => {
     this.setState({
@@ -229,23 +238,24 @@ class InfoStudent extends Component{
     this.setState({ roomSelected: selectedOption, pageActive: 1 })
   }
   handleSelectSchool = selectedOption => {
-    console.log('==selectedOption 111', selectedOption);
     this.setState({ schoolSelected: selectedOption, pageActive: 1 })
   }
   handleSelectFloor = selectedOption => {
     this.setState({ floorSelected: selectedOption, pageActive: 1 })
   }
 
-  handleSelectAddRoom = selectedOption => {
-    console.log('==selectedOption 222', selectedOption);
-    this.setState({ infoAdded: {...this.state.infoAdded, roomAdded: selectedOption} })
-  }
-  handleSelectAddSchool = selectedOption => {
-    this.setState({ infoAdded: {...this.state.infoAdded, schoolAdded: selectedOption} })
-  }
-
   handleSubmitAddStudent = async() => {
-    const { mssvAdded, nameAdded, infoAdded: { roomAdded, schoolAdded }, numberCardAdded } = this.state;
+    const { infoAdded: {  mssvAdded, nameAdded, dateAdded, expiredDateAdded } } = this.state;
+    console.log('==submit add', this.state.infoAdded)
+    if(!mssvAdded && nameAdded && !dateAdded && !expiredDateAdded)
+    {
+      console.log('==please fill');
+      this.setState({
+        notiAdd: 'Vui lòng điền đầy đủ thông tin!!'
+      });
+      return;
+    }
+
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     let headers = {
@@ -253,11 +263,10 @@ class InfoStudent extends Component{
     };
     axios.post(`/manager/infoStudent/add`,
       {
-        mssv: mssvAdded,
-        hoTen: nameAdded,
-        idPhong: roomAdded.value,
-        idTruong: schoolAdded.value,
-        maThe: numberCardAdded
+        mssv: mssvAdded ? mssvAdded : '',
+        hoTen: nameAdded ? nameAdded : '',
+        ngaySinh: dateAdded ? dateAdded : new Date(),
+        expiredAt: expiredDateAdded ? expiredDateAdded : new Date(),
       }, { headers: headers }
     ).then(result => {
       this.handleClosePopup('add');
@@ -307,7 +316,6 @@ class InfoStudent extends Component{
         arrDelete: this.state.listDelete
       }, { headers: {'x-access-token': secret.access_token} }
     ).then(result => {
-      console.log('==del success', result)
       this.setState({
         listDelete: []
       });
@@ -315,7 +323,7 @@ class InfoStudent extends Component{
       this.getData();
       this.handleClosePopup('del')
     }).catch(err => {
-      ToastsStore.error("Xóa  không thành công!");
+      ToastsStore.error("Xóa không thành công!");
       this.handleClosePopup('del')
     })
   };
@@ -332,16 +340,40 @@ class InfoStudent extends Component{
 
     })
     this.getData();
-  }
+  };
 
   handleChooseOption = (prop) => {
     this.setState({isOld: prop});
     this.getData();
   };
 
-  render(){
-    console.log('==render state: ', this.state);
+  getValueDate = (name, val) => {
+    this.setState({
+      infoAdded: {
+        ...this.state.infoAdded,
+        [name]: val
+      }
+    })
+  }
 
+  handleRoomHistory = async(id) => {
+    this.handleShowPopup('history')
+    await refreshToken();
+    var secret = JSON.parse(localStorage.getItem('secret'));
+    axios.get(`/manager/getRoomHistory/` + id, { headers: {'x-access-token': secret.access_token} }
+    ).then(result => {
+      console.log('==history', result);
+      let i=1;
+      const history = result.data && result.data.map(his => {
+        return{key: i++, data: his}
+      })
+      this.setState({
+        roomHistory: history
+      })
+    }).catch()
+  }
+
+  render(){
     const {
       limit,
       pageActive,
@@ -350,13 +382,13 @@ class InfoStudent extends Component{
       schoolSelected,
       floorSelected,
       roomOptionsSearch,
-      schoolOptions,
       schoolOptionsSearch,
       floorOptions,
       hoTen,
       mssv,
       isOld,
-      infoAdded: { roomAdded, schoolAdded} } = this.state;
+      roomHistory,
+      infoAdded: { dateAdded, expiredDateAdded} } = this.state;
     let i = pageActive*limit - 10;
     return(
       <div>
@@ -413,7 +445,6 @@ class InfoStudent extends Component{
                   placeholder={''}
                   value={schoolSelected}
                   onChange={this.handleSelectSchool}
-                  // selected={this.handleSelectSchool}
                   options={schoolOptionsSearch}
                 />
               </Col>
@@ -511,42 +542,62 @@ class InfoStudent extends Component{
                   Họ và Tên:
                 </Col>
                 <Col md={9}>
-                  <Input getValue={this.onChange} name={'nameAdded'} />
+                  <Input getValue={this.onChangeAdd} name={'nameAdded'} />
                 </Col>
+              </Row>
+
+              <Row>
                 <Col md={3}>
                   MSSV:
                 </Col>
                 <Col md={9}>
-                  <Input getValue={this.onChange} name={'mssvAdded'} />
+                  <Input getValue={this.onChangeAdd} name={'mssvAdded'} />
                 </Col>
+                {/*<Col md={3}>*/}
+                  {/*Trường:*/}
+                {/*</Col>*/}
+                {/*<Col md={9}>*/}
+                  {/*<SearchSelect*/}
+                    {/*isSearchable={true}*/}
+                    {/*placeholder={''}*/}
+                    {/*value={schoolAdded}*/}
+                    {/*onChange={this.handleSelectAddSchool}*/}
+                    {/*options={schoolOptions} />*/}
+                {/*</Col>*/}
+              </Row>
+
+              <Row>
                 <Col md={3}>
-                  Mã thẻ:
+                  Ngày sinh:
                 </Col>
                 <Col md={9}>
-                  <Input getValue={this.onChange} name={'numberCardAdded'} />
+
+                  <DatePicker
+                    dateFormat='dd/MM/yyyy'
+                    selected={dateAdded}
+                    onChange={(val) => this.getValueDate('dateAdded', val)}
+                    className='input-datepicker'
+                  />
                 </Col>
+              </Row>
+
+              <Row>
                 <Col md={3}>
-                  Phòng:
+                  Ngày hết hạn đăng ký:
                 </Col>
                 <Col md={9}>
-                  <SearchSelect
-                    isSearchable={true}
-                    placeholder={''}
-                    value={roomAdded}
-                    onChange={this.handleSelectAddRoom}
-                    options={roomOptionsSearch} />
+
+                  <DatePicker
+                    dateFormat='dd/MM/yyyy'
+                    selected={expiredDateAdded}
+                    onChange={(val) => this.getValueDate('expiredDateAdded', val)}
+                    className='input-datepicker'
+                  />
                 </Col>
-                <Col md={3}>
-                  Trường:
-                </Col>
-                <Col md={9}>
-                  <SearchSelect
-                    isSearchable={true}
-                    placeholder={''}
-                    value={schoolAdded}
-                    onChange={this.handleSelectAddSchool}
-                    options={schoolOptions} />
-                </Col>
+              </Row>
+
+              <Row style={{color: 'red'}}>
+                {this.state.notiAdd}
               </Row>
             </Modal.Body>
             <Modal.Footer>
@@ -585,27 +636,31 @@ class InfoStudent extends Component{
               <Modal.Title>Lịch sử chuyển phòng</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Table responsive bordered >
-                <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Thời gian</th>
-                  <th>Phòng</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>01/01/2018 - 01/01/2019</td>
-                  <td>100</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>01/01/2019 - Hiện tại</td>
-                  <td>102</td>
-                </tr>
-                </tbody>
-              </Table>;
+
+                  <Table responsive bordered >
+                    <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Thời gian</th>
+                      <th>Phòng</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {roomHistory && roomHistory.map(his => {
+                      let { idPhong, ngayChuyen } = his.data;
+                      let date = new Date(ngayChuyen);
+                      return(
+                        <tr>
+                          <td>{his.key}</td>
+                          <td>{`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`}</td>
+                          <td>{idPhong.tenPhong}</td>
+                        </tr>
+                      )
+                    })}
+
+                    </tbody>
+                  </Table>
+
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={() =>this.handleClosePopup('history')}>
@@ -652,12 +707,12 @@ class InfoStudent extends Component{
                 return(
                   <tr onDoubleClick ={() => this.onViewDetail(info)} key={i++}>
                     <td >{i}</td>
-                    <td>{info.MSSV}</td>
-                    <td>{info.hoTen}</td>
-                    <td>{info.truong.tenTruong}</td>
+                    <td>{info.MSSV || 'Trống'}</td>
+                    <td>{info.hoTen || 'Trống'}</td>
+                    <td>{info.truong ? info.truong.tenTruong : 'Chưa xác định'}</td>
                     <td>
-                      {info.idPhong.tenPhong}
-                      <Button color={'info'} variant={'outline'} style={{marginLeft: '15px'}} onClick={() => this.handleShowPopup('history')}>
+                      {info.idPhong ? info.idPhong.tenPhong : '-----'}
+                      <Button color={'info'} variant={'outline'} style={{marginLeft: '15px'}} onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}>
                         <i className="fas fa-history"/>
                       </Button>
                       </td>
@@ -665,7 +720,9 @@ class InfoStudent extends Component{
                       <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.onViewDetail(info)}>
                         <i className="fas fa-edit"/>
                       </Button>
-                      <CheckBox name={info.MSSV} isCheck={this.handleCheckDelete} check={this.handleValueCheck(info.MSSV)}/>
+                      {!isOld &&
+                        <CheckBox name={info.MSSV} isCheck={this.handleCheckDelete} check={this.handleValueCheck(info.MSSV)}/>
+                      }
                     </td>
                   </tr>
                 )
@@ -674,8 +731,8 @@ class InfoStudent extends Component{
             </Table>
             <Row>
               <Col md={3} className={'page-input'}>
-                <label style={{marginRight:'3px'}}>Page</label>
-                <Input width={'50px'}/>
+                <label style={{marginRight:'3px'}}>Trang</label>
+                <Input width='50px' textAlign='center' value={this.state.pageActive}/>
               </Col>
               <Col md={9}>
                 <div className={'is-pagination'}>

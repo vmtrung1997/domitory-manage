@@ -60,8 +60,9 @@ exports.get_Detail = (req, res) => {
 	})
 }
 
-exports.add_Account = (req, res) => {
+exports.add_Account = async (req, res) => {
 	var data = req.body
+	var isExist = false
 	var account = new Account({
 		username: data.username,
 		password: md5(data.password),
@@ -69,43 +70,59 @@ exports.add_Account = (req, res) => {
 		isDelete: 0
 	})
 
-	Profile.findOne({ CMND: data.CMND }, (err, val) => {
+	await Account.findOne({ username: data.username }, (err, val) => {
 		if(err){
 			console.log('==add_account:', err)
 			res.status(402).json({
-				ms: 'false'
+				ms: 'Lổi hệ thống'
 			})
 		}
-
-		if(!val || val.CMND === undefined){
-			var person = new Profile({
-				hoTen: data.name,
-				CMND: data.CMND,
-				email: data.Email,
-				MSSV: data.MSSV,
-				truong: data.school
-			})
-			person.save()
-			
-			account.idProfile = person._id
-			account.save()
-
-			person.idTaiKhoan = account._id
-			person.save()
-
-			console.log('==add_account: success')
-			res.status(201).json({
-				ms: 'ok'
-			})
-
-		} 
 		if(val){
-			console.log('==add_account: adready exist')
-			res.status(409).json({
-				ms: 'adready exist'
-			})			
+			isExist = true
+			console.log('==add_account:  username already exist')
+			res.status(402).json({
+				ms: 'Tài khoản đã tồn tại trên hệ thống!'
+			})
 		}
 	})
+
+	if(!isExist){
+		Profile.findOne({ CMND: data.CMND }, (err, val) => {
+			if(err){
+				console.log('==add_account:', err)
+				res.status(402).json({
+					ms: 'Lổi hệ thống'
+				})
+			}
+
+			if(!val || val.CMND === undefined){
+				var person = new Profile({
+					hoTen: data.name,
+					CMND: data.CMND,
+					email: data.Email,
+				})
+				person.save()
+				
+				account.idProfile = person._id
+				account.save()
+
+				person.idTaiKhoan = account._id
+				person.save()
+
+				console.log('==add_account: success')
+				res.status(201).json({
+					ms: 'ok'
+				})
+
+			} 
+			if(val){
+				console.log('==add_account: profile already exist account')
+				res.status(402).json({
+					ms: 'Hồ sơ này đã cấp được cấp tài khoản'
+				})			
+			}
+		})
+	}
 }
 
 exports.update_Account = (req, res) => {

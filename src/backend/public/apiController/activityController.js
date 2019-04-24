@@ -166,6 +166,7 @@ exports.rollcall_activity = async (req, res) => {
 		}
 		data.sv = val
 	})
+
 	if(data.sv){
 		resultActivity.findOne({ idHD: data.hd, idSV: data.sv._id }, (err,val) => {
 			if(err){

@@ -1,9 +1,10 @@
 .HeaderHomepage{
     background: white;
     align-items: center;
-    -webkit-box-shadow: 0px 13px 5px -8px rgba(0,0,0,0.49);
-    -moz-box-shadow: 0px 13px 5px -8px rgba(0,0,0,0.49);
-    box-shadow: 0px 13px 5px -8px rgba(0,0,0,0.49);
+    -webkit-box-shadow: 0px 4px 5px -3px rgba(112,112,112,1);
+    -moz-box-shadow: 0px 4px 5px -3px rgba(112,112,112,1);
+    box-shadow: 0px 4px 5px -3px rgba(112,112,112,1);
+    padding: 5px 30px;
 }
 .option{
     display: flex;
@@ -11,13 +12,35 @@
     width: 28%;
 }
 
-.name-profile{
-    color: #ffffff
+.list-item-menu{
+    font-weight: bold;
+    color: #BCC5CA;
+    padding: 5px 10px;
+    border: solid 2px #ffffff00;
+    transition: all 0.5s;  
+}
+.list-item-menu:hover{
+    color: black;
 }
 
-.list-item-menu:hover{
-    color: #ffffff
+.list-item-menu::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #293846;
+    transition: width .3s;
 }
+
+.list-item-menu:hover::after {
+    width: 100%;
+}
+
+
+.btn-search{
+  border-radius: 50%;
+}
+
 .btn-color{
     background-color: #293846 !important;
 }
@@ -25,8 +48,8 @@
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
-    height: 100px;
-    width: 100px;
+    height: 80px;
+    width: 80px;
     margin-top: 15px;
     
 }
@@ -56,7 +79,7 @@
 }
 
 .btn-menu{
-    border-radius: 1.25rem !important;
+    border-radius: 50% !important;
 }
 .search{
     position: fixed;
@@ -74,8 +97,8 @@
 
 .btn-light:hover {
     color: #ffffff !important;
-     background-color: #007bff !important;
-     border-color: #ffffff !important; 
+    background-color: #007bff !important;
+    border-color: #ffffff !important; 
 }
 .menu-item{
     font-size: 14px;
@@ -83,29 +106,26 @@
    
 }
 
-.list-item-link{
-    color: #212529;
-}
-
 .list-item-link:hover{
-    /* background-color: rgb(27, 95, 114); */
-    color: #ffffff
+    color: #ffffff !important
 }
 .list-menu-sub{
     margin-left: 10px;
 }
 
-
-
-  .form-rounded{
-    border-radius: 1rem;
+  .btn-sign{
+    font-weight: bold;
+    color: #5BA3EF !important; 
+    border-radius: 0 !important;
+    border-bottom: solid 2px #5BA3EF !important;
   }
 
-  .btn-hover:hover{
-    background-color: #293846 !important;
-  }
-  .form-rounded:hover{
-     
+  .btn-sign:hover{
+    font-weight: bold;
+    background: white !important;
+    color: #5BA3EF !important;
+    border-top: solid 2px #5BA3EF !important;
+    border-bottom: solid 2px #5BA3EF !important;
   }
   .search-area{
       margin-right: 15px;
@@ -133,7 +153,7 @@
     background-color: #171717a3
 }
 .nav-img img{
-    width: 9vh; height: 9vh; margin-right: 10px;   border-radius: 50%
+    width: 8vh; height: 8vh; margin-right: 10px;   border-radius: 50%
   }
   .nav-img {
       display: inline;
@@ -144,5 +164,8 @@
   }
 
   .header-title{
-      font-size: 1em;
+      font-weight: bold;
+      color: #5BA3EF;
+      font-size: 1.1em;
+      margin-right: 1em;
   }
