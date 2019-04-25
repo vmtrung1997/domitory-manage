@@ -156,8 +156,8 @@ function Calculation(phong, soDienCu, soNuocCu) {
 				if (loaiPhong.dien || loaiPhong.nuoc) {
 					ThongSoLoaiPhong.find({ idLoaiPhong: loaiPhong._id }).sort({ id: 1 }).then(async arrThongSo => {
 						if (arrThongSo.length > 0) {
-							var arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0).sort((a, b) => { return a.id > b.id }) || [];
-							var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id }) || [];
+							var arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0) || [];
+							var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1) || [];
 							if (phong.isResetDien) {
 								row.thayDien = { dienCu: phong.soDienResetDau, dienMoi: phong.soDienResetCuoi }
 								if (arrDien.length > 0) {
@@ -320,8 +320,8 @@ exports.update_expense = async (req, res) => {
 							})
 						} else {
 							if (exp.trangThai === 1) {
-								var soDienMoi = exp.thayDien.dienMoi ? exp.thayDien.dienMoi : exp.soDien;
-								var soNuocMoi = exp.thayNuoc.nuocMoi ? exp.thayNuoc.nuocMoi : exp.soNuoc;
+								var soDienMoi = exp.thayDien ? exp.thayDien.dienMoi : exp.soDien;
+								var soNuocMoi = exp.thayNuoc ? exp.thayNuoc.nuocMoi : exp.soNuoc;
 								await ChiPhiHienTai.findOneAndUpdate({ idPhong: exp.idPhong }, {
 									$set: {
 										soDien: soDienMoi,
@@ -734,5 +734,60 @@ exports.reset_room = (req, res) => {
 				res.json({ rs: 'success' })
 		})
 	}
-
+}
+function getDetailTypeRoom(value){
+	return new Promise(resolve => {
+		if (value.idPhong.loaiPhong.dien || value.idPhong.loaiPhong.nuoc) {
+			ThongSoLoaiPhong.find({ idLoaiPhong: value.idPhong.loaiPhong._id }).then(arr => {
+				resolve({detail: value, thongSo: arr})
+			}).catch(err => console.log(err))
+		} else 
+			{resolve(value)}
+	})
+}
+exports.get_data_print = (req, res) => {
+	var { data, type } = req.body
+	var searchObj = {};
+	if (type === 'table') {
+		if (data.month !== 0) 
+			searchObj.thang = search.month;
+		if (data.year !== 0)
+			searchObj.nam = search.year
+		if (data.status !== 2)
+			searchObj.trangThai = search.status
+		if (data.room !== 0 && data.room.value !== 0)
+			searchObj.idPhong = search.room.value
+	} else {
+		if (data.length > 0)
+			searchObj._id = {$in: data}
+	}
+	if (Object.keys(searchObj).length){
+		ChiPhiPhong.find(searchObj).populate({
+			path: 'idPhong',
+			select: 'loaiPhong tenPhong soNguoi',
+			populate: {
+				path: 'loaiPhong'
+			}
+		}).then(expenses => {
+			if (expenses.length > 0) {
+				var data = []
+				expenses.forEach(value => {
+					data.push(getDetailTypeRoom(value))
+				})
+				Promise.all(data).then(value => {
+					res.json({
+						rs: 'success',
+						data: value
+					})
+				})
+			}
+		}).catch(err => {
+			res.json({
+				rs: 'fail',
+				msg: err
+			})
+		})
+	} else {
+		res.json({rs: 'fail', msg: 'Không có dữ liệu chọn'})
+	}
 }

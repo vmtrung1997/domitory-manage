@@ -43,9 +43,11 @@ router.post('/expense/detail_room', expenseController.get_detail_type_room);
 
 router.post('/expense/update_room_type', expenseController.update_detail_type_room);
 
-router.post('/expense/info_room', expenseController.get_info_room)
+router.post('/expense/info_room', expenseController.get_info_room);
 
-router.post('/expense/reset_room', expenseController.reset_room)
+router.post('/expense/reset_room', expenseController.reset_room);
+
+router.post('/expense/get_data_print', expenseController.get_data_print);
 
 // Activity
 router.post('/activity/get_activity', activityController.get_list_activity);

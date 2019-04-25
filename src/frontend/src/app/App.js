@@ -8,7 +8,7 @@ import NotFound from './containers/404error/notfound'
 import SignInAdmin from './containers/admin/signIn/signinAdmin'
 import Student from './containers/student'
 import Security from './containers/security/index'
-
+import ExpensePrint from './containers/admin/expenses/expensePrintPage'
 var isAdmin = false
 var isSecurity = false
 
@@ -70,6 +70,7 @@ class App extends Component {
                     <SecurityRoute path='/security' component={Security} />
                     <Route path="/signin-admin" component={SignInAdmin} />
                     <Route path='/' component = {Student}/>
+                    <Route path='/print' component={ExpensePrint} />
                     <Route component={NotFound} />
                 </Switch>
             </Router>

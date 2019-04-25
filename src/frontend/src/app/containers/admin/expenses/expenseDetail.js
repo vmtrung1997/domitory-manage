@@ -4,7 +4,7 @@ import Button from '../../../components/button/button'
 import Input from '../../../components/input/input'
 import Optimize from '../../../optimization/optimizationNumber/optimizationNumber'
 import { remove_expense, update_expense, submit_expense } from './expensesAction'
-import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import { ToastsStore } from 'react-toasts';
 import './expenses.css'
 class Example extends React.Component {
   constructor(props, context) {
@@ -143,7 +143,6 @@ class Example extends React.Component {
     var exp = this.props.expenseDetail;
     return (
       <React.Fragment>
-        <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore} />
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <form onSubmit={this.handleUpdate}>
           <Modal.Header closeButton>

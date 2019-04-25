@@ -45,7 +45,6 @@ class Example extends React.Component {
   render() {
     return (
       <>
-        <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore}/>
         <Modal show={this.state.show} onHide={this.handleClose} size="sm">
           <Modal.Header>
             <Modal.Title>Xác nhận mật khẩu</Modal.Title>

@@ -6,7 +6,7 @@ import Checkbox from '../../../components/checkbox/checkbox'
 import Select from '../../../components/selectOption/select'
 import { report_expense } from './expensesAction'
 import {get_month, get_year, get_status} from './expenseRepo'
-import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import { ToastsStore } from 'react-toasts';
 import {saveAs} from 'file-saver'
 class Example extends React.Component {
   
@@ -119,7 +119,6 @@ class Example extends React.Component {
     var {roomList} = this.props
     return (
       <>
-        <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore}/>
         <Button title={'Xuất báo cáo'} onClick={this.handleShow}>
         <i className="fas fa-file-export" />
 				</Button>
@@ -137,7 +136,7 @@ class Example extends React.Component {
               </Row>
               </Col>
               <Col>
-              <Checkbox label={'Đến tháng'} check={false} name={'sdtt'} isCheck={this.handleCheckToMonth}/>
+              <Checkbox label={'Đến tháng'} check={!this.state.disableToMonth} name={'sdtt'} isCheck={this.handleCheckToMonth}/>
               <Row>
                 <Col><Select options={month} selected={this.monthToSelected} disabled={this.state.disableToMonth}/></Col>
                 <Col><Select options={year} selected={this.yearToSelected} disabled={this.state.disableToMonth}/></Col>

@@ -3,10 +3,9 @@ import { Table, Row, Col, Modal } from 'react-bootstrap'
 import Input from '../../../components/input/input'
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
-import CheckBox from '../../../components/checkbox/checkbox'
 import { getData, add_expense, find_expense, check_expense, info_room } from '../expenses/expensesAction'
 import { get_month, get_year, } from './expenseRepo'
-import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import { ToastsStore } from 'react-toasts';
 import './expenses.css'
 class Example extends React.Component {
   static defaultProps = {
@@ -204,7 +203,6 @@ class Example extends React.Component {
     }) : [];
     return (
       <>
-        <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore} />
         <Button color={'warning'} onClick={this.handleShow}>
           <i className="fas fa-plus" />
         </Button>
@@ -237,7 +235,7 @@ class Example extends React.Component {
                 </Col>
                 <Col md={1}>&nbsp;
                 <Col md='12'>
-                    <Button onClick={() => { this.setState({ resetSoDien: !this.state.resetSoDien }) }}><i className="fas fa-retweet"></i></Button>
+                    <Button title='Reset số điện' onClick={() => { this.setState({ resetSoDien: !this.state.resetSoDien }) }}><i className="fas fa-retweet"></i></Button>
                   </Col>
                 </Col>
                 <Col md={2}>
@@ -246,30 +244,28 @@ class Example extends React.Component {
                 </Col>
                 <Col md={1}>&nbsp;
                 <Col md='12'>
-                    <Button onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button></Col>
+                    <Button title='Reset số nước' onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button></Col>
                 </Col>
                 <Col md={1}>
                   &nbsp;
-                <Col md={12}><Button color={'warning'} type='submit' size={'md'}><i className="fas fa-plus" /></Button></Col>
+                <Col md={12}><Button  color={'warning'} type='submit' size={'md'}><i className="fas fa-plus" /></Button></Col>
                 </Col>
               </Row>
               {(this.state.resetSoDien || this.state.resetSoNuoc) && <Row>
-                <Col md={!this.state.resetSoDien ? '5' : '3'}></Col>
-                <Col md='2' className='text-right'>Chỉ số đầu</Col>
+                <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '5' : !this.state.resetSoDien&& this.state.resetSoNuoc? '8': '5'} className='text-right'>Chỉ số đầu</Col>
                 {this.state.resetSoDien && <Col md='2'>
                   <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
                 </Col>}
-                <Col md='1'></Col>
+                {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
                 <Col md='2'>{this.state.resetSoNuoc &&
                   <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />}</Col>
               </Row>}
               {(this.state.resetSoDien || this.state.resetSoNuoc) && <Row>
-                <Col md={!this.state.resetSoDien ? '5' : '3'}></Col>
-                <Col md='2' className='text-right'>Chỉ số cuối</Col>
+                <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '5' : !this.state.resetSoDien&& this.state.resetSoNuoc? '8': '5'} className='text-right'>Chỉ số cuối</Col>
                 {this.state.resetSoDien && <Col md='2'>
                   <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
                 </Col>}
-                <Col md='1'></Col>
+                {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
                 <Col md='2'>{this.state.resetSoNuoc &&
                   <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />}</Col>
               </Row>}

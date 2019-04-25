@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal, Row, Col } from 'react-bootstrap'
-import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import { ToastsStore } from 'react-toasts';
 
 import Button from '../../../components/button/button'
 import { getData, reset_room, info_room} from './expensesAction'
@@ -100,13 +100,12 @@ class Example extends React.Component {
   render() {
     return (
       <>
-        <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore} />
         <Button title={'Reset'} onClick={this.handleShow}>
         <i className="fas fa-window-restore"></i>
         </Button>
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <Modal.Header closeButton>
-            <Modal.Title>Reset</Modal.Title>
+            <Modal.Title>Thông số ban đầu</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           <Row>
