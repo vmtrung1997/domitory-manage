@@ -10,7 +10,7 @@ class Button extends Component{
 		className: '',
 		type: 'button',
 		title: null,
-		onClick: () => {},
+		onClick: () => {}
 	};
 
 	static propTypes = {

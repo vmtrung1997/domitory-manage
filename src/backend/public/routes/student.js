@@ -21,11 +21,17 @@ router.post('/cancel-register-activities',studentController.cancelRegisterActivi
 
 router.post('/my-upcoming-activities',studentController.upcomingActivities);
 
-router.post('/update-info',studentController.updateInfo);
+router.post('/update-first-info',studentController.updateFisrtInfo);
 
 router.post('/change-password', studentController.changePassword);
 
+router.post('/get-room',studentController.getRoom);
 
+router.post('/update-room',studentController.updateRoom);
+
+router.post('/get-profile-by-idPhong',studentController.getProfileByIdPhong);
+
+router.post('/get-point',studentController.getPoint);
 
 
 module.exports = router;

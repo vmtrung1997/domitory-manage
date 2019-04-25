@@ -24,13 +24,26 @@ class SignInAdmin extends Component{
 			show: false
 		}
 	}
-	getValue = (obj) => {
-		if(obj.name === 'password'){
-			this.setState({[obj.name]: md5(obj.value)})
+
+	componentWillMount = () => {
+		const secret = JSON.parse(localStorage.getItem('secret'))
+
+		if(secret){
+	        axios.get(`http://localhost:4000/api/logout`, {
+	            headers: {
+	                'x-refresh-token': secret.refresh_token
+	            }
+	        }).then( res => localStorage.removeItem('secret') )
+    	}
+	}
+	getValue = (key, val) => {
+		if(key === 'password'){
+			this.setState({ [key]: md5(val) })
 		} else {
-			this.setState({[obj.name]: obj.value})
+			this.setState({ [key]: val })
 		}
 	}
+
 	login = () => {
 		this.setState({ loading: true })
 		axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
@@ -64,21 +77,12 @@ class SignInAdmin extends Component{
 			this.setState({ loading: false})
 		})
 	}
-	componentWillMount = () => {
-		const secret = JSON.parse(localStorage.getItem('secret'))
-
-		if(secret){
-	        axios.get(`http://localhost:4000/api/logout`, {
-	            headers: {
-	                'x-refresh-token': secret.refresh_token
-	            }
-	        }).then( res => localStorage.removeItem('secret') )
-    	}
-	}
+	
 	render(){
 		return(
 			<React.Fragment>
-				<ForgotPassword show={this.state.show} />
+				<ForgotPassword show={this.state.show} handleClose={ e => this.getValue('show', false)}/>
+				<Loader loading={this.state.loading}/>
 				<div className='header-sgin-admin'>
 					<Link to='/'><img alt="logo_hcmus" className='logo' src={logo_HCMUS} /></Link>
 					<span> Chào mừng đến với ký túc xá Trần Hưng Đạo </span>
@@ -86,18 +90,18 @@ class SignInAdmin extends Component{
 				<div className='form-login'>
 					<div className='lb-tille'> ĐĂNG NHẬP </div>
 					{this.state.isNotify ? (
-						<div className='notify'> ! Bạn nhập sai tài khoản hoặc mật khẩu </div>
+						<div className='notify'> Bạn nhập sai tài khoản hoặc mật khẩu ! </div>
 					):(<React.Fragment/>)}
 					<div style={{display: 'flex', justifyContent: 'center'}}>
 						<Input 
 							width='250px' placeholder='Tài khoản' fontSize='20px' padding='8px 18px' borderRadius='6px' 
-							getValue={this.getValue} name={'username'}
+							getValue={ e => this.getValue(e.name, e.value)} name={'username'}
 						/>
 					</div>
 					<div style={{display: 'flex', justifyContent: 'center'}}>
 						<Input 
 							width='250px' placeholder='Mật khẩu'  fontSize='20px' padding='8px 18px'  borderRadius='6px' type='password'
-							getValue={this.getValue} name={'password'}
+							getValue={ e => this.getValue(e.name, e.value) } name={'password'}
 							onKeyPress={ (e) => {if(e.key === 'Enter') this.login()}}
 						/>
 					</div>
@@ -109,7 +113,6 @@ class SignInAdmin extends Component{
 							Đăng nhập
 						</Button>
 					</div>
-					<Loader loading={this.state.loading}/>
 					<h5 className="lb-forgot" onClick={ e => this.setState({show: true})}> Bạn quên mật khẩu ?</h5>
 				</div>
 			</React.Fragment>

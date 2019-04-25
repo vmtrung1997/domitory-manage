@@ -67,16 +67,17 @@ class ActivityEdit extends Component{
   }
 
   componentWillMount(){
+    const data = this.props.data
     this.setState({
-      name: this.props.data.ten,
-      location: this.props.data.diaDiem,
-      date: new Date(this.props.data.ngayBD),
-      time: new Date(this.props.data.ngayBD).getHours() + ':' + new Date(this.props.data.ngayBD).getMinutes(),
-      dateEnd: new Date(this.props.data.ngayKT),
-      timeEnd: new Date(this.props.data.ngayKT).getHours() + ':' + new Date(this.props.data.ngayKT).getMinutes(),
-      isRequire: this.props.data.batBuoc,
-      des: this.props.data.moTa,
-      point: this.props.data.diem
+      name: data.ten,
+      location: data.diaDiem,
+      date: new Date(data.ngayBD),
+      time: new Date(data.ngayBD).getHours() + ':' + new Date(data.ngayBD).getMinutes(),
+      dateEnd: new Date(data.ngayKT),
+      timeEnd: new Date(data.ngayKT).getHours() + ':' + new Date(data.ngayKT).getMinutes(),
+      isRequire: data.batBuoc,
+      des: data.moTa,
+      point: data.diem
     })
   }
 	render(){
