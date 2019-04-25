@@ -41,14 +41,14 @@ class BillStudent extends React.Component {
     var bill = [];
     //Lấy thông tin điện nước
     axios
-      .post(`http://localhost:4000/api/student/get-info`, {
+      .post(`/student/get-info`, {
         id: id
       })
       .then(res => {
         if (res) {
           if (res.data.data.idPhong !== undefined) {
             axios
-              .post(`http://localhost:4000/api/student/get-last-bill`, {
+              .post(`/student/get-last-bill`, {
                 id: res.data.data.idPhong._id
               })
               .then(res => {
@@ -93,7 +93,7 @@ class BillStudent extends React.Component {
           if (res.data.data.idPhong !== undefined) {
             // có dữ liệu phòng
             axios
-              .post(`/api/student/get-bill`, {
+              .post(`/student/get-bill`, {
                 id: res.data.data.idPhong._id,
                 options: options
               })

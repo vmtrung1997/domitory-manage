@@ -25,7 +25,7 @@ class ListActivity extends React.Component {
       isLoad: true,
       pageActive: 1,
       totalPages: 1,
-      limit: 1
+      limit: 5
     };
   }
   listOption = [false];
