@@ -540,7 +540,7 @@ class InfoDormitory extends React.Component{
                                     onClick={()=>this.handleShowDetail(room.data)}
                                   >
                                     <i className="fas fa-home"/>
-                                    {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                                    {room.data.tenPhong} ({room.data.soNguoi}/{room.data.soNguoiToiDa})
                                   </Button>
                                 </div>
                               )
@@ -560,7 +560,7 @@ class InfoDormitory extends React.Component{
                                     onClick={()=>this.handleShowDetail(room.data)}
                                   >
                                     <i className="fas fa-home"/>
-                                    {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                                    {room.data.tenPhong} ({room.data.soNguoi}/{room.data.soNguoiToiDa})
                                   </Button>
                                 </div>
                               )
@@ -580,7 +580,7 @@ class InfoDormitory extends React.Component{
                                     onClick={()=>this.handleShowDetail(room.data)}
                                   >
                                     <i className="fas fa-home"/>
-                                    {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                                    {room.data.tenPhong} ({room.data.soNguoi}/{room.data.soNguoiToiDa})
                                   </Button>
                                 </div>
                               )

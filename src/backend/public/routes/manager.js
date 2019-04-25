@@ -73,6 +73,8 @@ router.post('/infoStudent/delete', infoStudent.deleteStudent);
 
 router.post('/infoStudent/update', infoStudent.updateInfo);
 
+router.post('/infoStudent/importFile', infoStudent.importFile);
+
 router.get('/getElement/:name', repo.get_element);
 
 router.get('/getRoomHistory/:id', infoStudent.getRoomHistory);
