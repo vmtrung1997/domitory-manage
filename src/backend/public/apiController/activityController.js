@@ -204,55 +204,59 @@ exports.export_activity = async (req, res) => {
 		var header = ['', '',`Điểm phong trào ktx Trần Hưng Đạo năm học ${year-1} - ${year}`]
 
 		var sheet = [header]
-		sheet.push(
+		sheet.push([
+			'MSSV', 'HỌ VÀ TÊN', 'PHÒNG', 'TỔNG ĐIỂM',
+			...
 			activity.map((item, key) => {
 				return item.ten
 			})
-		)
-		sheet[1].unshift('MSSV', 'HỌ VÀ TÊN', 'PHÒNG', 'TỔNG ĐIỂM')
-		student.map( async (stu, i) => {
-			var sumPoint = 0
-			var arrPoint 
-			activity.map( async (ac, j) => {
-				point = 0
-				await resultActivity
-					.findOne({ idHD: ac._id, idSV: stu._id})
-					.populate('idHD')
-					.then( rs => {
-						if(rs){
-							if(isNaN(rs.idHD.diem)){
-								point = 0
-							}
-							if(rs.isTG){
-								sumPoint += rs.idHD.diem
-								point = rs.idHD.diem
-							}
-							if(rs.idHD.batBuoc && !rs.isTG){
-								sumPoint -= -sr.idHD.diem
-								point = -rs.idHD.diem
-							}
-						} else {
-							point = 0
+		])
+		await Promise.all(
+			student.map( async (stu, i) => {
+				var sumPoint = 0
+				var arrPromisePoint = activity.map( async (ac, j) => {
+					var rs = await resultActivity
+						.findOne({ idHD: ac._id, idSV: stu._id})
+						.populate('idHD')
+						.catch( err => { 
+							console.log('==export_activity:', err)
+							res.status(500)
+						})
+					if(rs){
+						if(isNaN(rs.idHD.diem)){
+							return 0
 						}
-					})
-					.catch( err => { 
-						console.log('==export_activity:', err)
-						res.status(500)
-					})
-				return point
+						if(rs.isTG){
+							sumPoint += rs.idHD.diem
+							return rs.idHD.diem
+						}
+						if(rs.idHD.batBuoc && !rs.isTG){
+							sumPoint += -rs.idHD.diem
+							return -rs.idHD.diem
+						}
+					} else {
+						if(ac.batBuoc){
+							sumPoint += -ac.diem
+							return -ac.diem
+						} else {
+							return 0
+						}
+					}
+				})
+				
+				var phong = ''
+				if(stu.idPhong)
+					phong = stu.idPhong.tenPhong
+				const arrPoint = await Promise.all(arrPromisePoint)
+
+				sheet.push([stu.MSSV, stu.hoTen,  phong , sumPoint , ... arrPoint])
 			})
-			var phong = ''
-			if(stu.idPhong)
-				phong = stu.idPhong.tenPhong
-			
-			sheet.push([stu.MSSV, stu.hoTen || '',  phong , sumPoint , ... arrPoint])
-		})
-		console.log(sheet)
-		// var opts = { row: 1 + activity.length, col: 2 + student.length}
-		// var xlsx = writeXlsx.save(sheet, opts);
-		// res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		// res.status(200).json({ filename: 'Bao-cao-hoat-dong.xlsx', file: xlsx });
+		)
 		
+		var opts = { row: 1 + activity.length, col: 2 + student.length}
+		var xlsx = writeXlsx.save(sheet, opts);
+		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		res.status(200).json({ filename: 'Bao-cao-hoat-dong.xlsx', file: xlsx });
 	}
 	
 };
