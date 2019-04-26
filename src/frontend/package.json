@@ -15,7 +15,7 @@
     "draftjs-to-html": "^0.8.4",
     "file-saver": "^2.0.1",
     "html-to-draftjs": "^1.4.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.0",
     "jwt-decode": "^2.2.0",
     "md5": "^2.2.1",
     "react": "^16.8.6",
@@ -35,11 +35,13 @@
     "react-simple-timefield": "^2.0.1",
     "react-slideshow-image": "^1.1.5",
     "react-spinners": "^0.5.3",
+    "react-to-print": "^2.1.1",
     "react-toastr": "^3.0.0",
     "react-toasts": "^3.0.1",
     "really-smooth-scroll": "^2.1.1",
     "redux": "^4.0.1",
-    "styled-components": "^4.2.0"
+    "styled-components": "^4.2.0",
+    "xlsx": "^0.14.2"
   },
   "scripts": {
     "start": "react-scripts start",

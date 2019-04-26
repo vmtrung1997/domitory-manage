@@ -12,6 +12,8 @@ class Checkbox extends Component {
     check: false,
     type: 'checkbox',
     isCheck: () => {},
+    style: {display: 'block'},
+    checkmark: ''
   }
   constructor(props){
     super(props)
@@ -20,6 +22,11 @@ class Checkbox extends Component {
       name: this.props.name || null
     }
   } 
+  componentWillReceiveProps(e){
+    if (e.check !== this.state.check){
+      this.setState({check: e.check});
+    }
+  }
   handleChangeChk = () => {
     var temp = !this.state.check
     this.setState({check: temp})
@@ -38,7 +45,7 @@ class Checkbox extends Component {
             onChange={this.handleChangeChk} 
             disabled={this.props.disabled}
           />
-          <span className="checkmark"></span>
+          <span className={`checkmark ${this.props.checkmark}`}></span>
         </label>
       </div>
     </React.Fragment>

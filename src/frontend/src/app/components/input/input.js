@@ -49,6 +49,8 @@ class Input extends Component {
           data-mask={this.props.mask}
           ref={this.props.onRef}
           onFocus={this.props.onFocus}
+          min={this.props.min}
+          max={this.props.max}
         />
       </React.Fragment>
     );

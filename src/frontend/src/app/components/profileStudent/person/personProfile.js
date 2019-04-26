@@ -49,7 +49,8 @@ class PersonProfile extends React.Component {
       sdtNguoiThan: undefined,
       truong: undefined,
       nganhOptions: [],
-      truongOptions: []
+      truongOptions: [],
+      flag: true
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -65,41 +66,55 @@ class PersonProfile extends React.Component {
 
   updateProfile = async () => {
     var data = {
-      MSSV: this.state.MSSV,
+      id: this.props.userProfile._id,
       CMND: this.state.CMND,
       danToc: this.state.danToc,
       tonGiao: this.state.tonGiao,
       diaChi: this.state.diaChi,
       email: this.state.email,
       gioiTinh: this.state.gioiTinh,
-      hoTen: this.state.hoTen,
-      idPhong: this.state.tenPhong._id,
-      idTaiKhoan: this.state.idTaiKhoan,
+      //idPhong: this.state.tenPhong._id,
       nganhHoc: this.state.nganhHoc.value,
-      ngayHetHan: this.state.ngayHetHan,
+      //ngayHetHan: this.state.ngayHetHan,
       ngaySinh: this.state.ngaySinh,
-      ngayVaoO: this.state.ngayVaoO,
+      //ngayVaoO: this.state.ngayVaoO,
       sdt: this.state.sdt,
       sdtNguoiThan: this.state.sdtNguoiThan,
-      truong: this.state.truong.value
+      truong: this.state.truong.value,
+      flag: false
     };
 
-    this.setState({ isDisable: true });
-    this.setState({ readOnly: true });
-    await refreshToken();
+    console.log(data);
+    //Kiểm tra các giá trị đã nhập
+    if (
+      data.CMND === undefined ||
+      data.danToc === undefined ||
+      data.tonGiao === undefined ||
+      data.diaChi === undefined ||
+      data.email === undefined ||
+      data.gioiTinh === undefined ||
+      data.ngaySinh === undefined ||
+      data.sdt === undefined ||
+      data.sdtNguoiThan === undefined ||
+      data.truong === undefined
+    ) {
+      window.alert("Vui lòng nhập đầy đủ thông tin");
+    } else {
+      this.setState({ isDisable: true });
+      this.setState({ readOnly: true });
+      await refreshToken();
 
-    var secret = localStorage.getItem("secret");
-    secret = JSON.parse(secret);
-    axios.defaults.headers["x-access-token"] = secret.access_token;
-    axios
-      .post(`http://localhost:4000/api/student/update-info`, { data: data })
-      .then(res => {
+      var secret = localStorage.getItem("secret");
+      secret = JSON.parse(secret);
+      axios.defaults.headers["x-access-token"] = secret.access_token;
+      axios.post(`/student/update-first-info`, { data: data }).then(res => {
         if (res.data.res === "success") {
           ToastsStore.success("Cập nhật thành công");
         } else {
           ToastsStore.error("Cập nhật thất bại");
         }
       });
+    }
   };
 
   handleChange(date) {
@@ -120,21 +135,30 @@ class PersonProfile extends React.Component {
       //Lấy thông tin sinh viên
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios
-        .post(`http://localhost:4000/api/student/get-info`, { id: id })
+        .post(`/student/get-info`, { id: id })
         .then(res => {
           if (res) {
             //Lưu trong redux
             this.props.getUserAction(res.data.data);
 
+            //Nếu res chưa có data
             var nganhHoc = {
-              label: res.data.data.nganhHoc.tenNganh,
-              value: res.data.data.nganhHoc._id
+              label: res.data.data.nganhHoc
+                ? res.data.data.nganhHoc.tenNganh
+                : undefined,
+              value: res.data.data.nganhHoc
+                ? res.data.data.nganhHoc._id
+                : undefined
             };
 
             var truong = {
-              label: res.data.data.truong.tenTruong,
-              value: res.data.data.truong._id
+              label: res.data.data.truong
+                ? res.data.data.truong.tenTruong
+                : undefined,
+              value: res.data.data.truong ? res.data.data.truong._id : undefined
             };
+
+            console.log(nganhHoc, truong);
             //Lưu trong state
             this.setState({
               MSSV: res.data.data.MSSV,
@@ -155,7 +179,8 @@ class PersonProfile extends React.Component {
               ngayVaoO: res.data.data.ngayVaoO,
               sdt: res.data.data.sdt,
               sdtNguoiThan: res.data.data.sdtNguoiThan,
-              truong: truong
+              truong: truong,
+              flag: res.data.data.flag
             });
 
             this.setState({
@@ -168,13 +193,17 @@ class PersonProfile extends React.Component {
 
       //Lấy danh sách các ngành học
       axios
-        .get("http://localhost:4000/api/student/get-specialized")
+        .get("/student/get-specialized")
         .then(res => {
           if (res) {
             // res.data.data.forEach(element => {
             //     this.props.getSpecialized(element);
             // });
-            var options = res.data.data.map(obj => {
+
+            var options = res.data.data.map((obj, index) => {
+              if (index === 0) {
+                return { value: -1, label: "Chọn ngành" };
+              }
               return { value: obj._id, label: obj.tenNganh };
             });
             this.setState({ nganhOptions: options });
@@ -185,13 +214,16 @@ class PersonProfile extends React.Component {
 
       //Lấy danh sách các trường
       axios
-        .get("http://localhost:4000/api/student/get-school")
+        .get("/student/get-school")
         .then(res => {
           if (res) {
             // res.data.data.forEach(element => {
             //     this.props.getSchool(element);
             // });
-            var options = res.data.data.map(obj => {
+            var options = res.data.data.map((obj, index) => {
+              if (index === 0) {
+                return { value: -1, label: "Chọn trường" };
+              }
               return { value: obj._id, label: obj.tenTruong };
             });
             this.setState({ truongOptions: options });
@@ -223,9 +255,11 @@ class PersonProfile extends React.Component {
 
   render() {
     if (!this.state.isLoad) {
-      var { state } = this.props;
-
-      var gender = [{ value: "0", label: "Nữ" }, { value: "1", label: "Nam" }];
+      var gender = [
+        { value: "-1", label: "Chọn giới tính" },
+        { value: "0", label: "Nữ" },
+        { value: "1", label: "Nam" }
+      ];
       var majorInput;
       var schoolInput;
       var genderInput;
@@ -240,7 +274,7 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="gioiTinh"
             getValue={this.getValue}
-            disabled
+            disabled={this.state.flag? this.state.readOnly: true}
             value={this.state.gioiTinh}
             options={gender}
             selected={this.genderSelected}
@@ -251,7 +285,7 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="nganhHoc"
             getValue={this.getValue}
-            disabled
+            disabled={this.state.flag? this.state.readOnly:true}
             value={this.state.nganhHoc.value}
             options={this.state.nganhOptions}
             selected={this.nganhSelected}
@@ -262,7 +296,7 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="truong"
             getValue={this.getValue}
-            disabled
+            disabled={this.state.flag?this.state.readOnly:true}
             value={this.state.truong.value}
             options={this.state.truongOptions}
             selected={this.truongSelected}
@@ -273,7 +307,7 @@ class PersonProfile extends React.Component {
           <MyInput
             getValue={this.getValue}
             name="truong"
-            disabled
+            disabled={this.state.readOnly}
             value={this.state.truong.label}
             borderRadius="3px"
           />
@@ -282,7 +316,7 @@ class PersonProfile extends React.Component {
           <MyInput
             getValue={this.getValue}
             name="nganhHoc"
-            disabled
+            disabled={this.state.readOnly}
             value={this.state.nganhHoc.label}
             borderRadius="3px"
           />
@@ -291,7 +325,7 @@ class PersonProfile extends React.Component {
           <MyInput
             getValue={this.getValue}
             name="gioiTinh"
-            disabled
+            disabled={this.state.readOnly}
             value={this.state.gioiTinh === 1 ? "Nam" : "Nữ"}
             borderRadius="3px"
           />
@@ -316,7 +350,7 @@ class PersonProfile extends React.Component {
                 />
                 <Col>
                   <div className="profile-panel-content">
-                  <div>
+                    <div>
                       <Row>
                         <Col>
                           <span className="label-font">Mã số sinh viên</span>
@@ -331,11 +365,13 @@ class PersonProfile extends React.Component {
                         </Col>
 
                         <Col>
-                          <span className="label-font">Chứng minh nhân dân</span>
+                          <span className="label-font">
+                            Chứng minh nhân dân
+                          </span>
                           <MyInput
                             name="CMND"
                             getValue={this.getValue}
-                            disabled
+                            disabled={this.state.flag? this.state.readOnly:true}
                             value={this.state.CMND}
                             className="input-picker"
                             borderRadius="3px"
@@ -362,7 +398,7 @@ class PersonProfile extends React.Component {
                           <MyInput
                             name="ngaySinh"
                             getValue={this.getValue}
-                            disabled={this.state.readOnly}
+                            disabled
                             value={birthdayFormat}
                             className="input-picker"
                             borderRadius="3px"
@@ -392,19 +428,17 @@ class PersonProfile extends React.Component {
                             borderRadius="3px"
                           />
                         </Col>
-                        
                       </Row>
                     </div>
 
                     <div>
                       <Row>
-                   
                         <Col>
                           <span className="label-font"> Dân tộc</span>
                           <MyInput
                             getValue={this.getValue}
                             name="danToc"
-                            disabled
+                            disabled={this.state.flag? this.state.readOnly:true}
                             value={this.state.danToc}
                             borderRadius="3px"
                           />
@@ -415,7 +449,7 @@ class PersonProfile extends React.Component {
                           <MyInput
                             getValue={this.getValue}
                             name="tonGiao"
-                            disabled
+                            disabled={this.state.readOnly}
                             value={this.state.tonGiao}
                             borderRadius="3px"
                           />
@@ -461,20 +495,27 @@ class PersonProfile extends React.Component {
                         </Col>
                       </Row>
                       <Row sm={6}>
-                        <Col  sm={6}>
+                        <Col sm={6}>
                           <span className="label-font">Địa chỉ thường trú</span>
                           <MyInput
                             getValue={this.getValue}
                             name="diaChi"
-                            disabled={this.state.readOnly}
+                            disabled={this.state.flag? this.state.readOnly: true}
                             value={this.state.diaChi}
                           />
                         </Col>
-                        <Col></Col>
+                        <Col />
                       </Row>
                     </div>
-                    <div   style = {{display: 'flex',justifyContent: 'flex-end',marginTop: '5px', marginBottom: '10px'}} >
-                      <Row >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        marginTop: "5px",
+                        marginBottom: "10px"
+                      }}
+                    >
+                      <Row>
                         <div className="profile-panel-button">
                           <Button
                             disabled={!this.state.isDisable}
@@ -507,7 +548,7 @@ class PersonProfile extends React.Component {
 
 var mapStateToProps = state => {
   return {
-    state: state
+    userProfile: state.userProfile
   };
 };
 

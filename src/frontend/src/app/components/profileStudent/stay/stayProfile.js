@@ -10,6 +10,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { bindActionCreators } from "redux";
 import * as UserAction from "../../../actions/studentAction";
+import Button from "./../../button/button";
 import {
   ToastsContainer,
   ToastsContainerPosition,
@@ -17,7 +18,7 @@ import {
 } from "react-toasts";
 import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
-
+import ChooseRoom from './chooseRoom'
 class StayProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -74,7 +75,7 @@ class StayProfile extends React.Component {
     secret = JSON.parse(secret);
     axios.defaults.headers["x-access-token"] = secret.access_token;
     axios
-      .post(`http://localhost:4000/api/student/update-info`, { data: data })
+      .post(`/student/update-info`, { data: data })
       .then(res => {
         if (res.data.res === "success") {
           ToastsStore.success("Cập nhật thành công");
@@ -90,7 +91,11 @@ class StayProfile extends React.Component {
     });
   }
 
-  componentDidMount = async () => {
+  componentDidMount =  () => {
+    this.getStay();
+  };
+
+  getStay = async() =>{
     await refreshToken();
 
     var secret = localStorage.getItem("secret");
@@ -102,19 +107,20 @@ class StayProfile extends React.Component {
       //Lấy thông tin sinh viên
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios
-        .post(`http://localhost:4000/api/student/get-info`, { id: id })
+        .post(`/student/get-info`, { id: id })
         .then(res => {
           if (res) {
             //Lưu trong redux
             this.props.getUserAction(res.data.data);
 
+            //Data mặc định nếu chưa có data trên db
+            var tenPhong = {tenPhong: undefined}
+            //var ngayHetHan = {ngayHetHan:}
             //Lưu trong state
             this.setState({
-              tenPhong: res.data.data.idPhong,
-
-              ngayHetHan: res.data.data.ngayHetHan,
-
-              ngayVaoO: res.data.data.ngayVaoO
+              tenPhong: res.data.data.idPhong || tenPhong,
+              ngayHetHan: res.data.data.ngayHetHan || undefined,
+              ngayVaoO: res.data.data.ngayVaoO || undefined
             });
 
             this.setState({
@@ -126,7 +132,7 @@ class StayProfile extends React.Component {
         });
     } else {
     }
-  };
+  }
 
   render() {
     if (!this.state.isLoad) {
@@ -150,6 +156,7 @@ class StayProfile extends React.Component {
         ) : (
           <div>
             <div className="profile-panel">
+           
               <Row>
                 <ToastsContainer
                   position={ToastsContainerPosition.BOTTOM_CENTER}
@@ -184,8 +191,12 @@ class StayProfile extends React.Component {
                     </div>
                     <div className="profile-panel-content-row">
                       <Row>
-                        <Col>
-                          <span className="label-font">Phòng</span>
+                        <Col sm={6}>
+                          <span className="label-font">
+                            Phòng{" "}
+                            {this.state.tenPhong.tenPhong === undefined?<ChooseRoom isLoad = {this.getStay}></ChooseRoom>:null}
+                          </span>
+
                           <MyInput
                             getValue={this.getValue}
                             name="tenPhong"
@@ -195,7 +206,8 @@ class StayProfile extends React.Component {
                             borderRadius="3px"
                           />
                         </Col>
-                        <Col>
+
+                        <Col sm={6}>
                           <span className="label-font">Trạng thái</span>
                           <MyInput
                             getValue={this.getValue}

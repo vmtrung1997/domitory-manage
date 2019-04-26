@@ -20,9 +20,10 @@ class InfoDormitory extends React.Component{
       floorActive: 0,
       roomActive: {
         soNguoiToiDa: 0,
-        moTa: ''
+        moTa: '',
+        loaiPhong: ''
       },
-      roomTypeOptions: [{ value: 0, label: 'Sinh viên' }, { value: 1, label: 'Chức năng' }],
+      roomTypeOptions: [],
       statusAddRoom: 0,
 
       floorList: [],
@@ -40,7 +41,7 @@ class InfoDormitory extends React.Component{
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getData();
 
   }
@@ -51,6 +52,7 @@ class InfoDormitory extends React.Component{
     //   floorActive: this.state.floorList[0].label
     // })
     this.getRoom();
+    this.getRoomOptions();
   }
 
   getFloor = async() => {
@@ -94,6 +96,22 @@ class InfoDormitory extends React.Component{
     }).catch((err) => {
     })
   };
+
+  getRoomOptions = async() => {
+    await refreshToken();
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.get(`/manager/infoDormitory/getRoomType`, { headers: { 'x-access-token': secret.access_token } }
+    ).then(result => {
+      console.log('==get room type', result)
+      const roomOptions = result.data.map(item => ({value: item._id, label: item.ten}))
+      this.setState({
+        roomTypeOptions: roomOptions,
+        roomTypeAdd: roomOptions[0].value
+      })
+    }).catch(err => {
+      console.log('==get room type err', err)
+    })
+  }
 
   handleSelectFloor = async(floor) => {
     await this.setState({
@@ -150,15 +168,15 @@ class InfoDormitory extends React.Component{
   };
 
   roomTypeUpdateSelected = value => {
-    this.setState({ statusUpdateRoom: value })
+    this.setState({ roomActive: {...this.state.roomActive, loaiPhong: value} })
   };
 
   roomTypeAddSelected = value => {
-    this.setState({ statusAddRoom: value })
+    this.setState({ roomTypeAdd: value })
   };
 
   handleSubmitAddRoom = async() => {
-    const { roomNameAdd, limitPersonAdd, descriptionAdd, statusAddRoom, floorActive } = this.state;
+    const { roomNameAdd, limitPersonAdd, descriptionAdd, statusAddRoom, floorActive, roomTypeAdd, electicalNumAdd, waterNumAdd } = this.state;
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.post(`/manager/infoDormitory/addRoom`, {
@@ -167,6 +185,9 @@ class InfoDormitory extends React.Component{
       moTa: descriptionAdd,
       trangThai: statusAddRoom,
       lau: floorActive,
+      loaiPhong: roomTypeAdd,
+      soDien: parseInt(electicalNumAdd),
+      soNuoc: parseInt(waterNumAdd),
       },{ headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
       ToastsStore.success("Thêm phòng thành công!");
@@ -179,8 +200,9 @@ class InfoDormitory extends React.Component{
   };
 
   handleShowDetail = (room) => {
+    console.log('==handleShowDetail', room)
     this.setState({
-      roomActive: room,
+      roomActive: {...room, loaiPhong: room.loaiPhong._id},
       limitPersonDetail: room.soNguoiToiDa,
       roomNameDetail: room.tenPhong,
       statusDetail: 0,
@@ -206,14 +228,15 @@ class InfoDormitory extends React.Component{
   };
 
   handleSubmitUpdateStudent = async() => {
-    const { roomActive: { _id, soNguoiToiDa, moTa} } = this.state;
+    const { roomActive: { _id, soNguoiToiDa, moTa, loaiPhong} } = this.state;
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.post(`/manager/infoDormitory/updateRoom/`
       ,{
         id: _id,
         soNguoiToiDa: parseInt(soNguoiToiDa),
-        moTa: moTa
+        moTa: moTa,
+        loaiPhong: loaiPhong
       },{ headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
       ToastsStore.success(result.data.msg);
@@ -319,6 +342,7 @@ class InfoDormitory extends React.Component{
 
 
   render(){
+    console.log('==render', this.state)
     const {
       floorActive,
       roomList,
@@ -357,6 +381,7 @@ class InfoDormitory extends React.Component{
                 </Col>
                 <Col md={8}>
                   <Select
+                    value={this.state.roomActive.loaiPhong}
                     options={roomTypeOptions}
                     selected={this.roomTypeUpdateSelected}
                   />
@@ -414,9 +439,24 @@ class InfoDormitory extends React.Component{
                 </Col>
                 <Col md={8}>
                   <Select
+                    value={this.state.roomTypeAdd}
                     options={roomTypeOptions}
                     selected={this.roomTypeAddSelected}
                   />
+                </Col>
+
+                <Col md={4}>
+                  Số điện hiện tại:
+                </Col>
+                <Col md={8}>
+                  <Input getValue={this.onChange} name={'electicalNumAdd'} />
+                </Col>
+
+                <Col md={4}>
+                  Số nước hiện tại:
+                </Col>
+                <Col md={8}>
+                  <Input getValue={this.onChange} name={'waterNumAdd'} />
                 </Col>
 
                 <Col md={4}>
@@ -540,7 +580,7 @@ class InfoDormitory extends React.Component{
                                     onClick={()=>this.handleShowDetail(room.data)}
                                   >
                                     <i className="fas fa-home"/>
-                                    {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                                    {room.data.tenPhong} ({room.data.soNguoi}/{room.data.soNguoiToiDa})
                                   </Button>
                                 </div>
                               )
@@ -560,7 +600,7 @@ class InfoDormitory extends React.Component{
                                     onClick={()=>this.handleShowDetail(room.data)}
                                   >
                                     <i className="fas fa-home"/>
-                                    {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                                    {room.data.tenPhong} ({room.data.soNguoi}/{room.data.soNguoiToiDa})
                                   </Button>
                                 </div>
                               )
@@ -580,7 +620,7 @@ class InfoDormitory extends React.Component{
                                     onClick={()=>this.handleShowDetail(room.data)}
                                   >
                                     <i className="fas fa-home"/>
-                                    {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                                    {room.data.tenPhong} ({room.data.soNguoi}/{room.data.soNguoiToiDa})
                                   </Button>
                                 </div>
                               )
@@ -604,7 +644,7 @@ class InfoDormitory extends React.Component{
                                     onClick={()=>this.handleShowDetail(room.data)}
                                   >
                                     <i className="fas fa-home"/>
-                                    {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                                    {room.data.tenPhong} ({room.data.soNguoi}/{room.data.soNguoiToiDa})
                                   </Button>
                                 </div>
                               )
@@ -628,7 +668,7 @@ class InfoDormitory extends React.Component{
                                     onClick={()=>this.handleShowDetail(room.data)}
                                   >
                                     <i className="fas fa-home"/>
-                                    {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                                    {room.data.tenPhong} ({room.data.soNguoi}/{room.data.soNguoiToiDa})
                                   </Button>
                                 </div>
                               )
@@ -652,7 +692,7 @@ class InfoDormitory extends React.Component{
                                     onClick={()=>this.handleShowDetail(room.data)}
                                   >
                                     <i className="fas fa-home"/>
-                                    {room.data.tenPhong} ({room.data.soNguoiToiDa-room.data.soNguoi})
+                                    {room.data.tenPhong} ({room.data.soNguoi}/{room.data.soNguoiToiDa})
                                   </Button>
                                 </div>
                               )
