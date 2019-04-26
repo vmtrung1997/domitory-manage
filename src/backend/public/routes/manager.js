@@ -9,6 +9,8 @@ var accountController = require('./../apiController/accountController');
 var historyController = require('../apiController/historyController');
 let repo = require('../repos/phongRepo');
 var universityController = require('../apiController/universityController');
+var studentController = require('../apiController/studentController')
+
 
 // Expense
 router.get('/expense', expenseController.quan_ly_dien_nuoc);
@@ -75,9 +77,12 @@ router.post('/infoStudent/update', infoStudent.updateInfo);
 
 router.post('/infoStudent/importFile', infoStudent.importFile);
 
+router.post('/infoStudent/getActivities', studentController.getListActivities);
+
 router.get('/getElement/:name', repo.get_element);
 
 router.get('/getRoomHistory/:id', infoStudent.getRoomHistory);
+
 
 //Info dormitory
 router.get('/infoDormitory/getRoom/:floor', infoDormitory.getRoom);
@@ -87,6 +92,9 @@ router.post('/infoDormitory/addRoom', infoDormitory.addRoom);
 router.post('/infoDormitory/updateRoom', infoDormitory.updateRoom);
 
 router.get('/infoDormitory/delRoom/:id', infoDormitory.delRoom);
+
+router.get('/infoDormitory/getRoomType', infoDormitory.getRoomType);
+
 
 //News
 router.post('/news/add',newsController.addNews);

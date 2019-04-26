@@ -33,9 +33,10 @@ class InfoStudentDetail extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getElement('room');
     this.getElement('school');
+    this.getActivities('5cbad213fb6fc041ab948375');
     const { info } = this.props.location.state;
     if(info.truong){
       this.setState({
@@ -97,6 +98,22 @@ class InfoStudentDetail extends Component {
           break
       }
     }).catch(err => {
+    })
+  }
+
+  getActivities = async(id) => {
+    console.log('==acti 1111');
+
+    await refreshToken();
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.post(`/manager/infoStudent/getActivities`, {
+      id: id
+    },{
+      headers: { 'x-access-token': secret.access_token }
+    }).then(result => {
+      console.log('==acti ', result);
+    }).catch(err => {
+      console.log('==acti err', err)
     })
   }
 
@@ -248,7 +265,7 @@ class InfoStudentDetail extends Component {
       sdtNguoiThan,
       gioiTinh,
       idPhong,
-      idTaiKhoan: {username},
+      idTaiKhoan,
       diemHD,
       img,
 
@@ -381,7 +398,7 @@ class InfoStudentDetail extends Component {
                           Username:
                         </Col>
                         <Col md={4}>
-                          <Input value={username} disabled />
+                          <Input value={idTaiKhoan && idTaiKhoan.username} disabled />
                         </Col>
                         <Col md={2}>
                           Mã thẻ:
