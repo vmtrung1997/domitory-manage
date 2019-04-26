@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal, Row, Col } from 'react-bootstrap'
-import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import { ToastsStore } from 'react-toasts';
 
 import Button from '../../../components/button/button'
 import { getData, reset_room, info_room} from './expensesAction'
@@ -68,10 +68,10 @@ class Example extends React.Component {
     var submit = {
       idPhong: this.state.idPhong,
       dienCheck: this.state.dienCheck,
-      dienCu: this.state.dienCu,
+      //dienCu: this.state.dienCu,
       dienMoi: this.state.dienMoi,
       nuocCheck: this.state.nuocCheck,
-      nuocCu: this.state.nuocCu,
+      //nuocCu: this.state.nuocCu,
       nuocMoi: this.state.nuocMoi
     }
     if (!submit.dienCheck && !submit.nuocCheck)
@@ -100,13 +100,12 @@ class Example extends React.Component {
   render() {
     return (
       <>
-        <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore} />
         <Button title={'Reset'} onClick={this.handleShow}>
         <i className="fas fa-window-restore"></i>
         </Button>
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <Modal.Header closeButton>
-            <Modal.Title>Reset</Modal.Title>
+            <Modal.Title>Thông số ban đầu</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           <Row>
@@ -122,10 +121,10 @@ class Example extends React.Component {
                   <Checkbox label={'Reset số điện'} check={this.state.dienCheck} isCheck={val => this.setState({dienCheck: val.chk})}/>
                   </Col>
               </Col>
-              <Col>
+              {/* <Col>
                 Số điện đồng hồ cũ
                 <Input type='number' value={this.state.dienCu} name='dienCu' disabled={!this.state.dienCheck} getValue={this.getValue}/>
-              </Col>
+              </Col> */}
               <Col>
                 Số điện đồng hồ mới
                 <Input type='number' value={this.state.dienMoi} name='dienMoi' disabled={!this.state.dienCheck} getValue={this.getValue}/>
@@ -142,10 +141,10 @@ class Example extends React.Component {
                 <Checkbox label={'Reset số nước'} check={this.state.nuocCheck} isCheck={val => this.setState({nuocCheck: val.chk})}/>
               </Col>
               </Col>
-              <Col>
+              {/* <Col>
                 Số nước đồng hồ cũ
                 <Input type='number' value={this.state.nuocCu} name='nuocCu' disabled={!this.state.nuocCheck} getValue={this.getValue}/>
-              </Col>
+              </Col> */}
               <Col>
                 Số nước đồng hồ mới
                 <Input  type='number' value={this.state.nuocMoi} name='nuocMoi' disabled={!this.state.nuocCheck} getValue={this.getValue}/>
@@ -160,12 +159,9 @@ class Example extends React.Component {
             <Button variant="default" color="default" onClick={this.handleClose}>
               Đóng
             </Button>
-            {!this.state.edit && <Button variant="default" color="warning" onClick={this.handleEdit}>
-              Chỉnh sửa
-            </Button>}
-            {this.state.edit && <Button variant="default" color="success" onClick={this.handleSubmit}>
+            <Button variant="default" color="success" onClick={this.handleSubmit}>
               Lưu
-            </Button>}
+            </Button>
           </Modal.Footer>
         </Modal>
       </>

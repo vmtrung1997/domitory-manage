@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Row, Col, Tabs, Tab, Table} from 'react-bootstrap';
+import { Row, Col, Tabs, Tab, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from "react-toasts";
 import axios from "axios";
@@ -11,7 +11,7 @@ import './infoStudentDetail.css';
 import refreshToken from "../../../../utils/refresh_token";
 import Select from "../../../components/selectOption/select";
 import SearchSelect from '../../../components/selectOption/select'
-import {imageFile, defaultStudentImg} from '../../../function/imageFunction'
+import { imageFile, defaultStudentImg } from '../../../function/imageFunction'
 import DatePicker from "react-datepicker/es/index";
 import './infoStudentFile.css';
 import { getSchools, getMajor } from './../university/universityAction'
@@ -71,7 +71,7 @@ class InfoStudentDetail extends Component {
     })
   }
 
-  getElement = async(name) => {
+  getElement = async (name) => {
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getElement/` + name, {
@@ -80,7 +80,7 @@ class InfoStudentDetail extends Component {
 
       switch (name) {
         case 'room':
-          const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
+          const roomOptions = result.data.map(room => ({ value: room._id, label: room.tenPhong }));
           this.setState({
             roomOptions: roomOptions
           })
@@ -157,7 +157,7 @@ class InfoStudentDetail extends Component {
   }
 
   handleSelectGender = selectedOption => {
-    this.setState({ info: {...this.state.info, gioiTinh: parseInt(selectedOption)} })
+    this.setState({ info: { ...this.state.info, gioiTinh: parseInt(selectedOption) } })
   };
 
   getValue = (name, val) => {
@@ -225,27 +225,38 @@ class InfoStudentDetail extends Component {
   };
 
   fixdata = (data) => {
-		var o = "", l = 0, w = 10240;
-		for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
-		o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
-		return o;
-	}
+    var o = "", l = 0, w = 10240;
+    for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+    o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+    return o;
+  }
   onUpload = () => {
     var fileReader = new FileReader();
-    var self = this;
+    if (!this.uploadFile.files.length)
+      return;
     fileReader.readAsDataURL(this.uploadFile.files[0]);
     fileReader.onload = (e) => {
       var data = e.target.result;
       var testImg = new Image();
       testImg.src = data;
-      testImg.onload = (event) => {
-        console.log(e.target);
-        this.setState({info: {...this.state.info, img: e.target.result}})
+      testImg.onload = () => {
+        console.log(e.target.result);
+        var data = new Buffer(e.target.result.split(",")[1], "base64");
+        console.log(data);
+        this.setState({
+          info: {
+            ...this.state.info,
+            img: {
+              contentType: e.target.result.split(",")[0],
+              data: {data: data, type: 'Buffer'}
+            }
+          }
+        })
       }
       testImg.onerror = () => {
         alert('Lỗi ảnh')
       }
-		}
+    }
   }
   render() {
     console.log('==state render', this.state);
@@ -270,7 +281,7 @@ class InfoStudentDetail extends Component {
       img,
 
     } = info;
-    var imgFile = typeof img === 'string'?img: (imageFile(img)?imageFile(img):defaultStudentImg)
+    var imgFile = typeof img === 'string' ? img : (imageFile(img) ? imageFile(img) : defaultStudentImg)
 
     return (
       <div>
@@ -296,7 +307,7 @@ class InfoStudentDetail extends Component {
                     name="file-1[]"
                     id="file-1"
                     className="inputfile inputfile-1"
-                    ref={file => file?this.uploadFile = file:{files:['']}}
+                    ref={file => file ? this.uploadFile = file : { files: [''] }}
                     onChange={this.onUpload} />
                   <label htmlFor="file-1">
                     <span>Tải ảnh</span>
@@ -370,7 +381,7 @@ class InfoStudentDetail extends Component {
                           Dân tộc:
                         </Col>
                         <Col md={4}>
-                          <Input value={danToc}  getValue={this.onChange} name={'danToc'} />
+                          <Input value={danToc} getValue={this.onChange} name={'danToc'} />
                         </Col>
                         <Col md={2}>
                           Sđt người thân:
@@ -413,7 +424,7 @@ class InfoStudentDetail extends Component {
                           Ngày vào:
                         </Col>
                         <Col md={4}>
-                          <Input value={ngayVaoO} getValue={this.onChange} name={'ngayVaoO'} disabled/>
+                          <Input value={ngayVaoO} getValue={this.onChange} name={'ngayVaoO'} disabled />
                         </Col>
                         <Col md={2}>
                           Ngày hết hạn:
@@ -433,7 +444,7 @@ class InfoStudentDetail extends Component {
                           Điểm h.động:
                         </Col>
                         <Col md={4}>
-                          <Input value={diemHD ? diemHD : '0'} type={'number'} getValue={this.onChangeNumber} name={'diemHD'}/>
+                          <Input value={diemHD ? diemHD : '0'} type={'number'} getValue={this.onChangeNumber} name={'diemHD'} />
                         </Col>
                         <Col md={2}>
                           Phòng:
@@ -491,36 +502,36 @@ class InfoStudentDetail extends Component {
                     <div className={'id-tab_frame'}>
                       <Table responsive bordered size="sm" hover>
                         <thead>
-                        <tr>
-                          <th>STT</th>
-                          <th>Thời gian</th>
-                          <th>Tên hoạt động</th>
-                          <th>Điểm</th>
-                          <th>Trạng thái</th>
-                        </tr>
+                          <tr>
+                            <th>STT</th>
+                            <th>Thời gian</th>
+                            <th>Tên hoạt động</th>
+                            <th>Điểm</th>
+                            <th>Trạng thái</th>
+                          </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                              <td>1</td>
-                              <td>9:00 08/03/2019</td>
-                              <td>Mừng ngày phụ nữ Việt Nam</td>
-                              <td>10/10</td>
-                              <td>Chưa diễn ra</td>
-                            </tr>
-                            <tr>
-                              <td>2</td>
-                              <td>9:00 08/03/2019</td>
-                              <td>Mừng ngày phụ nữ Việt Nam</td>
-                              <td>10/10</td>
-                              <td>Đã tham gia</td>
-                            </tr>
-                            <tr>
-                              <td>2</td>
-                              <td>9:00 08/03/2019</td>
-                              <td>Mừng ngày phụ nữ Việt Nam</td>
-                              <td>10/10</td>
-                              <td>Không tham gia</td>
-                            </tr>
+                          <tr>
+                            <td>1</td>
+                            <td>9:00 08/03/2019</td>
+                            <td>Mừng ngày phụ nữ Việt Nam</td>
+                            <td>10/10</td>
+                            <td>Chưa diễn ra</td>
+                          </tr>
+                          <tr>
+                            <td>2</td>
+                            <td>9:00 08/03/2019</td>
+                            <td>Mừng ngày phụ nữ Việt Nam</td>
+                            <td>10/10</td>
+                            <td>Đã tham gia</td>
+                          </tr>
+                          <tr>
+                            <td>2</td>
+                            <td>9:00 08/03/2019</td>
+                            <td>Mừng ngày phụ nữ Việt Nam</td>
+                            <td>10/10</td>
+                            <td>Không tham gia</td>
+                          </tr>
                         </tbody>
                       </Table>
 

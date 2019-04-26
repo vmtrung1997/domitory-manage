@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal, Table, Tab, Tabs } from 'react-bootstrap'
-import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import { ToastsStore } from 'react-toasts';
 
 import Button from '../../../components/button/button'
 import { get_parameter, config_expense } from './expensesAction'
@@ -102,7 +102,6 @@ class Example extends React.Component {
     }
     return (
       <>
-        <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore} />
         <Button title={'Cài đặt'} onClick={this.handleShow}>
           <i className="fas fa-cogs"></i>
         </Button>

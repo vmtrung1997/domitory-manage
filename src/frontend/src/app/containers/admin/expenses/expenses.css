@@ -45,3 +45,13 @@
 .warning-text{
     color: #f7a54a;
 }
+.modal-90w{
+    width: 85%;
+    max-width: none!important;
+}
+.vertical-middle{
+    vertical-align : middle!important;
+}
+.checkmark-expense{
+    top:-0.5em;
+}

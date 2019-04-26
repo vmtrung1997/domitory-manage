@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal, Table, Row, Col } from 'react-bootstrap'
-import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
+import { ToastsStore } from 'react-toasts';
 import Select from '../../../components/selectOption/select'
 import Button from '../../../components/button/button'
 import { get_room_type, get_detail_room_type, update_detail_room_type } from './expensesAction'
@@ -201,7 +201,6 @@ class Example extends React.Component {
     var { dienTable, nuocTable } = this.state;
     return (
       <>
-        <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore} />
         <Button title={'Cài đặt'} onClick={this.handleShow}>
           <i className="fas fa-cogs"></i>
         </Button>

@@ -1,7 +1,6 @@
 
 /* The container */
 .container-checkbox {
-    display: block;
     position: relative;
     cursor: pointer;
     padding-left: 25px;
