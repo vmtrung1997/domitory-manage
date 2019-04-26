@@ -700,13 +700,17 @@ exports.get_info_room = async (req, res) => {
 	var detail = {};
 	await Phong.findOne({ _id: info.idPhong }).populate('loaiPhong').then(phong => {
 		detail.loaiPhong = phong.loaiPhong
-	})
-	await ChiPhiHienTai.findOne({ idPhong: info.idPhong }).then(chiphi => {
-		if (chiphi)
+		ChiPhiHienTai.findOne({ idPhong: info.idPhong }).then(chiphi => {
+			if (chiphi) {
 			detail.chiPhi = chiphi
+		}
+		else{
+			detail.chiPhi = {soDien: 0, soNuoc: 0}
+		}
+		res.json({
+			data: detail
+		})
 	})
-	res.json({
-		data: detail
 	})
 }
 
@@ -735,21 +739,20 @@ exports.reset_room = (req, res) => {
 		})
 	}
 }
-function getDetailTypeRoom(value){
+function getDetailTypeRoom(value) {
 	return new Promise(resolve => {
 		if (value.idPhong.loaiPhong.dien || value.idPhong.loaiPhong.nuoc) {
 			ThongSoLoaiPhong.find({ idLoaiPhong: value.idPhong.loaiPhong._id }).then(arr => {
-				resolve({detail: value, thongSo: arr})
+				resolve({ detail: value, thongSo: arr })
 			}).catch(err => console.log(err))
-		} else 
-			{resolve(value)}
+		} else { resolve(value) }
 	})
 }
 exports.get_data_print = (req, res) => {
 	var { data, type } = req.body
 	var searchObj = {};
 	if (type === 'table') {
-		if (data.month !== 0) 
+		if (data.month !== 0)
 			searchObj.thang = search.month;
 		if (data.year !== 0)
 			searchObj.nam = search.year
@@ -759,9 +762,9 @@ exports.get_data_print = (req, res) => {
 			searchObj.idPhong = search.room.value
 	} else {
 		if (data.length > 0)
-			searchObj._id = {$in: data}
+			searchObj._id = { $in: data }
 	}
-	if (Object.keys(searchObj).length){
+	if (Object.keys(searchObj).length) {
 		ChiPhiPhong.find(searchObj).populate({
 			path: 'idPhong',
 			select: 'loaiPhong tenPhong soNguoi',
@@ -788,6 +791,6 @@ exports.get_data_print = (req, res) => {
 			})
 		})
 	} else {
-		res.json({rs: 'fail', msg: 'Không có dữ liệu chọn'})
+		res.json({ rs: 'fail', msg: 'Không có dữ liệu chọn' })
 	}
 }
