@@ -1,5 +1,7 @@
 const Room = require('../models/Phong');
-require('../models/LoaiPhong');
+const RoomType = require('../models/LoaiPhong');
+const RoomParams = require('../models/ChiSoHienTai');
+
 
 exports.getRoom = async(req, res) => {
   const floor = req.params.floor;
@@ -14,21 +16,6 @@ exports.getRoom = async(req, res) => {
     console.log(kittens[0]) // Zoopa
     res.status(200).json(kittens)
   })
-  //   .then(result => {
-  //   roomList.normal = result;
-  //   console.log('====', roomList)
-  // }).catch(err => {
-  //   res.status(400)
-  // });
-
-  // await Room.find({lau: floor, isHoDan: -1}).then(result => {
-  //   roomList.service = result;
-  // }).catch(err => {
-  //   res.status(400)
-  // })
-  // console.log('11111', roomList)
-  //
-  // res.status(200).json(roomList)
 };
 
 exports.addRoom = (req, res) => {
@@ -45,15 +32,30 @@ exports.addRoom = (req, res) => {
     lau: req.body.lau,
     soNguoi: 0,
     soNguoiToiDa: req.body.soNguoiToiDa,
-    trangThai: req.body.trangThai ? 'Sử dụng' : 'Chưa sử dụng',
-    isHoDan: 0,
-    moTa: req.body.moTa
+    loaiPhong: req.body.loaiPhong
   };
 
   let room = new Room(newRoom);
   room.save().then(result => {
     console.log('==success add room', result);
-    res.status(200).json({msg: 'Tạo phòng thành công'})
+    const today = new Date ()
+    const chiSoPhong = {
+      idPhong: result._id,
+      thang: today.getMonth(),
+      nam: today.getFullYear(),
+      soDien: req.body.soDien,
+      soNuoc: req.body.soNuoc,
+    };
+    console.log('==success add room222', chiSoPhong);
+
+    let roomParams = new RoomParams(chiSoPhong);
+    roomParams.save().then(result => {
+      console.log('==success add chiso', result);
+
+      res.status(200).json({msg: 'Tạo phòng thành công'})
+    }).catch(err => {
+      res.status(400).json({msg: 'Tạo phòng không thành công'})
+    })
   }).catch(err => {
     res.status(400).json({msg: 'Tạo phòng không thành công'})
   })
@@ -65,12 +67,16 @@ exports.delRoom  = (req, res) => {
     if(result.soNguoi !== 0)
       res.status(409).json({msg: "Phòng này đang có người sử dụng không thể xóa!!"})
     result.remove().then(result => {
-      res.status(200).json(result)
+      RoomParams.findOneAndRemove({idPhong: result._id}).then(result => {
+        res.status(200).json({msg: 'Xóa phòng thành công'})
+      }).catch(err =>{
+        res.status(401).json({msg: 'Xóa không thành công'})
+      })
     }).catch(err =>{
-      res.status(401).json({msg: 'Xóa không thành công1'})
+      res.status(401).json({msg: 'Xóa không thành công'})
     })
   }).catch(err => {
-    res.status(400).json({msg: 'Xóa không thành công2'})
+    res.status(400).json({msg: 'Xóa không thành công'})
   })
 };
 
@@ -82,9 +88,18 @@ exports.updateRoom = (req, res) => {
         res.status(409).json({msg: 'Không thể cập nhật vì số người đang ở lớn hơn số người tối đa bạn muốn cập nhật!'})
       result.soNguoiToiDa = params.soNguoiToiDa ? params.soNguoiToiDa : result.soNguoiToiDa;
       result.moTa = params.moTa ? params.moTa : result.moTa;
+      result.loaiPhong = params.loaiPhong ? params.loaiPhong : result.loaiPhong;
       result.save()
       res.status(200).json({msg: 'Cập nhật thành công!!'})
     }).catch(err =>
       res.status(400).json({msg: 'Có lỗi xảy ra, vui lòng thử lại!!'})
   )
 };
+
+exports.getRoomType = (req, res) => {
+  RoomType.find().then(result => {
+    res.status(200).json(result)
+  }).catch(err => {
+    res.status(400).json({msg: 'Lấy danh sách loại phòng không thành công!'})
+  })
+}
