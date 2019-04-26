@@ -23,7 +23,6 @@ var profileSchema = new Schema({
     danToc: String,
     img:  { data: Buffer, contentType: String },
     CMND: String,
-    diemHD: Number,
     expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
 });
 

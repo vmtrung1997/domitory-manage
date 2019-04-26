@@ -40,8 +40,7 @@ class ActivityRollCall extends Component{
         },
         data:{
           idHD: this.props.data._id,
-          idThe: this.state.idThe,
-          point: this.props.data.diem
+          idThe: this.state.idThe
         }
       })
       .catch(err => {

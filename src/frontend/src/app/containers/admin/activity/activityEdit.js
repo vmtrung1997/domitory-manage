@@ -101,6 +101,7 @@ class ActivityEdit extends Component{
                     <span> Thời gian bắt đầu</span>
                     <div style={{display: 'flex', justifyContent: 'space-around'}}>
                       <TimeField
+                        style={{marginRight: '10px'}}
                         value={this.state.time}
                         onChange={(value) => {this.getValue('time', value)}}
                         input={<input/>}
@@ -117,6 +118,7 @@ class ActivityEdit extends Component{
                     <span> Thời gian kết thúc</span>
                     <div style={{display: 'flex', justifyContent: 'space-around'}}>
                       <TimeField
+                        style={{marginRight: '10px'}}
                         value={this.state.timeEnd}
                         onChange={(value) => {this.getValue('timeEnd', value)}}
                         input={<input/>}

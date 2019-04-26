@@ -31,12 +31,6 @@ class Account extends Component{
 		this.getData()
 	}
 
-	getValue = (state, value) => {
-		this.setState({ 
-			[state]: value, 
-		})
-	}
-
 	getData = async () => {
 		this.setState({ loading: true})		
 		await refreshToken()
@@ -63,27 +57,12 @@ class Account extends Component{
 		})
 	}
 
-	handleShow = (nameModal) => {
-		this.setState({ [nameModal]: true })
+	changeState = (key, value) => {
+		this.setState({ [key]: value })
 	}
 
-	handleClose = (nameModal) => {
-		this.setState({ [nameModal]: false })
-	}
-
-	clickPage = (page) => {
-		this.setState({ 
-			page: page,
-		})
-		this.getData()
-	}
-
-	handleSave = () => {
-		this.getData()
-	}
-	
-	handleSearch = () => {
-		this.setState({ page: 1 })
+	handleSearch = (page) => {
+		this.setState({ page: page })
 		this.getData()
 	}
 
@@ -103,7 +82,11 @@ class Account extends Component{
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
-				<AccountAdd show={this.state.showAdd} handleClose={() => this.handleClose('showAdd')} handleSave={this.handleSave}/>
+				<AccountAdd 
+					show={this.state.showAdd}
+					handleClose={() => this.changeState('showAdd', false)}
+					handleSave={this.getData}
+				/>
 				<Title> Hoạt động sinh viên </Title>
 
         		<div className={'content-body full'}>
@@ -114,7 +97,7 @@ class Account extends Component{
 								<Input 
 									placeholder={'Tìm kiếm'} 
 									getValue={ (obj) => this.getValue('query', obj.value)}
-									onKeyPress={ (e) => {if(e.key === 'Enter') this.handleSearch()}}
+									onKeyPress={ e => {if(e.key === 'Enter') this.handleSearch(1)}}
 								/>
 							</Col>
 							<Col md={3} xs={12}>
@@ -127,18 +110,33 @@ class Account extends Component{
 							</Col>
               				<Col md={2} xs={12}>
               					<div>&nbsp;</div>
-              					<Button title={'Tìm kiếm'} style={{padding: '7px 15px'}} onClick={this.handleSearch}><i className="fas fa-search" /></Button>
+              					<Button 
+              						title={'Tìm kiếm'}
+              						style={{padding: '7px 15px'}}
+              						onClick={ e => this.handleSearch(1)}
+              					>
+              						<i className="fas fa-search" />
+              					</Button>
               				</Col>
               			</Row>		
 						<div className='bts-header'>
-							<Button title={'Thêm mới'} color={'warning'} onClick={() => this.handleShow('showAdd')} style={{padding: '5px 20px'}}> 
+							<Button 
+								title={'Thêm mới'}
+								color={'warning'}
+								onClick={ e => this.changeState('showAdd', true)}
+								style={{padding: '5px 20px'}}
+							> 
 								<i className="fas fa-plus"/>
 							</Button>
 						</div>
 					</div>
 					<AccountTable data={this.state.data} refresh={this.getData}/>
 					<div className={'is-pagination'}>
-						<MyPagination page={this.state.page} totalPages={this.state.totalPages} clickPage={this.clickPage}/>
+						<MyPagination 
+							page={this.state.page} 
+							totalPages={this.state.totalPages} 
+							clickPage={this.handleSearch}
+						/>
 	            	</div>
 				</div>
 

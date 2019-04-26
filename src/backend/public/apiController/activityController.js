@@ -2,7 +2,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const Activity = require('./../models/HoatDong');
 const resultActivity = require('./../models/KetQuaHD');
 const Profile = require('./../models/Profile');
-const phong = require('./../models/Phong.js');
+const phong = require('./../models/Phong');
 const writeXlsx = require('../repos/xlsxRepo')
 
 exports.get_list_activity = (req, res) => {
@@ -12,13 +12,11 @@ exports.get_list_activity = (req, res) => {
 		},
 		page: req.query.page
 	}
-	var last = {}
 
 	var query = {}
 	if(req.body.search){ 
 		query = {
-			//ten: { $regex: '.*' + req.body.search + '.*', $options: 'i' },
-			$text: { $search: req.body.search },
+			$text: { $search: req.body.search }
 		}
 	}
 	if(parseInt(req.body.month) !== 0){
@@ -33,21 +31,20 @@ exports.get_list_activity = (req, res) => {
 	} 
 	                                            
 	Activity.paginate( {} , { sort: {ngayBD : 1}})
-	.then( result => {
-		if(result.docs){
-			last = result.docs[0]
+	.then( last => {
+		if(last.docs){
+			Activity.paginate( query , option).then( result => {
+				console.log('==get_activity: success')
+				res.json({
+					rs: result,
+					last: last.docs[0]
+				})
+			})
 		}
-	})
-	.then(Activity.paginate( query , option).then( result => {
-		console.log('==get_activity: success')
-		res.json({
-			rs: result,
-			last: last
-		})
 	}).catch(err => {
 		console.log('==get_activity: ',err)
 		res.status(500)
-	}))
+	})
 };
 
 exports.detail_activity = (req, res) => {
@@ -64,8 +61,8 @@ exports.post_activity = (req, res) => {
 	var tmp = {
 		ten: req.body.name,
     	diaDiem: req.body.location,
-    	ngayBD: req.body.date,
-    	ngayKT: req.body.dateEnd,
+    	ngayBD: new Date(req.body.date),
+    	ngayKT: new Date(req.body.dateEnd),
     	thang: new Date(req.body.date).getMonth() + 1,
     	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
@@ -76,14 +73,8 @@ exports.post_activity = (req, res) => {
 	var timeFirst = req.body.time.split(':')
 	var timeFinal = req.body.timeEnd.split(':')
 
-	var dateFirst = new Date(tmp.ngayBD)
-	var dateFinal = new Date(tmp.ngayKT)
-
-	dateFirst.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
-	dateFinal.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
-
-	tmp.ngayBD = dateFirst
-	tmp.ngayKT = dateFinal
+	tmp.ngayBD.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
+	tmp.ngayKT.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
 	
 	var act = new Activity(tmp)
 	act.save().then(() => {
@@ -152,115 +143,116 @@ exports.rollcall_activity = async (req, res) => {
 	var data = {
 		hd: req.body.idHD,
 		the: req.body.idThe,
-		diem: req.body.point,
 		sv: ''
 	}
 
-	await Profile.findOne({ maThe: data.the}, (err, val) => {
-		if(err){
-			console.log('==rollcall_activ:', err)
-			res.status(500)
-		}
-		if(!val){
-			res.status(200).json({rs: 'not found student'})
-		}
-		data.sv = val
+	var SV = await Profile.findOne({ maThe: data.the}, '_id').catch(err => {
+		console.log('==rollcall_activ:', err)
+		res.status(500)
+		return true
 	})
-
+	
+	if(!SV){
+		res.status(200).json({rs: 'not found student'})
+		return true
+	} else {
+		data.sv = SV._id
+	}
+	
 	if(data.sv){
-		resultActivity.findOne({ idHD: data.hd, idSV: data.sv._id }, (err,val) => {
+		resultActivity.findOne({ idHD: data.hd, idSV: data.sv }, (err,val) => {
 			if(err){
 				console.log('==rollcall_activity:', err)
 				res.status(500)
+				return true
 			}
 			if(!val) {
 				var rs = new resultActivity({
 					idHD: data.hd,
-					idSV: data.sv._id,
+					idSV: data.sv,
 					isTG: true
 				})
 				rs.save()
 			} else {
-				if(val.isTG === true){
-					res.status(200).json({ rs: 'ok'})
-					return true
-				}
 				val.isTG = true
 				val.save()
 			}
-			data.sv.diemHD = (data.sv.diemHD || 0) + data.diem
-			data.sv.save()
-			res.json({ rs: 'ok'})
+			res.status(200).json({ rs: 'ok'})
 			console.log('==rollcall_activity: success')
 		})
 	}
 };
 
-exports.search_activity = (req, res) => {
-	var query = {}
-	if(req.body.search){ 
-		query = { 
-			$text: { $search: req.body.search },
-		}
-	} else {
-		res.status(200).json({
-			rs: [],
-		})
-	}
-
-	Activity.find( query ).then( result => {
-		console.log('==search_activity: success')
-		res.json({
-			rs: result,
-		})
-	}).catch(err => {
-		console.log('==search_activity: ',err)
-		res.status(500)
-	})
-};
-
 exports.export_activity = async (req, res) => {
-	
-	var limit = []
 	if(req.body.year){
-		limit = req.body.year.map( (item, index) => {
-			return [new Date(`08-01-${parseInt(item) - 1}`), new Date(`07-31-${item}`)]
-		} )
+		const year = req.body.year
+		var query = {
+			MSSV: {$ne: null},
+			ngayVaoO: { $lte: new Date(year, 7, 31)},
+			ngayHetHan: {$gte: new Date(year-1, 8, 1)}
+		}
+		var promiseStu = Profile.find(query).populate('idPhong')
+		var promiseAc = Activity.find({
+				ngayBD: {
+					$gte: new Date(year-1, 8, 1),
+					$lte: new Date(year, 7, 31)
+				}
+			})
+		
+		const [student, activity] = await Promise.all([promiseStu, promiseAc])
+
+		var header = ['', '',`Điểm phong trào ktx Trần Hưng Đạo năm học ${year-1} - ${year}`]
+
+		var sheet = [header]
+		sheet.push(
+			activity.map((item, key) => {
+				return item.ten
+			})
+		)
+		sheet[1].unshift('MSSV', 'HỌ VÀ TÊN', 'PHÒNG', 'TỔNG ĐIỂM')
+		student.map( async (stu, i) => {
+			var sumPoint = 0
+			var arrPoint 
+			activity.map( async (ac, j) => {
+				point = 0
+				await resultActivity
+					.findOne({ idHD: ac._id, idSV: stu._id})
+					.populate('idHD')
+					.then( rs => {
+						if(rs){
+							if(isNaN(rs.idHD.diem)){
+								point = 0
+							}
+							if(rs.isTG){
+								sumPoint += rs.idHD.diem
+								point = rs.idHD.diem
+							}
+							if(rs.idHD.batBuoc && !rs.isTG){
+								sumPoint -= -sr.idHD.diem
+								point = -rs.idHD.diem
+							}
+						} else {
+							point = 0
+						}
+					})
+					.catch( err => { 
+						console.log('==export_activity:', err)
+						res.status(500)
+					})
+				return point
+			})
+			var phong = ''
+			if(stu.idPhong)
+				phong = stu.idPhong.tenPhong
+			
+			sheet.push([stu.MSSV, stu.hoTen || '',  phong , sumPoint , ... arrPoint])
+		})
+		console.log(sheet)
+		// var opts = { row: 1 + activity.length, col: 2 + student.length}
+		// var xlsx = writeXlsx.save(sheet, opts);
+		// res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		// res.status(200).json({ filename: 'Bao-cao-hoat-dong.xlsx', file: xlsx });
+		
 	}
 	
-	var result = []
-	result = await limit.map( (item, index) => {
-		// resultActivity.find({idHD: {$ne: null}})
-		// .populate({
-		// 	path: 'idHD',
-		// 	match: {ngayBD: {$gte: item[0], $lte: item[1]}}
-		// })
-		// .populate({path: 'idSV'})
-		// .where({ idHD: {$ne: null}})
-		// .exec( (err, val) => {
-		// 	console.log(val)
-		// })
-	
-		// Profile.find({ idTaiKhoan: { $ne: null } })
-		// .populate({
-		// 	path: 'idTaiKhoan',
-		// 	match: {isDelete: 0}
-		// })
-		// .then( val => {
-		// 	console.log(val.length)
-		// })
-		var header = [
-			['', '',`Điểm phong trào ktx Trần Hưng Đạo năm học ${item[0].getFullYear()} - ${item[1].getFullYear()}`],
-			[]
-		]
-		var opts = { row: 3, col: 2}
-		var xlsx = writeXlsx.save(header, opts);
-		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		res.status(200).json({ filename: 'Report.xlsx', file: xlsx });
-	})
-	
 };
-
-const getReport = (limit) =>{
-
-}

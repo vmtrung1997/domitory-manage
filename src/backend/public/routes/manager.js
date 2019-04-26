@@ -50,8 +50,6 @@ router.post('/expense/reset_room', expenseController.reset_room)
 // Activity
 router.post('/activity/get_activity', activityController.get_list_activity);
 
-router.post('/activity/search_activity', activityController.search_activity);
-
 router.post('/activity/export_activity', activityController.export_activity);
 
 router.get('/activity/detail', activityController.detail_activity);
