@@ -4,7 +4,7 @@ import "./../titleStudent/titleStudent.css";
 import "./../tableStudentTextStyle/tableStudentTextStyle.css";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import MyPagination from "./../pagination/pagination"
+import MyPagination from "./../pagination/pagination";
 import Loader from "react-loader-spinner";
 import { connect } from "react-redux";
 import {
@@ -22,7 +22,7 @@ class EndedStudentActivity extends React.Component {
       isLoad: true,
       pageActive: 1,
       totalPages: 1,
-      limit: 1,
+      limit: 5
     };
   }
 
@@ -30,7 +30,7 @@ class EndedStudentActivity extends React.Component {
     this.setState({
       isLoad: true
     });
-    
+
     await refreshToken();
     const options = {
       skip: (this.state.pageActive - 1) * this.state.limit,
@@ -51,12 +51,14 @@ class EndedStudentActivity extends React.Component {
           totalPages: res.data.totalPages
         });
         res.data.data.map(item => {
-            var d = new Date(item.idHD.ngayBD);
+  
+          var d = new Date(item.idHD.ngayKT);
+
           var today = new Date();
 
           if (d < today) {
             oldActivities.push(item);
-          } 
+          }
           return true;
         });
       })
@@ -82,9 +84,7 @@ class EndedStudentActivity extends React.Component {
   };
   componentDidMount() {
     this.getActivities();
-    
   }
-
 
   render() {
     return (
@@ -100,7 +100,6 @@ class EndedStudentActivity extends React.Component {
           </div>
         ) : (
           <div>
-           
             <div className="time-bill">
               <div className="text-style">
                 {this.state.oldActivities.length === 0 ? (
@@ -108,7 +107,8 @@ class EndedStudentActivity extends React.Component {
                     <span>Bạn chưa có hoạt động nào</span>
                   </div>
                 ) : (
-                  <div>
+                  <div className="profile-panel">
+
                     <div className="time-bill">
                       <div className="text-style">
                         <Table responsive bordered size="sm" hover>
@@ -126,7 +126,7 @@ class EndedStudentActivity extends React.Component {
                           <tbody>
                             {this.state.oldActivities.map((activity, index) => {
                               var item = activity.idHD;
-                              var d = new Date(item.ngay);
+                              var d = new Date(item.ngayBD);
                               var month = d.getMonth() + 1;
                               var formatDay =
                                 d.getDate() +
@@ -157,12 +157,12 @@ class EndedStudentActivity extends React.Component {
                                   </td>
                                   <td
                                     className={
-                                      activity.status === "0"
+                                      activity.isTG === false
                                         ? "is-dont-done"
                                         : "is-done"
                                     }
                                   >
-                                    {activity.status === "0"
+                                    {activity.isTG === false
                                       ? "Vắng"
                                       : "Đã tham gia"}
                                   </td>
@@ -181,7 +181,6 @@ class EndedStudentActivity extends React.Component {
                       />
                     </div>
                   </div>
-                  
                 )}
               </div>
             </div>
@@ -198,8 +197,4 @@ var mapStateToProps = state => {
   };
 };
 
-
-export default connect(
-  mapStateToProps
-)(EndedStudentActivity);
-
+export default connect(mapStateToProps)(EndedStudentActivity);

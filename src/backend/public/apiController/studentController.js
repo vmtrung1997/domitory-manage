@@ -313,7 +313,7 @@ exports.upcomingActivities = (req, res) => {
     totalPages = parseInt(data) / limit;
   });
 
-  console.log(req.body.id,'------------');
+  console.log(req.body.id, "------------");
   KetQuaHD.find({ idSV: req.body.id })
     .populate({ path: "idHD" })
     .skip(skip)
@@ -479,33 +479,29 @@ exports.getPoint = (req, res) => {
       select: "diem batBuoc ten diaDiem ngayBD ngayKT thang nam"
     })
     .then(rs => {
-      //console.log(rs);
       var year = ngayVaoO.getFullYear();
       var now = new Date();
       for (var yearpoint = year; yearpoint <= now.getFullYear(); yearpoint++) {
         var point = 0;
-        rs.every((item,index) => {
-            //console.log(item.idHD.ngayKT.getMonth() + 1);
-          //Sắp xếp điểm từ tháng 8 -> tháng 7 năm sau
-          //console.log(item)
-
+        var i = 0;
+        rs.some(item => {
           if (
             (item.idHD.ngayKT.getMonth() + 1 > 7 &&
               item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
             (item.idHD.ngayKT.getMonth() + 1 < 8 &&
               item.idHD.ngayKT.getFullYear() === yearpoint) ||
             (item.idHD.ngayKT.getFullYear() < yearpoint ||
-              item.idHD.ngayKT.getFullYear() > yearpoint + 1)
+              item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
+              (item.idHD.ngayKT.getMonth() + 1 > now.getMonth() + 1)
           ) {
-            //console.log('----------');
-            //console.log( item.idHD.ngayKT.getFullYear(),item.idHD.ngayKT.getMonth() + 1, yearpoint)
-            return false;
+            return true;
           }
-          //console.log(yearpoint);
-          if (item.idHD.batBuoc && !item.isTG) {
-            point -= item.idHD.diem;
-          } else if (item.isTG) {
-            point += item.idHD.diem;
+          else {
+            if (item.idHD.batBuoc && !item.isTG) {
+              point -= item.idHD.diem;
+            } else if (item.isTG) {
+              point += item.idHD.diem;
+            }
           }
         });
 
@@ -516,6 +512,15 @@ exports.getPoint = (req, res) => {
 
         result.push(temp);
       }
-      //console.log(result);
+      if(result.length === 0){
+        res.status(204).json({
+          data: result
+        })
+      }
+      else{
+        res.status(200).json({
+          data: result
+        })
+      }
     });
 };
