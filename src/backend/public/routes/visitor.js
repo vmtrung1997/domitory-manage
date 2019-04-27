@@ -5,4 +5,7 @@ router.get('/detail', visitorController.getDetailNews);
 
 router.post('/get-news', visitorController.getNews);
 
+router.get('/get-pin-news', visitorController.getPinNews);
+
+
 module.exports = router;

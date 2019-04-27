@@ -80,7 +80,7 @@ class News extends Component {
 
     axios.defaults.headers["x-access-token"] = secret.access_token;
     axios.post("/manager/news/delete", { id: id }).then(res => {
-      if (res.status === 201) {
+      if (res.status === 202) {
         ToastsStore.success("Đã xóa");
         this.getNews();
       } else {

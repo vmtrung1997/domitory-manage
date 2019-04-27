@@ -33,7 +33,7 @@ class EditorConvertToHTML extends Component {
       check: true,
       pin:false,
       sendEmail: false,
-      loai: 0,
+      loai: 2,
       typeOptions: [{ value: 0, label: "Thông Tin" }, { value: 1, label: "Hoạt Động" }]
     };
   }
@@ -75,14 +75,14 @@ class EditorConvertToHTML extends Component {
         title: this.state.title,
         content: value,
         author: decode.user.profile.idTaiKhoan,
-        trangThai: this.state.check === true ? "1" : "0",
-        ghim: this.state.pin === true? "1" : "0",
+        trangThai: this.state.check === true ? 1 : 0,
+        ghim: this.state.pin === true? 1 : 0,
         loai: this.state.loai
       };
 
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios.post("/manager/news/add", { data: data }).then(res => {
-        if (res.status === 201) {
+        if (res.status === 202) {
           this.props.showPopup("add");
           this.handleClose();
         } else {
@@ -109,9 +109,9 @@ class EditorConvertToHTML extends Component {
       tieuDe: this.state.title,
       noiDung: value,
       id: this.state.idNews,
-      trangThai: this.state.check === true ? "1" : "0",
-      ghim: this.state.pin === true? "1" : "0",
-      loai: this.state.loai ===  '1'?'1' : '0'
+      trangThai: this.state.check === 1 ? 1 : 0,
+      ghim: this.state.pin === 1? 1 : 0,
+      loai: this.state.loai ===  0?1 : 1
     };
 
     axios.defaults.headers["x-access-token"] = secret.access_token;
@@ -143,13 +143,9 @@ class EditorConvertToHTML extends Component {
           check: content.trangThai === 1 ? true : false,
           pin: content.ghim === 1? true: false,
           //TODO: checkbox chưa thay đổi theo state
-          loai: content.loai === 'Hoat Dong'? 1:0
-        });
-      } else {
-        // this.setState({
-        //   editorState: EditorState.createEmpty()
-        // });
-      }
+          loai: content.loai
+        },()=>{console.log(this.state)});
+      } 
     }
   }
   changeStatus = e => {
@@ -171,7 +167,7 @@ class EditorConvertToHTML extends Component {
   }
   render() {
     var type = this.props.type;
-    var loai = this.state.loai;
+    
     const { editorState } = this.state;
     const editorStyle = {
       padding: "5px",
@@ -215,9 +211,7 @@ class EditorConvertToHTML extends Component {
             <Col sm = {1}><span>Loại:</span></Col>
           <Col sm={3}>
           <MySelectOption
-            //getValue={this.KindSelected}
-            //disabled={this.state.readOnly}
-            value= {loai}
+            value= {this.state.loai}
             options={this.state.typeOptions}
             selected={this.kindSelected}
           />
