@@ -8,13 +8,14 @@ class Button extends Component{
 		color: 'primary',
 		variant: 'default',
 		className: '',
+		type: 'button',
 		title: null,
 		onClick: () => {}
 	};
 
 	static propTypes = {
 		size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg']),
-		color: PropTypes.oneOf(['default', 'primary', 'success', 'info', 'warning', 'danger']),
+		// color: PropTypes.oneOf(['default', 'primary', 'success', 'info', 'warning', 'danger']),
 		variant: PropTypes.oneOf(['default', 'outline', 'rounded']),
 		// content of button
 		children: PropTypes.any.isRequired,
@@ -43,6 +44,7 @@ class Button extends Component{
 				className={'bt bt-' + size + ' bt-' + color + ' bt-' + variant  + classDisabled  + classFullWidth + ' ' + className + classDiminsion + classActived + classShadow}
 				onClick={e => this.props.onClick({key: this.props.keyButton})}
 				title={this.props.title}
+				type={this.props.type}
 			>
 				{children}
 			</button>

@@ -1,0 +1,69 @@
+@media print {
+  .no-print {
+    display: none
+  }
+}
+
+.printStyle {
+  height: 0px;
+  width: 0px;
+  position: absolute
+}
+
+.none-display {
+  display: none
+}
+.display {
+  display: block
+}
+.print-button{
+  cursor: pointer;
+  border: 1px solid #1ab394;
+  border-radius: 2px;
+  padding: 5px;
+  background: #1ab394;
+  color: white;
+}
+.print-button:hover{
+  background: white;
+  color: #1ab394!important;
+}
+.layout-print{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 20px!important;
+  padding: 10px 50px;
+}
+.suggest{
+  font-size: 70%;
+}
+ul.suggest-text{
+  padding-left: 5px;
+  margin-left: 10px;
+}
+
+ul.suggest-text>li{
+  list-style-type: disc;
+  text-indent: 20px;
+}
+.suggest-text>li span{
+  position: relative;
+  left:10px;
+}
+.bold-style{
+  font-weight: bold!important
+}
+.title-print{
+  font-size: 180%;
+  font-weight: bold;
+}
+.page-break{
+  break-before: page;
+  min-height: 1px;
+}
+.table-print tr td {
+  padding:5px 10px;
+}
+.table-print tr th{
+  padding:5px;
+  vertical-align: middle;
+}

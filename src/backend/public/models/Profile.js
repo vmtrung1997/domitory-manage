@@ -22,10 +22,10 @@ var profileSchema = new Schema({
     ngayVaoO: Date,
     ngayHetHan: Date,
     danToc: String,
-    img:  String,//{ data: Buffer, contentType: String }
+    img:  { data: Buffer, contentType: String },
+    //img:  String,//{ data: Buffer, contentType: String }
     CMND: String,
-    diemHD: Number,
-    //expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
+    expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
     flag: Boolean
 });
 

@@ -69,9 +69,9 @@ class InfoActivity extends Component{
 		const table = this.props.data.map((row, index) => {
 			var curData = new Date();
 			var date = new Date(row.ngayBD);
-			var strDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+			var strDate = date.toLocaleDateString('en-GB')
 			var url = `/admin/activity/detail/${row._id}`
-			var strTimeBegin = new Date(row.ngayBD).getHours()+ ':' + new Date(row.ngayBD).getMinutes()
+			var strTime = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false})
 
 			return (
 				<tr key={index} >
@@ -79,7 +79,7 @@ class InfoActivity extends Component{
 					<td style={{maxWidth: '500px'}}>
 						<Link to={url}>{row.ten}</Link>
 					</td>
-					<td>{strTimeBegin}</td>
+					<td>{strTime}</td>
 					<td>{strDate}</td>
 					<td>{row.diaDiem}</td>
 					{row.batBuoc ? (
@@ -87,25 +87,21 @@ class InfoActivity extends Component{
 					):(
 						<td>  </td>
 					)}
-					{curData > date ? (
-						<td className='lb-done'>
-							<Button title={'Điểm danh'} onClick={(e) => {this.handleRollCall(row)}}> 
-								<i className="fas fa-poll-h"></i>
-							</Button>
-						</td>
-					):(
-						<td style={{textAlign: 'center'}}> 
-							<Button title={'Điểm danh'} onClick={(e) => {this.handleRollCall(row)}}>
-								<i className="fas fa-poll-h"></i>
-							</Button>
-							<Button title={'Chỉnh sửa'} color={'warning'} style={{margin: '0 5px'}} onClick={(e) => {this.handleEdit(row)}}>
-								<i className="fas fa-edit"></i>
-							</Button>
+					<td style={{textAlign: 'center'}}> 
+						<Button title={'Điểm danh'} onClick={(e) => {this.handleRollCall(row)}}>
+							<i className="fas fa-poll-h"></i>
+						</Button>
+						<Button title={'Chỉnh sửa'} color={'warning'} style={{margin: '0 5px'}} onClick={(e) => {this.handleEdit(row)}}>
+							<i className="fas fa-edit"></i>
+						</Button>
+						{curData > date ? (
+							<React.Fragment/>
+						):(
 							<Button title={'Xóa'} color={'danger'} onClick={(e) => {this.handleDelete(row._id)}}>
 								<i className=" fas fa-trash-alt"></i>
 							</Button>
-						</td>
-					)}
+						)}
+					</td>
 				</tr>
 			)
 		})

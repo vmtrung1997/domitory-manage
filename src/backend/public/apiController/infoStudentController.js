@@ -7,6 +7,7 @@ const Profile = require('../models/Profile');
 const Account = require('../models/TaiKhoan');
 const Room = require('../models/Phong');
 const RoomHistory = require('../models/LichSuPhong');
+const ActivityResults = require('../models/KetQuaHD');
 const ReToken = require('../models/refreshToken');
 let auth = require('../repos/authRepo');
 const md5 = require('md5');
@@ -19,7 +20,6 @@ function addOneStudent(data) {
 
         if(result){
           console.log('==exits ')
-
           //return {status: 409, msg: 'Mã số sinh viên đã tồn tại!'};
           resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data})
         }
@@ -48,11 +48,16 @@ function addOneStudent(data) {
             //------save profile-------
             await student.save().then(result => {
               console.log('==register student: success', result);
-              resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
+              accStudent.idProfile = result._id;
+              Account.findOneAndUpdate({_id: result.idTaiKhoan}, { $set: {idProfile: result._id} }).then(result => {
+                resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
+              }).catch(err => {
+                resolve( {status: 400, msg: 'Thêm sinh viên không thành công!', data: data})
+              })
               //res.status(200).json(req.body);
             }).catch(err => {
               console.log('==register student err: ', err);
-              resolve( {status: 500, msg: 'tạo profile err!', data: data})
+              resolve( {status: 400, msg: 'tạo profile err!', data: data})
               //res.status(500).json({msg: 'tạo profile err!'});
             })
             //--------end save profile----------
@@ -81,7 +86,7 @@ function addOneStudent(data) {
   })
 
   //----------end catch mssv tồn tại----------------
-}
+};
 
 exports.addStudent =async (req, res) => {
   const params = req.body;
@@ -148,6 +153,7 @@ exports.deleteStudent = (req, res) => {
       console.log('==id', id);
       Account.findOneAndUpdate({username: id},{ $set: {isDelete: 1} })
         .then(result => {
+          console.log('==findone', result)
           Profile.findOneAndUpdate({MSSV: id},{ $set: {idPhong: null} })
             .then(result => {
               console.log('==ahihi', result);
@@ -169,7 +175,7 @@ exports.deleteStudent = (req, res) => {
     })
   }
 
-}
+};
 
 exports.updateInfo = (req,res) => {
   const info = req.body.info;
@@ -217,8 +223,6 @@ exports.updateInfo = (req,res) => {
       res.status(400).json({msg: 'cập nhật không thành công!'})
   })
 };
-
-
 
 exports.getListStudent = (req, res) => {
   let query = {};
@@ -290,4 +294,11 @@ exports.uploadImage = (req, res) => {
   res.json({
     rs: 'success',
   })
-}
+};
+
+exports.getActivities = (req, res) => {
+  const id = req.params.id;
+  ActivityResults.find({idSV: id}).then(result => {
+
+  })
+};

@@ -206,4 +206,14 @@ export const reset_room = async (exp) => {
   })
 }
 
-
+export const get_data_print = async (exp) => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/get_data_print', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
