@@ -16,7 +16,8 @@ class NewsList extends React.Component {
       filter: 0, //0: all 1:news 2: hoat dong
       isLoad: true,
       skip: 0,
-      limit: 6
+      limit: 6,
+      isFirst: true
     };
   }
 
@@ -63,11 +64,11 @@ class NewsList extends React.Component {
         this.setState({ filter: 0 });
         break;
       case 1: //Show Thoong tin
-        this.setState({ filter: 1 });
+        this.setState({ filter: 1,isFirst: false });
 
         break;
       case 2: //Show Hoat Dong
-        this.setState({ filter: 2 });
+        this.setState({ filter: 2,isFirst: false });
 
         break;
       default:
@@ -236,8 +237,7 @@ class NewsList extends React.Component {
                         // TODO: acvive không hoạt đông
                         onClick={e => this.newsFilter(0)}
                         variant="light"
-                        className="section-all-hover"
-                        active
+                        className={this.state.isFirst?"section-all-hover active ":"section-all-hover"}
                       >
                         Tất cả
                       </Button>

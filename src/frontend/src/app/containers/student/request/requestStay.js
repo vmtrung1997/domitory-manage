@@ -84,7 +84,7 @@ request = () => {
           <Modal.Body>
             <Form>
               <Form.Group>
-                <Form.Label>Sinh viên thuộc diện:</Form.Label>
+                <Form.Label>Sinh viên thuộc diện</Form.Label>
                 <Form.Control onChange = {this.getValue} name = 'type' />
               </Form.Group>
             </Form>

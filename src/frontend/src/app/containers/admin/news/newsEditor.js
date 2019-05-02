@@ -33,7 +33,7 @@ class EditorConvertToHTML extends Component {
       check: true,
       pin:false,
       sendEmail: false,
-      loai: 2,
+      loai: 0,
       typeOptions: [{ value: 0, label: "Thông Tin" }, { value: 1, label: "Hoạt Động" }]
     };
   }

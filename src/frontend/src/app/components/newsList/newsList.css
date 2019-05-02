@@ -266,6 +266,10 @@ textarea.input {
     background-color: #043260 !important;
     color: #ffffff !important
 }
+.section .section-title .section-option .active{
+    background-color: #043260 !important;
+    color: #ffffff !important;
+}
 
 .section .section-title .section-option .section-activity-hover:hover{
     background-color: #4bb92f96 !important
