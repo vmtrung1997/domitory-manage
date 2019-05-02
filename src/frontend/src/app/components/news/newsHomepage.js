@@ -2,8 +2,7 @@ import React from "react";
 import { Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./newsHomepage.css";
-import Axios from "axios";  
-
+import Axios from "axios";
 
 class NewsHomepage extends React.Component {
   constructor(props) {
@@ -40,7 +39,6 @@ class NewsHomepage extends React.Component {
     window.open(address, "_blank");
   };
 
-
   render() {
     var posts = [];
     posts = this.state.postsAll;
@@ -48,15 +46,13 @@ class NewsHomepage extends React.Component {
       <React.Fragment>
         {/* section */}
         <div className="homepage-news">
-
-
           {/* container */}
           <div className="container">
             {/* row */}
             <div className="row">
               <div className="col-md-12">
                 <div className="section-title">
-                  <div style={{ fontSize: "50px", textAlign: "center" }}>
+                  <div className="info-title" style = {{color: '#3d455c'}}>
                     <span>TIN TỨC</span>
                   </div>
                 </div>
@@ -79,12 +75,12 @@ class NewsHomepage extends React.Component {
                 return (
                   <div className="col-md-4" key={index}>
                     <div style={{ marginTop: "40px" }}>
-                      <div className="post">
+                      <div className="post rotate-scale-up-hor">
                         <div
                           className="post-img"
                           onClick={e => this.onViewDetail(item._id)}
                         >
-                          <img src="/img/st.jpg" alt='content' />
+                          <img src="/img/st.jpg" alt="content" />
                         </div>
                         <div className="post-body">
                           <div className="post-meta">
@@ -120,9 +116,9 @@ class NewsHomepage extends React.Component {
             </div>
             <div className="col-md-12">
               <div className="section-row">
-                  <Link to="/news">
-                    <span className="list-item-menu"> Xem thêm bài viết </span>
-                  </Link>
+                <Link to="/news">
+                  <span className="list-item-menu"> Xem thêm bài viết </span>
+                </Link>
               </div>
             </div>
           </div>
