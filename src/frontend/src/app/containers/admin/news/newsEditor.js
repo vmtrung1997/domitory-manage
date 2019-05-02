@@ -230,13 +230,13 @@ class EditorConvertToHTML extends Component {
             label="Ghim bài viết (Hiển thị tối đa 2)"
             name={"ghim"}
           />
-            <Checkbox
+            {/* <Checkbox
             defaultChecked={this.state.sendEmail}
             isCheck={this.changeSendEmail}
             check={this.state.sendEmail}
             label="Gửi thông báo tới sinh viên qua email"
             name={"guiEmail"}
-          />
+          /> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={this.handleClose}>
