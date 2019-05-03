@@ -12,9 +12,10 @@ class PrintInforStudent extends Component {
 		handleClose: () => {},
 		handlePrint: () => {},
 	}
+
 	render(){
 		return(
-			<Modal show={this.props.show} onHide={this.handleClose}>
+			<Modal show={this.props.show} onHide={this.props.handleClose}>
 	          	<Modal.Header closeButton>
 	            	<Modal.Title>In thẻ sinh viên</Modal.Title>
 	         	</Modal.Header>
@@ -48,10 +49,10 @@ class PrintInforStudent extends Component {
 		        	</div>
 		        </Modal.Body>
 	        	<Modal.Footer>
-	            	<Button variant='default' color='default' onClick={this.handleClose}>
+	            	<Button variant='default' color='default' onClick={this.props.handleClose}>
 	              		Đóng
 		            </Button>
-	            	<Button variant='default' onClick={this.handleSave}>
+	            	<Button variant='default' onClick={this.props.handleClose}>
 	            		In thẻ
 		            </Button>
 	          	</Modal.Footer>

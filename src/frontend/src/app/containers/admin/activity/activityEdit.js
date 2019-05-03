@@ -37,33 +37,43 @@ class ActivityEdit extends Component{
     this.setState({ [name]: val })
   }
   handleSave = async () => {
-    await refreshToken()
-    var secret = JSON.parse(localStorage.getItem('secret'))
-    axios({
-      method: 'post',
-      url: `/manager/activity/update?id=${this.props.data._id}`,
-      headers: { 
-        'Content-Type': 'application/json',
-        'x-access-token': secret.access_token
-      },
-      data:{
-        name: this.state.name,
-        location: this.state.location,
-        time: this.state.time,
-        date: this.state.date,
-        dateEnd: this.state.dateEnd,
-        timeEnd: this.state.timeEnd,
-        isRequire: this.state.isRequire,
-        des: this.state.des,
-        point: this.state.point
-      }
-    }).then(res => {
-      ToastsStore.success("Chỉnh sửa hoạt động thành công!");
-    }).catch(err => {
-      ToastsStore.error("Chỉnh sửa hoạt động không thành công!");
-    })
+    var {name, location, des, point, date, dateEnd} = this.state
+    if(!name || !location || !des || !point)
+    {
+      ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
+    } else if(parseInt(point) <= 0){
+      ToastsStore.error("Điểm hoạt động phải lớn hơn 0!");
+    } else if(date < new Date || dateEnd < new Date()){
+      ToastsStore.error("Thời gian bắt đầu và kết thúc phải lớn hơn ngày hiện tại!");
+    } else {
+      await refreshToken()
+      var secret = JSON.parse(localStorage.getItem('secret'))
+      axios({
+        method: 'post',
+        url: `/manager/activity/update?id=${this.props.data._id}`,
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-access-token': secret.access_token
+        },
+        data:{
+          name: this.state.name,
+          location: this.state.location,
+          time: this.state.time,
+          date: this.state.date,
+          dateEnd: this.state.dateEnd,
+          timeEnd: this.state.timeEnd,
+          isRequire: this.state.isRequire,
+          des: this.state.des,
+          point: this.state.point
+        }
+      }).then(res => {
+        ToastsStore.success("Chỉnh sửa hoạt động thành công!");
+      }).catch(err => {
+        ToastsStore.error("Chỉnh sửa hoạt động không thành công!");
+      })
 
-    this.props.handleSave()
+      this.props.handleSave()
+    }
   }
 
   componentWillMount(){
@@ -140,10 +150,10 @@ class ActivityEdit extends Component{
                     <Input value={this.state.point} getValue={ (obj) => this.getValue(obj.name, obj.value)} name='point'/>
                   </div>
             			<div style={{marginTop: '10px'}}>
-            				<span style={{fontWeight: 'bold'}}> Bắt buộc </span>
+            				<span style={{fontWeight: 'bold'}}> Hoạt động bắt buộc </span>
             				<CheckBox 
                       name='isRequire'
-                      style={{marginTop: '-10px', display: 'contents'}}
+                      style={{display: 'grid'}}
                       check={this.state.isRequire}
                       isCheck={ (obj) => this.getValue(obj.value, obj.chk)}
                     />
