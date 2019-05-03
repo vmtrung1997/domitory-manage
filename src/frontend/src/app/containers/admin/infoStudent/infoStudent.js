@@ -435,6 +435,7 @@ class InfoStudent extends Component{
   };
 
   changeState = (key, value) => {
+    console.log(11)
     this.setState({ [key]: value })
   }
 
@@ -569,7 +570,7 @@ class InfoStudent extends Component{
     return(
       <div>
         <Loader loading={this.state.loading}/>
-        <Print show={this.state.showPrint} />
+        <Print show={this.state.showPrint} handleClose={() => this.changeState('showPrint', false)}/>
         <Title>
           Thông tin sinh viên
         </Title>
