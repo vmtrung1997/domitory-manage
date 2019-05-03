@@ -117,7 +117,7 @@ class Activity extends Component{
 				<ActivityExport 
 					last={lastDate}
 					show={this.state.showExport}
-					handleClose={() => this.changeState('showExport', true)}
+					handleClose={() => this.changeState('showExport', false)}
 					handleSave={this.getData}
 				/>
 				<Title> Hoạt động sinh viên </Title>

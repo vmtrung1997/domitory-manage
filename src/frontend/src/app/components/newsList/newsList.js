@@ -14,24 +14,24 @@ class NewsList extends React.Component {
       postsActivity: [],
       pinnedPosts: [],
       filter: 0, //0: all 1:news 2: hoat dong
-      isLoad: true
+      isLoad: true,
+      skip: 0,
+      limit: 6,
+      isFirst: true
     };
   }
 
   loadNews = date => {
     var _post = [];
-    var _pinnedPosts = [];
     var _postsActivity = [];
     var _postsNews = [];
-    Axios.post("http://localhost:4000/news/get-news", { data: date })
+    Axios.post("http://localhost:4000/news/get-news", { data: date,skip: this.state.skip,limit: this.state.limit })
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map(item => {
             _post.push(item);
-            if (item.ghim === 1) {
-              _pinnedPosts.push(item);
-            }
-            if (item.loai === "0") {
+            
+            if (item.loai === 0) {
               _postsNews.push(item);
             } else _postsActivity.push(item);
           });
@@ -42,8 +42,8 @@ class NewsList extends React.Component {
           postsActivity: _postsActivity,
           postsNews: _postsNews,
           postsAll: _post,
-          pinnedPosts: _pinnedPosts,
-          isLoad: false
+          isLoad: false,
+          skip: this.state.skip + 6
         });
       });
   };
@@ -51,6 +51,7 @@ class NewsList extends React.Component {
   componentDidMount() {
     var date = new Date("2015-01-01"); //Ngaỳ mặc định
     this.loadNews(date);
+    this.loadPinNews();
   }
   onViewDetail = id => {
     var address = "http://localhost:3000/news/detail?id=" + id;
@@ -63,16 +64,39 @@ class NewsList extends React.Component {
         this.setState({ filter: 0 });
         break;
       case 1: //Show Thoong tin
-        this.setState({ filter: 1 });
+        this.setState({ filter: 1,isFirst: false });
 
         break;
       case 2: //Show Hoat Dong
-        this.setState({ filter: 2 });
+        this.setState({ filter: 2,isFirst: false });
 
         break;
       default:
         break;
     }
+  };
+
+  loadPinNews = () => {
+    this.setState({
+      isLoad: true
+    });
+
+    var _post = [];
+
+    Axios.get("http://localhost:4000/news/get-pin-news")
+      .then(rs => {
+        if (rs.status === 200) {
+          rs.data.data.map(item => {
+            _post.push(item);
+          });
+        }
+      })
+      .then(() => {
+        this.setState({
+          pinnedPosts: _post,
+          isLoad: false
+        });
+      });
   };
 
   loadMore = () => {
@@ -86,13 +110,12 @@ class NewsList extends React.Component {
     var lastPost = this.state.postsAll[this.state.postsAll.length - 1];
     var date = new Date(lastPost.ngayTao);
 
-    Axios.post("http://localhost:4000/news/get-news", { data: date })
+    Axios.post("http://localhost:4000/news/get-news", { data: date,skip: this.state.skip,limit:this.state.limit })
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map(item => {
             _post.push(item);
-
-            if (item.loai === "0") {
+            if (item.loai === 0) {
               _postsNews.push(item);
             } else _postsActivity.push(item);
           });
@@ -116,7 +139,8 @@ class NewsList extends React.Component {
           postsAll: posts,
           postsActivity: postsActivity,
           postsNews: postsNews,
-          isLoad: false
+          isLoad: false,
+          skip: this.state.skip + 6
         });
       });
   };
@@ -167,16 +191,16 @@ class NewsList extends React.Component {
                       >
                         <img src="/img/st.jpg" alt />
                       </a>
-                      <div className="post-body">
+                      <div className="post-body" on>
                         <div className="post-meta">
                           <span
                             className={
-                              item.loai === "0"
+                              item.loai === 1
                                 ? "post-category cat-1"
                                 : "post-category cat-2"
                             }
                           >
-                            {item.loai === "0" ? "Hoạt Động" : "Thông tin"}
+                            {item.loai === 1 ? "Hoạt Động" : "Thông tin"}
                           </span>
                           <span className="post-date">
                             <i className="far fa-clock" />
@@ -213,8 +237,7 @@ class NewsList extends React.Component {
                         // TODO: acvive không hoạt đông
                         onClick={e => this.newsFilter(0)}
                         variant="light"
-                        className="section-all-hover"
-                        active
+                        className={this.state.isFirst?"section-all-hover active ":"section-all-hover"}
                       >
                         Tất cả
                       </Button>
@@ -263,12 +286,12 @@ class NewsList extends React.Component {
                         <div className="post-meta">
                           <span
                             className={
-                              item.loai === "1"
+                              item.loai === 1
                                 ? "post-category cat-1"
                                 : "post-category cat-2"
                             }
                           >
-                            {item.loai === "1" ? "Hoạt Động" : "Thông tin"}
+                            {item.loai === 1 ? "Hoạt Động" : "Thông tin"}
                           </span>
 
                           <span className="post-date">

@@ -13,8 +13,7 @@ function find_history(){
     populate({
       path: 'profile',
       select: 'hoTen idPhong truong nganhHoc img',
-      populate: [{ path: 'idPhong', select: 'tenPhong'}, 
-      { path: 'truong', select: 'tenTruong'},]
+      populate: [{ path: 'idPhong', select: 'tenPhong'}, ]
     }).
     exec((err,result) => {
       if (result){

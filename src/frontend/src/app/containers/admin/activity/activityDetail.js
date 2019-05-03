@@ -44,35 +44,44 @@ class ActivityDetail extends Component{
 		var iJoin = 0
 
 		var date = new Date(this.state.hd.ngayBD);
-		var strDateStart = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+		var strTime = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false})
+		var strDate = date.toLocaleDateString('en-GB')
+
+		var strDateStart = `${strDate}, ${strTime}`
+
 		date = new Date(this.state.hd.ngayKT);
-		var strDateEnd = `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+		strTime = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false})
+		strDate = date.toLocaleDateString('en-GB')
+
+		var strDateEnd = `${strDate}, ${strTime}`
 
 		this.state.data.map( (item, index) => {
-			if(item.isDK){
-				iSignup++
-			}
-			if(item.isTG){
-				iJoin++
-			}
+			if(item.idSV){
+				if(item.isDK){
+					iSignup++
+				}
+				if(item.isTG){
+					iJoin++
+				}
 
-			table.push(
-				<tr key={index}>
-					<td>{index + 1}</td>
-					<td>{item.idSV.MSSV}</td>
-					<td>{item.idSV.hoTen}</td>
-					{item.isDK ? (
-						<td style={{textAlign: 'center', color: '#04C913'}}> 
-							<i className="fas fa-check"></i> 
-						</td>
-					) : (<td> </td>)}
-					{item.isTG ? (
-						<td style={{textAlign: 'center', color: '#04C913'}}> 
-							<i className="fas fa-check"></i> 
-						</td>
-					) : (<td> </td>)}
-				</tr>
-			)
+				table.push(
+					<tr key={index}>
+						<td>{index + 1}</td>
+						<td>{item.idSV.MSSV}</td>
+						<td>{item.idSV.hoTen}</td>
+						{item.isDK ? (
+							<td style={{textAlign: 'center', color: '#04C913'}}> 
+								<i className="fas fa-check"></i> 
+							</td>
+						) : (<td> </td>)}
+						{item.isTG ? (
+							<td style={{textAlign: 'center', color: '#04C913'}}> 
+								<i className="fas fa-check"></i> 
+							</td>
+						) : (<td> </td>)}
+					</tr>
+				)
+			}
 			return true
 		})
 		return(

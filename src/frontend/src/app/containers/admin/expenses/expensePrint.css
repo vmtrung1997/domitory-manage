@@ -65,13 +65,10 @@ ul.suggest-text>li {
   font-size: 180%;
   font-weight: bold;
 }
-@media print {
-iframe div.page-break {
-  page-break-before: always;
-  width: 600;
-  height: 800;
-}}
-
+.page-break{
+  break-before: page;
+  min-height: 1px;
+}
 .table-print tr td {
   padding: 5px 10px;
 }

@@ -7,6 +7,7 @@ import Bill from './../billStudent/billStudent'
 import ListActivity from './../listActivity/listActivity'
 import StudentActivity from './../studentActivity/studentActivity'
 import Practise from './../practiseStudent/practiseStudent';
+import RequestStay from '../../containers/student/request/requestStay'
 
 class MenuStudent extends React.Component {
     constructor(props, context) {
@@ -34,14 +35,14 @@ class MenuStudent extends React.Component {
                                             <ListGroup.Item className = 'menu-student-style' onClick={() => this.setState({ open: !open })} action><i className="fas fa-skating"></i> &nbsp;Hoạt động</ListGroup.Item>
                                             <Collapse in={this.state.open}>
                                                 <div id="example-collapse-text">
-                                                    <ListGroup.Item className = 'menu-student-style' eventKey = 'list' action href='#list'><i className="fas fa-globe-africa sub-list-activity"></i> &nbsp;Đang diễn ra</ListGroup.Item>
+                                                    <ListGroup.Item className = 'menu-student-style' eventKey = 'list' action href='#list'><i className="fas fa-globe-africa sub-list-activity"></i> &nbsp;Sắp diễn ra</ListGroup.Item>
                                                     <ListGroup.Item className = 'menu-student-style' eventKey = 'myactivity' action href='#myactivity'><i className="fas fa-hiking  sub-list-activity"></i> &nbsp;Hoạt động của bạn</ListGroup.Item>
 
                                                     <ListGroup.Item className = 'menu-student-style' eventKey = 'practise' action href='#practise'><i className="fas fa-star-half-alt sub-list-activity"></i> &nbsp;Điểm rèn luyện</ListGroup.Item>
                                                 </div>
                                             </Collapse>
                                             <ListGroup.Item className = 'menu-student-style' eventKey = 'bill' action href='#bill'><i className="fas fa-file-invoice"></i> &nbsp;Tra cứu điện nước</ListGroup.Item>
-                                            <ListGroup.Item className = 'menu-student-style' eventKey = 'request' action href='#request'><i className="fas fa-flag"></i> &nbsp;Đăng ký ở lại</ListGroup.Item>
+                                            <ListGroup.Item className = 'menu-student-style' eventKey = 'request' action href='#request'><i className="fas fa-flag"></i> &nbsp;Đăng ký lưu trú</ListGroup.Item>
                                             <br></br>
                                         </ListGroup>
                                     </div>
@@ -64,6 +65,9 @@ class MenuStudent extends React.Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="myactivity">
                                         <StudentActivity />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="request">
+                                        <RequestStay />
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Col>

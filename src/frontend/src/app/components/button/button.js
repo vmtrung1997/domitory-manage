@@ -15,7 +15,7 @@ class Button extends Component{
 
 	static propTypes = {
 		size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg']),
-		color: PropTypes.oneOf(['default', 'primary', 'success', 'info', 'warning', 'danger']),
+		// color: PropTypes.oneOf(['default', 'primary', 'success', 'info', 'warning', 'danger']),
 		variant: PropTypes.oneOf(['default', 'outline', 'rounded']),
 		// content of button
 		children: PropTypes.any.isRequired,

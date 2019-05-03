@@ -4,7 +4,7 @@ require("../models/Profile");
 exports.deleteNews = (req, res) => {
   BaiViet.deleteOne({ _id: req.body.id }, function(err) {
     if (!err) {
-      res.status(201).json({ rs: "ok" });
+      res.status(202).json({ rs: "ok" });
       console.log("==delete_news: success");
     } else {
       console.log("==delete_news:  fail", err);
@@ -138,7 +138,7 @@ exports.addNews = (req, res) => {
       .save()
       .then(() => {
         console.log("==insert: success");
-        res.status(201).json({
+        res.status(202).json({
           message: "ok"
         });
       })

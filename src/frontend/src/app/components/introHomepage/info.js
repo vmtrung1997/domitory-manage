@@ -2,12 +2,11 @@ import React from "react";
 import "./info.css";
 import { Container, Row, Col } from "react-bootstrap";
 
-const fadeImages = ["/images/01_ataulfohouse_apaloosa.jpg"];
 class InfoHomePage extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div className="background">
+        <div className="background slide-fwd-center ">
           <div className="info-title">
             <span>GIỚI THIỆU</span>
           </div>
