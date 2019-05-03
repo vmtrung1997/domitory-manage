@@ -25,7 +25,7 @@ var profileSchema = new Schema({
     img:  String,
     //img:  String,//{ data: Buffer, contentType: String }
     CMND: String,
-    expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
+    //expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
     flag: Boolean
 });
 
