@@ -37,7 +37,8 @@ class InfoStudent extends Component{
 
       infoAdded: {
         dateAdded : new Date(),
-        expiredDateAdded: new Date()
+        expiredDateAdded: new Date(),
+        regisExpiredDateAdded: new Date(),
       },
 
       infoList: [],
@@ -95,7 +96,7 @@ class InfoStudent extends Component{
         this.setState({ showRoomHistoryPopup: state });
         break;
       case 'import':
-        this.setState({ showImportPopup: state });
+        this.setState({ showImportPopup: state, listExpired: undefined, justFileServiceResponse: undefined });
         break;
       case 'export':
         this.setState({ showExportPopup: state });
@@ -395,6 +396,13 @@ class InfoStudent extends Component{
     })
   };
 
+  // checkFileImport = (data) => {
+  //   if (data)
+  //     data.map(i => {
+  //
+  //     })
+  // }
+
   handleImportData = async(props) => {
 
     if (!this.state.hasOwnProperty('fileImport')) {
@@ -526,6 +534,19 @@ class InfoStudent extends Component{
 
     XLSX.writeFile(wb, "report.xlsx");
     this.handlePopup('export', false)
+  };
+
+  downloadTemplate = () => {
+    const data = [
+      {stt: "STT", hoTen: "Họ và tên", mssv: "MSSV", ngaySinh: "Ngày sinh"},
+      {stt: "1", hoTen: "Nguyễn Văn A", mssv: "1512519", ngaySinh: "29/10/1997"}
+    ]
+    var ws = XLSX.utils.json_to_sheet(data, {skipHeader:true});
+
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+    XLSX.writeFile(wb, "template.xlsx");
   }
 
   render(){
@@ -544,7 +565,7 @@ class InfoStudent extends Component{
       mssv,
       isOld,
       roomHistory,
-      infoAdded: { dateAdded, expiredDateAdded},
+      infoAdded: { dateAdded, expiredDateAdded, regisExpiredDateAdded},
       valueExport :{
         hoTenEx,
         mssvEx,
@@ -747,6 +768,21 @@ class InfoStudent extends Component{
 
                   <DatePicker
                     dateFormat='dd/MM/yyyy'
+                    selected={regisExpiredDateAdded}
+                    onChange={(val) => this.getValueDate('regisExpiredDateAdded', val)}
+                    className='input-datepicker'
+                  />
+                </Col>
+              </Row>
+
+              <Row>
+                <Col md={3}>
+                  Ngày hết hạn ở ký túc xá:
+                </Col>
+                <Col md={9}>
+
+                  <DatePicker
+                    dateFormat='dd/MM/yyyy'
                     selected={expiredDateAdded}
                     onChange={(val) => this.getValueDate('expiredDateAdded', val)}
                     className='input-datepicker'
@@ -835,7 +871,40 @@ class InfoStudent extends Component{
             onHide={() =>this.handlePopup('import', false)}
           >
             <Modal.Body>
+
+              <Row>
+                <Col md={3}>
+                  Hạn đăng ký:
+                </Col>
+                <Col md={4}>
+
+                  <DatePicker
+                    dateFormat='dd/MM/yyyy'
+                    selected={regisExpiredDateAdded}
+                    onChange={(val) => this.getValueDate('regisExpiredDateAdded', val)}
+                    className='input-datepicker'
+                  />
+                </Col>
+              </Row>
+
+              <Row>
+                <Col md={3}>
+                  Hạn ở ký túc xá:
+                </Col>
+                <Col md={4}>
+
+                  <DatePicker
+                    dateFormat='dd/MM/yyyy'
+                    selected={expiredDateAdded}
+                    onChange={(val) => this.getValueDate('expiredDateAdded', val)}
+                    className='input-datepicker'
+                  />
+                </Col>
+              </Row>
+
               <input type="file" name="file" onChange={this.filesOnChange}/>
+
+
               <p className={'noti-text-style'}><b>{this.state.justFileServiceResponse}</b></p>
 
               {this.state.listExpired ?
@@ -865,7 +934,14 @@ class InfoStudent extends Component{
                 </Table>
                 :
                 <div>
-                  <i className={'noti-text-style'}><u>Lưu ý:</u> file excel(.xlsx) cần có dạng như sau</i>
+                  <i className={'noti-text-style'}><u>Lưu ý:</u> file excel(.xlsx) cần có dạng như sau. Tải mẫu &nbsp;
+                    <span
+                      onClick={() => this.downloadTemplate()}
+                      className={'template'}
+                    >
+                  <u>tại đây</u>
+                </span></i>
+
                 <Table responsive hover bordered size="sm">
                   <thead className="title-excel">
                   <tr>
