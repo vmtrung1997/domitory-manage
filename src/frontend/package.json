@@ -28,6 +28,7 @@
     "react-fullpage": "^0.1.19",
     "react-js-pagination": "^3.0.2",
     "react-loader-spinner": "^2.3.0",
+    "react-native-fs": "^2.13.3",
     "react-redux": "^6.0.1",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",

@@ -6,6 +6,7 @@ import Optimize from '../../../optimization/optimizationNumber/optimizationNumbe
 import { remove_expense, update_expense, submit_expense } from './expensesAction'
 import { ToastsStore } from 'react-toasts';
 import './expenses.css'
+import Checkbox from '../../../components/checkbox/checkbox';
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -17,6 +18,8 @@ class Example extends React.Component {
       capNhat: false,
       soDien: 0,
       soNuoc: 0,
+      thayDien: false,
+      thayNuoc: false,
       soDienResetDau: 0,
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
@@ -27,10 +30,10 @@ class Example extends React.Component {
     var { expenseDetail } = this.props;
     this.setState({ exp: expenseDetail, soDien: expenseDetail.soDien, soNuoc: expenseDetail.soNuoc })
     if (expenseDetail.thayDien) {
-      this.setState({ soDienResetDau: expenseDetail.thayDien.dienCu, soDienResetCuoi: expenseDetail.thayDien.dienMoi })
+      this.setState({ thayDien: true, soDienResetDau: expenseDetail.thayDien.dienCu, soDienResetCuoi: expenseDetail.thayDien.dienMoi })
     }
     if (expenseDetail.thayNuoc) {
-      this.setState({ soNuocResetDau: expenseDetail.thayNuoc.nuocCu, soNuocResetCuoi: expenseDetail.thayNuoc.nuocMoi })
+      this.setState({ thayNuoc: true, soNuocResetDau: expenseDetail.thayNuoc.nuocCu, soNuocResetCuoi: expenseDetail.thayNuoc.nuocMoi })
     }
   }
   handleClose() {
@@ -74,32 +77,34 @@ class Example extends React.Component {
       return;
     }
     expenseDetail.soNuoc = parseInt(this.state.soNuoc);
-    if (expenseDetail.thayDien) {
+    if (this.state.thayDien) {
       if (parseInt(this.state.soDienResetDau) > parseInt(this.state.soDienResetCuoi)) {
         ToastsStore.error("Số điện reset đầu phải nhỏ hơn số điện reset cuối")
         return;
       }
+      expenseDetail.thayDien = {}
       expenseDetail.thayDien.dienCu = parseInt(this.state.soDienResetDau);
       expenseDetail.thayDien.dienMoi = parseInt(this.state.soDienResetCuoi);
     }
-    if (expenseDetail.thayNuoc) {
+    if (this.state.thayNuoc) {
       if (parseInt(this.state.soNuocResetDau) > parseInt(this.state.soNuocResetCuoi)) {
         ToastsStore.error("Số nước reset đầu phải nhỏ hơn số nước reset cuối")
         return;
       }
+      expenseDetail.thayNuoc = {}
       expenseDetail.thayNuoc.nuocCu = parseInt(this.state.soNuocResetDau);
       expenseDetail.thayNuoc.nuocMoi = parseInt(this.state.soNuocResetCuoi);
     }
     console.log(expenseDetail);
-    if (expenseDetail.trangThai===1 && expenseDetail.thayDien && expenseDetail.thayNuoc && !window.confirm(`Cập nhật đồng hồ điện [${expenseDetail.thayDien.dienMoi}] và đồng hồ nước [${expenseDetail.thayNuoc.nuocMoi}]`))
+    if (expenseDetail.trangThai === 1 && this.state.thayDien && this.state.thayNuoc && !window.confirm(`Cập nhật đồng hồ điện [${expenseDetail.thayDien.dienMoi}] và đồng hồ nước [${expenseDetail.thayNuoc.nuocMoi}]`))
       return;
-    else if (expenseDetail.trangThai===1 && expenseDetail.thayDien && !expenseDetail.thayNuoc && !window.confirm(`Cập nhật lại đồng hồ điện: [${expenseDetail.thayDien.dienMoi}]`))
+    else if (expenseDetail.trangThai === 1 && this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Cập nhật lại đồng hồ điện: [${expenseDetail.thayDien.dienMoi}]`))
       return;
-    else if (expenseDetail.trangThai===1 && expenseDetail.thayNuoc && !expenseDetail.thayDien && !window.confirm(`Cập nhật lại đồng hồ nước: [${expenseDetail.thayNuoc.nuocMoi}]`))
+    else if (expenseDetail.trangThai === 1 && this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Cập nhật lại đồng hồ nước: [${expenseDetail.thayNuoc.nuocMoi}]`))
       return;
     self.props.loading(true)
     update_expense(expenseDetail).then(result => {
-      if (result.data.rs==='success') {
+      if (result.data.rs === 'success') {
         ToastsStore.success("Cập nhật chi phí thành công");
         self.props.retriveSearch(true);
       } else {
@@ -112,12 +117,11 @@ class Example extends React.Component {
     })
   }
   handleSubmit = () => {
-    var { expenseDetail } = this.props;
-    if (expenseDetail.thayDien && expenseDetail.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật đồng hồ điện [${expenseDetail.thayDien.dienMoi}] và đồng hồ nước [${expenseDetail.thayNuoc.nuocMoi}])`))
+    if (this.state.thayDien && this.state.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật đồng hồ điện [${this.state.soDienResetCuoi}] và đồng hồ nước [${this.state.soNuocResetCuoi}])`))
       return;
-    else if (expenseDetail.thayDien && !expenseDetail.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ điện: [${expenseDetail.thayDien.dienMoi}])`))
+    else if (this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ điện: [${this.state.soDienResetCuoi}])`))
       return;
-    else if (expenseDetail.thayNuoc && !expenseDetail.thayDien && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ nước: [${expenseDetail.thayNuoc.nuocMoi}])`))
+    else if (this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ nước: [${this.state.soNuocResetCuoi}])`))
       return;
     this.props.loading(true)
     var exp = { id: this.props.expenseDetail._id };
@@ -145,111 +149,115 @@ class Example extends React.Component {
       <React.Fragment>
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <form onSubmit={this.handleUpdate}>
-          <Modal.Header closeButton>
-            <Modal.Title>Chi tiết</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Row>
-              <Col>
-                Tháng/năm
+            <Modal.Header closeButton>
+              <Modal.Title>Chi tiết</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Row>
+                <Col>
+                  Tháng/năm
             <Input disabled={true} value={exp.thang + '/' + exp.nam} />
-              </Col>
-              <Col>Phòng
+                </Col>
+                <Col>Phòng
             <Input disabled={true} value={exp.idPhong.tenPhong} /></Col>
-            </Row>
-            <Row>
-              <Col md='12'>
-                <Table bordered hover responsive size="sm">
-                  <thead className="title-table text-center">
-                    <tr>
-                      <th>Loại</th>
-                      <th>Chỉ số đầu</th>
-                      <th>Chỉ số cuối</th>
-                      <th>Tiêu thụ</th>
-                      <th>Thành tiền</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Điện</td>
-                      <td className='text-right'>{Optimize.OpitmizeNumber(exp.soDienCu)}</td>
-                      <td className='text-right m-b-0'>{this.state.disabled ? Optimize.OpitmizeNumber(this.state.soDien) :
-                        <Input name={'soDien'} type={'number'} min={0} value={this.state.soDien} getValue={this.handleChange} />
-                      }</td>
-                      <td rowSpan={exp.thayDien ? '2' : '1'} className='text-right vertical-middle'>{
-                        Optimize.OpitmizeNumber(exp.thayDien ? this.state.soDien - exp.soDienCu + exp.thayDien.dienMoi - exp.thayDien.dienCu :
-                          this.state.soDien - exp.soDienCu)
-                      }</td>
-                      <td rowSpan={exp.thayDien ? '2' : '1'} className='text-right vertical-middle'>{Optimize.OpitmizeNumber(exp.tienDien)}</td>
-                    </tr>
-                    {exp.thayDien && <tr>
-                      <td>Điện (thay mới)</td>
-                      <td className='text-right m-b-0'>{this.state.disabled ? Optimize.OpitmizeNumber(exp.thayDien.dienCu) :
-                        <Input name={'soDienResetDau'} type={'number'} min={0} value={this.state.soDienResetDau} getValue={this.handleChange} />
-                      }</td>
-                      <td className='text-right m-b-0'>{this.state.disabled ? Optimize.OpitmizeNumber(exp.thayDien.dienMoi) :
-                        <Input name={'soDienResetCuoi'} type={'number'} min={0} value={this.state.soDienResetCuoi} getValue={this.handleChange} />
-                      }</td>
-                    </tr>}
-                    <tr>
-                      <td>Nước</td>
-                      <td className='text-right m-b-0'>{Optimize.OpitmizeNumber(exp.soNuocCu)}</td>
-                      <td className='text-right m-b-0'>{this.state.disabled ? Optimize.OpitmizeNumber(this.state.soNuoc) :
-                        <Input name={'soNuoc'} type={'number'} min={0} value={this.state.soNuoc} getValue={this.handleChange} />
-                      }</td>
-                      <td rowSpan={exp.thayNuoc ? '2' : '1'} className='text-right vertical-middle'>{
-                        Optimize.OpitmizeNumber(exp.thayNuoc ? this.state.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocMoi - exp.thayNuoc.nuocCu :
-                          this.state.soNuoc - exp.soNuocCu)
+              </Row>
+              <Row>
+                <Col md='12'>
+                  <Table bordered hover responsive size="sm">
+                    <thead className="title-table text-center">
+                      <tr>
+                        <th>Loại</th>
+                        <th>Chỉ số đầu</th>
+                        <th>Chỉ số cuối</th>
+                        <th>Tiêu thụ</th>
+                        <th>Thành tiền</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Điện</td>
+                        <td className='text-right'>{Optimize.OpitmizeNumber(exp.soDienCu)}</td>
+                        <td className='text-right m-b-0'>{this.state.disabled ? Optimize.OpitmizeNumber(this.state.soDien) :
+                          <Input name={'soDien'} type={'number'} min={0} value={this.state.soDien} getValue={this.handleChange} />
+                        }</td>
+                        <td rowSpan={this.state.thayDien ? '2' : '1'} className='text-right vertical-middle'>{
+                          Optimize.OpitmizeNumber(this.state.thayDien ? this.state.soDien - exp.soDienCu + this.state.soDienResetCuoi - this.state.soDienResetDau :
+                            this.state.soDien - exp.soDienCu)
+                        }</td>
+                        <td rowSpan={this.state.thayDien ? '2' : '1'} className='text-right vertical-middle'>{Optimize.OpitmizeNumber(exp.tienDien)}</td>
+                      </tr>
+                      {this.state.thayDien && <tr>
+                        <td>Điện (thay mới)</td>
+                        <td className='text-right m-b-0'>{this.state.disabled ? Optimize.OpitmizeNumber(this.state.soDienResetDau) :
+                          <Input name={'soDienResetDau'} type={'number'} min={0} value={this.state.soDienResetDau} getValue={this.handleChange} />
+                        }</td>
+                        <td className='text-right m-b-0'>{this.state.disabled ? Optimize.OpitmizeNumber(this.state.soDienResetCuoi) :
+                          <Input name={'soDienResetCuoi'} type={'number'} min={0} value={this.state.soDienResetCuoi} getValue={this.handleChange} />
+                        }</td>
+                      </tr>}
+                      <tr>
+                        <td>Nước</td>
+                        <td className='text-right m-b-0'>{Optimize.OpitmizeNumber(exp.soNuocCu)}</td>
+                        <td className='text-right m-b-0'>{this.state.disabled ? Optimize.OpitmizeNumber(this.state.soNuoc) :
+                          <Input name={'soNuoc'} type={'number'} min={0} value={this.state.soNuoc} getValue={this.handleChange} />
+                        }</td>
+                        <td rowSpan={this.state.thayNuoc ? '2' : '1'} className='text-right vertical-middle'>{
+                          Optimize.OpitmizeNumber(exp.thayNuoc ? this.state.soNuoc - exp.soNuocCu + this.state.soNuocResetCuoi - this.state.soNuocResetDau :
+                            this.state.soNuoc - exp.soNuocCu)
 
-                      }</td>
-                      <td rowSpan={exp.thayNuoc ? '2' : '1'} className='text-right vertical-middle'>{Optimize.OpitmizeNumber(exp.tienNuoc)}</td>
-                    </tr>
-                    {exp.thayNuoc && <tr>
-                      <td>Nước (thay mới)</td>
-                      <td className='text-right'>{this.state.disabled ? Optimize.OpitmizeNumber(exp.thayNuoc.nuocCu) :
-                        <Input name={'soNuocResetDau'} type={'number'} min={0} value={this.state.soNuocResetDau} getValue={this.handleChange} />
-                      }</td>
-                      <td className='text-right m-b-0'>{this.state.disabled ? Optimize.OpitmizeNumber(exp.thayNuoc.nuocMoi) :
-                        <Input name={'soNuocResetCuoi'} type={'number'} min={0} value={this.state.soNuocResetCuoi} getValue={this.handleChange} />
-                      }</td>
-                    </tr>}
-                    <tr>
-                      <td className='text-center' colSpan={4}>Tiền rác</td>
-                      <td className='text-right'>{Optimize.OpitmizeNumber(exp.tienRac)}</td>
-                    </tr>
-                    <tr>
-                      <td className='text-center' colSpan={4}>Tổng tiền</td>
-                      <td className='text-right danger-text'>{Optimize.OpitmizeNumber(exp.tongTien)}</td>
-                    </tr>
-                    <tr>
-                      <td className='text-center' colSpan={4}>Trạng thái</td>
-                      <td className={exp.trangThai === 1 ? 'text-center success-text' : 'text-center danger-text'}>{exp.trangThai === 1 ? 'Đã thanh toán' : 'Chưa thanh toán'}</td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </Col>
-            </Row>
-            <Row className='text-right warning-text'>
-              <Col md={12} xs={12}> Thành tiền: {exp.tongTienChu}</Col>
-            </Row>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="default" color="default" onClick={this.handleClose}>
-              Đóng
+                        }</td>
+                        <td rowSpan={this.state.thayNuoc ? '2' : '1'} className='text-right vertical-middle'>{Optimize.OpitmizeNumber(exp.tienNuoc)}</td>
+                      </tr>
+                      {this.state.thayNuoc && <tr>
+                        <td>Nước (thay mới)</td>
+                        <td className='text-right'>{this.state.disabled ? Optimize.OpitmizeNumber(this.state.soNuocResetDau) :
+                          <Input name={'soNuocResetDau'} type={'number'} min={0} value={this.state.soNuocResetDau} getValue={this.handleChange} />
+                        }</td>
+                        <td className='text-right m-b-0'>{this.state.disabled ? Optimize.OpitmizeNumber(this.state.soNuocResetCuoi) :
+                          <Input name={'soNuocResetCuoi'} type={'number'} min={0} value={this.state.soNuocResetCuoi} getValue={this.handleChange} />
+                        }</td>
+                      </tr>}
+                      <tr>
+                        <td className='text-center' colSpan={4}>Tiền rác</td>
+                        <td className='text-right'>{Optimize.OpitmizeNumber(exp.tienRac)}</td>
+                      </tr>
+                      <tr>
+                        <td className='text-center' colSpan={4}>Tổng tiền</td>
+                        <td className='text-right danger-text'>{Optimize.OpitmizeNumber(exp.tongTien)}</td>
+                      </tr>
+                      <tr>
+                        <td className='text-center' colSpan={4}>Trạng thái</td>
+                        <td className={exp.trangThai === 1 ? 'text-center success-text' : 'text-center danger-text'}>{exp.trangThai === 1 ? 'Đã thanh toán' : 'Chưa thanh toán'}</td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6} xs={12}>
+                  {this.state.capNhat && <Checkbox check={this.state.thayDien} isCheck={e => this.setState({ thayDien: e.chk })} label={'Thay điện'} />}
+                  {this.state.capNhat && <Checkbox check={this.state.thayNuoc} isCheck={e => this.setState({ thayNuoc: e.chk })} label={'Thay nước'} />}
+                </Col>
+                <Col md={6} xs={12} className="text-right warning-text"> Thành tiền: {exp.tongTienChu}</Col>
+              </Row>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="default" color="default" onClick={this.handleClose}>
+                Đóng
             </Button>
-            {exp.trangThai === 0 && <Button color="danger" onClick={this.handleDelete}>
-              Xóa
+              {exp.trangThai === 0 && <Button color="danger" onClick={this.handleDelete}>
+                Xóa
             </Button>}
-            {!this.state.capNhat && <Button color="warning" onClick={this.handleEdit}>
-              Chỉnh sửa
+              {!this.state.capNhat && <Button color="warning" onClick={this.handleEdit}>
+                Chỉnh sửa
             </Button>}
-            {this.state.capNhat && <Button color="warning" type='submit'>
-              Cập nhật
+              {this.state.capNhat && <Button color="warning" type='submit'>
+                Cập nhật
             </Button>}
-            {exp.trangThai === 0 && <Button variant="default"  onClick={this.handleSubmit}>
-              Xác nhận thanh toán
+              {exp.trangThai === 0 && <Button variant="default" onClick={this.handleSubmit}>
+                Xác nhận thanh toán
         </Button>}
-          </Modal.Footer>
+            </Modal.Footer>
           </form>
         </Modal>
       </React.Fragment>

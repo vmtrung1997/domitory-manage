@@ -17,13 +17,12 @@ class MyPagination extends Component{
 		this.setState({ page: parseInt(page)})
 		this.props.clickPage(parseInt(page))
 	}
-	mySetState = (label, value) => {
-		this.setState({ [label]: value})
+	componentWillReceiveProps(props){
+		if (props.page !== this.state.page){
+			this.setState({page: props.page})
+		}
 	}
 	render(){
-		if(this.props.page !== this.state.page){
-			this.mySetState('page', this.props.page)
-		}
 		var pagination = []
 		for(var i = 0; i < this.props.totalPages; i++)
 		{

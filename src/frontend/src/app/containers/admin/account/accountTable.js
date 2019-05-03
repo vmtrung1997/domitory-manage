@@ -139,7 +139,7 @@ class AccountTable extends Component{
 				}
 				<Table bordered hover responsive size="sm" className="table-activity">
 					<thead className="title-table">
-						<tr>
+						<tr style={{textAlign: 'center'}}>
 							<th>STT</th>
 							<th>Tài khoản</th>
 							<th>Chủ tài khoản</th>

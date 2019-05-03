@@ -3,21 +3,20 @@ import { Row, Col, Table, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
 import { withRouter } from 'react-router-dom';
+import XLSX from 'xlsx';
+import DatePicker from "react-datepicker/es/index";
 
+
+import './infoStudent.css';
 import SearchSelect from '../../../components/selectOption/select'
 import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
-import CheckBox from './../../../components/checkbox/checkbox';
-import './infoStudent.css';
-import refreshToken from './../../../../utils/refresh_token'
+import Checkbox from './../../../components/checkbox/checkbox';
+import refreshToken from './../../../../utils/refresh_token';
 import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
-import DatePicker from "react-datepicker/es/index";
-
-import XLSX from 'xlsx'
-import Checkbox from "../../../components/checkbox/checkbox";
-
+import Print from './infoStudentPrint';
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
 
@@ -30,6 +29,7 @@ class InfoStudent extends Component{
       showRoomHistoryPopup: false,
       showAddPopup: false,
       showDelPopup: false,
+      showPrint: false,
       pageActive: 1,
       totalpages: 1,
       limit: 10,
@@ -265,7 +265,8 @@ class InfoStudent extends Component{
 
   clickPage = async (page) => {
     await this.setState({
-      pageActive: page
+      pageActive: page,
+      loading: true
     });
     this.getData();
   }
@@ -392,7 +393,6 @@ class InfoStudent extends Component{
       reader.readAsArrayBuffer(file);
 
     })
-
   };
 
   handleImportData = async(props) => {
@@ -434,6 +434,99 @@ class InfoStudent extends Component{
     })
   };
 
+  changeState = (key, value) => {
+    this.setState({ [key]: value })
+  }
+
+  handleExportData = () => {
+    const { valueExport: {
+      hoTenEx,
+      mssvEx,
+      ngaySinhEx,
+      gioiTinhEx,
+      diaChiEx,
+      emailEx,
+      sdtEx,
+      sdtNguoiThanEx,
+      tonGiaoEx,
+      danTocEx,
+      ngayVaoOEx,
+      ngayHetHanEx,
+      diemHDEx,
+      phongEx,
+      truongEx,
+      nganhHocEx,
+      ghiChuEx
+    }, infoList } = this.state;
+
+    let header = {}
+    if(hoTenEx)
+      header.hoTen = "Họ tên"
+    if(mssvEx)
+      header.MSSV = "MSSV"
+    if(ngaySinhEx)
+      header.ngaySinh = "Ngày sinh"
+    if(gioiTinhEx)
+      header.gioiTinh = "Giới tính"
+    if(diaChiEx)
+      header.diaChi = "Địa chỉ"
+    if(emailEx)
+      header.email = "Email"
+    if(sdtEx)
+      header.sdt = "Số điện thoại"
+    if(sdtNguoiThanEx)
+      header.sdtNguoiThan = "số điện thoại người thân"
+    if(tonGiaoEx)
+      header.tonGiao = "Tôn giáo"
+    if(danTocEx)
+      header.danToc = "Dân tộc"
+    if(ngayVaoOEx)
+      header.ngayVaoO = "Ngày vào ở"
+    if(ngayHetHanEx)
+      header.ngayHetHan = "Ngày hết hạn"
+    if(phongEx)
+      header.phong = "Phòng"
+    if(truongEx)
+      header.truong = "Trường"
+    if(nganhHocEx)
+      header.nganhHoc = "Ngành học"
+    // if(ghiChuEx)
+    //   header.email = "Email"
+
+    let data = infoList && infoList.map(record => {
+      let gender = record.gioiTinh ? "nam" : "nữ"
+      return({
+        hoTen : hoTenEx ? record.hoTen : undefined,
+        MSSV : mssvEx ? record.MSSV : undefined,
+        ngaySinh : ngaySinhEx ? record.ngaySinh : undefined,
+        gioiTinh : gioiTinhEx ? gender : undefined,
+        diaChi : diaChiEx ? record.diaChi : undefined,
+        email : emailEx ? record.email : undefined,
+        sdt : sdtEx ? record.sdt : undefined,
+        sdtNguoiThan : sdtNguoiThanEx ? record.sdtNguoiThan : undefined,
+        tonGiao : tonGiaoEx ? record.tonGiao : undefined,
+        danToc : danTocEx ? record.danToc : undefined,
+        ngayVaoO : ngayVaoOEx ? record.ngayVaoO : undefined,
+        ngayHetHan : ngayHetHanEx ? record.ngayHetHan : undefined,
+        //data.diemHD : diemHDEx ? record.hoTen : undefined,
+        phong : phongEx && record.idPhong ? record.idPhong.tenPhong : undefined,
+        truong : truongEx && record.truong ? record.truong.tenTruong : undefined,
+        nganhHoc : nganhHocEx && record.nganhHoc ? record.nganhHoc.tenNganh : undefined,
+        ghiChu : ghiChuEx ? record.hoTen : undefined
+    })})
+
+    data.unshift(header)
+
+    console.log('==report', data)
+
+    var ws = XLSX.utils.json_to_sheet(data, {skipHeader:true});
+
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+    XLSX.writeFile(wb, "report.xlsx");
+    this.handlePopup('export', false)
+  }
 
   render(){
     console.log('==render state', this.state);
@@ -476,6 +569,7 @@ class InfoStudent extends Component{
     return(
       <div>
         <Loader loading={this.state.loading}/>
+        <Print show={this.state.showPrint} />
         <Title>
           Thông tin sinh viên
         </Title>
@@ -593,12 +687,6 @@ class InfoStudent extends Component{
                   >
                     <i className="fas fa-address-card"/>
                   </Button>
-                  <Button
-                    variant={'rounded'}
-                    color={'success'}
-                  >
-                    <i className="fas fa-print"/>
-                  </Button>
                 </div>
               </Col>
 
@@ -672,10 +760,10 @@ class InfoStudent extends Component{
             </Modal.Body>
             <Modal.Footer>
               <Button variant="outline" onClick={() =>this.handlePopup('add', false)}>
-                Close
+                Đóng
               </Button>
               <Button  onClick={() =>this.handleSubmitAddStudent()}>
-                Save Changes
+                Thêm tài khoản
               </Button>
             </Modal.Footer>
           </Modal>
@@ -709,18 +797,18 @@ class InfoStudent extends Component{
 
                   <Table responsive bordered >
                     <thead>
-                    <tr>
-                      <th>#</th>
+                    <tr style={{textAlign: 'center'}}>
+                      <th>STT</th>
                       <th>Thời gian</th>
                       <th>Phòng</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {roomHistory && roomHistory.map(his => {
+                    {roomHistory && roomHistory.map((his, index) => {
                       let { idPhong, ngayChuyen } = his.data;
                       let date = new Date(ngayChuyen);
                       return(
-                        <tr>
+                        <tr key={index}>
                           <td>{his.key}</td>
                           <td>{`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`}</td>
                           <td>{idPhong.tenPhong}</td>
@@ -753,7 +841,7 @@ class InfoStudent extends Component{
               {this.state.listExpired ?
                 <Table responsive bordered size="sm">
                   <thead className="title-table">
-                  <tr>
+                  <tr style={{textAlign: 'center'}}>
                     <th>STT</th>
                     <th>MSSV</th>
                     <th>Họ và Tên</th>
@@ -1007,11 +1095,11 @@ class InfoStudent extends Component{
 
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handlePopup('import', false)}>
+              <Button variant="outline" onClick={() =>this.handlePopup('export', false)}>
                 Cancel
               </Button>
-              <Button  onClick={() => this.handleImportData()}>
-                Upload
+              <Button id={'saveFile'} onClick={() => this.handleExportData()}>
+                Save file
               </Button>
             </Modal.Footer>
           </Modal>
@@ -1028,7 +1116,8 @@ class InfoStudent extends Component{
                   Hiện tại
                 </Button>
                 <Button
-                  color={isOld ? 'default' : 'outline'}
+                color={'default'}
+                  variant={isOld ? 'default' : 'outline'}
                   onClick={() => this.handleChooseOption(true)}
                 >
                   Sinh viên cũ
@@ -1038,7 +1127,7 @@ class InfoStudent extends Component{
 
             <Table responsive hover bordered size="sm">
               <thead className="title-table">
-              <tr>
+              <tr style={{textAlign: 'center'}}>
                 <th>STT</th>
                 <th>MSSV</th>
                 <th>Họ và Tên</th>
@@ -1059,16 +1148,25 @@ class InfoStudent extends Component{
                     <td>{info.truong ? info.truong.tenTruong : 'Chưa xác định'}</td>
                     <td>
                       {info.idPhong ? info.idPhong.tenPhong : '-----'}
-                      <Button color={'info'} variant={'outline'} style={{marginLeft: '15px'}} onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}>
+                      <div className='float-right'> <Button color={'info'} variant={'outline'} style={{marginLeft: '15px'}} onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}>
                         <i className="fas fa-history"/>
                       </Button>
+                      </div>
                       </td>
                     <td style={{display: 'flex', justifyContent: 'center'}}>
-                      <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.onViewDetail(info)}>
+                       <Button
+                          title={'In thẻ'}
+                          color={'success'}
+                          style={{marginRight: '10px'}}
+                          onClick={ e => {this.changeState('showPrint', true)}}
+                        >
+                          <i className="fas fa-print"/>
+                        </Button>
+                      <Button color={'warning'} style={{marginRight: '10px'}} onClick={() => this.onViewDetail(info)}>
                         <i className="fas fa-edit"/>
                       </Button>
                       {!isOld &&
-                        <CheckBox name={info.MSSV} isCheck={this.handleCheckDelete} check={this.handleValueCheck(info.MSSV)}/>
+                        <Checkbox name={info.MSSV} isCheck={this.handleCheckDelete} check={this.handleValueCheck(info.MSSV)}/>
                       }
                     </td>
                   </tr>

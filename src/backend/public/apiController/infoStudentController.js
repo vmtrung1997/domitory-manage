@@ -1,4 +1,3 @@
-
 require('../models/TaiKhoan');
 var multer  = require('multer'),
     upload = multer().any();
@@ -8,84 +7,56 @@ const Account = require('../models/TaiKhoan');
 const Room = require('../models/Phong');
 const RoomHistory = require('../models/LichSuPhong');
 const ActivityResults = require('../models/KetQuaHD');
+const Activity = require('../models/HoatDong');
 const ReToken = require('../models/refreshToken');
 let auth = require('../repos/authRepo');
 const md5 = require('md5');
+var fs = require('fs')
 
 function addOneStudent(data) {
-  return new Promise( async (resolve, reject) => {
-    await Account.findOne({username: data.mssv})
-      .then(async result => {
-        console.log('==find mssv: ', result)
+  return new Promise( (resolve, reject) => {
+    Account.findOne({username: data.mssv})
+    .then( result => {
+      if(result){
+        console.log('==exits ')
+        resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data})
+      } else {
+        let acc = new Account({
+          username: data.mssv,
+          password: md5(data.mssv),
+          loai: "SV",
+          isDelete: 0,
+        });
+        //----save account---------
+        acc.save().catch(err =>{
+          resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
+        })
 
-        if(result){
-          console.log('==exits ')
-          //return {status: 409, msg: 'Mã số sinh viên đã tồn tại!'};
-          resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data})
-        }
+        let student = new Profile({
+          idTaiKhoan: acc._id,
+          hoTen: data.hoTen,
+          MSSV: data.mssv,
+          ngaySinh: data.ngaySinh,
+          ngayVaoO: new Date()
+        });
+        //------save profile-------
+        student.save().catch(err =>{
+          resolve( {status: 400, msg: 'tạo thông tin cá nhân không thành công!', data: data})
+        })
 
-        //res.status(409).json({msg: 'Mã số sinh viên đã tồn tại!'})
-        else {
-          let accStudent = {
-            username: data.mssv,
-            password: md5(data.mssv),
-            loai: "SV",
-            isDelete: 0,
-          };
-          let acc = new Account(accStudent);
-          //----save account---------
-          await acc.save().then(async (result) => {
-            let infoStudent = {
-              idTaiKhoan: result._id,
-              hoTen: data.hoTen,
-              MSSV: data.mssv,
-              ngaySinh: data.ngaySinh,
-              ngayVaoO: new Date()
-            };
-            let student = new Profile(infoStudent);
-            console.log('==new student ', student)
+        acc.idProfile = student._id;
+        acc.save().catch(err =>{
+          resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
+        })
 
-            //------save profile-------
-            await student.save().then(result => {
-              console.log('==register student: success', result);
-              accStudent.idProfile = result._id;
-              Account.findOneAndUpdate({_id: result.idTaiKhoan}, { $set: {idProfile: result._id} }).then(result => {
-                resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
-              }).catch(err => {
-                resolve( {status: 400, msg: 'Thêm sinh viên không thành công!', data: data})
-              })
-              //res.status(200).json(req.body);
-            }).catch(err => {
-              console.log('==register student err: ', err);
-              resolve( {status: 400, msg: 'tạo profile err!', data: data})
-              //res.status(500).json({msg: 'tạo profile err!'});
-            })
-            //--------end save profile----------
-          }).catch(err => {
-            console.log('==register account err: ', err);
-            resolve( {status: 500, msg: 'tạo account err', data: data})
-
-            //res.status(500).json({msg: 'tạo account err'});
-          })
-          //-----end catch save account-------
-          // Room.findOne({_id: req.body.idPhong})
-          //   .then(result => {
-          //     result.soNguoi = result.soNguoi + 1
-          //     result.save()
-          //   }).catch(err =>{
-          //     console.log('==phong err', err)
-          //    res.status(500).json({msg: 'update phong err'});
-          // })
-        }
-        //----------end điều kiện mssv tồn tại-------------
-      }).catch(err => {
-        console.log('==err mssv', err)
-        resolve( {status: 500, msg: 'truy vấn mssv thẻ err!', data: data})
-        //res.status(400).json({msg: 'truy vấn mssv thẻ err!'})
-      });
+        resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
+      }
+    }).catch(err => {
+      console.log('==err mssv', err)
+      resolve( {status: 500, msg: 'truy vấn mssv thẻ err!', data: data})
+    });
   })
 
-  //----------end catch mssv tồn tại----------------
 };
 
 exports.addStudent =async (req, res) => {
@@ -224,6 +195,20 @@ exports.updateInfo = (req,res) => {
   })
 };
 
+// exports.getListStudent = (req, res) => {
+//   const params = req.body;
+//
+//   var populateQuery = [
+//     {path:'idPhong', select:'title pages'},
+//     {path:'truong', select:'director'},
+//     {path:'truong', select:'director'}
+//     ];
+//
+//   Person.find({})
+//     .populate(populateQuery)
+//     .execPopulate()
+// }
+
 exports.getListStudent = (req, res) => {
   let query = {};
   const params = req.body;
@@ -296,9 +281,13 @@ exports.uploadImage = (req, res) => {
   })
 };
 
-exports.getActivities = (req, res) => {
+exports.getListActivities = (req, res) => {
   const id = req.params.id;
-  ActivityResults.find({idSV: id}).then(result => {
-
+  ActivityResults.find({idSV: id})
+    .populate({ path: "idHD" })
+    .then(result => {
+      res.status(200).json(result)
+  }).catch(err => {
+    res.status(400).json({msg: "Lỗi"})
   })
 };

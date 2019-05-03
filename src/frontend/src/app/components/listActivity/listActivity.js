@@ -105,36 +105,38 @@ class ListActivity extends React.Component {
     var secret = localStorage.getItem("secret");
     const decode = jwt_decode(secret);
     secret = JSON.parse(secret);
-    var id = decode.user.profile._id;
-    axios.defaults.headers["x-access-token"] = secret.access_token;
-    //Lấy thông tin hoạt động
-    var activity = [];
-    axios
-      .post(`http://localhost:4000/api/student/get-list-activities`, {
-        id: id,
-        options: options
-      })
-      .then(res => {
-        if (this.state.totalPages === 1) {
-          this.setState({
-            totalPages: res.data.totalPages
-          });
-        }
-        res.data.data.map(item => {
-          if (item) {
-            item.check = false;
-            activity.push(item);
-            this.props.getActivity(item);
+    if(decode.user.profile){
+      var id = decode.user.profile._id;
+      axios.defaults.headers["x-access-token"] = secret.access_token;
+      //Lấy thông tin hoạt động
+      var activity = [];
+      axios
+        .post(`http://localhost:4000/api/student/get-list-activities`, {
+          id: id,
+          options: options
+        })
+        .then(res => {
+          if (this.state.totalPages === 1) {
+            this.setState({
+              totalPages: res.data.totalPages
+            });
           }
-          return true;
+          res.data.data.map(item => {
+            if (item) {
+              item.check = false;
+              activity.push(item);
+              this.props.getActivity(item);
+            }
+            return true;
+          });
+        })
+        .then(() => {
+          this.setState({
+            activities: activity,
+            isLoad: false
+          });
         });
-      })
-      .then(() => {
-        this.setState({
-          activities: activity,
-          isLoad: false
-        });
-      });
+    }
   };
 
   clickPage = e => {

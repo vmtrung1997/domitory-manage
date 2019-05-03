@@ -1,0 +1,41 @@
+.card{
+	border-radius: 20px;
+}
+.logo-card{
+	height: 50px;
+	width: 50px;
+	border-radius: 50%;
+}
+.header-card{
+	border-radius: 20px 20px 0 0;
+	background-color: #2F7EC0;
+	display: flex;
+	justify-content: center;
+}
+.header-card-title{
+	color: white !important;
+	text-align: center;
+}
+.avt-card{
+	height: 160px !important;
+	width: 120px !important;
+}
+.body-card{
+	display: flex;
+	padding: 5px 15px;
+}
+.body-card-right{
+	width: 100%;
+	background-color: white;
+	/*background-image: url('../../../../utils/image/logo_HCMUS.jpg');*/
+	background-size: 200px 150px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.footer-card{
+	text-align: center;
+	color: white;
+	font-size: 12px;
+	background-color: #2F7EC0;
+	border-radius: 0 0 20px 20px;
+}

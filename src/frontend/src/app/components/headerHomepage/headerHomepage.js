@@ -39,7 +39,6 @@ class HeaderHomepage extends Component {
     });
   };
 
-
   abc = show =>{
     this.setState({
       showResetPasswordModal: show
@@ -57,9 +56,16 @@ class HeaderHomepage extends Component {
 
   setUserName = secret => {
     const decode = jwt_decode(secret);
-    var name = decode.user.profile.hoTen.split(" ");
-    this.setState({ name: name[name.length - 2] + ' ' + name[name.length - 1]});
+    if(decode.user.profile){
+      var name = decode.user.profile.hoTen.split(" ");
+      if(name.length > 1){
+        this.setState({ name: name[name.length - 2] + ' ' + name[name.length - 1]});
+      } else {
+        this.setState({ name: name[0]});
+      }
+    }
   };
+  
   changePass = () =>{
     this.setState({
       showPasswordModal: true

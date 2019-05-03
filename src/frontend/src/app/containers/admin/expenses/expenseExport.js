@@ -5,11 +5,11 @@ import Checkbox from '../../../components/checkbox/checkbox'
 // import Input from '../../../components/input/input'
 import Select from '../../../components/selectOption/select'
 import { report_expense } from './expensesAction'
-import {get_month, get_year, get_status} from './expenseRepo'
+import { get_month, get_year, get_status } from './expenseRepo'
 import { ToastsStore } from 'react-toasts';
-import {saveAs} from 'file-saver'
+import { saveAs } from 'file-saver'
 class Example extends React.Component {
-  
+
   constructor(props, context) {
     super(props, context);
     this.handleShow = this.handleShow.bind(this);
@@ -29,10 +29,10 @@ class Example extends React.Component {
       disableToMonth: true
     }
   }
-  componentDidMount(){
+  componentDidMount() {
   }
   handleClose() {
-    this.setState({ 
+    this.setState({
       show: false,
       loading: false,
       fromMonth: 1,
@@ -52,28 +52,28 @@ class Example extends React.Component {
     this.setState({ show: true });
   }
   monthFromSelected = (value) => {
-    this.setState({fromMonth: value})
+    this.setState({ fromMonth: value })
   }
   yearFromSelected = (value) => {
-    this.setState({fromYear: value})
+    this.setState({ fromYear: value })
   }
   monthToSelected = (value) => {
-    this.setState({toMonth: value});
+    this.setState({ toMonth: value });
   }
   yearToSelected = (value) => {
-    this.setState({toYear: value});
+    this.setState({ toYear: value });
   }
   s2ab = (s) => {
     var buf = new ArrayBuffer(s.length);
     var view = new Uint8Array(buf);
-    for (var i=0; i!==s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+    for (var i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
     return buf;
   }
   handleSubmit = () => {
-    var self= this;
+    var self = this;
     this.props.loading(true)
     this.handleClose()
-    var report = {...this.state};
+    var report = { ...this.state };
     report.fromMonth = parseInt(report.fromMonth)
     report.toMonth = parseInt(report.toMonth)
     report.fromYear = parseInt(report.fromYear)
@@ -81,28 +81,31 @@ class Example extends React.Component {
     report.status = parseInt(report.status)
     if (report.room === '0')
       report.room = 0;
-    report_expense(report).then(result=> {
-      var byteCharacters = window.atob(result.data.file);
-      var byteNumbers = new Array(byteCharacters.length);
-      for (var i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    report_expense(report).then(result => {
+      if (result.data.rs === 'fail') {
+        ToastsStore.error(result.data.msg)
+      } else {
+        var byteCharacters = window.atob(result.data.file);
+        var byteNumbers = new Array(byteCharacters.length);
+        for (var i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        var byteArray = new Uint8Array(byteNumbers);
+        var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, result.data.filename)
       }
-      var byteArray = new Uint8Array(byteNumbers);
-      var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
       self.props.loading(false);
-      
-      saveAs(blob, result.data.filename)
-      
-    }).catch(err => {});
+
+    }).catch(err => { });
   }
   handleCheck = (obj) => {
-    this.setState({[obj.value]: obj.chk})
+    this.setState({ [obj.value]: obj.chk })
   }
   statusSelected = (value) => {
-    this.setState({status: value})
+    this.setState({ status: value })
   }
   roomSelected = (value) => {
-    this.setState({room: value})
+    this.setState({ room: value })
   }
   getValue = (target) => {
     this.setState({
@@ -110,18 +113,18 @@ class Example extends React.Component {
     })
   }
   handleCheckToMonth = () => {
-    this.setState({disableToMonth: !this.state.disableToMonth})
+    this.setState({ disableToMonth: !this.state.disableToMonth })
   }
   render() {
     var month = get_month().filter(m => m.value !== 0);
     var year = get_year().filter(y => y.value !== 0);
     var trangThai = get_status();
-    var {roomList} = this.props
+    var { roomList } = this.props
     return (
       <>
         <Button title={'Xuất báo cáo'} onClick={this.handleShow}>
-        <i className="fas fa-file-export" />
-				</Button>
+          <i className="fas fa-file-export" />
+        </Button>
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <Modal.Header closeButton>
             <Modal.Title>Xuất báo cáo</Modal.Title>
@@ -129,18 +132,18 @@ class Example extends React.Component {
           <Modal.Body>
             <Row>
               <Col>
-              <div style={{marginBottom:'8px'}}>Tháng</div>
-              <Row>
-                <Col><Select options={month} selected={this.monthFromSelected} /></Col>
-                <Col><Select options={year} selected={this.yearFromSelected} /></Col>
-              </Row>
+                <div style={{ marginBottom: '8px' }}>Tháng</div>
+                <Row>
+                  <Col><Select options={month} selected={this.monthFromSelected} /></Col>
+                  <Col><Select options={year} selected={this.yearFromSelected} /></Col>
+                </Row>
               </Col>
               <Col>
-              <Checkbox label={'Đến tháng'} check={!this.state.disableToMonth} name={'sdtt'} isCheck={this.handleCheckToMonth}/>
-              <Row>
-                <Col><Select options={month} selected={this.monthToSelected} disabled={this.state.disableToMonth}/></Col>
-                <Col><Select options={year} selected={this.yearToSelected} disabled={this.state.disableToMonth}/></Col>
-              </Row>
+                <Checkbox label={'Đến tháng'} check={!this.state.disableToMonth} name={'sdtt'} isCheck={this.handleCheckToMonth} />
+                <Row>
+                  <Col><Select options={month} selected={this.monthToSelected} disabled={this.state.disableToMonth} /></Col>
+                  <Col><Select options={year} selected={this.yearToSelected} disabled={this.state.disableToMonth} /></Col>
+                </Row>
               </Col>
             </Row>
             <Row>
@@ -151,12 +154,12 @@ class Example extends React.Component {
               <Select options={trangThai} selected={this.statusSelected} /></Col>
             </Row>
             <Row>
-              <Col><Checkbox label={'Số điện'} check={this.state.soDien} name={'soDien'} isCheck={this.handleCheck}/></Col>
-              <Col><Checkbox label={'Số nước'} check={this.state.soNuoc} name={'soNuoc'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Số điện'} check={this.state.soDien} name={'soDien'} isCheck={this.handleCheck} /></Col>
+              <Col><Checkbox label={'Số nước'} check={this.state.soNuoc} name={'soNuoc'} isCheck={this.handleCheck} /></Col>
             </Row>
             <Row>
-              <Col><Checkbox label={'Tiền rác'} check={this.state.tienRac} name={'tienRac'} isCheck={this.handleCheck}/></Col>
-              <Col><Checkbox label={'Tổng tiền'} check={this.state.tongTien} name={'tongTien'} isCheck={this.handleCheck}/></Col>
+              <Col><Checkbox label={'Tiền rác'} check={this.state.tienRac} name={'tienRac'} isCheck={this.handleCheck} /></Col>
+              <Col><Checkbox label={'Tổng tiền'} check={this.state.tongTien} name={'tongTien'} isCheck={this.handleCheck} /></Col>
             </Row>
           </Modal.Body>
           <Modal.Footer>
