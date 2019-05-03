@@ -44,7 +44,13 @@ class Confirm extends Component {
       this.setState({ show: props.show })
     }
     if (props.printTable !== this.state.tableData) {
-      this.setState({ tableData: props.printTable })
+      console.log(props.printTable);
+      this.setState({ tableData: {
+        month: parseInt(props.printTable.month),
+        year: parseInt(props.printTable.year),
+        room: props.printTable.room,
+        status: parseInt(props.printTable.status)
+      } })
     }
     if (props.printSelected !== this.state.selectedData) {
       this.setState({ selectedData: props.printSelected })
@@ -67,7 +73,8 @@ class Confirm extends Component {
     var data = type === 'table' ? this.state.tableData : this.state.selectedData;
     get_data_print({ type: type, data: data }).then(result => {
       if (result.data.rs === 'success') {
-        this.setState({ printComponent: this.componentPrint(this.printData(result.data.data)) })
+        var printCpn=this.componentPrint(this.printData(result.data.data));
+        this.setState({ printComponent: printCpn })
       }
     })
   }
@@ -76,7 +83,7 @@ class Confirm extends Component {
       <div>
         {data.map((value, index) => {
           return (
-            <div key={index} className={'page-break'}>
+            <div key={index} style={{height: "100vh"}}>
               <div>
                 {this.printDetailStructure(value)}
               </div>
@@ -158,7 +165,6 @@ class Confirm extends Component {
   printDetailStructure = (data) => {
     let exp = data.detail
     let { fromDay, toDay, admin, lastDay } = this.state
-    console.log(fromDay);
     return (<div className={'layout-print'}>
       <Row className='m-b-10'>
         <Col xs={6}>
@@ -256,6 +262,7 @@ class Confirm extends Component {
           <div>PHÓ BỘ PHẬN QUẢN LÝ KÝ TÚC XÁ</div>
           <p>&nbsp;</p>
           <p>&nbsp;</p>
+          <p>&nbsp;</p>
           <div style={{ textTransform: 'uppercase' }}>{admin}</div>
         </Col>
       </Row>
@@ -268,7 +275,7 @@ class Confirm extends Component {
     return (
       <>
         <ReactToPrint
-          trigger={() => <button type='button' id='ktx-print'>click to print</button>}
+          trigger={() => <button type='button' id='ktx-print'>Click to print</button>}
           content={() => this.componentRef}
           onBeforePrint={() => this.afterPrint()}
         />
@@ -291,7 +298,7 @@ class Confirm extends Component {
           <Modal.Body>
           <Row className='m-b-10'>
 						<Col>
-						Từ ngày
+						Ngày bắt đầu
 						<div>
 							<DatePicker 
 								startDate={this.state.fromDay}
@@ -300,7 +307,7 @@ class Confirm extends Component {
 						</div>
 						</Col>
 						<Col>
-						Đến ngày
+						Ngày kết thúc
 						<div>
 							<DatePicker
 								startDate={this.state.toDay}
@@ -311,7 +318,7 @@ class Confirm extends Component {
 					</Row>
           <Row>
           <Col>
-          Ngày cuối
+          Hạn cuối
 						<div>
 							<DatePicker
 								startDate={this.state.lastDay}

@@ -15,6 +15,7 @@ import { imageFile, defaultStudentImg } from '../../../function/imageFunction'
 import DatePicker from "react-datepicker/es/index";
 import './infoStudentFile.css';
 import { getSchools, getMajor } from './../university/universityAction'
+import Loader from '../../../components/loader/loader';
 
 class InfoStudentDetail extends Component {
   constructor(props) {
@@ -28,7 +29,7 @@ class InfoStudentDetail extends Component {
       roomOptions: [],
       schoolOptions: [],
       majorOptions: [],
-
+      loading: false,
       custom: false,
     }
   }
@@ -36,7 +37,7 @@ class InfoStudentDetail extends Component {
   componentDidMount() {
     this.getElement('room');
     this.getElement('school');
-    this.getActivities('5cbad213fb6fc041ab948375');
+    // this.getActivities('5cbad213fb6fc041ab948375');
     const { info } = this.props.location.state;
     if(info.truong){
       this.setState({
@@ -65,9 +66,10 @@ class InfoStudentDetail extends Component {
       })
 
     var birthDate = info.ngaySinh ? new Date(info.ngaySinh) : new Date();
+    var ngayHetHan = info.ngayHetHan ? new Date(info.ngayHetHan): new Date();
     //var stringDate = new DbirthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     this.setState({
-      info: { ...info, ngaySinh: birthDate }
+      info: { ...info, ngaySinh: birthDate, ngayHetHan: ngayHetHan }
     })
   }
 
@@ -117,13 +119,6 @@ class InfoStudentDetail extends Component {
     })
   }
 
-  arrayBufferToBase64(buffer) {
-    var binary = '';
-    var bytes = [].slice.call(new Uint8Array(buffer));
-    bytes.forEach((b) => binary += String.fromCharCode(b));
-    return window.btoa(binary);
-  };
-
   onChange = (event) => {
     this.setState({
       info: { ...this.state.info, [event.name]: event.value }
@@ -139,20 +134,24 @@ class InfoStudentDetail extends Component {
   handleSaveChange = async () => {
     await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
+    this.setState({loading: true})
     axios.post(`/manager/infoStudent/update`,
       {
         info: {
           ...this.state.info,
           idTaiKhoan: this.state.info.idTaiKhoan._id,
+          img: this.state.info.img,
           nganhHoc: this.state.info.nganhHoc && this.state.info.nganhHoc._id,
           truong: this.state.info.truong && this.state.info.truong._id,
           idPhong: this.state.info.idPhong && this.state.info.idPhong._id
         }
-      }, { headers: { 'x-access-token': secret.access_token } }
+      }, { headers: { 'x-access-token': secret.access_token} }
     ).then(result => {
       ToastsStore.success("Cập nhật thành công!");
+      this.setState({loading: false})
     }).catch(err => {
       ToastsStore.error("Cập nhật không thành công!");
+      this.setState({loading: false})
     })
   }
 
@@ -224,32 +223,22 @@ class InfoStudentDetail extends Component {
     })
   };
 
-  fixdata = (data) => {
-    var o = "", l = 0, w = 10240;
-    for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
-    o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
-    return o;
-  }
   onUpload = () => {
     var fileReader = new FileReader();
     if (!this.uploadFile.files.length)
       return;
     fileReader.readAsDataURL(this.uploadFile.files[0]);
+    
     fileReader.onload = (e) => {
       var data = e.target.result;
       var testImg = new Image();
       testImg.src = data;
       testImg.onload = () => {
-        console.log(e.target.result);
-        var data = new Buffer(e.target.result.split(",")[1], "base64");
-        console.log(data);
         this.setState({
           info: {
             ...this.state.info,
-            img: {
-              contentType: e.target.result.split(",")[0],
-              data: {data: data, type: 'Buffer'}
-            }
+            img: e.target.result
+            
           }
         })
       }
@@ -257,6 +246,9 @@ class InfoStudentDetail extends Component {
         alert('Lỗi ảnh')
       }
     }
+  }
+  getDateType = (dateString) =>{
+    return new Date(dateString);
   }
   render() {
     console.log('==state render', this.state);
@@ -267,7 +259,6 @@ class InfoStudentDetail extends Component {
       diaChi,
       maThe,
       ngayVaoO,
-      ngayHetHan,
       moTa,
       danToc,
       sdt,
@@ -279,12 +270,14 @@ class InfoStudentDetail extends Component {
       idTaiKhoan,
       diemHD,
       img,
+      ngayHetHan,
 
     } = info;
-    var imgFile = typeof img === 'string' ? img : (imageFile(img) ? imageFile(img) : defaultStudentImg)
+    var imgFile = img ? img : defaultStudentImg
 
     return (
       <div>
+        <Loader loading={this.state.loading}/>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground />
         <Title>
           Thông tin sinh viên
@@ -332,8 +325,6 @@ class InfoStudentDetail extends Component {
                           <Input value={MSSV} disabled />
                         </Col>
                       </Row>
-
-
 
                       <Row>
                         <Col md={2}>

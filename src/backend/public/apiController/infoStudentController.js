@@ -1,4 +1,3 @@
-
 require('../models/TaiKhoan');
 var multer  = require('multer'),
     upload = multer().any();
@@ -11,6 +10,7 @@ const ActivityResults = require('../models/KetQuaHD');
 const ReToken = require('../models/refreshToken');
 let auth = require('../repos/authRepo');
 const md5 = require('md5');
+var fs = require('fs')
 
 function addOneStudent(data) {
   return new Promise( async (resolve, reject) => {

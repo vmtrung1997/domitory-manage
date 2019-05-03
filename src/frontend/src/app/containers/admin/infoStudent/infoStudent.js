@@ -265,7 +265,8 @@ class InfoStudent extends Component{
 
   clickPage = async (page) => {
     await this.setState({
-      pageActive: page
+      pageActive: page,
+      loading: true
     });
     this.getData();
   }
@@ -716,11 +717,11 @@ class InfoStudent extends Component{
                     </tr>
                     </thead>
                     <tbody>
-                    {roomHistory && roomHistory.map(his => {
+                    {roomHistory && roomHistory.map((his, index) => {
                       let { idPhong, ngayChuyen } = his.data;
                       let date = new Date(ngayChuyen);
                       return(
-                        <tr>
+                        <tr key={index}>
                           <td>{his.key}</td>
                           <td>{`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`}</td>
                           <td>{idPhong.tenPhong}</td>
@@ -1028,7 +1029,8 @@ class InfoStudent extends Component{
                   Hiện tại
                 </Button>
                 <Button
-                  color={isOld ? 'default' : 'outline'}
+                color={'default'}
+                  variant={isOld ? 'default' : 'outline'}
                   onClick={() => this.handleChooseOption(true)}
                 >
                   Sinh viên cũ
@@ -1059,9 +1061,10 @@ class InfoStudent extends Component{
                     <td>{info.truong ? info.truong.tenTruong : 'Chưa xác định'}</td>
                     <td>
                       {info.idPhong ? info.idPhong.tenPhong : '-----'}
-                      <Button color={'info'} variant={'outline'} style={{marginLeft: '15px'}} onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}>
+                      <div className='float-right'> <Button color={'info'} variant={'outline'} style={{marginLeft: '15px'}} onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}>
                         <i className="fas fa-history"/>
                       </Button>
+                      </div>
                       </td>
                     <td style={{display: 'flex', justifyContent: 'center'}}>
                       <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.onViewDetail(info)}>

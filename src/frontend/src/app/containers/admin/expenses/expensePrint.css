@@ -13,10 +13,12 @@
 .none-display {
   display: none
 }
+
 .display {
   display: block
 }
-.print-button{
+
+.print-button {
   cursor: pointer;
   border: 1px solid #1ab394;
   border-radius: 2px;
@@ -24,45 +26,60 @@
   background: #1ab394;
   color: white;
 }
-.print-button:hover{
+
+.print-button:hover {
   background: white;
   color: #1ab394!important;
 }
-.layout-print{
+
+.layout-print {
   font-family: 'Times New Roman', Times, serif;
   font-size: 20px!important;
   padding: 10px 50px;
 }
-.suggest{
+
+.suggest {
   font-size: 70%;
 }
-ul.suggest-text{
+
+ul.suggest-text {
   padding-left: 5px;
   margin-left: 10px;
 }
 
-ul.suggest-text>li{
+ul.suggest-text>li {
   list-style-type: disc;
   text-indent: 20px;
 }
-.suggest-text>li span{
+
+.suggest-text>li span {
   position: relative;
-  left:10px;
+  left: 10px;
 }
-.bold-style{
+
+.bold-style {
   font-weight: bold!important
 }
-.title-print{
+
+.title-print {
   font-size: 180%;
   font-weight: bold;
 }
-.page-break{
+@media print {
+iframe div.page-break {
   page-break-before: always;
-}
+  width: 600;
+  height: 800;
+}}
+
 .table-print tr td {
-  padding:5px 10px;
+  padding: 5px 10px;
 }
-.table-print tr th{
-  padding:5px;
+
+.table-print tr th {
+  padding: 5px;
   vertical-align: middle;
+}
+iframe {
+  height: 800px;
 }

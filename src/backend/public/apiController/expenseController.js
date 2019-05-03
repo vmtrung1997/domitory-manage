@@ -149,7 +149,6 @@ function Calculation(phong, soDienCu, soNuocCu) {
 			tongTienChu: '',
 			trangThai: 0,
 		}
-		console.log(phong);
 		LoaiPhong.findOne({ _id: phong.phong.loaiPhong }).then(loaiPhong => {
 			if (loaiPhong) {
 				row.tienRac = loaiPhong.tienRac;
@@ -186,7 +185,6 @@ function Calculation(phong, soDienCu, soNuocCu) {
 							}
 							row.tongTien = ceilMoney(row.tienDien + row.tienNuoc + row.tienRac)
 							row.tongTienChu = toMoneyString(NumberReader.read(row.tongTien));
-							console.log(row);
 							resolve(row);
 						}
 					})
@@ -240,11 +238,8 @@ exports.confirm = (req, res) => {
 				msg: err
 			})
 		} else {
-			console.log(doc.thayNuoc.nuocMoi)
 			var soDien = doc.thayDien.dienMoi ? doc.thayDien.dienMoi : doc.soDien;
 			var soNuoc = doc.thayNuoc.nuocMoi ? doc.thayNuoc.nuocMoi : doc.soNuoc;
-			console.log('soDien', soDien);
-			console.log('soNuoc', soNuoc);
 			ChiPhiHienTai.findOneAndUpdate({ idPhong: doc.idPhong }, {
 				$set: {
 					soDien: soDien,
@@ -356,7 +351,7 @@ exports.report_expense = (req, res) => {
 	var condition = req.body;
 	var query = {};
 	var header = ['Năm', 'Tháng', 'Tên phòng']
-	var options = ['nam', 'thang']
+	var options = ['nam', 'thang', 'thayDien', 'thayNuoc']
 	var total = ['', '', 'Tổng']
 	if (condition.disableToMonth === true) {
 		query.thang = condition.fromMonth;
@@ -381,10 +376,7 @@ exports.report_expense = (req, res) => {
 				}
 			}
 			else {
-				res.json({
-					rs: false,
-					msg: 'Dieu kien sai'
-				})
+				query = {}
 			}
 		} else if (condition.fromYear < condition.toYear) {
 			var or = [
@@ -408,10 +400,7 @@ exports.report_expense = (req, res) => {
 
 
 		} else {
-			res.json({
-				rs: false,
-				msg: 'Dieu kien sai'
-			})
+			query = {}
 		}
 	}
 	if (condition.soDien) {
@@ -449,82 +438,84 @@ exports.report_expense = (req, res) => {
 		total.push(0)
 		total.push('')
 	}
-	console.log('total == ', total)
 	//console.log('==query: ', query);
 	//console.log('==options: ', options);
-	ChiPhiPhong.find(query)
-		.sort([['nam', 1], ['thang', 1]])
-		.select(options)
-		.populate({
-			path: 'idPhong',
-			select: 'tenPhong',
-			options: { sort: { tenPhong: 1 } }
-		})
-		.then(result => {
-			if (result.length > 0) {
-				var array = []
-				array.push(header);
-				// var totalObj = {
-				// 	soDien: 0,
-				// 	soNuoc: 0,
-				// 	tienDien: 0,
-				// 	tienNuoc: 0,
-				// 	tienRac: 0,
-				// 	tongTien: 0
-				// }
-				for (let item of result) {
-					var arr = []
-					arr.push(item.nam);
-					arr.push(item.thang);
-					arr.push(item.idPhong.tenPhong);
-					if (options.indexOf('soDien') > 0) {
-						arr.push(item.soDien > item.soDienCu ? item.soDien - item.soDienCu : 0);
-						total[header.indexOf('Số điện trong tháng')] = item.soDien > item.soDienCu ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu : total[header.indexOf('Số điện trong tháng')]
-						//totalObj.soDien = item.soDien > item.soDienCu ? totalObj.soDien + item.soDien - item.soDienCu : totalObj.soDien
-					}
-					if (options.indexOf('soNuoc') > 0) {
-						arr.push(item.soNuoc > item.soNuocCu ? item.soNuoc - item.soNuocCu : 0);
-						total[header.indexOf('Số nước trong tháng')] = item.soNuoc > item.soNuocCu ? total[header.indexOf('Số nước trong tháng')] + item.soNuoc - item.soNuocCu : total[header.indexOf('Số nước trong tháng')]
-						//totalObj.soNuoc = item.soNuoc > item.soNuocCu ? totalObj.soNuoc + item.soNuoc - item.soNuocCu : totalObj.soNuoc 
-					}
-					if (options.indexOf('tienRac') > 0) {
-						arr.push(item.tienRac);
-						total[header.indexOf('Tiền rác')] = total[header.indexOf('Tiền rác')] + item.tienRac
-						//totalObj.tienRac = totalObj.tienRac + item.tienRac;
+	if (Object.keys(query).length) {
+		ChiPhiPhong.find(query)
+			.sort([['nam', 1], ['thang', 1]])
+			.select(options)
+			.populate({
+				path: 'idPhong',
+				select: 'tenPhong',
+				options: { sort: { tenPhong: 1 } }
+			})
+			.then(result => {
+				if (result.length > 0) {
+					var array = []
+					array.push(header);
+					for (let item of result) {
+						var arr = []
+						arr.push(item.nam);
+						arr.push(item.thang);
+						arr.push(item.idPhong.tenPhong);
+						if (options.indexOf('soDien') > 0) {
+							arr.push(item.thayDien.dienMoi>0 ? item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu : (item.soDien > item.soDienCu ? item.soDien - item.soDienCu : 0));
+							console.log('dienMoi')
+							total[header.indexOf('Số điện trong tháng')] = item.thayDien.dienMoi>0? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu :
+								(item.soDien > item.soDienCu ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu : total[header.indexOf('Số điện trong tháng')])
+							//totalObj.soDien = item.soDien > item.soDienCu ? totalObj.soDien + item.soDien - item.soDienCu : totalObj.soDien
+							console.log('totalDienMoi')
+						}
+						if (options.indexOf('soNuoc') > 0) {
+							console.log('nuocMoi')
+							arr.push(item.thayNuoc.nuocMoi>0 ? item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu + item.soNuoc - item.soNuocCu : (item.soNuoc > item.soNuocCu ? item.soNuoc - item.soNuocCu : 0));
+							total[header.indexOf('Số nước trong tháng')] = item.thayNuoc.nuocMoi>0? total[header.indexOf('Số nước trong tháng')] + item.soNuoc - item.soNuocCu + item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu :
+								(item.soNuoc > item.soNuocCu ? total[header.indexOf('Số nước trong tháng')] + item.soNuoc - item.soNuocCu : total[header.indexOf('Số nước trong tháng')])
+								console.log('totalNuocMoi')
+								//totalObj.soNuoc = item.soNuoc > item.soNuocCu ? totalObj.soNuoc + item.soNuoc - item.soNuocCu : totalObj.soNuoc 
+						}
+						if (options.indexOf('tienRac') > 0) {
+							arr.push(item.tienRac);
+							total[header.indexOf('Tiền rác')] = total[header.indexOf('Tiền rác')] + item.tienRac
+							//totalObj.tienRac = totalObj.tienRac + item.tienRac;
+						}
+						if (options.indexOf('tongTien') > 0) {
+							arr.push(item.tienDien);
+							arr.push(item.tienNuoc);
+							arr.push(item.tongTien);
+							arr.push(item.tongTienChu);
+							total[header.indexOf('Tiền điện')] = total[header.indexOf('Tiền điện')] + item.tienDien
+							total[header.indexOf('Tiền nước')] = total[header.indexOf('Tiền nước')] + item.tienNuoc
+							total[header.indexOf('Tổng tiền')] = total[header.indexOf('Tổng tiền')] + item.tongTien
+						}
+						array.push(arr)
 					}
 					if (options.indexOf('tongTien') > 0) {
-						arr.push(item.tienDien);
-						arr.push(item.tienNuoc);
-						arr.push(item.tongTien);
-						arr.push(item.tongTienChu);
-						total[header.indexOf('Tiền điện')] = total[header.indexOf('Tiền điện')] + item.tienDien
-						total[header.indexOf('Tiền nước')] = total[header.indexOf('Tiền nước')] + item.tienNuoc
-						total[header.indexOf('Tổng tiền')] = total[header.indexOf('Tổng tiền')] + item.tongTien
+						total[header.indexOf('Tổng tiền chữ')] = toMoneyString(NumberReader.read(Math.round(total[header.indexOf('Tổng tiền')] / 1000) * 1000))
 					}
-					array.push(arr)
-				}
-				if (options.indexOf('tongTien') > 0) {
-					total[header.indexOf('Tổng tiền chữ')] = toMoneyString(NumberReader.read(Math.round(total[header.indexOf('Tổng tiền')] / 1000) * 1000))
+
+					array.push(total);
+					var opts = { row: result.length + 1, col: header.length }
+					var xlsx = writeXlsx.save(array, opts);
+					res.status(200).json({ filename: 'Report.xlsx', file: xlsx });
+				} else {
+					res.json({
+						rs: 'fail',
+						msg: 'Không có dữ liệu'
+					})
 				}
 
-				array.push(total);
-				var opts = { row: result.length + 1, col: header.length }
-				var xlsx = writeXlsx.save(array, opts);
-				res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-				res.status(200).json({ filename: 'Report.xlsx', file: xlsx });
-			} else {
+			}).catch(err =>
 				res.json({
 					rs: 'fail',
-					msg: 'No data'
-				})
-			}
-
-		}).catch(err =>
-			res.json({
-				rs: 'fail',
-				msg: err
-			}))
-
+					msg: 'Có lỗi xảy ra'
+				}))
+	} else {
+		res.json({
+			rs: 'fail',
+			msg: 'Điều kiện sai'
+		})
+	}
 }
 
 exports.get_parameter = (req, res) => {
@@ -702,15 +693,15 @@ exports.get_info_room = async (req, res) => {
 		detail.loaiPhong = phong.loaiPhong
 		ChiPhiHienTai.findOne({ idPhong: info.idPhong }).then(chiphi => {
 			if (chiphi) {
-			detail.chiPhi = chiphi
-		}
-		else{
-			detail.chiPhi = {soDien: 0, soNuoc: 0}
-		}
-		res.json({
-			data: detail
+				detail.chiPhi = chiphi
+			}
+			else {
+				detail.chiPhi = { soDien: 0, soNuoc: 0 }
+			}
+			res.json({
+				data: detail
+			})
 		})
-	})
 	})
 }
 
@@ -750,21 +741,24 @@ function getDetailTypeRoom(value) {
 }
 exports.get_data_print = (req, res) => {
 	var { data, type } = req.body
+	console.log(data);
+	console.log(type);
 	var searchObj = {};
 	if (type === 'table') {
 		if (data.month !== 0)
-			searchObj.thang = search.month;
+			searchObj.thang = data.month;
 		if (data.year !== 0)
-			searchObj.nam = search.year
+			searchObj.nam = data.year;
 		if (data.status !== 2)
-			searchObj.trangThai = search.status
+			searchObj.trangThai = data.status
 		if (data.room !== 0 && data.room.value !== 0)
-			searchObj.idPhong = search.room.value
+			searchObj.idPhong = data.room.value
 	} else {
 		if (data.length > 0)
 			searchObj._id = { $in: data }
 	}
-	if (Object.keys(searchObj).length) {
+	if (Object.keys(searchObj).length>0) {
+		console.log(searchObj);
 		ChiPhiPhong.find(searchObj).populate({
 			path: 'idPhong',
 			select: 'loaiPhong tenPhong soNguoi',
