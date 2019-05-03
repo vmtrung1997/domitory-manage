@@ -35,16 +35,18 @@ class RequestStay extends React.Component {
     if (secret) {
       const decode = jwt_decode(secret);
       secret = JSON.parse(secret);
-      var id = decode.user.profile._id;
-    Axios.post('/student/get-point',{id: id, ngayVaoO: decode.user.profile.ngayVaoO}).then(rs =>{
-        var point = [];
-        rs.data.data.forEach(item=>{
-            if(now.getFullYear() - 1 === item.year)
-            point.push({term: item.year, point: item.point});
-        })
+      if(decode.user.profile){
+        var id = decode.user.profile._id;
+        Axios.post('/student/get-point',{id: id, ngayVaoO: decode.user.profile.ngayVaoO}).then(rs =>{
+          var point = [];
+          rs.data.data.forEach(item=>{
+              if(now.getFullYear() - 1 === item.year)
+              point.push({term: item.year, point: item.point});
+          })
 
-        this.setState({point: point})
-    });
+          this.setState({point: point})
+        });
+      }
     }
 }
 

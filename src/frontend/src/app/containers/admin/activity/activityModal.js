@@ -88,7 +88,7 @@ class ActivityModal extends Component{
             			</div>
             			<div>
             				<span> Địa điểm </span>
-            				<Input getValue={ (obj) => this.getValue(obj.name, obj.value)} name='location'/>
+            				<Input getValue={ (obj) => this.getValue(obj.name, obj.value)} name='location' />
             			</div>
             			<div>
             				<span> Thời gian bắt đầu</span>
@@ -130,7 +130,7 @@ class ActivityModal extends Component{
             			</div>
                   <div>
                     <span> Điểm hoạt động </span>
-                    <Input getValue={ (obj) => this.getValue(obj.name, obj.value)} name='point'/>
+                    <Input getValue={ (obj) => this.getValue(obj.name, obj.value)} name='point' type='number' min="0"/>
                   </div>
             			<div style={{marginTop: '10px'}}>
             				<span style={{fontWeight: 'bold'}}> Bắt buộc </span>

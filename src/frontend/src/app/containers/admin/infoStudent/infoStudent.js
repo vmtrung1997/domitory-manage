@@ -3,21 +3,21 @@ import { Row, Col, Table, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
 import { withRouter } from 'react-router-dom';
+import XLSX from 'xlsx';
+import DatePicker from "react-datepicker/es/index";
 
+
+import './infoStudent.css';
 import SearchSelect from '../../../components/selectOption/select'
 import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import CheckBox from './../../../components/checkbox/checkbox';
-import './infoStudent.css';
 import refreshToken from './../../../../utils/refresh_token'
 import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
-import DatePicker from "react-datepicker/es/index";
-
-import XLSX from 'xlsx'
 import Checkbox from "../../../components/checkbox/checkbox";
-
+import Print from './infoStudentPrint';
 
 axios.defaults.baseURL = 'http://localhost:4000/api'
 
@@ -30,6 +30,7 @@ class InfoStudent extends Component{
       showRoomHistoryPopup: false,
       showAddPopup: false,
       showDelPopup: false,
+      showPrint: false,
       pageActive: 1,
       totalpages: 1,
       limit: 10,
@@ -434,6 +435,9 @@ class InfoStudent extends Component{
     })
   };
 
+  changeState = (key, value) => {
+    this.setState({ [key]: value })
+  }
 
   render(){
     console.log('==render state', this.state);
@@ -476,6 +480,7 @@ class InfoStudent extends Component{
     return(
       <div>
         <Loader loading={this.state.loading}/>
+        <Print show={this.state.showPrint} />
         <Title>
           Thông tin sinh viên
         </Title>
@@ -593,12 +598,6 @@ class InfoStudent extends Component{
                   >
                     <i className="fas fa-address-card"/>
                   </Button>
-                  <Button
-                    variant={'rounded'}
-                    color={'success'}
-                  >
-                    <i className="fas fa-print"/>
-                  </Button>
                 </div>
               </Col>
 
@@ -672,10 +671,10 @@ class InfoStudent extends Component{
             </Modal.Body>
             <Modal.Footer>
               <Button variant="outline" onClick={() =>this.handlePopup('add', false)}>
-                Close
+                Đóng
               </Button>
               <Button  onClick={() =>this.handleSubmitAddStudent()}>
-                Save Changes
+                Thêm tài khoản
               </Button>
             </Modal.Footer>
           </Modal>
@@ -709,8 +708,8 @@ class InfoStudent extends Component{
 
                   <Table responsive bordered >
                     <thead>
-                    <tr>
-                      <th>#</th>
+                    <tr style={{textAlign: 'center'}}>
+                      <th>STT</th>
                       <th>Thời gian</th>
                       <th>Phòng</th>
                     </tr>
@@ -753,7 +752,7 @@ class InfoStudent extends Component{
               {this.state.listExpired ?
                 <Table responsive bordered size="sm">
                   <thead className="title-table">
-                  <tr>
+                  <tr style={{textAlign: 'center'}}>
                     <th>STT</th>
                     <th>MSSV</th>
                     <th>Họ và Tên</th>
@@ -1038,7 +1037,7 @@ class InfoStudent extends Component{
 
             <Table responsive hover bordered size="sm">
               <thead className="title-table">
-              <tr>
+              <tr style={{textAlign: 'center'}}>
                 <th>STT</th>
                 <th>MSSV</th>
                 <th>Họ và Tên</th>
@@ -1064,7 +1063,15 @@ class InfoStudent extends Component{
                       </Button>
                       </td>
                     <td style={{display: 'flex', justifyContent: 'center'}}>
-                      <Button color={'warning'} style={{marginRight: '15px'}} onClick={() => this.onViewDetail(info)}>
+                       <Button
+                          title={'In thẻ'}
+                          color={'success'}
+                          style={{marginRight: '10px'}}
+                          onClick={ e => {this.changeState('showPrint', true)}}
+                        >
+                          <i className="fas fa-print"/>
+                        </Button>
+                      <Button color={'warning'} style={{marginRight: '10px'}} onClick={() => this.onViewDetail(info)}>
                         <i className="fas fa-edit"/>
                       </Button>
                       {!isOld &&

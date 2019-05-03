@@ -136,7 +136,7 @@ class InfoActivity extends Component{
 				}
 				<Table bordered hover responsive size="sm" className="table-activity">
 					<thead className="title-table">
-						<tr>
+						<tr style={{textAlign: 'center'}}>
 							<th>STT</th>
 							<th>Hoạt động</th>
 							<th>Thời gian</th>
