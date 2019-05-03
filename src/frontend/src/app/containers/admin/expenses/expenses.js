@@ -72,6 +72,7 @@ class Expenses extends Component {
 		}).catch(error => { });
 	}
 	roomSelected = selectedOption => {
+		console.log(selectedOption);
 		this.setState({ roomSelected: selectedOption, options: { ...this.state.options, page: 1 } })
 	}
 	monthSelected = value => {

@@ -62,27 +62,26 @@ class Security extends Component {
       object.tenTruong = this.state.valueUpdate
       updateSchool(object).then(result => {
         if (result.data.rs === 'success') {
-          this.setState({ idUpdate: '', valueUpdate: '', isEditSChool: false, show: false });
           this.getInit().then(() => {
             this.onHandleSchoolClick(this.state.selectSchool)
           });
           ToastsStore.success("Cập nhật thành công");
         }
         else
-          ToastsStore.error("Cập nhật thất bại");
-          this.setState({ loading: false })
+        ToastsStore.error("Cập nhật thất bại");
+        this.setState({ idUpdate: '', valueUpdate: '', isEditSChool: false, loading: false, show: false });
+
       })
     } else if (this.state.isEditMajor) {
       object.tenNganh = this.state.valueUpdate;
       updateMajor(object).then(result => {
         if (result.data.rs === 'success') {
           ToastsStore.success("Cập nhật thành công");
-          this.setState({ idUpdate: '', valueUpdate: '', isEditMajor: false });
           this.onHandleSchoolClick(this.state.selectSchool);
         }
         else
           ToastsStore.error("Cập nhật thất bại");
-          this.setState({ loading: false })
+        this.setState({ idUpdate: '', valueUpdate: '', isEditMajor: false, loading: false, show: false });
       })
     }
   }
@@ -234,6 +233,7 @@ class Security extends Component {
                 </Row>
               </div>
               <div>Danh sách trường</div>
+              <div className={'col-box'}>
               {
                 this.state.schools && this.state.schools.length > 0 && this.state.schools.map(sch => {
                   return (
@@ -250,8 +250,10 @@ class Security extends Component {
                 })
               }
 
+              </div>
+
             </Col>
-            <Col md={{ offset: 1, span: 5 }} xs={12}>
+            <Col md={{ offset: 1, span: 5 }} xs={12}  >
               <div>
                 <Row>
                   <Col md={10}>
@@ -267,7 +269,7 @@ class Security extends Component {
                 </Row>
               </div>
               <div>Danh sách ngành</div>
-              <div>
+              <div className={'col-box'}>
                 {this.state.majorsList.length > 0 && this.state.majorsList.map(value => {
                   return (
                     <Col key={value._id} md={12}>
