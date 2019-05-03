@@ -8,6 +8,7 @@ const Account = require('../models/TaiKhoan');
 const Room = require('../models/Phong');
 const RoomHistory = require('../models/LichSuPhong');
 const ActivityResults = require('../models/KetQuaHD');
+const Activity = require('../models/HoatDong');
 const ReToken = require('../models/refreshToken');
 let auth = require('../repos/authRepo');
 const md5 = require('md5');
@@ -224,6 +225,20 @@ exports.updateInfo = (req,res) => {
   })
 };
 
+// exports.getListStudent = (req, res) => {
+//   const params = req.body;
+//
+//   var populateQuery = [
+//     {path:'idPhong', select:'title pages'},
+//     {path:'truong', select:'director'},
+//     {path:'truong', select:'director'}
+//     ];
+//
+//   Person.find({})
+//     .populate(populateQuery)
+//     .execPopulate()
+// }
+
 exports.getListStudent = (req, res) => {
   let query = {};
   const params = req.body;
@@ -296,9 +311,13 @@ exports.uploadImage = (req, res) => {
   })
 };
 
-exports.getActivities = (req, res) => {
+exports.getListActivities = (req, res) => {
   const id = req.params.id;
-  ActivityResults.find({idSV: id}).then(result => {
-
+  ActivityResults.find({idSV: id})
+    .populate({ path: "idHD" })
+    .then(result => {
+      res.status(200).json(result)
+  }).catch(err => {
+    res.status(400).json({msg: "Lỗi"})
   })
 };

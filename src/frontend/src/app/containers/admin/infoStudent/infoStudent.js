@@ -16,6 +16,8 @@ import Loader from "../../../components/loader/loader";
 import DatePicker from "react-datepicker/es/index";
 
 import XLSX from 'xlsx'
+//import Downloadify from 'xlsx'
+//import { writeFile, readFile } from 'react-native-fs';
 import Checkbox from "../../../components/checkbox/checkbox";
 
 
@@ -433,6 +435,96 @@ class InfoStudent extends Component{
       })
     })
   };
+
+  handleExportData = () => {
+    const { valueExport: {
+      hoTenEx,
+      mssvEx,
+      ngaySinhEx,
+      gioiTinhEx,
+      diaChiEx,
+      emailEx,
+      sdtEx,
+      sdtNguoiThanEx,
+      tonGiaoEx,
+      danTocEx,
+      ngayVaoOEx,
+      ngayHetHanEx,
+      diemHDEx,
+      phongEx,
+      truongEx,
+      nganhHocEx,
+      ghiChuEx
+    }, infoList } = this.state;
+
+    let header = {}
+    if(hoTenEx)
+      header.hoTen = "Họ tên"
+    if(mssvEx)
+      header.MSSV = "MSSV"
+    if(ngaySinhEx)
+      header.ngaySinh = "Ngày sinh"
+    if(gioiTinhEx)
+      header.gioiTinh = "Giới tính"
+    if(diaChiEx)
+      header.diaChi = "Địa chỉ"
+    if(emailEx)
+      header.email = "Email"
+    if(sdtEx)
+      header.sdt = "Số điện thoại"
+    if(sdtNguoiThanEx)
+      header.sdtNguoiThan = "số điện thoại người thân"
+    if(tonGiaoEx)
+      header.tonGiao = "Tôn giáo"
+    if(danTocEx)
+      header.danToc = "Dân tộc"
+    if(ngayVaoOEx)
+      header.ngayVaoO = "Ngày vào ở"
+    if(ngayHetHanEx)
+      header.ngayHetHan = "Ngày hết hạn"
+    if(phongEx)
+      header.phong = "Phòng"
+    if(truongEx)
+      header.truong = "Trường"
+    if(nganhHocEx)
+      header.nganhHoc = "Ngành học"
+    // if(ghiChuEx)
+    //   header.email = "Email"
+
+    let data = infoList && infoList.map(record => {
+      let gender = record.gioiTinh ? "nam" : "nữ"
+      return({
+        hoTen : hoTenEx ? record.hoTen : undefined,
+        MSSV : mssvEx ? record.MSSV : undefined,
+        ngaySinh : ngaySinhEx ? record.ngaySinh : undefined,
+        gioiTinh : gioiTinhEx ? gender : undefined,
+        diaChi : diaChiEx ? record.diaChi : undefined,
+        email : emailEx ? record.email : undefined,
+        sdt : sdtEx ? record.sdt : undefined,
+        sdtNguoiThan : sdtNguoiThanEx ? record.sdtNguoiThan : undefined,
+        tonGiao : tonGiaoEx ? record.tonGiao : undefined,
+        danToc : danTocEx ? record.danToc : undefined,
+        ngayVaoO : ngayVaoOEx ? record.ngayVaoO : undefined,
+        ngayHetHan : ngayHetHanEx ? record.ngayHetHan : undefined,
+        //data.diemHD : diemHDEx ? record.hoTen : undefined,
+        phong : phongEx && record.idPhong ? record.idPhong.tenPhong : undefined,
+        truong : truongEx && record.truong ? record.truong.tenTruong : undefined,
+        nganhHoc : nganhHocEx && record.nganhHoc ? record.nganhHoc.tenNganh : undefined,
+        ghiChu : ghiChuEx ? record.hoTen : undefined
+    })})
+
+    data.unshift(header)
+
+    console.log('==report', data)
+
+    var ws = XLSX.utils.json_to_sheet(data, {skipHeader:true});
+
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+    XLSX.writeFile(wb, "report.xlsx");
+    this.handlePopup('export', false)
+  }
 
 
   render(){
@@ -1007,11 +1099,11 @@ class InfoStudent extends Component{
 
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handlePopup('import', false)}>
+              <Button variant="outline" onClick={() =>this.handlePopup('export', false)}>
                 Cancel
               </Button>
-              <Button  onClick={() => this.handleImportData()}>
-                Upload
+              <Button id={'saveFile'} onClick={() => this.handleExportData()}>
+                Save file
               </Button>
             </Modal.Footer>
           </Modal>

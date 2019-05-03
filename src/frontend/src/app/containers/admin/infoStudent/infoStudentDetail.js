@@ -106,12 +106,15 @@ class InfoStudentDetail extends Component {
 
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
-    axios.post(`/manager/infoStudent/getActivities`, {
-      id: id
-    },{
+    axios.get(`/manager/infoStudent/getActivities/` + id, {
       headers: { 'x-access-token': secret.access_token }
     }).then(result => {
       console.log('==acti ', result);
+      let i = 0;
+      let activities = result.data.map(acti => ({key: i++, data: acti}));
+      this.setState({
+        activities: activities
+      })
     }).catch(err => {
       console.log('==acti err', err)
     })
@@ -260,7 +263,7 @@ class InfoStudentDetail extends Component {
   }
   render() {
     console.log('==state render', this.state);
-    const { info, genderOptions, schoolOptions, roomOptions, majorOptions, school, room, major } = this.state;
+    const { info, genderOptions, schoolOptions, roomOptions, majorOptions, school, room, major, activities } = this.state;
     const {
       hoTen,
       MSSV,
@@ -511,44 +514,37 @@ class InfoStudentDetail extends Component {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>1</td>
-                            <td>9:00 08/03/2019</td>
-                            <td>Mừng ngày phụ nữ Việt Nam</td>
-                            <td>10/10</td>
-                            <td>Chưa diễn ra</td>
-                          </tr>
-                          <tr>
-                            <td>2</td>
-                            <td>9:00 08/03/2019</td>
-                            <td>Mừng ngày phụ nữ Việt Nam</td>
-                            <td>10/10</td>
-                            <td>Đã tham gia</td>
-                          </tr>
-                          <tr>
-                            <td>2</td>
-                            <td>9:00 08/03/2019</td>
-                            <td>Mừng ngày phụ nữ Việt Nam</td>
-                            <td>10/10</td>
-                            <td>Không tham gia</td>
-                          </tr>
+                        {
+                          activities && activities.map(acti => {
+                            //let happening = acti.data.idHD.ngayBD
+                            return (
+                              <tr key={acti.key}>
+                                <td>{acti.key + 1}</td>
+                                <td>{acti.data.idHD && acti.data.idHD.ngayBD}</td>
+                                <td>{acti.data.idHD && acti.data.idHD.ten}</td>
+                                <td>{acti.data.isTG ? acti.data.idHD.diem : '0'}/{acti.data.idHD && acti.data.idHD.diem}</td>
+                                <td>{acti.data.isTG ? "Đã tham gia" : "Chưa tham gia"}</td>
+                              </tr>
+                            )
+                          })
+                        }
                         </tbody>
                       </Table>
 
-                      <div className={'id-tab-activities_total-frame'}>
-                        <Row>
-                          <span>Số hoạt động đã tham gia: 3</span>
-                        </Row>
-                        <Row>
-                          <span>Số hoạt động không tham gia: 1</span>
-                        </Row>
-                        <Row>
-                          <span>Số hoạt động chưa tham gia: 1</span>
-                        </Row>
-                        <Row>
-                          <span>Tổng điểm: 30</span>
-                        </Row>
-                      </div>
+                      {/*<div className={'id-tab-activities_total-frame'}>*/}
+                        {/*<Row>*/}
+                          {/*<span>Số hoạt động đã tham gia: 3</span>*/}
+                        {/*</Row>*/}
+                        {/*<Row>*/}
+                          {/*<span>Số hoạt động không tham gia: 1</span>*/}
+                        {/*</Row>*/}
+                        {/*<Row>*/}
+                          {/*<span>Số hoạt động chưa tham gia: 1</span>*/}
+                        {/*</Row>*/}
+                        {/*<Row>*/}
+                          {/*<span>Tổng điểm: 30</span>*/}
+                        {/*</Row>*/}
+                      {/*</div>*/}
                     </div>
                   </Tab>
                 </Tabs>
