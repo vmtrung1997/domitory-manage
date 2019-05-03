@@ -6,7 +6,6 @@ import Axios from 'axios';
 import {connect} from 'react-redux'
 import refreshToken from "./../../../utils/refresh_token";
 import jwt_decode from "jwt-decode";
-import Detail from "./detailPractise"
 
 class PractiseStudent extends React.Component {
 
@@ -53,7 +52,7 @@ class PractiseStudent extends React.Component {
                    
                     <div className='text-style'>
                         <Table responsive bordered size='sm' hover>
-                            <thead>
+                            <thead className ='thread-student'>
                                 <tr>
                                     <th>Năm học</th>                                  
                                     <th>Điểm</th>

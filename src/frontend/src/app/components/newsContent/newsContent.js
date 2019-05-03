@@ -57,6 +57,8 @@ class NewsContent extends React.Component {
       <React.Fragment>
        
         <div className="news-content-detail">
+        <div className = 'img-background'>
+        </div>
           <div className="news-detail">
             <div className="news-detail-sub">
               <div className="tilte">
@@ -73,6 +75,7 @@ class NewsContent extends React.Component {
               />
             </div>
           </div>
+         
         </div>
       </React.Fragment>
     );

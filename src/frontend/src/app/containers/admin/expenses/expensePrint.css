@@ -57,7 +57,8 @@ ul.suggest-text>li{
   font-weight: bold;
 }
 .page-break{
-  page-break-before: always;
+  break-before: page;
+  min-height: 1px;
 }
 .table-print tr td {
   padding:5px 10px;

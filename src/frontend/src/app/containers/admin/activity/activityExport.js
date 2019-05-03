@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { Table, Modal } from 'react-bootstrap'
 import { saveAs } from 'file-saver'
 import axios from './../../../config'
+import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 
+import Loader from './../../../components/loader/loader'
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
 import Input from './../../../components/input/input'
@@ -10,6 +12,7 @@ import CheckBox from './../../../components/checkbox/checkbox'
 
 class ActivityExport extends Component{
 	static defaultProps = {
+    loading: false,
 		show: false,
     last: 0,
 		handleClose: () => {},
@@ -26,6 +29,7 @@ class ActivityExport extends Component{
   }
 
   handleSubmit = async () => {
+    this.setState({ loading: true })
     if(this.state.check !== 0){
       await refreshToken()
       var secret = JSON.parse(localStorage.getItem('secret'))
@@ -46,10 +50,14 @@ class ActivityExport extends Component{
         var byteArray = new Uint8Array(byteNumbers);
         var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
         
-        saveAs(blob, res.data.filename)     
+        saveAs(blob, res.data.filename) 
+
+        this.setState({ loading: false }) 
+        ToastsStore.success("Xuất file báo cáo hoạt động thành công!");
       })
       .catch( err => {
         this.setState({ loading: false })
+        ToastsStore.error("Xuất file báo hoạt động thất bại!");   
       })
     }
     this.handleClose()
@@ -74,36 +82,40 @@ class ActivityExport extends Component{
     }
 
 		return(
-			<Modal show={this.props.show} onHide={this.handleClose} >
-        		<Modal.Header closeButton>
-            		<Modal.Title>Xuất báo cáo hoạt động</Modal.Title>
-          		</Modal.Header>
-          		<Modal.Body>
-                <div style={{maxHeight: '400px', overflow: 'auto'}}>
-                <Table bordered hover responsive size="sm" >
-                  <thead style={{ textAlign: 'center'}}>
-                    <tr>
-                      <th >
-                        Chọn
-                      </th>
-                      <th>Năm học</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tableSemester}
-                  </tbody>
-                </Table>
-                </div>
-          		</Modal.Body>
-          		<Modal.Footer>
-	            	<Button variant='default' color='default' onClick={this.handleClose}>
-	            		Đóng
-	            	</Button>
-                <Button variant="default" onClick={this.handleSubmit}>
-                  Xuất báo cáo
-                </Button>
-        		</Modal.Footer>
-      </Modal>
+      <React.Fragment>
+        <Loader loading={this.state.loading}/>
+        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
+  			<Modal show={this.props.show} onHide={this.handleClose} >
+          		<Modal.Header closeButton>
+              		<Modal.Title>Xuất báo cáo hoạt động</Modal.Title>
+            		</Modal.Header>
+            		<Modal.Body>
+                  <div style={{maxHeight: '400px', overflow: 'auto'}}>
+                  <Table bordered hover responsive size="sm" >
+                    <thead style={{ textAlign: 'center'}}>
+                      <tr>
+                        <th >
+                          Chọn
+                        </th>
+                        <th>Năm học</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tableSemester}
+                    </tbody>
+                  </Table>
+                  </div>
+            		</Modal.Body>
+            		<Modal.Footer>
+  	            	<Button variant='default' color='default' onClick={this.handleClose}>
+  	            		Đóng
+  	            	</Button>
+                  <Button variant="default" onClick={this.handleSubmit}>
+                    Xuất báo cáo
+                  </Button>
+          		</Modal.Footer>
+        </Modal>
+      </React.Fragment>
 		)
 	}
 }

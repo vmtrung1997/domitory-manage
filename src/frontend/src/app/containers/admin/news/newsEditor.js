@@ -21,6 +21,7 @@ import {
   ToastsStore
 } from "react-toasts";
 
+var loai = 0; //Mac dinh
 class EditorConvertToHTML extends Component {
   constructor(props) {
     super(props);
@@ -31,13 +32,17 @@ class EditorConvertToHTML extends Component {
       editorState: undefined,
       idNews: undefined,
       check: true,
-      pin:false,
+      isFirst: true,
+      pin: false,
       sendEmail: false,
-      loai: 0,
-      typeOptions: [{ value: 0, label: "Thông Tin" }, { value: 1, label: "Hoạt Động" }]
+      loai: 2,
+      typeOptions: [
+        { value: 0, label: "Thông Tin" },
+        { value: 1, label: "Hoạt Động" }
+      ]
     };
   }
-
+  
   onEditorStateChange = editorState => {
     this.setState({
       editorState: editorState
@@ -75,14 +80,14 @@ class EditorConvertToHTML extends Component {
         title: this.state.title,
         content: value,
         author: decode.user.profile.idTaiKhoan,
-        trangThai: this.state.check === true ? "1" : "0",
-        ghim: this.state.pin === true? "1" : "0",
+        trangThai: this.state.check === true ? 1 : 0,
+        ghim: this.state.pin === true ? 1 : 0,
         loai: this.state.loai
       };
 
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios.post("/manager/news/add", { data: data }).then(res => {
-        if (res.status === 201) {
+        if (res.status === 202) {
           this.props.showPopup("add");
           this.handleClose();
         } else {
@@ -93,13 +98,12 @@ class EditorConvertToHTML extends Component {
   };
 
   kindSelected = value => {
-    this.setState({ loai: value });
+    this.setState({ loai: value },()=>{});
   };
 
   editNews = async () => {
     await refreshToken();
     var secret = JSON.parse(localStorage.getItem("secret"));
-
 
     var value = draftToHtml(
       convertToRaw(this.state.editorState.getCurrentContent())
@@ -109,11 +113,12 @@ class EditorConvertToHTML extends Component {
       tieuDe: this.state.title,
       noiDung: value,
       id: this.state.idNews,
-      trangThai: this.state.check === true ? "1" : "0",
-      ghim: this.state.pin === true? "1" : "0",
-      loai: this.state.loai ===  '1'?'1' : '0'
+      trangThai: this.state.check === true ? 1 : 0,
+      ghim: this.state.pin === true ? 1 : 0,
+      loai: parseInt(this.state.loai) === 1 ?1 : 0
     };
 
+    //window.alert(data.loai);
     axios.defaults.headers["x-access-token"] = secret.access_token;
     axios.post("/manager/news/update", { data: data }).then(res => {
       if (res.status === 200) {
@@ -134,21 +139,24 @@ class EditorConvertToHTML extends Component {
       });
     } else if (type === "edit") {
       if (content.noiDung) {
-        this.setState({
-          editorState: EditorState.createWithContent(
-            ContentState.createFromBlockArray(convertFromHTML(content.noiDung))
-          ),
-          title: content.tieuDe,
-          idNews: content._id,
-          check: content.trangThai === 1 ? true : false,
-          pin: content.ghim === 1? true: false,
-          //TODO: checkbox chưa thay đổi theo state
-          loai: content.loai === 'Hoat Dong'? 1:0
-        });
-      } else {
-        // this.setState({
-        //   editorState: EditorState.createEmpty()
-        // });
+        this.setState(
+          {
+            editorState: EditorState.createWithContent(
+              ContentState.createFromBlockArray(
+                convertFromHTML(content.noiDung)
+              )
+            ),
+            title: content.tieuDe,
+            idNews: content._id,
+            check: content.trangThai === 1 ? true : false,
+            pin: content.ghim === 1 ? true : false,
+            //TODO: checkbox chưa thay đổi theo state
+            loai: parseInt(content.loai)
+          },
+          () => {
+           
+          }
+        );
       }
     }
   }
@@ -164,14 +172,15 @@ class EditorConvertToHTML extends Component {
     });
   };
 
-  changeSendEmail = e =>{
+  changeSendEmail = e => {
     this.setState({
       sendEmail: e.chk
-    })
-  }
+    });
+  };
   render() {
     var type = this.props.type;
-    var loai = this.state.loai;
+    
+    if (type === "edit" && this.state.isFirst) {loai = this.props.content.loai};
     const { editorState } = this.state;
     const editorStyle = {
       padding: "5px",
@@ -179,7 +188,7 @@ class EditorConvertToHTML extends Component {
       width: "100%",
       backgroundColor: "white"
     };
-    
+
     return (
       <Modal size="lg" show={this.state.show} onHide={this.handleClose}>
         <ToastsContainer
@@ -211,17 +220,17 @@ class EditorConvertToHTML extends Component {
             value={""}
             onEditorStateChange={this.onEditorStateChange}
           />
-          <Row>
-            <Col sm = {1}><span>Loại:</span></Col>
-          <Col sm={3}>
-          <MySelectOption
-            //getValue={this.KindSelected}
-            //disabled={this.state.readOnly}
-            value= {loai}
-            options={this.state.typeOptions}
-            selected={this.kindSelected}
-          />
-          </Col>
+          <Row style = {{marginTop: '10px'}}>
+            <Col sm={1}>
+              <span>Loại:</span>
+            </Col>
+            <Col sm={3}>
+              <MySelectOption
+                value={loai}
+                options={this.state.typeOptions}
+                selected={this.kindSelected}
+              />
+            </Col>
           </Row>
           <Checkbox
             isCheck={this.changeStatus}
@@ -229,20 +238,20 @@ class EditorConvertToHTML extends Component {
             label="Hiện thị lên bảng tin"
             name={"hienThi"}
           />
-            <Checkbox
+          <Checkbox
             defaultChecked={this.state.pin}
             isCheck={this.changePin}
             check={this.state.pin}
             label="Ghim bài viết (Hiển thị tối đa 2)"
             name={"ghim"}
           />
-            <Checkbox
+          {/* <Checkbox
             defaultChecked={this.state.sendEmail}
             isCheck={this.changeSendEmail}
             check={this.state.sendEmail}
             label="Gửi thông báo tới sinh viên qua email"
             name={"guiEmail"}
-          />
+          /> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={this.handleClose}>

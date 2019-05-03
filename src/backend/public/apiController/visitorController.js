@@ -1,22 +1,21 @@
 const BaiViet = require("../models/BaiViet");
 const ObjectId = require("mongoose").Types.ObjectId;
 exports.getDetailNews = (req, res) => {
-
   try {
-    BaiViet.findOne({ _id: req.query.id }, (err,doc) => {
-        if(err){
-            res.status(204).json({
-                message: "oke",
-                data: err
-              });
-        }
-        if(doc){
-            res.status(200).json({
-                 message: "oke",
-                data: doc
-              });
-        }
-    })
+    BaiViet.findOne({ _id: req.query.id }, (err, doc) => {
+      if (err) {
+        res.status(204).json({
+          message: "oke",
+          data: err
+        });
+      }
+      if (doc) {
+        res.status(200).json({
+          message: "oke",
+          data: doc
+        });
+      }
+    });
   } catch (err) {
     console.log(err);
     res.status(204).json({
@@ -26,23 +25,23 @@ exports.getDetailNews = (req, res) => {
   }
 };
 
-exports.getNews = (req,res) =>{
-  var date = req.body.data;
+exports.getPinNews = (req, res) => {
   try {
-    BaiViet.find({trangThai: 1,ngayTao: {$gt: date} },(err,doc) => {
-        if(err){
-            res.status(204).json({
-                message: "oke",
-                data: err
-              });
-        }
-        if(doc){
-            res.status(200).json({
-                 message: "oke",
-                data: doc
-              });
-        }
-    }).limit(6)
+    BaiViet.find({ ghim: 1 }, (err, doc) => {
+      if (doc.length === 0) {
+        res.status(204).json({
+          message: "oke",
+          data: err
+        });
+      } else {
+        res.status(200).json({
+          message: "oke",
+          data: doc
+        });
+      }
+    })
+      .limit(2)
+      .sort({ ngayTao: -1 });
   } catch (err) {
     console.log(err);
     res.status(204).json({
@@ -50,4 +49,35 @@ exports.getNews = (req,res) =>{
       data: err
     });
   }
-}
+};
+
+exports.getNews = (req, res) => {
+  var date = req.body.data;
+  var skip =  parseInt(req.body.skip);
+  var limit = req.body.limit
+  try {
+    BaiViet.find({ trangThai: 1,ghim: 0})
+      .sort({ ngayTao: -1 })
+      .skip(skip)
+      .limit(limit)
+      .then(rs => {
+        console.log(rs.length);
+        if (rs.length === 0) {
+          res.status(204).json({
+            message: "fail"
+          });
+        } else {
+          res.status(200).json({
+            message: "oke",
+            data: rs
+          });
+        }
+      });
+  } catch (err) {
+    console.log(err);
+    res.status(204).json({
+      message: "error",
+      data: err
+    });
+  }
+};
