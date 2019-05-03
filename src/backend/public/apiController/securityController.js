@@ -13,9 +13,7 @@ function find_history(){
     populate({
       path: 'profile',
       select: 'hoTen idPhong truong nganhHoc img',
-      populate: [{ path: 'idPhong', select: 'tenPhong'}, 
-      { path: 'truong', select: 'tenTruong'},
-      { path: 'nganhHoc', select: 'tenNganh'}]
+      populate: [{ path: 'idPhong', select: 'tenPhong'}, ]
     }).
     exec((err,result) => {
       if (result){
@@ -44,12 +42,9 @@ exports.get_history_list = (req, res) => {
 exports.input_card = (req, res) => {
   var {info} = req.body;
   Profile.findOne({maThe: info}).populate([
-  {
-      path:'idTaiKhoan',
-      match:{ isDelete: 0}
-  },{ path: 'idPhong', select: 'tenPhong'}, 
-  { path: 'truong', select: 'tenTruong'},
-  { path: 'nganhHoc', select: 'tenNganh'}]).then(profile => {
+  { path:'idTaiKhoan', match:{ isDelete: 0}},
+  { path: 'idPhong', select: 'tenPhong'}, 
+  { path: 'truong', select: 'tenTruong'}]).then(profile => {
       if (profile){
         if (profile.MSSV)
         var his = new LichSu({

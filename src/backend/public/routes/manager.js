@@ -77,7 +77,7 @@ router.post('/infoStudent/update', infoStudent.updateInfo);
 
 router.post('/infoStudent/importFile', infoStudent.importFile);
 
-router.post('/infoStudent/getActivities', studentController.getListActivities);
+router.get('/infoStudent/getActivities/:id', infoStudent.getListActivities);
 
 router.get('/getElement/:name', repo.get_element);
 

@@ -45,7 +45,6 @@ class Security extends Component {
 
 		getHistoryList().then(result => {
 			if (result.data) {
-				console.log(result.data)
 				var historyList = result.data.data.map(value => {
 					value.imgFile = imageFile(value.profile.img);
 					return value
