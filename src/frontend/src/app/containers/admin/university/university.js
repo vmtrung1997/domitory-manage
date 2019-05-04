@@ -39,7 +39,7 @@ class Security extends Component {
   onHandleSchoolClick = (id) => {
     if (id === '')
       return;
-    this.setState({ loading: true, selectSchool: id })
+    this.setState({selectSchool: id })
     getMajor({ id: id }).then(result => {
       if (result.data.rs == 'success') {
         this.setState({ majorsList: result.data.data, idTruongUpdate: id })
@@ -58,6 +58,7 @@ class Security extends Component {
     var object = {
       id: this.state.idUpdate,
     }
+    this.setState({ loading: true});
     if (this.state.isEditSChool) {
       object.tenTruong = this.state.valueUpdate
       updateSchool(object).then(result => {
@@ -123,11 +124,10 @@ class Security extends Component {
     })
   }
   onAddMajor = () => {
+    this.setState({ loading: true })
     var { majorTxt, selectSchool } = this.state;
-    console.log('majortxt', majorTxt)
     if (majorTxt === '')
       return;
-    this.setState({ loading: true })
     insertMajor({ tenNganh: majorTxt, idTruong: selectSchool }).then(result => {
       if (result.data.rs === 'fail') {
         ToastsStore.error(result.data.msg);

@@ -583,17 +583,11 @@ exports.get_detail_type_room = (req, res) => {
 	ThongSoLoaiPhong.find({ idLoaiPhong: req.body.idLoaiPhong })
 		.sort({ id: 1 })
 		.then(arrThongSo => {
-			if (arrThongSo.length > 0) {
 				res.json({
 					rs: 'success',
 					data: arrThongSo
 				})
-			} else {
-				res.json({
-					rs: 'fail',
-					msg: 'No data'
-				})
-			}
+			
 		}).catch(err => { res.json({ err: err }) })
 }
 

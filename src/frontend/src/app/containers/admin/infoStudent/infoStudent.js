@@ -21,8 +21,6 @@ import XLSX from 'xlsx'
 import Checkbox from "../../../components/checkbox/checkbox";
 
 
-axios.defaults.baseURL = 'http://localhost:4000/api'
-
 class InfoStudent extends Component{
   constructor(props) {
     super(props);
