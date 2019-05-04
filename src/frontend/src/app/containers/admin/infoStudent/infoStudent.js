@@ -216,6 +216,7 @@ class InfoStudent extends Component{
 
   handleSearch = () => {
     this.setState({
+      pageActive: 1,
       loading: true,
     });
     this.getData();
@@ -570,7 +571,7 @@ class InfoStudent extends Component{
     return(
       <div>
         <Loader loading={this.state.loading}/>
-        <Print show={this.state.showPrint} handleClose={() => this.changeState('showPrint', false)}/>
+        <Print data={this.state.dataPrint} show={this.state.showPrint} handleClose={() => this.changeState('showPrint', false)}/>
         <Title>
           Thông tin sinh viên
         </Title>
@@ -1117,7 +1118,7 @@ class InfoStudent extends Component{
                   Hiện tại
                 </Button>
                 <Button
-                color={'default'}
+                  color={'default'}
                   variant={isOld ? 'default' : 'outline'}
                   onClick={() => this.handleChooseOption(true)}
                 >
@@ -1159,7 +1160,7 @@ class InfoStudent extends Component{
                           title={'In thẻ'}
                           color={'success'}
                           style={{marginRight: '10px'}}
-                          onClick={ e => {this.changeState('showPrint', true)}}
+                          onClick={ e => {this.changeState('showPrint', true); this.changeState('dataPrint', info) }}
                         >
                           <i className="fas fa-print"/>
                         </Button>
