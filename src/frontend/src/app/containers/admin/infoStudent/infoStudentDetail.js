@@ -236,6 +236,7 @@ class InfoStudentDetail extends Component {
       var data = e.target.result;
       var testImg = new Image();
       testImg.src = data;
+      testImg.crossOrigin = "Anonymous";
       testImg.onload = () => {
         this.setState({
           info: {
