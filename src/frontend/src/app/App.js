@@ -5,6 +5,8 @@ import jwt_decode from 'jwt-decode';
 import './App.css'
 import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
+import NotAuthen from './components/errorPages/NotAuthentication/NotAuthentication'
+import InternalServer from './components/errorPages/InternalServer/InternalServer'
 import SignInAdmin from './containers/admin/signIn/signinAdmin'
 import Student from './containers/student'
 import Security from './containers/security/index'
@@ -71,6 +73,8 @@ class App extends Component {
                     <Route path="/signin-admin" component={SignInAdmin} />
                     <Route path='/' component = {Student}/>
                     <Route path='/print' component={ExpensePrint} />
+                    <Route path={'/500'} component={InternalServer} />
+                    <Route path={'/401'} component={NotAuthen}/>
                     <Route component={NotFound} />
                 </Switch>
             </Router>

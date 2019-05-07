@@ -18,8 +18,6 @@ import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
 import Print from './infoStudentPrint';
 
-axios.defaults.baseURL = 'http://localhost:4000/api'
-
 class InfoStudent extends Component{
   constructor(props) {
     super(props);

@@ -95,6 +95,11 @@ router.get('/infoDormitory/delRoom/:id', infoDormitory.delRoom);
 
 router.get('/infoDormitory/getRoomType', infoDormitory.getRoomType);
 
+router.post('/infoDormitory/addRoomType', infoDormitory.addRoomType);
+
+router.post('/infoDormitory/updateRoomType', infoDormitory.updateRoomType);
+
+router.post('/infoDormitory/removeRoomType', infoDormitory.removeRoomType);
 
 //News
 router.post('/news/add',newsController.addNews);

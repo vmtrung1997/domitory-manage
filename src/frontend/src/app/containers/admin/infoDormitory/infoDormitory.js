@@ -8,7 +8,7 @@ import axios from "axios";
 import Input from "../../../components/input/input";
 import Select from "../../../components/selectOption/select"
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
-
+import RoomType from './roomType'
 const PHONG_SV = 0;
 const PHONG_DVU = 1;
 const PHONG_CNANG = 2;
@@ -724,6 +724,9 @@ class InfoDormitory extends React.Component{
                 >
                   <i className="fas fa-plus"/> Thêm phòng
                 </Button>
+              </div>
+              <div className={'id-add'}>
+                <RoomType />
               </div>
             </Row>
           </div>

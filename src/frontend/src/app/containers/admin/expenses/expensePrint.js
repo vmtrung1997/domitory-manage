@@ -6,6 +6,7 @@ import ReactToPrint from 'react-to-print';
 import DatePicker from '../../../components/datePicker/datePicker'
 import { get_data_print } from './expensesAction'
 import Input from '../../../components/input/input';
+import RadioButton from '../../../components/radioButton/radioButton'
 class ComponentToPrint extends React.Component {
   render() {
     return (
@@ -70,11 +71,14 @@ class Confirm extends Component {
     })
   }
   getDataPrint = (type) => {
+    this.setState({printComponent: (<div>Đang tải dữ liệu</div>)})
     var data = type === 'table' ? this.state.tableData : this.state.selectedData;
     get_data_print({ type: type, data: data }).then(result => {
       if (result.data.rs === 'success') {
         var printCpn=this.componentPrint(this.printData(result.data.data));
         this.setState({ printComponent: printCpn })
+      } else {
+        this.setState({printComponent: (<div>{result.data.msg}</div>)})
       }
     })
   }
@@ -278,7 +282,7 @@ class Confirm extends Component {
     return (
       <>
         <ReactToPrint
-          trigger={() => <button type='button' id='ktx-print'>Click to print</button>}
+          trigger={() => <Button>In dữ liệu</Button>}
           content={() => this.componentRef}
           onBeforePrint={() => this.afterPrint()}
         />
@@ -336,10 +340,12 @@ class Confirm extends Component {
           </Row>
             <Row className='m-b-10'>
               <Col>
-                <label className={'print-button'} htmlFor={'ktx-print'} onClick={() => this.getDataPrint('table')}>In toàn bảng</label>
+              <RadioButton name='print-button' label={'In toàn bảng'} isRadioChk={() => this.getDataPrint('table')} />
+                {/* <label className={'print-button'} htmlFor={'ktx-print'} onClick={() => this.getDataPrint('table')}>In toàn bảng</label> */}
               </Col>
               <Col>
-                <label className={'print-button'} htmlFor={'ktx-print'} onClick={() => this.getDataPrint('select')}>In đã chọn</label>
+              <RadioButton name='print-button' label={'In đã chọn'} isRadioChk={() => this.getDataPrint('select')} />
+                {/* <label className={'print-button'} htmlFor={'ktx-print'} onClick={() => this.getDataPrint('select')}>In đã chọn</label> */}
               </Col>
             </Row>
             <Row className='m-b-10'>
@@ -349,10 +355,7 @@ class Confirm extends Component {
           <Modal.Footer>
             <Button variant='default' color='default' onClick={this.handleClose}>
               Đóng
-	            	</Button>
-            <Button variant='default' onClick={this.handleSave}>
-              Đồng ý
-	              	</Button>
+	          </Button>
           </Modal.Footer>
         </Modal>
       </React.Fragment>
