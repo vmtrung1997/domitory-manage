@@ -6,7 +6,51 @@ class InfoHomePage extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div className="background slide-fwd-center ">
+        {
+  /* App Download Area Start */
+}
+;<section
+  className="razo-app-download-area section-padding-80-0 bg-img bg-overlay jarallax"
+  style={{ backgroundImage: "url(img/post-1.jpg)" }}
+>
+  <div className="container">
+    <div className="row align-items-center">
+      {/* App Thumbnail */}
+      <div className="col-12 col-md-6">
+        <div className="app-thumbnail mb-80">
+          <img src="img/mockup-iphone.png" alt />
+        </div>
+      </div>
+      {/* App Download Text */}
+      <div className="col-12 col-md-6">
+        <div className="app-download-text mb-80">
+          <span>Download app and Enjoy radio &amp; music</span>
+          <h2>Radio Music</h2>
+          <p>
+            Radio app plus is a app that lets you download videos and
+            music from social network, Youtube, etc. You may also
+            download and play the latest HD series and movies, and
+            also watch free live television. This app is also
+            available for Android and Ios.
+          </p>
+          <div className="app-download-btn">
+            <a href="#">
+              <img src="img/google-play.png" alt />
+            </a>
+            <a href="#">
+              <img src="img/app-store.png" alt />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{
+  /* App Download Area End */
+}
+
+        {/* <div className="background slide-fwd-center ">
           <div className="info-title">
             <span>GIỚI THIỆU</span>
           </div>
@@ -38,7 +82,7 @@ class InfoHomePage extends React.Component {
               </Col>
             </Row>
           </Container>
-        </div>
+        </div> */}
       </React.Fragment>
     );
   }

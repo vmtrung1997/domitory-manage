@@ -31,37 +31,39 @@ class StudentActivity extends React.Component {
     await refreshToken();
     var secret = localStorage.getItem("secret");
     const decode = jwt_decode(secret);
-    var id = decode.user.profile._id;
-    //Lấy thông tin hoạt động
-    var incomingActivities = [];
-    var oldActivities = [];
-    axios
-      .post(`http://localhost:4000/api/student/my-upcoming-activities`, {
-        id: id
-      })
-      .then(res => {
-        res.data.data.map(item => {
-          var d = new Date(item.idHD.ngayBD);
-          var today = new Date();
+    if(decode.user.profile){
+      var id = decode.user.profile._id;
+      //Lấy thông tin hoạt động
+      var incomingActivities = [];
+      var oldActivities = [];
+      axios
+        .post(`http://localhost:4000/api/student/my-upcoming-activities`, {
+          id: id
+        })
+        .then(res => {
+          res.data.data.map(item => {
+            var d = new Date(item.idHD.ngayBD);
+            var today = new Date();
 
-          if (d > today) {
-            item.check = false;
-            incomingActivities.push(item);
-          } else {
-            oldActivities.push(item);
-          }
-          return true;
+            if (d > today) {
+              item.check = false;
+              incomingActivities.push(item);
+            } else {
+              oldActivities.push(item);
+            }
+            return true;
+          });
+        })
+        .then(() => {
+          this.setState({
+            incomingActivities: incomingActivities,
+            oldActivities: oldActivities
+          });
+          this.setState({
+            isLoad: false
+          });
         });
-      })
-      .then(() => {
-        this.setState({
-          incomingActivities: incomingActivities,
-          oldActivities: oldActivities
-        });
-        this.setState({
-          isLoad: false
-        });
-      });
+    }
   };
 
   cancelRegister = async () => {

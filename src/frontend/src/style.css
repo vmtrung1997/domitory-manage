@@ -79,3 +79,9 @@ input:disabled {
     justify-content: flex-end;
     margin-bottom: 20px;
 }
+.display-inline{
+    display: inline;
+}
+.check-mark-fix{
+    top: -0.5em;
+}

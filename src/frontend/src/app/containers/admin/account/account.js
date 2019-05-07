@@ -96,7 +96,7 @@ class Account extends Component{
 								<span> Tài khoản </span>
 								<Input 
 									placeholder={'Tìm kiếm'} 
-									getValue={ (obj) => this.getValue('query', obj.value)}
+									getValue={ (obj) => this.changeState('query', obj.value)}
 									onKeyPress={ e => {if(e.key === 'Enter') this.handleSearch(1)}}
 								/>
 							</Col>
@@ -105,7 +105,7 @@ class Account extends Component{
 								<Select 
 									options={rule} 
 									value={this.state.rule} 
-									selected={val => this.getValue('rule',val)} 
+									selected={val => this.changeState('rule',val)} 
 								/>
 							</Col>
               				<Col md={2} xs={12}>

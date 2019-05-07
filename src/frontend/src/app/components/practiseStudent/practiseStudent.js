@@ -21,17 +21,19 @@ class PractiseStudent extends React.Component {
         var secret = localStorage.getItem("secret");
     
         if (secret) {
-          const decode = jwt_decode(secret);
-          secret = JSON.parse(secret);
-          var id = decode.user.profile._id;
-        Axios.post('/student/get-point',{id: id, ngayVaoO: decode.user.profile.ngayVaoO}).then(rs =>{
-            var point = [];
-            rs.data.data.forEach(item=>{
-                point.push({term: item.year, point: item.point});
-            })
+            const decode = jwt_decode(secret);
+            secret = JSON.parse(secret);
+            if(decode.user.profile){
+                var id = decode.user.profile._id;
+                Axios.post('/student/get-point',{id: id, ngayVaoO: decode.user.profile.ngayVaoO}).then(rs =>{
+                    var point = [];
+                    rs.data.data.forEach(item=>{
+                        point.push({term: item.year, point: item.point});
+                    })
 
-            this.setState({point: point})
-        });
+                    this.setState({point: point})
+                });
+            }
         }
     }
 

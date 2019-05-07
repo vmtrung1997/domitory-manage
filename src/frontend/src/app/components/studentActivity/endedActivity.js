@@ -38,38 +38,40 @@ class EndedStudentActivity extends React.Component {
     };
     var secret = localStorage.getItem("secret");
     const decode = jwt_decode(secret);
-    var id = decode.user.profile._id;
-    //Lấy thông tin hoạt động
-    var oldActivities = [];
-    axios
-      .post(`/student/my-upcoming-activities`, {
-        id: id,
-        options: options
-      })
-      .then(res => {
-        this.setState({
-          totalPages: res.data.totalPages
-        });
-        res.data.data.map(item => {
-  
-          var d = new Date(item.idHD.ngayKT);
+    if(decode.user.profile){
+      var id = decode.user.profile._id;
+      //Lấy thông tin hoạt động
+      var oldActivities = [];
+      axios
+        .post(`/student/my-upcoming-activities`, {
+          id: id,
+          options: options
+        })
+        .then(res => {
+          this.setState({
+            totalPages: res.data.totalPages
+          });
+          res.data.data.map(item => {
+    
+            var d = new Date(item.idHD.ngayKT);
 
-          var today = new Date();
+            var today = new Date();
 
-          if (d < today) {
-            oldActivities.push(item);
-          }
-          return true;
+            if (d < today) {
+              oldActivities.push(item);
+            }
+            return true;
+          });
+        })
+        .then(() => {
+          this.setState({
+            oldActivities: oldActivities
+          });
+          this.setState({
+            isLoad: false
+          });
         });
-      })
-      .then(() => {
-        this.setState({
-          oldActivities: oldActivities
-        });
-        this.setState({
-          isLoad: false
-        });
-      });
+    }
   };
 
   clickPage = e => {

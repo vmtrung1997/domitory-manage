@@ -3,6 +3,7 @@ import Slide from "../../../components/slideHomepage/slideHomepage";
 import News from "../../../components/news/newsHomepage";
 import Info from "../../../components/introHomepage/info";
 import { SectionsContainer, Section } from "react-fullpage";
+import Footer from "../../../components/footerHomepage/footer";
 
 class Homepage extends Component {
   componentDidMount() {}
@@ -19,7 +20,11 @@ class Homepage extends Component {
 
     return (
       <React.Fragment>
-        <SectionsContainer {...options}>
+         <Slide />
+         <News id="new" />
+         <Info id="info" />
+         <Footer></Footer>
+        {/* <SectionsContainer {...options}>
           <Section>
             {" "}
             <Slide />
@@ -30,7 +35,7 @@ class Homepage extends Component {
           <Section>
             <Info id="info" />
           </Section>
-        </SectionsContainer>
+        </SectionsContainer> */}
       </React.Fragment>
     );
   }
