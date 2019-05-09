@@ -1,5 +1,5 @@
 /* require XLSX */
-var XLSX = require('XLSX')
+var XLSX = require('xlsx')
 
 exports.save = function(arr, options) {
   function datenum(v, date1904) {

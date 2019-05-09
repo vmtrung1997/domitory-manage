@@ -182,7 +182,8 @@ class Example extends React.Component {
   addRow = (type) => {
     var { dienTable, nuocTable } = this.state
     var row = {
-      loaiChiPhi: this.state.selectedType,
+      loaiChiPhi: type,
+      idLoaiPhong: this.state.selectedType,
       giaTriDau: 0,
       giaTriCuoi: 0,
       giaTriThuc: 0,

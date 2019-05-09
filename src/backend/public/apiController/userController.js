@@ -18,12 +18,19 @@ const smtpTransport = nodemailer.createTransport({
 exports.register = (req, res) => {
   var userObject = req.body;
   userObject.password = md5(userObject.password);
-  var user = new User(userObject);
+  var user = new User({...userObject, isDelete:0});
   user
     .save()
-    .then(() => {
-      console.log("==register: success");
-      res.status(201).json(req.body);
+    .then(userObj => {
+      var profile = new Profile({
+        idTaiKhoan: userObj._id,
+        hoTen: userObject.hoTen,
+        gioiTinh: 1 
+      })
+      profile.save().then(() => {
+        console.log("==register: success");
+        res.status(201).json(req.body);
+      })
     })
     .catch(err => {
       console.log("==register: ", err);

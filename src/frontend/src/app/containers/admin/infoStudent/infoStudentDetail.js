@@ -236,6 +236,7 @@ class InfoStudentDetail extends Component {
       var data = e.target.result;
       var testImg = new Image();
       testImg.src = data;
+      testImg.crossOrigin = "Anonymous";
       testImg.onload = () => {
         this.setState({
           info: {
@@ -251,7 +252,8 @@ class InfoStudentDetail extends Component {
     }
   }
   getDateType = (dateString) =>{
-    return new Date(dateString);
+    let date = new Date(dateString);
+    return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
   }
   render() {
     console.log('==state render', this.state);
@@ -277,7 +279,7 @@ class InfoStudentDetail extends Component {
 
     } = info;
     var imgFile = img ? img : defaultStudentImg
-
+    var ngayVaoOStr = this.getDateType(ngayVaoO)
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -418,7 +420,7 @@ class InfoStudentDetail extends Component {
                           Ngày vào:
                         </Col>
                         <Col md={4}>
-                          <Input value={ngayVaoO} getValue={this.onChange} name={'ngayVaoO'} disabled />
+                          <Input value={ngayVaoOStr} getValue={this.onChange} name={'ngayVaoO'} disabled />
                         </Col>
                         <Col md={2}>
                           Ngày hết hạn:

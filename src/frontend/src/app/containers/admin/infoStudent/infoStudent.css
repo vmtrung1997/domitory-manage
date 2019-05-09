@@ -1,4 +1,6 @@
-
+.card-center{
+	margin: 10px auto;
+}
 .is-manipulation{
     margin-bottom: 8px;
 }
