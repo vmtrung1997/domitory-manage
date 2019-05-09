@@ -3,45 +3,48 @@ import PropTypes from 'prop-types';
 import MenuButton, { MenuButtonHeader } from '../menuButton/menuButton.js'
 import './navigation.css';
 
-export default class Navigation extends React.Component{
+export default class Navigation extends React.Component {
   static propTypes = {
     menuList: PropTypes.array
   };
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      menuList: []
+      menuList: [],
     }
   }
 
   componentWillMount() {
     const menuList = this.props.menuList;
     this.setState({
-      menuList: menuList
+      menuList: menuList,
+      role: ['HD01', 'KT01', 'TK01', 'BV01', 'LS01', 'TN01']
     })
   }
 
   render() {
     const { menuList } = this.state;
-    return(
+    return (
       <div className={"nav-wrapper"}>
         <ul>
-          <MenuButtonHeader 
-            name= {this.props.owner.name}
-            role= {this.props.owner.role}
+          <MenuButtonHeader
+            name={this.props.owner.name}
+            role={this.props.owner.role}
           />
-          { menuList.map((e) => {
-            return(
-              <MenuButton
-                key={e.key}
-                link={e.link}
-                label={e.label}
-                icon={e.icon}
-                path={window.location.pathname}
-                subMenu={e.subMenu}
-              />
-            )
+          {menuList.map((e) => {
+            if (this.state.role.includes(e.key)) {
+              return (
+                <MenuButton
+                  key={e.key}
+                  link={e.link}
+                  label={e.label}
+                  icon={e.icon}
+                  path={window.location.pathname}
+                  subMenu={e.subMenu}
+                />
+              )
+            }
           })}
         </ul>
       </div>

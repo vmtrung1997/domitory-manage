@@ -1,11 +1,11 @@
 import React from 'react';
- 
+import { withRouter } from 'react-router-dom';
 class NotAuthen extends React.Component {
   render(){
     return (
-      <p className={'internalServer'}>{"401 SERVER ERROR, NOT AUTHENTICATION"}</p>
+      <p>{"401 SERVER ERROR, NOT AUTHENTICATION"}</p>
   )
   }
 }
     
-export default NotAuthen;
+export default withRouter(NotAuthen);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import jwt_decode from 'jwt-decode';
-
+import axios from 'axios'
 import './App.css'
 import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
@@ -10,7 +10,6 @@ import InternalServer from './components/errorPages/InternalServer/InternalServe
 import SignInAdmin from './containers/admin/signIn/signinAdmin'
 import Student from './containers/student'
 import Security from './containers/security/index'
-import ExpensePrint from './containers/admin/expenses/expensePrintPage'
 var isAdmin = false
 var isSecurity = false
 
@@ -71,11 +70,10 @@ class App extends Component {
                     <AdminRoute path="/admin" component={Admin} />
                     <SecurityRoute path='/security' component={Security} />
                     <Route path="/signin-admin" component={SignInAdmin} />
-                    <Route path='/' component = {Student}/>
-                    <Route path='/print' component={ExpensePrint} />
-                    <Route path={'/500'} component={InternalServer} />
-                    <Route path={'/401'} component={NotAuthen}/>
-                    <Route component={NotFound} />
+                    <Route exact path='/' component = {Student}/>
+                    <Route exact path={'/500'} component={InternalServer} />
+                    <Route exact path={'/401'} component={NotAuthen}/>
+                    <Route exact component={NotFound} />
                 </Switch>
             </Router>
         );
