@@ -67,7 +67,9 @@ router.post('/activity/update', activityController.update_activity);
 router.post('/activity/rollcall', activityController.rollcall_activity)
 
 // Info of student
-router.post('/infoStudent/get', infoStudent.getListStudent);
+router.post('/infoStudent/getPaging', infoStudent.getListStudentPaging);
+
+router.post('/infoStudent/getAll', infoStudent.getListStudent);
 
 router.post('/infoStudent/add', infoStudent.addStudent);
 
