@@ -33,7 +33,7 @@ class InfoStudent extends Component{
         studentNumber: '',
         pageActive: 1,
         limit: 10,
-        isOld: false,
+        isOld: 0,
         roomSelected: {},
         schoolSelected: {}
       },
@@ -250,8 +250,10 @@ class InfoStudent extends Component{
     this.getData();
   };
 
-  handleChooseOption = (prop) => {
-    this.setState({isOld: prop});
+  handleChooseOption = async (prop) => {
+    await this.setState({
+      searchValues: {...this.state.searchValues, isOld: prop}
+      });
     this.getData();
   };
 
@@ -293,17 +295,13 @@ class InfoStudent extends Component{
       searchValues: {
         limit,
         pageActive,
+        isOld
       },
       infoList,
-      roomSelected,
-      schoolSelected,
       floorSelected,
-      roomOptionsSearch,
-      schoolOptionsSearch,
       floorOptions,
       hoTen,
       mssv,
-      isOld,
       roomHistory,
       infoAdded: { dateAdded, expiredDateAdded, regisExpiredDateAdded},
       valueExport :{
@@ -429,6 +427,7 @@ class InfoStudent extends Component{
                 <div className={'is-manipulation'}>
                   <ImportDataModal
                     show={this.state.showImportPopup}
+                    onSave={()=>this.getData()}
                   />
 
                   <ExportDataModal
@@ -449,12 +448,15 @@ class InfoStudent extends Component{
                 <div className={'is-manipulation'} style={{float: 'right'}}>
                   <AddStudentModal
                     show={this.state.showAddPopup}
+                    onSave={()=>this.getData()}
                   />
 
                   <MarkOldStudentModal
                     function={()=>this.setState({listChecked:[]})}
                     show={this.state.showDelPopup}
                     listStudent={this.state.listChecked}
+                    onSave={()=>this.getData()}
+
                   />
                 </div>
               </Col>
@@ -511,14 +513,14 @@ class InfoStudent extends Component{
                 <Button
                   variant={isOld ? 'outline' :  'default'}
                   color={'default'}
-                  onClick={() => this.handleChooseOption(false)}
+                  onClick={() => this.handleChooseOption(0)}
                 >
                   Hiện tại
                 </Button>
                 <Button
                   color={'default'}
                   variant={isOld ? 'default' : 'outline'}
-                  onClick={() => this.handleChooseOption(true)}
+                  onClick={() => this.handleChooseOption(1)}
                 >
                   Sinh viên cũ
                 </Button>
