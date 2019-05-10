@@ -583,17 +583,11 @@ exports.get_detail_type_room = (req, res) => {
 	ThongSoLoaiPhong.find({ idLoaiPhong: req.body.idLoaiPhong })
 		.sort({ id: 1 })
 		.then(arrThongSo => {
-			if (arrThongSo.length > 0) {
 				res.json({
 					rs: 'success',
 					data: arrThongSo
 				})
-			} else {
-				res.json({
-					rs: 'fail',
-					msg: 'No data'
-				})
-			}
+			
 		}).catch(err => { res.json({ err: err }) })
 }
 
@@ -616,6 +610,7 @@ exports.update_detail_type_room = (req, res) => {
 									rs: 'fail'
 								})
 							} else {
+								console.log(data.table);
 								var table = data.table.map(value => {
 									return {
 										id: parseInt(value.id),
@@ -757,7 +752,7 @@ exports.get_data_print = (req, res) => {
 		if (data.length > 0)
 			searchObj._id = { $in: data }
 	}
-	if (Object.keys(searchObj).length>0) {
+	if (Object.keys(searchObj).length>0 || type === 'table') {
 		console.log(searchObj);
 		ChiPhiPhong.find(searchObj).populate({
 			path: 'idPhong',

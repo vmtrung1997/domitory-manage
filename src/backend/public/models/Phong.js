@@ -7,9 +7,9 @@ var phongSchema = new Schema({
     soNguoi: Number,
     soNguoiToiDa: Number,
     trangThai: {type: Number, enum: [0, 1]}, //0: Ngung su dung, 1: Dang su dung
-    loaiPhong: {type: Schema.Types.String, ref: 'LoaiPhong'}
+    loaiPhong: {type: Schema.Types.String, ref: 'LoaiPhong'},
     // isHoDan: Number,
-    // moTa: String
+    moTa: String
 });
 const model = mongoose.model('Phong', phongSchema, 'Phong');
 module.exports = model;

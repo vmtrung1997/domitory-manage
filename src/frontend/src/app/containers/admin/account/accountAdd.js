@@ -48,34 +48,38 @@ class AccountAdd extends Component{
   }
 
   handleSave = async () => {
-    if(this.state.password === this.state.confirmPassword){
-      await refreshToken()
-      var secret = JSON.parse(localStorage.getItem('secret'))
-      axios({
-        method: 'post',
-        url: '/manager/account/add_account',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-access-token': secret.access_token
-        },
-        data:{
-          username: this.state.username,
-          password: this.state.password,
-          name: this.state.name,
-          CMND: this.state.CMND,
-          Email: this.state.Email,
-          rule: this.state.rule,
-        }
-      }).then(res => {
-        ToastsStore.success("Thêm tài khoản thành công!");
-      }).catch(err => {
-         ToastsStore.error( err.response.data.ms );
-      })
-      this.setState(initialState)
-      this.props.handleSave()
-    } else {
+    var {username, password, confirmPassword, name, CMND, Email} = this.state
+    if(!username || !password || !confirmPassword || !name || !CMND || !Email)
+    {
+      ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
+    } else if (password !== confirmPassword){
       ToastsStore.error("Mật khẩu không trùng khớp!");
-    }
+    } else {
+      await refreshToken()
+        var secret = JSON.parse(localStorage.getItem('secret'))
+        axios({
+          method: 'post',
+          url: '/manager/account/add_account',
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-access-token': secret.access_token
+          },
+          data:{
+            username: this.state.username,
+            password: this.state.password,
+            name: this.state.name,
+            CMND: this.state.CMND,
+            Email: this.state.Email,
+            rule: this.state.rule,
+          }
+        }).then(res => {
+          ToastsStore.success("Thêm tài khoản thành công!");
+        }).catch(err => {
+           ToastsStore.error( err.response.data.ms );
+        })
+        this.setState(initialState)
+        this.props.handleSave()
+    } 
   }
 
   handleClose = () => {

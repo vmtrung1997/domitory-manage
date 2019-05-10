@@ -8,7 +8,7 @@ import axios from "axios";
 import Input from "../../../components/input/input";
 import Select from "../../../components/selectOption/select"
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
-
+import RoomType from './roomType'
 const PHONG_SV = 0;
 const PHONG_DVU = 1;
 const PHONG_CNANG = 2;
@@ -518,6 +518,20 @@ class InfoDormitory extends React.Component{
                 </Col>
 
                 <Col md={4}>
+                  Số điện hiện tại:
+                </Col>
+                <Col md={8}>
+                  <Input getValue={this.onChange} name={'electicalNumAdd'} />
+                </Col>
+
+                <Col md={4}>
+                  Số nước hiện tại:
+                </Col>
+                <Col md={8}>
+                  <Input getValue={this.onChange} name={'waterNumAdd'} />
+                </Col>
+
+                <Col md={4}>
                   Mô tả:
                 </Col>
                 <Col md={8}>
@@ -724,6 +738,9 @@ class InfoDormitory extends React.Component{
                 >
                   <i className="fas fa-plus"/> Thêm phòng
                 </Button>
+              </div>
+              <div className={'id-add'}>
+                <RoomType />
               </div>
             </Row>
           </div>

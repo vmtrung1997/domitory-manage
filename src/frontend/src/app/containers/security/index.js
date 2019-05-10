@@ -45,11 +45,12 @@ class Security extends Component {
 
 		getHistoryList().then(result => {
 			if (result.data) {
-				var historyList = result.data.data.map(value => {
+				console.log(result.data);
+				var historyList =result.data.data && result.data.data.map(value => {
 					value.imgFile = imageFile(value.profile.img);
 					return value
 				})
-				this.setState({ history: historyList, mainHis: historyList[0] });
+				this.setState({ history: historyList, mainHis: result.data.data? historyList[0]:{} });
 			}
 		})
 	}
@@ -110,7 +111,7 @@ class Security extends Component {
 	
 	render() {
 		var { mainHis } = this.state
-		var mainTime = new Date(mainHis.thoiGian)
+		var mainTime = mainHis?new Date(mainHis.thoiGian):''
 		return (
 			<React.Fragment>
 				<div className='header-security'>
@@ -128,7 +129,7 @@ class Security extends Component {
 								<Col md={6} className={'col-outer'}>
 									<div className={'img-css'}>
 										{!this.state.notFound ?
-											<img src={mainHis.imgFile !== "" ? mainHis.imgFile : defaultImage} /> :
+											<img src={mainHis && mainHis.imgFile !== "" ? mainHis.imgFile : defaultImage} /> :
 											<img src={''} />}
 									</div>
 								</Col>
@@ -146,12 +147,12 @@ class Security extends Component {
 											</div>
 										</Col>
 									</Row>
-									{!this.state.notFound ? <div style={{ margin: '5em 0', textAlign: 'center' }}>
+									{!this.state.notFound ?mainHis? <div style={{ margin: '5em 0', textAlign: 'center' }}>
 										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>{mainHis.profile.hoTen.toUpperCase()}</span></Col>
 										<Col md={12} className={'info'}>MSSV: <span>{mainHis.MSSV}</span></Col>
 										<Col md={12} className={'info'}>Phòng: <span>{mainHis.profile.idPhong.tenPhong}</span></Col>
 										<Col md={12} className={'info'}>Giờ vào: <span>{mainTime.toLocaleTimeString() + ' ' + mainTime.toLocaleDateString()}</span></Col>
-									</div> :
+									</div>:<div> Nothing</div> :
 										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>NOT FOUND</span></Col>
 									}
 								</Col>

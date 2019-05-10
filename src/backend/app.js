@@ -7,8 +7,7 @@ var express = require('express'),
 var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
 
-
-mongoose.connect('mongodb://admin:123abc@ds149875.mlab.com:49875/kytucxa', 
+mongoose.connect('mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao', 
 { 
   useNewUrlParser: true,
   autoReconnect:true,
@@ -35,8 +34,6 @@ app.use('/api/manager', verifyAccessToken, verifyAdmin, require('./public/routes
 app.use('/api/student', verifyAccessToken, require('./public/routes/student'));
 app.use('/api/security', verifyAccessToken, verifySecurity, require('./public/routes/security'));
 app.use('/api/logout', require('./public/routes/logout'));
-
-
 
 app.get('/', (_, res) => {
     res.json({
