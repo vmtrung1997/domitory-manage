@@ -234,6 +234,7 @@ class InfoStudentDetail extends Component {
     
     fileReader.onload = (e) => {
       var data = e.target.result;
+      console.log(e);
       var testImg = new Image();
       testImg.src = data;
       testImg.crossOrigin = "Anonymous";

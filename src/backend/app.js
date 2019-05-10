@@ -26,6 +26,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
 app.use(cors());
+// for parsing multipart/form-data
+app.use(upload.array()); 
+app.use(bodyParser.json({limit: '50mb'}));
 var { verifyAccessToken, verifyAdmin, verifySecurity } = require('./public/repos/authRepo');
 
 app.use('/news',require('./public/routes/visitor'));

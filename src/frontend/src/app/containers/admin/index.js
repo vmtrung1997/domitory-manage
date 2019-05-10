@@ -14,7 +14,7 @@ import History from './securityHistory/history'
 import News from './news/news';
 import University from './university/university'
 import {Authorization} from './../../components/AuthenticationRoute/Authorization'
-
+import jwt_decode from 'jwt-decode';
 class Admin extends Component {
 	constructor(props) {
 		super(props);
@@ -23,10 +23,14 @@ class Admin extends Component {
 		}
 	}
 	componentDidMount() {
-		// let token = JSON.parse(localStorage.getItem('secret'));
-		this.setState({
-			roles: ['SV01', 'SV02', 'CP01', 'HD01', 'KT01', 'TK01', 'TK02', 'BV01', 'LS01', 'TN01']
-		})
+		let token = JSON.parse(localStorage.getItem('secret'));
+		let decode = jwt_decode(token.access_token)
+		if (decode){
+			this.setState({
+				roles: decode.user.userEntity.phanQuyen.quyen
+			})
+
+		}
 	}
 	render() {
 		let {roles} = this.state

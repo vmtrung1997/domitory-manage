@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MenuButton, { MenuButtonHeader } from '../menuButton/menuButton.js'
 import './navigation.css';
+import jwt_decode from 'jwt-decode';
 
 export default class Navigation extends React.Component {
   static propTypes = {
@@ -17,10 +18,15 @@ export default class Navigation extends React.Component {
 
   componentWillMount() {
     const menuList = this.props.menuList;
-    this.setState({
-      menuList: menuList,
-      role: ['HD01', 'KT01', 'TK01', 'BV01', 'LS01', 'TN01']
-    })
+    let token = JSON.parse(localStorage.getItem('secret'));
+		let decode = jwt_decode(token.access_token)
+		if (decode){
+			this.setState({
+        menuList: menuList,
+				roles: decode.user.userEntity.phanQuyen.quyen
+			})
+
+		}
   }
 
   render() {
@@ -33,7 +39,7 @@ export default class Navigation extends React.Component {
             role={this.props.owner.role}
           />
           {menuList.map((e) => {
-            if (this.state.role.includes(e.key)) {
+            if (this.state.roles.includes(e.key)) {
               return (
                 <MenuButton
                   key={e.key}
