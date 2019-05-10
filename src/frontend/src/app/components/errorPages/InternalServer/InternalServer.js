@@ -6,7 +6,7 @@ class internalServer extends React.Component {
     const cardNodes = document.querySelectorAll('.card-container');
     const perspecNodes = document.querySelectorAll('.perspec');
     const perspec = document.querySelector('.perspec');
-    const card = document.querySelector('.card');
+    const card = document.querySelector('.card-fix');
 
     let counter = stackContainer.children.length;
 
@@ -81,7 +81,7 @@ class internalServer extends React.Component {
           <div className="stack-container">
             <div className="card-container">
               <div className="perspec style1">
-                <div className="card">
+                <div className="card-fix">
                   <div className="writing">
                     <div className="topbar">
                       <div className="red"></div>
@@ -98,7 +98,7 @@ class internalServer extends React.Component {
             </div>
             <div className="card-container">
               <div className="perspec style2">
-                <div className="card">
+                <div className="card-fix">
                   <div className="writing">
                     <div className="topbar">
                       <div className="red"></div>
@@ -115,7 +115,7 @@ class internalServer extends React.Component {
             </div>
             <div className="card-container">
               <div className="perspec style3">
-                <div className="card">
+                <div className="card-fix">
                   <div className="writing">
                     <div className="topbar">
                       <div className="red"></div>
@@ -132,7 +132,7 @@ class internalServer extends React.Component {
             </div>
             <div className="card-container">
               <div className="perspec style4" >
-                <div className="card">
+                <div className="card-fix">
                   <div className="writing">
                     <div className="topbar">
                       <div className="red"></div>
@@ -149,7 +149,7 @@ class internalServer extends React.Component {
             </div>
             <div className="card-container">
               <div className="perspec style5">
-                <div className="card">
+                <div className="card-fix">
                   <div className="writing">
                     <div className="topbar">
                       <div className="red"></div>
@@ -165,8 +165,8 @@ class internalServer extends React.Component {
               </div>
             </div>
             <div className="card-container">
-              <div className="perspec" style={{ '--spreaddist': '0px', '--scaledist': '1', '--vertdist': ' 0px' }}>
-                <div className="card">
+              <div className="perspec style6">
+                <div className="card-fix">
                   <div className="writing">
                     <div className="topbar">
                       <div className="red"></div>
