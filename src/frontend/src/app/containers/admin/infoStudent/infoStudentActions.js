@@ -54,31 +54,13 @@ export const get_element = async(name) => {
     }).then(result => {
       switch (name) {
         case 'room':
-          const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
-          roomOptions.unshift({ value: -1, label: 'Chưa xác định' });
-          roomOptions.unshift({ value: 0, label: 'Tất cả' });
-
-          resolve(roomOptions);
-
+          resolve(result.data);
           break;
         case 'school':
-          const schoolOptions = result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }));
-          schoolOptions.unshift({ value: -1, label: 'Chưa xác định' });
-          schoolOptions.unshift({ value: 0, label: 'Tất cả' });
-
-          resolve(schoolOptions);
-
+          resolve(result.data);
           break;
         case 'floor':
-          let i = 0;
-          result.data.sort();
-          const floorOptions = result.data.map(floor => {
-            return {value: i++, label: floor}
-          });
-          floorOptions.unshift({ value: 0, label: 'Tất cả' });
-
-          resolve(floorOptions);
-
+          resolve(result.data);
           break;
         default:
           break
@@ -156,5 +138,19 @@ export const get_list_student = async(searchValues) => {
       reject(err)
     })
   })
-}
+};
+
+export const get_floor_room = async() => {
+  const headers = await get_headers();
+
+  return new Promise((resolve, reject) => {
+    axios.get(`/manager/getRoomWithFloor`,{ headers: headers }
+    ).then(result => {
+      resolve(result);
+    }).catch((err) => {
+      console.log('==getall', err)
+      reject(err)
+    })
+  })
+};
 
