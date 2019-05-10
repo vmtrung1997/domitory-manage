@@ -111,7 +111,7 @@ class ListActivity extends React.Component {
       //Lấy thông tin hoạt động
       var activity = [];
       axios
-        .post(`http://localhost:4000/api/student/get-list-activities`, {
+        .post(`/student/get-list-activities`, {
           id: id,
           options: options
         })

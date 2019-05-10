@@ -60,7 +60,7 @@ class News extends Component {
   };
 
   onViewDetail = id => {
-    var address = "http://localhost:3000/news/detail?id=" + id;
+    var address = "/news/detail?id=" + id;
     window.open(address, "_blank");
   };
 

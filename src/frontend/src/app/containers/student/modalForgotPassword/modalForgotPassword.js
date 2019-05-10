@@ -48,7 +48,7 @@ class IdentityVerification extends React.Component {
       });
 
       axios
-        .post(`http://localhost:4000/api/user/reset-password`, {
+        .post(`/user/reset-password`, {
           cmnd: this.state.cmnd,
           mssv: this.state.mssv
         })

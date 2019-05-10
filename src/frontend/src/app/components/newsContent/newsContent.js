@@ -17,7 +17,6 @@ class NewsContent extends React.Component {
       //--TODO-- Redirect sang trang tin tức
     } else {
       var req =
-        "http://localhost:4000" +
         this.props.location.pathname +
         this.props.location.search;
 

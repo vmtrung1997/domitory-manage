@@ -17,7 +17,7 @@ class NewsHomepage extends React.Component {
   loadNews = async date => {
     var _post = [];
 
-    await Axios.post("http://localhost:4000/news/get-news", { data: date })
+    await Axios.post("/news/get-news", { data: date })
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map((item, index) => {
@@ -40,7 +40,7 @@ class NewsHomepage extends React.Component {
 
     var _post = [];
 
-    await Axios.get("http://localhost:4000/news/get-pin-news")
+    await Axios.get("/news/get-pin-news")
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map(item => {
@@ -97,7 +97,7 @@ class NewsHomepage extends React.Component {
   };
   onViewDetail = id => {
     // window.alert(id);
-    var address = "http://localhost:3000/news/detail?id=" + id;
+    var address = "/news/detail?id=" + id;
     window.open(address, "_blank");
   };
 
