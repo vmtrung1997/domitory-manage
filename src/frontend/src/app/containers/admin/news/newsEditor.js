@@ -10,8 +10,8 @@ import { Modal, Button, FormControl, Col, Row } from "react-bootstrap";
 import draftToHtml from "draftjs-to-html";
 import "../../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import Input from "./../../../components/input/input";
-import jwt_decode from "jwt-decode";
 import axios from "axios";
+import jwt_decode from 'jwt-decode'
 import refreshToken from "../../../.././utils/refresh_token";
 import Checkbox from "./../../../components/checkbox/checkbox";
 import MySelectOption from "./../../../components/selectOption/select";
@@ -20,6 +20,8 @@ import {
   ToastsContainerPosition,
   ToastsStore
 } from "react-toasts";
+import ImageUploader from "react-images-upload";
+import { storage } from "../../../firebase";
 
 var loai = 0; //Mac dinh
 class EditorConvertToHTML extends Component {
@@ -39,10 +41,11 @@ class EditorConvertToHTML extends Component {
       typeOptions: [
         { value: 0, label: "Thông Tin" },
         { value: 1, label: "Hoạt Động" }
-      ]
+      ],
+      pictures: []
     };
   }
-  
+
   onEditorStateChange = editorState => {
     this.setState({
       editorState: editorState
@@ -69,11 +72,14 @@ class EditorConvertToHTML extends Component {
       convertToRaw(this.state.editorState.getCurrentContent())
     );
 
-    var value1 = convertToRaw(this.state.editorState.getCurrentContent());
+    var value1 = convertToRaw(
+      this.state.editorState.getCurrentContent()
+    );
 
     if (!this.state.title || value1.blocks[0].text === "") {
       ToastsStore.warning("Tiêu đề hoặc nội dung không được để trống!");
     } else {
+      var stamp = new Date();
       var data = {
         dateCreated: new Date(),
         dateModified: new Date(),
@@ -82,8 +88,11 @@ class EditorConvertToHTML extends Component {
         author: decode.user.profile.idTaiKhoan,
         trangThai: this.state.check === true ? 1 : 0,
         ghim: this.state.pin === true ? 1 : 0,
-        loai: this.state.loai
+        loai: this.state.loai,
+        stamp: stamp.getTime()
       };
+
+      console.log(data);
 
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios.post("/manager/news/add", { data: data }).then(res => {
@@ -95,10 +104,36 @@ class EditorConvertToHTML extends Component {
         }
       });
     }
+
+
+    console.log(this.state.pictures);
+    const { pictures } = this.state;
+    var name = data.stamp + ".jpg"
+    const uploadTask = storage.ref(`news/${name}`).put(pictures[0]);
+    uploadTask.on(
+      "state_changed",
+      snapshot => {
+        //progress function
+      },
+      error => {
+        //error function
+        console.log(error);
+      },
+      () => {
+        //complete function
+        storage
+          .ref("news")
+          .child(name)
+          .getDownloadURL()
+          .then(url => {
+            console.log(url);
+          });
+      }
+    );
   };
 
   kindSelected = value => {
-    this.setState({ loai: value },()=>{});
+    this.setState({ loai: value }, () => {});
   };
 
   editNews = async () => {
@@ -115,7 +150,7 @@ class EditorConvertToHTML extends Component {
       id: this.state.idNews,
       trangThai: this.state.check === true ? 1 : 0,
       ghim: this.state.pin === true ? 1 : 0,
-      loai: parseInt(this.state.loai) === 1 ?1 : 0
+      loai: parseInt(this.state.loai) === 1 ? 1 : 0
     };
 
     //window.alert(data.loai);
@@ -153,9 +188,7 @@ class EditorConvertToHTML extends Component {
             //TODO: checkbox chưa thay đổi theo state
             loai: parseInt(content.loai)
           },
-          () => {
-           
-          }
+          () => {}
         );
       }
     }
@@ -177,10 +210,21 @@ class EditorConvertToHTML extends Component {
       sendEmail: e.chk
     });
   };
+
+  onDrop = picture => {
+    console.log(picture);
+    this.setState({
+      pictures: this.state.pictures.concat(picture)
+    });
+  };
+
   render() {
+  
     var type = this.props.type;
-    
-    if (type === "edit" && this.state.isFirst) {loai = this.props.content.loai};
+
+    if (type === "edit" && this.state.isFirst) {
+      loai = this.props.content.loai;
+    }
     const { editorState } = this.state;
     const editorStyle = {
       padding: "5px",
@@ -220,7 +264,7 @@ class EditorConvertToHTML extends Component {
             value={""}
             onEditorStateChange={this.onEditorStateChange}
           />
-          <Row style = {{marginTop: '10px'}}>
+          <Row style={{ marginTop: "10px" }}>
             <Col sm={1}>
               <span>Loại:</span>
             </Col>
@@ -245,13 +289,15 @@ class EditorConvertToHTML extends Component {
             label="Ghim bài viết (Hiển thị tối đa 2)"
             name={"ghim"}
           />
-          {/* <Checkbox
-            defaultChecked={this.state.sendEmail}
-            isCheck={this.changeSendEmail}
-            check={this.state.sendEmail}
-            label="Gửi thông báo tới sinh viên qua email"
-            name={"guiEmail"}
-          /> */}
+          <ImageUploader
+            withIcon={true}
+            buttonText="Choose images"
+            onChange={this.onDrop}
+            singleImage={true}
+            withPreview={true}
+            imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+            maxFileSize={5242880}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={this.handleClose}>

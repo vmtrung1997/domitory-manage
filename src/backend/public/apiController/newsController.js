@@ -131,7 +131,8 @@ exports.addNews = (req, res) => {
       noiDung: req.body.data.content,
       trangThai: req.body.data.trangThai,
       loai: parseInt(req.body.data.loai),
-      ghim: req.body.data.ghim
+      ghim: req.body.data.ghim,
+      stamp: req.body.data.stamp
     };
     var register = new BaiViet(data);
     register
