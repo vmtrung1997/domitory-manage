@@ -97,7 +97,7 @@ class NewsHomepage extends React.Component {
   };
   onViewDetail = id => {
     // window.alert(id);
-    var address = "/news/detail?id=" + id;
+    var address = window.location.host + "/news/detail?id=" + id;
     window.open(address, "_blank");
   };
 

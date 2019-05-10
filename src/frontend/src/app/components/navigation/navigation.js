@@ -13,16 +13,19 @@ export default class Navigation extends React.Component {
     super(props);
     this.state = {
       menuList: [],
+      roles: []
     }
   }
 
   componentWillMount() {
     const menuList = this.props.menuList;
+    this.setState({
+      menuList: menuList
+    })
     let token = JSON.parse(localStorage.getItem('secret'));
 		let decode = jwt_decode(token.access_token)
-		if (decode){
+		if (decode && decode.user.userEntity.phanQuyen){
 			this.setState({
-        menuList: menuList,
 				roles: decode.user.userEntity.phanQuyen.quyen
 			})
 

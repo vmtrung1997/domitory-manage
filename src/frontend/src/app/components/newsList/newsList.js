@@ -54,8 +54,8 @@ class NewsList extends React.Component {
     this.loadPinNews();
   }
   onViewDetail = id => {
-    var address = "/news/detail?id=" + id;
-    window.open(address, "_blank");
+    var address = `${window.location.host}/news/detail?id=${id}`;
+    window.open(address);
   };
 
   newsFilter = type => {

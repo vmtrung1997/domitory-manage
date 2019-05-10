@@ -70,7 +70,7 @@ class App extends Component {
                     <AdminRoute path="/admin" component={Admin} />
                     <SecurityRoute path='/security' component={Security} />
                     <Route path="/signin-admin" component={SignInAdmin} />
-                    <Route exact path='/' component = {Student}/>
+                    <Route path='/' component = {Student}/>
                     <Route exact path={'/500'} component={InternalServer} />
                     <Route exact path={'/401'} component={NotAuthen}/>
                     <Route exact component={NotFound} />

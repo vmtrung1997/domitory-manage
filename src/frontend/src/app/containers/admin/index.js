@@ -22,14 +22,13 @@ class Admin extends Component {
 			roles: []
 		}
 	}
-	componentDidMount() {
+	componentWillMount() {
 		let token = JSON.parse(localStorage.getItem('secret'));
 		let decode = jwt_decode(token.access_token)
-		if (decode){
+		if (decode && decode.user.userEntity.phanQuyen){
 			this.setState({
 				roles: decode.user.userEntity.phanQuyen.quyen
 			})
-
 		}
 	}
 	render() {

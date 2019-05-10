@@ -9,7 +9,8 @@ export const Authorization = (allowedRoles) => (WrappedComponent, role) =>
       if (allowedRoles.includes(role)) {
         return <WrappedComponent {...this.props} />
       } else {
-        return <h1>No page for you!</h1>
+        return <h1>Bạn không có quyền truy cập trang này
+        </h1>
       }
     }
   }
