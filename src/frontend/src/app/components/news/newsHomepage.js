@@ -59,7 +59,7 @@ class NewsHomepage extends React.Component {
     var temp = [];
     console.log(1, this.state.postsAll.length);
     this.state.postsAll.forEach(async (item, index) => {
-      var rs = item.stamp + ".jfif";
+      var rs = item.stamp + ".jpg";
       await storage
         .ref("news")
         .child(rs)
