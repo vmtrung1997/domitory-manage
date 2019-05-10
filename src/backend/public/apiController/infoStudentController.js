@@ -34,7 +34,8 @@ function addOneStudent(data) {
           hoTen: data.hoTen,
           MSSV: data.mssv,
           ngaySinh: data.ngaySinh,
-          ngayVaoO: new Date()
+          ngayVaoO: new Date(),
+          flag: true
         });
         //------save profile-------
         student.save().catch(err =>{
@@ -264,6 +265,7 @@ exports.getListStudentPaging = (req, res) => {
   options.populate = ['idTaiKhoan','idPhong', 'truong', 'nganhHoc'];
 
   Account.find({isDelete: params.isOld, loai: 'SV'}).select('_id').then(accs => {
+    console.log('==accs', accs)
     var arr = [];
     accs.forEach(acc => {
       arr.push(acc._id)

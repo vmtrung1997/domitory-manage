@@ -17,6 +17,7 @@ export class AddStudentModal extends Component{
     super(props);
     this.state = {
       show: this.props.show,
+      onSave:()=>{},
       infoAdded: {
         name: '',
         studentNumber: '',
@@ -60,12 +61,22 @@ export class AddStudentModal extends Component{
 
     add_student(infoAdded).then(result => {
       ToastsStore.success("Thêm thành công!");
+      this.props.onSave();
       this.handlePopup(false);
 		}).catch(err => {
       ToastsStore.error("Thêm không thành công!" + err.response.data.msg);
     })
 
   };
+
+  getValueDate = (name, val) => {
+    this.setState({
+      infoAdded: {
+        ...this.state.infoAdded,
+        [name]: val
+      }
+    })
+  }
 	
 	render(){
 		return(
@@ -189,6 +200,7 @@ export class MarkOldStudentModal extends Component{
     mark_old_student(this.state.listStudent).then(result => {
       ToastsStore.success("Thành công!", result.data);
       this.props.function();
+      this.props.onSave();
       this.handlePopup(false);
     }).catch(err => {
       ToastsStore.error("Không thành công!");
@@ -229,6 +241,9 @@ export class ImportDataModal extends Component{
     super(props);
     this.state = {
       show: this.props.show,
+      regisExpiredDate: new Date(),
+      expiredDate: new Date(),
+      listExpired: undefined,
     }
   }
 
@@ -236,23 +251,19 @@ export class ImportDataModal extends Component{
     if (nextProps.show !== this.state.show) {
       this.setState({ show: nextProps.show })
     }
+    this.setState({ show: nextProps.show })
   }
 
   handlePopup = (state) => {
     this.setState({
       show: state,
-      regisExpiredDate: new Date(),
-      expiredDate: new Date(),
-      listExpired: undefined,
+
     })
   };
 
   getValueDate = (name, val) => {
     this.setState({
-      infoAdded: {
-        ...this.state.infoAdded,
         [name]: val
-      }
     })
   };
 
@@ -320,8 +331,11 @@ export class ImportDataModal extends Component{
         this.setState({
           justFileServiceResponse: 'Thêm thành công!!'
         });
+        this.props.onSave();
+        this.handlePopup(false)
       }).catch(err => {
         console.log('==import err', err.response.data);
+        this.props.onSave();
         this.setState({
           justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
           listExpired: err.response.data.list
@@ -905,7 +919,6 @@ export class ChooseRoom extends Component{
   };
 
   chooseRoom = (room) => {
-    console.log('==click2', room)
     this.setState({
       newRoom: room
     })
