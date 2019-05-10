@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
-import {Col, Modal, Row, Table} from 'react-bootstrap'
+import {Col, Modal, Row, Tab, Table, Tabs} from 'react-bootstrap'
 import Button from '../../../components/button/button';
 import Input from "../../../components/input/input";
 import DatePicker from "react-datepicker/es/index";
-import { add_student, mark_old_student, get_list_student } from './infoStudentActions';
+import {add_student, mark_old_student, get_list_student, get_element, get_floor_room} from './infoStudentActions';
 import {ToastsStore} from "react-toasts";
 import XLSX from "xlsx";
 import refreshToken from "../../../../utils/refresh_token";
 import axios from "axios";
 import Checkbox from "../../../components/checkbox/checkbox";
 import Loader from "../../../components/loader/loader";
+import ListRoom from '../../../components/listRoom/listroom'
 
 export class AddStudentModal extends Component{
   constructor(props) {
@@ -851,6 +852,110 @@ export class ExportDataModal extends Component{
         {/*end modal*/}
       </React.Fragment>
     )
+  }
+}
+
+export class ChooseRoom extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      show: this.props.show,
+      label: this.props.label,
+      data: [],
+      onChange: () => {},
+      oldRoom: this.props.room,
+      newRoom: this.props.room
+
+    }
+  }
+
+  componentWillMount(){
+    get_floor_room().then(result => {
+      console.log('==floor', result)
+      this.setState({data: result.data})
+    }).catch(err => {
+      console.log('==err floor', err)
+    })
+  }
+
+  componentWillReceiveProps(nextProps){
+    if (nextProps.show !== this.state.show) {
+      this.setState({
+        show: nextProps.show,
+      })
+    }
+    if (nextProps.label !== this.state.label) {
+      this.setState({
+        label: nextProps.label,
+      })
+    }
+    if (nextProps.room !== this.state.oldRoom) {
+      this.setState({
+        oldRoom: nextProps.room,
+        newRoom: nextProps.room,
+
+      })
+    }
+  }
+
+  handlePopup = (state) => {
+    this.setState({
+      show: state,
+    })
+  };
+
+  chooseRoom = (room) => {
+    console.log('==click2', room)
+    this.setState({
+      newRoom: room
+    })
+  };
+
+  handleSaveRoom = () => {
+    this.props.onChange(this.state.newRoom)
+  }
+
+  handleCancel = () => {
+    this.setState({
+      newRoom: this.state.oldRoom
+    })
+    this.handlePopup(false)
+  };
+
+  render(){
+    console.log('==modal', this.state)
+    return(
+      <React.Fragment>
+        <div>{this.state.label}
+        <Button
+          style={{marginLeft: '2px'}}
+          onClick={() => this.handlePopup(true)}
+        >Thay đổi</Button>
+        </div>
+        <Modal show={this.state.show} onHide={() =>this.handlePopup(false)} size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>Chọn phòng</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <ListRoom
+              data={this.state.data}
+              onClick={this.chooseRoom}
+              active={this.state.newRoom}
+            />
+
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="outline" onClick={() =>this.handleCancel(false)}>
+              Hủy
+            </Button>
+            <Button onClick={() => this.handleSaveRoom(false)}>
+              Lưu
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </React.Fragment>
+      )
+
   }
 }
 

@@ -518,6 +518,20 @@ class InfoDormitory extends React.Component{
                 </Col>
 
                 <Col md={4}>
+                  Số điện hiện tại:
+                </Col>
+                <Col md={8}>
+                  <Input getValue={this.onChange} name={'electicalNumAdd'} />
+                </Col>
+
+                <Col md={4}>
+                  Số nước hiện tại:
+                </Col>
+                <Col md={8}>
+                  <Input getValue={this.onChange} name={'waterNumAdd'} />
+                </Col>
+
+                <Col md={4}>
                   Mô tả:
                 </Col>
                 <Col md={8}>

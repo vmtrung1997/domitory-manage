@@ -2,19 +2,25 @@ const Room = require('../models/Phong');
 const RoomType = require('../models/LoaiPhong');
 const RoomParams = require('../models/ChiSoHienTai');
 
-
+function getRoom(floor){
+  return new Promise((resolve, reject) => {
+    Room.find({ lau: floor }).populate({
+      path: 'loaiPhong',
+      options: { sort: { name: -1 } }
+    }).exec(function (err, kittens) {
+      if (err)
+        reject(err);
+      resolve(kittens)
+    })
+  })
+}
 exports.getRoom = async (req, res) => {
   const floor = req.params.floor;
-  console.log('==floor', floor)
-  let roomList = {};
-  Room.find({ lau: floor }).populate({
-    path: 'loaiPhong',
-    options: { sort: { name: -1 } }
-  }).exec(function (err, kittens) {
-    if (err)
-      res.status(400)
-    console.log(kittens[0]) // Zoopa
-    res.status(200).json(kittens)
+  //let roomList = {};
+  getRoom(floor).then(result => {
+    res.status(200).json(result)
+  }).catch(err => {
+    res.status(400).json(err)
   })
 };
 
@@ -186,4 +192,28 @@ exports.removeRoomType = (req, res) => {
       })
     }
   })
-}
+};
+
+exports.getFloorRoom = async (req, res) => {
+  let data = []
+  await Room.distinct('lau')
+    .then(async(result) => {
+    result.sort();
+    let i = 0;
+    let listPromise = [];
+    let data = [];
+    await result.forEach(async(floor) => {
+      listPromise.push(getRoom(floor));
+    });
+      await Promise.all(listPromise).then(result=> {
+        console.log('==result all',result);
+        data = result.map(rooms => ({key: i++, floor: rooms[0].lau, rooms: rooms}))
+        console.log('==data',data);
+
+        res.status(200).json(data)
+      }).catch()
+
+    }).catch(err => {
+    res.status(400).json({err: err});
+  })
+};

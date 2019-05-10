@@ -129,20 +129,32 @@ class InfoStudent extends Component{
     get_element(name).then(result => {
       switch (name) {
         case 'room':
+          const roomOptions = result.map(room => ({value: room._id, label: room.tenPhong}));
+          roomOptions.unshift({ value: -1, label: 'Chưa xác định' });
+          roomOptions.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
-            roomOptions: result
+            roomOptions: roomOptions
           });
           break;
 
         case 'school':
+          const schoolOptions = result.map(truong => ({ value: truong._id, label: truong.tenTruong }));
+          schoolOptions.unshift({ value: -1, label: 'Chưa xác định' });
+          schoolOptions.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
-            schoolOptions: result
+            schoolOptions: schoolOptions
           });
           break;
 
         case 'floor':
+          let i = 0;
+          result.sort();
+          const floorOptions = result.map(floor => {
+            return {value: i++, label: floor}
+          });
+          floorOptions.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
-            floorOptions: result,
+            floorOptions: floorOptions,
           });
           break;
         default:
@@ -219,10 +231,6 @@ class InfoStudent extends Component{
     }
   }
 
-  handleCheckValueExport = (obj) => {
-    this.setState({valueExport: {...this.state.valueExport, [obj.value]: obj.chk}})
-  }
-
   handleValueCheck = mssv => {
     const i = this.state.listChecked.indexOf(mssv);
     return i !== -1;
@@ -273,83 +281,9 @@ class InfoStudent extends Component{
     }).catch()
   }
 
-  filesOnChange = (e) =>{
-    let file = e.target.files[0];
-
-    this.setState({
-      fileImport: file
-    });
-  };
-
-  convertData = async (file) => {
-    return new Promise ( (resolve, reject) => {
-      let reader = new FileReader();
-      let temp = [];
-      reader.onload =  function (e) {
-        let data = new Uint8Array(e.target.result);
-        let workbook = XLSX.read(data, {type: 'array'});
-
-        let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","hoTen","mssv","ngaySinh"]});
-        console.log('==file', listNewStudent);
-
-        resolve(listNewStudent)
-      };
-      reader.readAsArrayBuffer(file);
-
-    })
-  };
-
-  // checkFileImport = (data) => {
-  //   if (data)
-  //     data.map(i => {
-  //
-  //     })
-  // }
-
-  handleImportData = async(props) => {
-
-    if (!this.state.hasOwnProperty('fileImport')) {
-      this.setState({
-        justFileServiceResponse: 'Vui lòng chọn 1 file!!'
-      });
-      return;
-    }
-    //props.e.preventDefault();
-    this.setState({
-      justFileServiceResponse: 'Vui lòng chờ!!'
-    });
-
-    // const dataImport = await this.convertData(this.state.fileImport);
-    this.convertData(this.state.fileImport).then(async(resolve) => {
-      console.log('==file 2222', resolve);
-      resolve.shift();
-
-      await refreshToken();
-      var secret = JSON.parse(localStorage.getItem('secret'));
-      axios.post(`/manager/infoStudent/importFile`,{
-          data: resolve,
-          expireDay: new Date()
-        }, { headers: {'x-access-token': secret.access_token} }
-      ).then(result => {
-        console.log('==import success', result);
-        this.setState({
-          justFileServiceResponse: 'Thêm thành công!!'
-        });
-      }).catch(err => {
-        console.log('==import err', err.response.data);
-        this.setState({
-          justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
-          listExpired: err.response.data.list
-        });
-      })
-    })
-  };
-
   changeState = (key, value) => {
-    console.log(11)
     this.setState({ [key]: value })
-  }
+  };
 
 
 
