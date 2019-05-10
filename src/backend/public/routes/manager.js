@@ -67,7 +67,9 @@ router.post('/activity/update', activityController.update_activity);
 router.post('/activity/rollcall', activityController.rollcall_activity)
 
 // Info of student
-router.post('/infoStudent/get', infoStudent.getListStudent);
+router.post('/infoStudent/getPaging', infoStudent.getListStudentPaging);
+
+router.post('/infoStudent/getAll', infoStudent.getListStudent);
 
 router.post('/infoStudent/add', infoStudent.addStudent);
 
@@ -82,7 +84,6 @@ router.get('/infoStudent/getActivities/:id', infoStudent.getListActivities);
 router.get('/getElement/:name', repo.get_element);
 
 router.get('/getRoomHistory/:id', infoStudent.getRoomHistory);
-
 
 //Info dormitory
 router.get('/infoDormitory/getRoom/:floor', infoDormitory.getRoom);
@@ -100,6 +101,8 @@ router.post('/infoDormitory/addRoomType', infoDormitory.addRoomType);
 router.post('/infoDormitory/updateRoomType', infoDormitory.updateRoomType);
 
 router.post('/infoDormitory/removeRoomType', infoDormitory.removeRoomType);
+
+router.get('/getRoomWithFloor', infoDormitory.getFloorRoom);
 
 //News
 router.post('/news/add',newsController.addNews);

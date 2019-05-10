@@ -17,45 +17,50 @@ import refreshToken from './../../../../utils/refresh_token';
 import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
 import Print from './infoStudentPrint';
+import { get_element, get_list_student_by_page } from './infoStudentActions'
+import { AddStudentModal, MarkOldStudentModal, ImportDataModal, ExportDataModal } from './infoStudentModal';
 
 class InfoStudent extends Component{
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
+      totalpages: 1,
+      infoList: [],
+
+      searchValues: {
+        name: '',
+        studentNumber: '',
+        pageActive: 1,
+        limit: 10,
+        isOld: 0,
+        roomSelected: {},
+        schoolSelected: {}
+      },
+
+      schoolOptions: [],
+      roomOptions: [],
+      floorOptions: [],
 
       showRoomHistoryPopup: false,
       showAddPopup: false,
       showDelPopup: false,
       showPrint: false,
-      pageActive: 1,
-      totalpages: 1,
-      limit: 10,
-      isOld: false,
 
       infoAdded: {
         dateAdded : new Date(),
-        expiredDateAdded: new Date()
+        expiredDateAdded: new Date(),
+        regisExpiredDateAdded: new Date(),
       },
 
-      infoList: [],
-
-      mssv: '',
-      hoTen: '',
-      roomSelected: {},
-      schoolSelected: {},
-      floorSelected: {},
 
       phong: [],
       truong: [],
 
-      listDelete: [],
+      listChecked: [],
       flag: false,
 
-      schoolOptions: [],
-      schoolOptionsSearch: [],
-      roomOptionsSearch: [],
-      floorOptions: [],
+
 
       roomHistory: [],
 
@@ -82,6 +87,7 @@ class InfoStudent extends Component{
   }
 
   handlePopup = (type, state) => {
+    console.log('==handle popup')
     switch(type){
       case 'add':
         this.setState({ showAddPopup: state });
@@ -93,7 +99,7 @@ class InfoStudent extends Component{
         this.setState({ showRoomHistoryPopup: state });
         break;
       case 'import':
-        this.setState({ showImportPopup: state });
+        this.setState({ showImportPopup: state, listExpired: undefined, justFileServiceResponse: undefined });
         break;
       case 'export':
         this.setState({ showExportPopup: state });
@@ -118,97 +124,59 @@ class InfoStudent extends Component{
     // this.modifyData();
   }
 
-  getElement = async(name) => {
-    await refreshToken();
-    let secret = JSON.parse(localStorage.getItem('secret'));
-    axios.get(`/manager/getElement/` + name,  {
-      headers: { 'x-access-token': secret.access_token }
-    }).then(result => {
+  getElement = (name) => {
+    console.log('==ahihi')
+    get_element(name).then(result => {
       switch (name) {
         case 'room':
-          const roomOptions = result.data.map(room => ({value: room._id, label: room.tenPhong}));
+          const roomOptions = result.map(room => ({value: room._id, label: room.tenPhong}));
           roomOptions.unshift({ value: -1, label: 'Chưa xác định' });
           roomOptions.unshift({ value: 0, label: 'Tất cả' });
-
           this.setState({
-            roomOptionsSearch: roomOptions
-          })
-
+            roomOptions: roomOptions
+          });
           break;
+
         case 'school':
-          const schoolOptionsSearch = result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }));
-          const schoolOptions = [...schoolOptionsSearch];
-          schoolOptionsSearch.unshift({ value: -1, label: 'Chưa xác định' });
-          schoolOptionsSearch.unshift({ value: 0, label: 'Tất cả' });
+          const schoolOptions = result.map(truong => ({ value: truong._id, label: truong.tenTruong }));
+          schoolOptions.unshift({ value: -1, label: 'Chưa xác định' });
+          schoolOptions.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
-            schoolOptionsSearch: schoolOptionsSearch,
             schoolOptions: schoolOptions
-          })
+          });
           break;
+
         case 'floor':
           let i = 0;
-          const floorList = result.data.map(floor => {
+          result.sort();
+          const floorOptions = result.map(floor => {
             return {value: i++, label: floor}
           });
-          floorList.unshift({ value: 0, label: 'Tất cả' });
+          floorOptions.unshift({ value: 0, label: 'Tất cả' });
           this.setState({
-            floorOptions: floorList,
+            floorOptions: floorOptions,
           });
           break;
         default:
           break
       }
-    }).catch(err => {})
-  }
+    });
+  };
 
-  getData = async () => {
-    await refreshToken()
-    let secret = JSON.parse(localStorage.getItem('secret'));
-    let headers = {
-      'x-access-token': secret.access_token
-    };
-
-    const { mssv, hoTen, roomSelected, schoolSelected, isOld } = this.state;
-    let idPhong = roomSelected.value;
-    let idTruong = schoolSelected.value;
-    const options = {
-      page: this.state.pageActive,
-      limit: this.state.limit
-    };
-
-    if(idPhong === '0'){
-      idPhong = ''
-    }
-    if(idTruong === '0'){
-      idTruong = ''
-    }
-      axios.post(`/manager/infoStudent/get`,
-      { options: options,
-        mssv: mssv,
-        hoTen: hoTen,
-        idPhong: idPhong,
-        idTruong: idTruong,
-        isOld: isOld,
-      }, { headers: headers }
-    ).then(result => {
-      this.setState({
-        infoList: result.data.docs,
-        totalPages: result.data.totalPages,
-        loading: false
-      })
-    }).catch((err) => {
-    })
-  }
-
-  onChangeAdd = (event) => {
-    this.setState({
-      infoAdded: {...this.state.infoAdded, [event.name]: event.value}
-    })
+  getData = () => {
+    get_list_student_by_page(this.state.searchValues)
+      .then(result => {
+        this.setState({
+          infoList: result.data.docs,
+          totalPages: result.data.totalPages,
+          loading: false
+        })
+      });
   };
 
   onChange = (event) => {
     this.setState({
-      [event.name]: event.value
+      searchValues: {...this.state.searchValues, [event.name]: event.value}
     })
   };
 
@@ -221,45 +189,17 @@ class InfoStudent extends Component{
   }
 
   handleSelectRoom = selectedOption => {
-    this.setState({ roomSelected: selectedOption, pageActive: 1 })
+    this.setState({
+      searchValues: {...this.state.searchValues, roomSelected: selectedOption, pageActive: 1}
+    })
   }
   handleSelectSchool = selectedOption => {
-    this.setState({ schoolSelected: selectedOption, pageActive: 1 })
+    this.setState({
+      searchValues: {...this.state.searchValues, schoolSelected: selectedOption, pageActive: 1}
+    })
   }
   handleSelectFloor = selectedOption => {
     this.setState({ floorSelected: selectedOption, pageActive: 1 })
-  }
-
-  handleSubmitAddStudent = async() => {
-    const { infoAdded: {  mssvAdded, nameAdded, dateAdded, expiredDateAdded } } = this.state;
-    console.log('==submit add', this.state.infoAdded)
-    if(!mssvAdded && nameAdded && !dateAdded && !expiredDateAdded)
-    {
-      console.log('==please fill');
-      this.setState({
-        notiAdd: 'Vui lòng điền đầy đủ thông tin!!'
-      });
-      return;
-    }
-
-    await refreshToken();
-    let secret = JSON.parse(localStorage.getItem('secret'));
-    let headers = {
-      'x-access-token': secret.access_token
-    };
-    axios.post(`/manager/infoStudent/add`,
-      {
-        mssv: mssvAdded ? mssvAdded : '',
-        hoTen: nameAdded ? nameAdded : '',
-        ngaySinh: dateAdded ? dateAdded : new Date(),
-        expiredAt: expiredDateAdded ? expiredDateAdded : new Date(),
-      }, { headers: headers }
-    ).then(result => {
-      ToastsStore.success("Thêm thành công!");
-      this.handlePopup('add', false);
-    }).catch(err => {
-      ToastsStore.error("Thêm không thành công!" + err.response.data.msg);
-    })
   }
 
   clickPage = async (page) => {
@@ -272,13 +212,13 @@ class InfoStudent extends Component{
 
   handleCheckDelete = (props) => {
     if(props.chk){
-      let arrDel = this.state.listDelete;
+      let arrDel = this.state.listChecked;
       arrDel.push(props.value);
       this.setState({
-        listDelete: arrDel
+        listChecked: arrDel
       })
     } else {
-      let arrDel = this.state.listDelete;
+      let arrDel = this.state.listChecked;
       let element = props.value;
       const i = arrDel.indexOf(element);
       if (i !== -1) {
@@ -286,40 +226,14 @@ class InfoStudent extends Component{
       }
 
       this.setState({
-        listDelete: arrDel
+        listChecked: arrDel
       })
     }
   }
 
-  handleCheckValueExport = (obj) => {
-    //this.setState({[obj.value]: obj.chk})
-
-    this.setState({valueExport: {...this.state.valueExport, [obj.value]: obj.chk}})
-  }
-
   handleValueCheck = mssv => {
-    const i = this.state.listDelete.indexOf(mssv);
+    const i = this.state.listChecked.indexOf(mssv);
     return i !== -1;
-  };
-
-  handleDelStudent = async()  => {
-    await refreshToken();
-    var secret = JSON.parse(localStorage.getItem('secret'));
-    axios.post(`/manager/infoStudent/delete`,
-      {
-        arrDelete: this.state.listDelete
-      }, { headers: {'x-access-token': secret.access_token} }
-    ).then(result => {
-      this.setState({
-        listDelete: []
-      });
-      ToastsStore.success("Xóa thành công!");
-      this.getData();
-      this.handlePopup('del', false)
-    }).catch(err => {
-      ToastsStore.error("Xóa không thành công!");
-      this.handlePopup('del', false)
-    })
   };
 
   handleReload = () => {
@@ -336,8 +250,10 @@ class InfoStudent extends Component{
     this.getData();
   };
 
-  handleChooseOption = (prop) => {
-    this.setState({isOld: prop});
+  handleChooseOption = async (prop) => {
+    await this.setState({
+      searchValues: {...this.state.searchValues, isOld: prop}
+      });
     this.getData();
   };
 
@@ -367,184 +283,27 @@ class InfoStudent extends Component{
     }).catch()
   }
 
-  filesOnChange = (e) =>{
-    let file = e.target.files[0];
-
-    this.setState({
-      fileImport: file
-    });
-  };
-
-  convertData = async (file) => {
-    return new Promise ( (resolve, reject) => {
-      let reader = new FileReader();
-      let temp = [];
-      reader.onload =  function (e) {
-        let data = new Uint8Array(e.target.result);
-        let workbook = XLSX.read(data, {type: 'array'});
-
-        let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","hoTen","mssv","ngaySinh"]});
-        console.log('==file', listNewStudent);
-
-        resolve(listNewStudent)
-      };
-      reader.readAsArrayBuffer(file);
-
-    })
-  };
-
-  handleImportData = async(props) => {
-
-    if (!this.state.hasOwnProperty('fileImport')) {
-      this.setState({
-        justFileServiceResponse: 'Vui lòng chọn 1 file!!'
-      });
-      return;
-    }
-    //props.e.preventDefault();
-    this.setState({
-      justFileServiceResponse: 'Vui lòng chờ!!'
-    });
-
-    // const dataImport = await this.convertData(this.state.fileImport);
-    this.convertData(this.state.fileImport).then(async(resolve) => {
-      console.log('==file 2222', resolve);
-      resolve.shift();
-
-      await refreshToken();
-      var secret = JSON.parse(localStorage.getItem('secret'));
-      axios.post(`/manager/infoStudent/importFile`,{
-          data: resolve,
-          expireDay: new Date()
-        }, { headers: {'x-access-token': secret.access_token} }
-      ).then(result => {
-        console.log('==import success', result);
-        this.setState({
-          justFileServiceResponse: 'Thêm thành công!!'
-        });
-      }).catch(err => {
-        console.log('==import err', err.response.data);
-        this.setState({
-          justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
-          listExpired: err.response.data.list
-        });
-      })
-    })
-  };
-
   changeState = (key, value) => {
-    console.log(11)
     this.setState({ [key]: value })
-  }
+  };
 
-  handleExportData = () => {
-    const { valueExport: {
-      hoTenEx,
-      mssvEx,
-      ngaySinhEx,
-      gioiTinhEx,
-      diaChiEx,
-      emailEx,
-      sdtEx,
-      sdtNguoiThanEx,
-      tonGiaoEx,
-      danTocEx,
-      ngayVaoOEx,
-      ngayHetHanEx,
-      diemHDEx,
-      phongEx,
-      truongEx,
-      nganhHocEx,
-      ghiChuEx
-    }, infoList } = this.state;
 
-    let header = {}
-    if(hoTenEx)
-      header.hoTen = "Họ tên"
-    if(mssvEx)
-      header.MSSV = "MSSV"
-    if(ngaySinhEx)
-      header.ngaySinh = "Ngày sinh"
-    if(gioiTinhEx)
-      header.gioiTinh = "Giới tính"
-    if(diaChiEx)
-      header.diaChi = "Địa chỉ"
-    if(emailEx)
-      header.email = "Email"
-    if(sdtEx)
-      header.sdt = "Số điện thoại"
-    if(sdtNguoiThanEx)
-      header.sdtNguoiThan = "số điện thoại người thân"
-    if(tonGiaoEx)
-      header.tonGiao = "Tôn giáo"
-    if(danTocEx)
-      header.danToc = "Dân tộc"
-    if(ngayVaoOEx)
-      header.ngayVaoO = "Ngày vào ở"
-    if(ngayHetHanEx)
-      header.ngayHetHan = "Ngày hết hạn"
-    if(phongEx)
-      header.phong = "Phòng"
-    if(truongEx)
-      header.truong = "Trường"
-    if(nganhHocEx)
-      header.nganhHoc = "Ngành học"
-    // if(ghiChuEx)
-    //   header.email = "Email"
-
-    let data = infoList && infoList.map(record => {
-      let gender = record.gioiTinh ? "nam" : "nữ"
-      return({
-        hoTen : hoTenEx ? record.hoTen : undefined,
-        MSSV : mssvEx ? record.MSSV : undefined,
-        ngaySinh : ngaySinhEx ? record.ngaySinh : undefined,
-        gioiTinh : gioiTinhEx ? gender : undefined,
-        diaChi : diaChiEx ? record.diaChi : undefined,
-        email : emailEx ? record.email : undefined,
-        sdt : sdtEx ? record.sdt : undefined,
-        sdtNguoiThan : sdtNguoiThanEx ? record.sdtNguoiThan : undefined,
-        tonGiao : tonGiaoEx ? record.tonGiao : undefined,
-        danToc : danTocEx ? record.danToc : undefined,
-        ngayVaoO : ngayVaoOEx ? record.ngayVaoO : undefined,
-        ngayHetHan : ngayHetHanEx ? record.ngayHetHan : undefined,
-        //data.diemHD : diemHDEx ? record.hoTen : undefined,
-        phong : phongEx && record.idPhong ? record.idPhong.tenPhong : undefined,
-        truong : truongEx && record.truong ? record.truong.tenTruong : undefined,
-        nganhHoc : nganhHocEx && record.nganhHoc ? record.nganhHoc.tenNganh : undefined,
-        ghiChu : ghiChuEx ? record.hoTen : undefined
-    })})
-
-    data.unshift(header)
-
-    console.log('==report', data)
-
-    var ws = XLSX.utils.json_to_sheet(data, {skipHeader:true});
-
-    var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
-
-    XLSX.writeFile(wb, "report.xlsx");
-    this.handlePopup('export', false)
-  }
 
   render(){
     console.log('==render state', this.state);
     const {
-      limit,
-      pageActive,
+      searchValues: {
+        limit,
+        pageActive,
+        isOld
+      },
       infoList,
-      roomSelected,
-      schoolSelected,
       floorSelected,
-      roomOptionsSearch,
-      schoolOptionsSearch,
       floorOptions,
       hoTen,
       mssv,
-      isOld,
       roomHistory,
-      infoAdded: { dateAdded, expiredDateAdded},
+      infoAdded: { dateAdded, expiredDateAdded, regisExpiredDateAdded},
       valueExport :{
         hoTenEx,
         mssvEx,
@@ -581,14 +340,14 @@ class InfoStudent extends Component{
                 MSSV
               </Col>
               <Col md={2}>
-                <Input getValue={this.onChange} name={'mssv'} value={mssv}/>
+                <Input getValue={this.onChange} name={'studentNumber'} value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}/>
               </Col>
 
               <Col md={1}>
                 Họ tên
               </Col>
               <Col md={4}>
-                <Input getValue={this.onChange} name={'hoTen'} value={hoTen}/>
+                <Input getValue={this.onChange} name={'name'} value={this.state.searchValues.name}/>
               </Col>
 
               <Col md={1}>
@@ -598,10 +357,9 @@ class InfoStudent extends Component{
                 <SearchSelect
                   isSearchable={true}
                   placeholder={''}
-                  value={roomSelected}
-                  // selected={this.handleSelectRoom}
+                  value={this.state.searchValues.roomSelected}
                   onChange={this.handleSelectRoom}
-                  options={roomOptionsSearch}
+                  options={this.state.roomOptions}
                 />
               </Col>
             </Row>
@@ -620,9 +378,9 @@ class InfoStudent extends Component{
                 <SearchSelect
                   isSearchable={true}
                   placeholder={''}
-                  value={schoolSelected}
+                  value={this.state.searchValues.schoolSelected}
                   onChange={this.handleSelectSchool}
-                  options={schoolOptionsSearch}
+                  options={this.state.schoolOptions}
                 />
               </Col>
 
@@ -638,11 +396,9 @@ class InfoStudent extends Component{
                   options={floorOptions}
                 />
               </Col>
-
-
             </Row>
 
-            {/*Button search*/}
+            {/*search*/}
             <Row style={{display: 'flex', justifyContent: 'center'}}>
             <Col md={3} >
               <Button
@@ -669,18 +425,16 @@ class InfoStudent extends Component{
             <Row>
               <Col md={6} className={''}>
                 <div className={'is-manipulation'}>
-                  <Button
-                    variant={'rounded'}
-                    onClick={()=>this.handlePopup('import', true)}
-                  >
-                    <i className="fas fa-file-import"/>
-                  </Button>
-                  <Button
-                    variant={'rounded'}
-                    onClick={()=>this.handlePopup('export', true)}
-                  >
-                    <i className="fas fa-file-export"/>
-                  </Button>
+                  <ImportDataModal
+                    show={this.state.showImportPopup}
+                    onSave={()=>this.getData()}
+                  />
+
+                  <ExportDataModal
+                    show={this.state.showExportPopup}
+                    searchValues={this.state.searchValues}
+                  />
+
                   <Button
                     variant={'rounded'}
                     color={'success'}
@@ -692,100 +446,25 @@ class InfoStudent extends Component{
 
               <Col md={6} >
                 <div className={'is-manipulation'} style={{float: 'right'}}>
-                  <Button color={'warning'} onClick={() => this.handlePopup('add',true)}>
-                    <i className="fas fa-plus"/>
-                  </Button>
-                  <Button color={'danger'}>
-                    <i className="fas fa-trash-alt" onClick={() => this.handlePopup('del', true)}/>
-                  </Button>
+                  <AddStudentModal
+                    show={this.state.showAddPopup}
+                    onSave={()=>this.getData()}
+                  />
+
+                  <MarkOldStudentModal
+                    function={()=>this.setState({listChecked:[]})}
+                    show={this.state.showDelPopup}
+                    listStudent={this.state.listChecked}
+                    onSave={()=>this.getData()}
+
+                  />
                 </div>
               </Col>
             </Row>
           </div>
 
-          {/*modal popup add student*/}
-          <Modal show={this.state.showAddPopup} onHide={() =>this.handlePopup('add', false)}>
-            <Modal.Header closeButton>
-              <Modal.Title>Thêm sinh viên</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Row>
-                <Col md={3}>
-                  Họ và Tên:
-                </Col>
-                <Col md={9}>
-                  <Input getValue={this.onChangeAdd} name={'nameAdded'} />
-                </Col>
-              </Row>
-
-              <Row>
-                <Col md={3}>
-                  MSSV:
-                </Col>
-                <Col md={9}>
-                  <Input getValue={this.onChangeAdd} name={'mssvAdded'} />
-                </Col>
-                <Col md={3}>
-                  Ngày sinh:
-                </Col>
-                <Col md={9}>
-
-                  <DatePicker
-                    dateFormat='dd/MM/yyyy'
-                    selected={dateAdded}
-                    onChange={(val) => this.getValueDate('dateAdded', val)}
-                    className='input-datepicker'
-                  />
-                </Col>
-              </Row>
-
-              <Row>
-                <Col md={3}>
-                  Ngày hết hạn đăng ký:
-                </Col>
-                <Col md={9}>
-
-                  <DatePicker
-                    dateFormat='dd/MM/yyyy'
-                    selected={expiredDateAdded}
-                    onChange={(val) => this.getValueDate('expiredDateAdded', val)}
-                    className='input-datepicker'
-                  />
-                </Col>
-              </Row>
-
-              <Row style={{color: 'red'}}>
-                {this.state.notiAdd}
-              </Row>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handlePopup('add', false)}>
-                Đóng
-              </Button>
-              <Button  onClick={() =>this.handleSubmitAddStudent()}>
-                Thêm tài khoản
-              </Button>
-            </Modal.Footer>
-          </Modal>
           <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
 
-          {/*end modal*/}
-
-          {/*modal popup delete student*/}
-          <Modal show={this.state.showDelPopup} onHide={() =>this.handlePopup('del', false)}>
-            <Modal.Header closeButton>
-              <Modal.Title>Sau khi xóa những sinh viên này sẽ là sinh viên cũ!</Modal.Title>
-            </Modal.Header>
-            {/*<Modal.Body>Bạn có chắc chắn muốn xóa những sinh viên này?</Modal.Body>*/}
-            <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handlePopup('del', false)}>
-                Hủy
-              </Button>
-              <Button  onClick={() =>this.handleDelStudent()}>
-                Đồng ý
-              </Button>
-            </Modal.Footer>
-          </Modal>
           {/*end modal*/}
 
           {/*modal popup room history student*/}
@@ -828,297 +507,20 @@ class InfoStudent extends Component{
           </Modal>
           {/*end modal*/}
 
-          {/*modal popup upload file*/}
-          <Modal
-            size={'lg'}
-            show={this.state.showImportPopup}
-            onHide={() =>this.handlePopup('import', false)}
-          >
-            <Modal.Body>
-              <input type="file" name="file" onChange={this.filesOnChange}/>
-              <p className={'noti-text-style'}><b>{this.state.justFileServiceResponse}</b></p>
-
-              {this.state.listExpired ?
-                <Table responsive bordered size="sm">
-                  <thead className="title-table">
-                  <tr style={{textAlign: 'center'}}>
-                    <th>STT</th>
-                    <th>MSSV</th>
-                    <th>Họ và Tên</th>
-                    <th>Lỗi</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {this.state.listExpired.map(info => {
-                    return (
-                      <tr key={info.key}>
-                        <td>{i++}</td>
-                        <td>{info.data.mssv || ''}</td>
-                        <td>{info.data.hoTen || ''}</td>
-                        <td className={'noti-text-style'}>{info.msg || ''}</td>
-
-                      </tr>
-                    )
-                  })}
-
-                  </tbody>
-                </Table>
-                :
-                <div>
-                  <i className={'noti-text-style'}><u>Lưu ý:</u> file excel(.xlsx) cần có dạng như sau</i>
-                <Table responsive hover bordered size="sm">
-                  <thead className="title-excel">
-                  <tr>
-                    <td></td>
-                    <td>A</td>
-                    <td>B</td>
-                    <td>C</td>
-                    <td>D</td>
-                    <td>E</td>
-
-                  </tr>
-                  </thead>
-                  <tbody>
-
-                  <tr key={0}>
-                    <td className="title-excel">1</td>
-                    <td>STT</td>
-                    <td>Họ Tên</td>
-                    <td>MSSV</td>
-                    <td>Ngày sinh</td>
-                    <td></td>
-                  </tr>
-
-                  <tr key={1}>
-                    <td className="title-excel">2</td>
-                    <td>1</td>
-                    <td>Nguyễn Văn A</td>
-                    <td>1512519</td>
-                    <td>29/10/1997</td>
-                    <td></td>
-                  </tr>
-
-                  <tr key={2}>
-                    <td className="title-excel">3</td>
-                    <td>2</td>
-                    <td>Nguyễn Văn B</td>
-                    <td>1512510</td>
-                    <td>01/11/1997</td>
-                    <td></td>
-                  </tr>
-
-                  <tr key={3}>
-                    <td className="title-excel">4</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-
-                  </tbody>
-                </Table>
-                </div>
-              }
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handlePopup('import', false)}>
-                Cancel
-              </Button>
-              <Button  onClick={() => this.handleImportData()}>
-                Upload
-              </Button>
-            </Modal.Footer>
-          </Modal>
-          {/*end modal*/}
-
-          {/*modal popup export file*/}
-          <Modal show={this.state.showExportPopup} onHide={() =>this.handlePopup('export', false)}>
-            <Modal.Header closeButton>
-            <Modal.Title>Xuất file</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Row>
-                <Col md={6}>
-                  <Checkbox
-                    check={true}
-                    label={'Họ và tên'}
-                    name={'hoTenEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Checkbox
-                    check={danTocEx}
-                    label={'Dân tộc'}
-                    name={'danTocEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col md={6}>
-                  <Checkbox
-                    check={mssvEx}
-                    label={'MSSV'}
-                    name={'mssvEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Checkbox
-                    check={ngayVaoOEx}
-                    label={'Ngày vào'}
-                    name={'ngayVaoOEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col md={6}>
-                  <Checkbox
-                    check={ngaySinhEx}
-                    label={'Ngày sinh'}
-                    name={'ngaySinhEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Checkbox
-                    check={ngayHetHanEx}
-                    label={'Ngày hết hạn'}
-                    name={'ngayHetHanEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col md={6}>
-                  <Checkbox
-                    check={gioiTinhEx}
-                    label={'Giới tính'}
-                    name={'gioiTinhEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Checkbox
-                    check={diemHDEx}
-                    label={'Điểm hoạt động'}
-                    name={'diemHDEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col md={6}>
-                  <Checkbox
-                    check={diaChiEx}
-                    label={'Địa chỉ'}
-                    name={'diaChiEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Checkbox
-                    check={phongEx}
-                    label={'Phòng'}
-                    name={'phongEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col md={6}>
-                  <Checkbox
-                    check={emailEx}
-                    label={'Email'}
-                    name={'emailEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Checkbox
-                    check={truongEx}
-                    label={'Trường'}
-                    name={'truongEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col md={6}>
-                  <Checkbox
-                    check={sdtEx}
-                    label={'Số điện thoại'}
-                    name={'sdtEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Checkbox
-                    check={nganhHocEx}
-                    label={'Ngành học'}
-                    name={'nganhHocEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col md={6}>
-                  <Checkbox
-                    check={sdtNguoiThanEx}
-                    label={'Số điện thoại người thân'}
-                    name={'sdtNguoiThanEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-                <Col md={6}>
-                  <Checkbox
-                    check={ghiChuEx}
-                    label={'Ghi chú'}
-                    name={'ghiChuEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col md={6}>
-                  <Checkbox
-                    check={tonGiaoEx}
-                    label={'Tôn giáo'}
-                    name={'tonGiaoEx'}
-                    isCheck={this.handleCheckValueExport}
-                  />
-                </Col>
-              </Row>
-
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handlePopup('export', false)}>
-                Cancel
-              </Button>
-              <Button id={'saveFile'} onClick={() => this.handleExportData()}>
-                Save file
-              </Button>
-            </Modal.Footer>
-          </Modal>
-          {/*end modal*/}
-
           <div className={'is-body'}>
             <Row className={'is-btn-option'}>
               <Col>
                 <Button
                   variant={isOld ? 'outline' :  'default'}
                   color={'default'}
-                  onClick={() => this.handleChooseOption(false)}
+                  onClick={() => this.handleChooseOption(0)}
                 >
                   Hiện tại
                 </Button>
                 <Button
                   color={'default'}
                   variant={isOld ? 'default' : 'outline'}
-                  onClick={() => this.handleChooseOption(true)}
+                  onClick={() => this.handleChooseOption(1)}
                 >
                   Sinh viên cũ
                 </Button>

@@ -1,25 +1,27 @@
 import React from "react";
-import { Nav } from "react-bootstrap";
+import { Nav, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./newsHomepage.css";
 import Axios from "axios";
+import { storage } from "../../firebase";
 
 class NewsHomepage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      postsAll: []
+      postsAll: [],
+      postPin: []
     };
   }
 
-  loadNews = date => {
+  loadNews = async date => {
     var _post = [];
 
-    Axios.post("http://localhost:4000/news/get-news", { data: date })
+    await Axios.post("http://localhost:4000/news/get-news", { data: date })
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map((item, index) => {
-            if (index < 3) _post.push(item);
+            if (index < 5) _post.push(item);
           });
         }
       })
@@ -27,21 +29,96 @@ class NewsHomepage extends React.Component {
         this.setState({
           postsAll: _post
         });
+        console.log("load news");
       });
   };
 
-  componentDidMount() {
+  loadPinNews = async () => {
+    this.setState({
+      isLoad: true
+    });
+
+    var _post = [];
+
+    await Axios.get("http://localhost:4000/news/get-pin-news")
+      .then(rs => {
+        if (rs.status === 200) {
+          rs.data.data.map(item => {
+            _post.push(item);
+          });
+        }
+      })
+      .then(() => {
+        this.setState({
+          postPin: _post
+        });
+      });
+  };
+
+  loadImages = async () => {
+    var temp = [];
+    console.log(1, this.state.postsAll.length);
+    this.state.postsAll.forEach(async (item, index) => {
+      var rs = item.stamp + ".jpg";
+      await storage
+        .ref("news")
+        .child(rs)
+        .getDownloadURL()
+        .then(url => {
+          var tmp = this.state.postsAll;
+          tmp[index].url = url;
+          this.setState({ postsAll: tmp });
+        });
+    });
+
+    this.state.postPin.forEach(async (item, index) => {
+      var rs = item.stamp + ".jpg";
+      await storage
+        .ref("news")
+        .child(rs)
+        .getDownloadURL()
+        .then(url => {
+          var tmp = this.state.postPin;
+          tmp[index].url = url;
+          this.setState({ postPin: tmp });
+        });
+    });
+
+    return temp;
+  };
+
+  componentDidMount = async () => {
     var date = new Date("2015-01-01"); //Ngaỳ mặc định
-    this.loadNews(date);
-  }
+
+    await this.loadNews(date);
+
+    await this.loadPinNews();
+    this.loadImages();
+  };
   onViewDetail = id => {
+    // window.alert(id);
     var address = "http://localhost:3000/news/detail?id=" + id;
     window.open(address, "_blank");
   };
 
+  formatDay = item => {
+    var day = new Date(item.ngayTao);
+    var month = day.getMonth() + 1;
+    var formatDay =
+      day.getDate() +
+      "/" +
+      month +
+      "/" +
+      day.getFullYear() +
+      " " +
+      day.getHours() +
+      ":" +
+      day.getMinutes();
+
+    return formatDay;
+  };
   render() {
-    var posts = [];
-    posts = this.state.postsAll;
+    console.log(this.state.postsAll);
     return (
       <React.Fragment>
         <section className="razo-blog-area section-padding-80-0">
@@ -52,151 +129,102 @@ class NewsHomepage extends React.Component {
                 <div className="weekly-news-area mb-50">
                   {/* Section Heading */}
                   <div className="section-heading">
-                    <h2>Blog New</h2>
+                    <h2>Tin Tức</h2>
                   </div>
                   {/* Featured Post Area */}
-                  <div
-                    className="featured-post-area bg-img bg-overlay mb-30"
-                    style={{ backgroundImage: "url(img/post-1.jpg)" }}
-                  >
-                    {/* Post Overlay */}
-                    <div className="post-overlay">
-                      <div className="post-meta">
-                        <a href="#">
-                          <i className="fa fa-comments-o" aria-hidden="true" />{" "}
-                          2.1k
-                        </a>
-                        <a href="#">
-                          <i className="fa fa-eye" aria-hidden="true" /> 3.6k
-                        </a>
-                      </div>
-                      <a href="single-blog.html" className="post-title">
-                        The light and music exposition hits los angeles in the
-                        fashion week
-                      </a>
-                    </div>
-                  </div>
+
+                  {/* Post Overlay */}
+
+                  {this.state.postsAll.map((item, index) => {
+                    if (index === 0) {
+                      return (
+                        <div
+                          className="featured-post-area bg-img bg-overlay mb-30"
+                          style={{ backgroundImage: `url(${item.url})` }}
+                        >
+                          <div className="post-overlay">
+                            <div className="post-meta">
+                              <span
+                                className={
+                                  item.loai === 1
+                                    ? "post-category cat-1"
+                                    : "post-category cat-2"
+                                }
+                              >
+                                {item.loai === 1 ? "Hoạt Động" : "Thông tin"}
+                              </span>
+                              <a href="#">
+                                <i className="fa fa-clock" aria-hidden="true" />{" "}
+                                &nbsp;
+                                {item ? this.formatDay(item) : null}
+                              </a>
+                            </div>
+                            <span
+                              style={{ cursor: "pointer" }}
+                              onClick={() => this.onViewDetail(item._id)}
+                              className="post-title"
+                            >
+                              {item.tieuDe}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })}
+
                   <div className="row">
                     {/* Single Post Area */}
-                    <div className="col-12 col-md-6">
-                      <div className="razo-single-post d-flex mb-30">
-                        {/* Post Thumbnail */}
-                        <div className="post-thumbnail">
-                          <a href="single-blog.html">
-                            <img src="img/post-1.jpg" alt />
-                          </a>
-                        </div>
-                        {/* Post Content */}
-                        <div className="post-content">
-                          <div className="post-meta">
-                            <a href="#">
-                              <i
-                                className="fa fa-comments-o"
-                                aria-hidden="true"
-                              />{" "}
-                              2.1k
-                            </a>
-                            <a href="#">
-                              <i className="fa fa-eye" aria-hidden="true" />{" "}
-                              3.6k
-                            </a>
+                    {this.state.postsAll.map((item, index) => {
+                      console.log(item.url);
+                      if (index !== 0) {
+                        return (
+                          <div className="col-12 col-md-6">
+                            <div className="razo-single-post d-flex mb-30">
+                              {/* Post Thumbnail */}
+                              <div className="post-thumbnail">
+                                <img
+                                  src={item.url}
+                                  style={{ cursor: "pointer" }}
+                                  alt
+                                />
+                              </div>
+                              {/* Post Content */}
+                              <div className="post-content">
+                                <div className="post-meta">
+                                  <span
+                                    className={
+                                      item.loai === 1
+                                        ? "post-category cat-1"
+                                        : "post-category cat-2"
+                                    }
+                                  >
+                                    {item.loai === 1
+                                      ? "Hoạt Động"
+                                      : "Thông tin"}
+                                  </span>
+                                  <span className="post-date">
+                                    <i className="far fa-clock" />
+                                    &nbsp;{this.formatDay(item)}
+                                  </span>
+                                </div>
+                                <span
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => this.onViewDetail(item._id)}
+                                  className="post-title"
+                                >
+                                  {item.tieuDe}
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                          <a href="single-blog.html" className="post-title">
-                            Drug bust leads police to underground tunnel
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Single Post Area */}
-                    <div className="col-12 col-md-6">
-                      <div className="razo-single-post d-flex mb-30">
-                        {/* Post Thumbnail */}
-                        <div className="post-thumbnail">
-                          <a href="single-blog.html">
-                            <img src="img/post-1.jpg" alt />
-                          </a>
-                        </div>
-                        {/* Post Content */}
-                        <div className="post-content">
-                          <div className="post-meta">
-                            <a href="#">
-                              <i
-                                className="fa fa-comments-o"
-                                aria-hidden="true"
-                              />{" "}
-                              2.1k
-                            </a>
-                            <a href="#">
-                              <i className="fa fa-eye" aria-hidden="true" />{" "}
-                              3.6k
-                            </a>
-                          </div>
-                          <a href="single-blog.html" className="post-title">
-                            Hear abuse victims' messages for the Pope
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Single Post Area */}
-                    <div className="col-12 col-md-6">
-                      <div className="razo-single-post d-flex mb-30">
-                        {/* Post Thumbnail */}
-                        <div className="post-thumbnail">
-                          <a href="single-blog.html">
-                            <img src="img/post-1.jpg" alt />
-                          </a>
-                        </div>
-                        {/* Post Content */}
-                        <div className="post-content">
-                          <div className="post-meta">
-                            <a href="#">
-                              <i
-                                className="fa fa-comments-o"
-                                aria-hidden="true"
-                              />{" "}
-                              2.1k
-                            </a>
-                            <a href="#">
-                              <i className="fa fa-eye" aria-hidden="true" />{" "}
-                              3.6k
-                            </a>
-                          </div>
-                          <a href="single-blog.html" className="post-title">
-                            New Mexico uspects' attorneys file to have all
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Single Post Area */}
-                    <div className="col-12 col-md-6">
-                      <div className="razo-single-post d-flex mb-30">
-                        {/* Post Thumbnail */}
-                        <div className="post-thumbnail">
-                          <a href="single-blog.html">
-                            <img src="img/post-1.jpg" alt />
-                          </a>
-                        </div>
-                        {/* Post Content */}
-                        <div className="post-content">
-                          <div className="post-meta">
-                            <a href="#">
-                              <i
-                                className="fa fa-comments-o"
-                                aria-hidden="true"
-                              />{" "}
-                              2.1k
-                            </a>
-                            <a href="#">
-                              <i className="fa fa-eye" aria-hidden="true" />{" "}
-                              3.6k
-                            </a>
-                          </div>
-                          <a href="single-blog.html" className="post-title">
-                            Trump tweets false white supremacist talking
-                          </a>
-                        </div>
-                      </div>
-                    </div>
+                        );
+                      }
+                    })}
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Link to="/news">
+                      <Button>Xem thêm</Button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -205,124 +233,92 @@ class NewsHomepage extends React.Component {
                 <div className="trending-news-area mb-50">
                   {/* Section Heading */}
                   <div className="section-heading">
-                    <h2>Trending</h2>
+                    <h2>Nổi bật</h2>
                   </div>
                   {/* Featured Post Area */}
-                  <div
-                    className="featured-post-area small-featured-post bg-img bg-overlay mb-30"
-                    style={{ backgroundImage: "url(img/post-1.jpg)" }}
-                  >
-                    {/* Post Overlay */}
-                    <div className="post-overlay">
-                      <div className="post-meta">
-                        <a href="#">
-                          <i className="fa fa-comments-o" aria-hidden="true" />{" "}
-                          2.1k
-                        </a>
-                        <a href="#">
-                          <i className="fa fa-eye" aria-hidden="true" /> 3.6k
-                        </a>
-                      </div>
-                      <a href="single-blog.html" className="post-title">
-                        Hawaii braces for Hurricane Lane
-                      </a>
-                    </div>
-                  </div>
+
+                  {/* Post Overlay */}
+                  {this.state.postPin.map((item, index) => {
+                    if (index === 0) {
+                      return (
+                        <div
+                          className="featured-post-area small-featured-post bg-img bg-overlay mb-30"
+                          style={{ backgroundImage: `url(${item.url})` }}
+                        >
+                          <div className="post-overlay">
+                            <div className="post-meta">
+                              <span
+                                className={
+                                  item.loai === 1
+                                    ? "post-category cat-1"
+                                    : "post-category cat-2"
+                                }
+                              >
+                                {item.loai === 1 ? "Hoạt Động" : "Thông tin"}
+                              </span>
+                              <a href="#">
+                                <i className="fa fa-clock" aria-hidden="true" />{" "}
+                                &nbsp;
+                                {item ? this.formatDay(item) : null}
+                              </a>
+                            </div>
+                            <span
+                              style={{ cursor: "pointer" }}
+                              onClick={() => this.onViewDetail(item._id)}
+                              className="post-title"
+                            >
+                              {item.tieuDe}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })}
+
                   {/* Single Post Area */}
-                  <div className="razo-single-post d-flex mb-30">
-                    {/* Post Thumbnail */}
-                    <div className="post-thumbnail">
-                      <a href="single-blog.html">
-                        <img src="img/post-1.jpg" alt />
-                      </a>
-                    </div>
-                    {/* Post Content */}
-                    <div className="post-content">
-                      <div className="post-meta">
-                        <a href="#">
-                          <i className="fa fa-comments-o" aria-hidden="true" />{" "}
-                          2.1k
-                        </a>
-                        <a href="#">
-                          <i className="fa fa-eye" aria-hidden="true" /> 3.6k
-                        </a>
-                      </div>
-                      <a href="single-blog.html" className="post-title">
-                        Hurricane Lane brings 19 inches of rain
-                      </a>
-                    </div>
-                  </div>
-                  {/* Single Post Area */}
-                  <div className="razo-single-post d-flex mb-30">
-                    {/* Post Thumbnail */}
-                    <div className="post-thumbnail">
-                      <a href="single-blog.html">
-                        <img src="img/post-1.jpg" alt />
-                      </a>
-                    </div>
-                    {/* Post Content */}
-                    <div className="post-content">
-                      <div className="post-meta">
-                        <a href="#">
-                          <i className="fa fa-comments-o" aria-hidden="true" />{" "}
-                          2.1k
-                        </a>
-                        <a href="#">
-                          <i className="fa fa-eye" aria-hidden="true" /> 3.6k
-                        </a>
-                      </div>
-                      <a href="single-blog.html" className="post-title">
-                        What these victims want the Pope to know
-                      </a>
-                    </div>
-                  </div>
-                  {/* Single Post Area */}
-                  <div className="razo-single-post d-flex mb-30">
-                    {/* Post Thumbnail */}
-                    <div className="post-thumbnail">
-                      <a href="single-blog.html">
-                        <img src="img/post-1.jpg" alt />
-                      </a>
-                    </div>
-                    {/* Post Content */}
-                    <div className="post-content">
-                      <div className="post-meta">
-                        <a href="#">
-                          <i className="fa fa-comments-o" aria-hidden="true" />{" "}
-                          2.1k
-                        </a>
-                        <a href="#">
-                          <i className="fa fa-eye" aria-hidden="true" /> 3.6k
-                        </a>
-                      </div>
-                      <a href="single-blog.html" className="post-title">
-                        What happens if you don't have a will?
-                      </a>
-                    </div>
-                  </div>
-                  {/* Single Post Area */}
-                  <div className="razo-single-post d-flex mb-30">
-                    {/* Post Thumbnail */}
-                    <div className="post-thumbnail">
-                      <a href="single-blog.html">
-                        <img src="img/post-1.jpg" alt />
-                      </a>
-                    </div>
-                    {/* Post Content */}
-                    <div className="post-content">
-                      <div className="post-meta">
-                        <a href="#">
-                          <i className="fa fa-comments-o" aria-hidden="true" />{" "}
-                          2.1k
-                        </a>
-                        <a href="#">
-                          <i className="fa fa-eye" aria-hidden="true" /> 3.6k
-                        </a>
-                      </div>
-                      <a href="single-blog.html" className="post-title">
-                        Giuliani: No reason for Trump impeachment
-                      </a>
-                    </div>
+                  {this.state.postPin.map((item, index) => {
+                    if (index != 0) {
+                      return (
+                        <div className="razo-single-post d-flex mb-30">
+                          {/* Post Thumbnail */}
+                          <div className="post-thumbnail">
+                            <a href="single-blog.html">
+                              <img src="img/post-1.jpg" alt />
+                            </a>
+                          </div>
+                          {/* Post Content */}
+                          <div className="post-content">
+                            <div className="post-meta">
+                              <span
+                                className={
+                                  item.loai === 1
+                                    ? "post-category cat-1"
+                                    : "post-category cat-2"
+                                }
+                              >
+                                {item.loai === 1 ? "Hoạt Động" : "Thông tin"}
+                              </span>
+                              <span className="post-date">
+                                <i className="far fa-clock" />
+                                &nbsp;{this.formatDay(item)}
+                              </span>
+                            </div>
+                            <span
+                              style={{ cursor: "pointer" }}
+                              onClick={() => this.onViewDetail(item._id)}
+                              className="post-title"
+                            >
+                              {item.tieuDe}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })}
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Link to="/news">
+                      <Button>Xem thêm</Button>
+                    </Link>
                   </div>
                 </div>
               </div>

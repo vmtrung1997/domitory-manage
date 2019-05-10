@@ -1,7 +1,4 @@
 require('../models/TaiKhoan');
-var multer  = require('multer'),
-    upload = multer().any();
-//require('../models/NganhHoc');
 const Profile = require('../models/Profile');
 const Account = require('../models/TaiKhoan');
 const Room = require('../models/Phong');
@@ -37,7 +34,8 @@ function addOneStudent(data) {
           hoTen: data.hoTen,
           MSSV: data.mssv,
           ngaySinh: data.ngaySinh,
-          ngayVaoO: new Date()
+          ngayVaoO: new Date(),
+          flag: true
         });
         //------save profile-------
         student.save().catch(err =>{
@@ -187,29 +185,60 @@ exports.updateInfo = (req,res) => {
           res.status(400).json({msg: 'Cập nhật lịch sử phòng không thành công'})
         })
       }
-      console.log('==success', result)
       res.status(200).json({msg: 'Cập nhật thành công!'})
     }).catch(err => {
-    console.log('==err', err)
       res.status(400).json({msg: 'cập nhật không thành công!'})
   })
 };
 
-// exports.getListStudent = (req, res) => {
-//   const params = req.body;
-//
-//   var populateQuery = [
-//     {path:'idPhong', select:'title pages'},
-//     {path:'truong', select:'director'},
-//     {path:'truong', select:'director'}
-//     ];
-//
-//   Person.find({})
-//     .populate(populateQuery)
-//     .execPopulate()
-// }
-
 exports.getListStudent = (req, res) => {
+  console.log('==test');
+  let query = {};
+  const params = req.body;
+
+  var populateQuery = [
+    {path:'idPhong', select:'tenPhong'},
+    {path:'truong', select:'tenTruong'},
+    {path:'nganhHoc', select:'tenNganh'},
+  ];
+
+  if(params.hoTen)
+    query.hoTen = { $regex: '.*' + params.hoTen + '.*', $options: 'i' };
+  if(params.mssv)
+    query.MSSV = { $regex: '.*' + params.mssv + '.*', $options: 'i' };
+
+  if(params.idPhong && params.idPhong!== -1)
+    query.idPhong = params.idPhong;
+  else if(params.idPhong === -1)
+    query.idPhong = {"$exists": false};
+
+  if(params.idTruong && params.idTruong!== -1)
+    query.truong = params.idTruong;
+  else if(params.idTruong === -1)
+    query.truong = {"$exists": false};
+
+  Account.find({isDelete: params.isOld, loai: 'SV'})
+    .select('_id')
+    .then(accs => {
+      var arr = [];
+      accs.forEach(acc => {
+        arr.push(acc._id)
+      });
+      query.idTaiKhoan = {$in : arr};
+      Profile.find(query)
+        .populate(populateQuery)
+        .then(result => {
+          console.log('==result', result);
+          res.status(200).json(result);
+        }).catch(err => {
+        console.log('==err', err);
+        res.status(400).json(err);
+      })
+    })
+
+};
+
+exports.getListStudentPaging = (req, res) => {
   let query = {};
   const params = req.body;
   if(params.hoTen)
@@ -231,13 +260,12 @@ exports.getListStudent = (req, res) => {
     res.status(400).json({'msg': 'missing options'});
   //query = {...query, truong:{$nin: [null, '']}};
   //query.idTaiKhoan =  {isDelete: 0};
-  console.log('==query', query);
 
   let options = params.options;
   options.populate = ['idTaiKhoan','idPhong', 'truong', 'nganhHoc'];
 
-  console.log('==query', query);
   Account.find({isDelete: params.isOld, loai: 'SV'}).select('_id').then(accs => {
+    console.log('==accs', accs)
     var arr = [];
     accs.forEach(acc => {
       arr.push(acc._id)

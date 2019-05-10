@@ -16,6 +16,7 @@ import DatePicker from "react-datepicker/es/index";
 import './infoStudentFile.css';
 import { getSchools, getMajor } from './../university/universityAction'
 import Loader from '../../../components/loader/loader';
+import { ChooseRoom } from './infoStudentModal'
 
 class InfoStudentDetail extends Component {
   constructor(props) {
@@ -31,6 +32,7 @@ class InfoStudentDetail extends Component {
       majorOptions: [],
       loading: false,
       custom: false,
+      showRoomPopup: false
     }
   }
 
@@ -198,19 +200,12 @@ class InfoStudentDetail extends Component {
     })
   }
 
-  handleSelectRoom = selectedOption => {
+  chooseRoom = selectedOption => {
     this.setState({
       info: {
         ...this.state.info,
-        idPhong: {
-          tenPhong: selectedOption.label,
-          _id: selectedOption.value
-        }
-      },
-      room: selectedOption
-    })
-
-
+        idPhong: selectedOption
+    }})
   }
 
   handleSelectMajor = selectedOption => {
@@ -288,6 +283,7 @@ class InfoStudentDetail extends Component {
         <Title>
           Thông tin sinh viên
         </Title>
+
         <div className={'content-body'}>
           <div className={'infoDetail'}>
             <div className={'id-back'}>
@@ -446,15 +442,23 @@ class InfoStudentDetail extends Component {
                         <Col md={2}>
                           Phòng:
                         </Col>
-                        <Col md={4}>
-                          <SearchSelect
-                            isSearchable
-                            placeholder={''}
-                            value={room}
-                            onChange={this.handleSelectRoom}
-                            options={roomOptions}
-                          />
-                        </Col>
+                        {/*<p>{this.state.info.idPhong && this.state.info.idPhong.tenPhong}</p>*/}
+                        {/*<Col md={4}>*/}
+                          {/*<SearchSelect*/}
+                            {/*isSearchable*/}
+                            {/*placeholder={''}*/}
+                            {/*value={room}*/}
+                            {/*onClick={()=>{this.setState({showRoomPopup: true})}}*/}
+                            {/*onChange={this.handleSelectRoom}*/}
+                            {/*options={roomOptions}*/}
+                          {/*/>*/}
+                        {/*</Col>*/}
+                        <ChooseRoom
+                          show={this.state.showRoomPopup}
+                          label={this.state.info.idPhong ? this.state.info.idPhong.tenPhong : ''}
+                          onChange={this.chooseRoom}
+                          room={this.state.info.idPhong}
+                        />
                       </Row>
 
                       <Row>

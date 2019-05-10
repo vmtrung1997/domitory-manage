@@ -48,3 +48,8 @@
 .noti-text-style{
     color: #ec3434;
 }
+
+.template{
+    color: blue;
+    cursor: pointer;
+}
