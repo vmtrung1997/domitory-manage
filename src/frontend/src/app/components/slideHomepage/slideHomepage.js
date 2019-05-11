@@ -12,7 +12,7 @@ const Slideshow = () => {
           {/* Single Welcome Slide */}
           <div
             className="single-welcome-slide bg-img bg-overlay"
-            style={{ backgroundImage: "url(img/post-1.jpg)" }}
+            style={{ backgroundImage: "url(img/slide_1.jpg)" }}
           >
             {/* Welcome Content */}
             <div className="welcome-content h-100">
@@ -27,14 +27,7 @@ const Slideshow = () => {
                       <h5 data-animation="fadeInUpBig" data-delay="400ms">
                         31st Dec - Night out party....Don't miss it
                       </h5>
-                      <a
-                        href="#"
-                        className="btn razo-btn btn-2"
-                        data-animation="fadeInUpBig"
-                        data-delay="700ms"
-                      >
-                        Book Now
-                      </a>
+                     
                     </div>
                   </div>
                 </div>
@@ -46,7 +39,7 @@ const Slideshow = () => {
           {/* Single Welcome Slide */}
           <div
             className="single-welcome-slide bg-img bg-overlay"
-            style={{ backgroundImage: "url(img/post-1.jpg)" }}
+            style={{ backgroundImage: "url(img/slide_2.jpg)" }}
           >
             {/* Welcome Content */}
             <div className="welcome-content h-100">
@@ -81,7 +74,7 @@ const Slideshow = () => {
           {/* Single Welcome Slide */}
           <div
             className="single-welcome-slide bg-img bg-overlay"
-            style={{ backgroundImage: "url(img/post-1.jpg)" }}
+            style={{ backgroundImage: "url(img/slide_3.jpg)" }}
           >
             {/* Welcome Content */}
             <div className="welcome-content h-100">

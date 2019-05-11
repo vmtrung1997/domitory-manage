@@ -11,6 +11,7 @@ var baiVietSchema = new Schema({
     trangThai: {type: Number, enum: [0,1]}, //1: public 0: private,
     loai: Number,
     ghim: {type: Number, enum: [0,1]}, //1: có 0: không,
+    stamp: Number
 });
 baiVietSchema.index({tieuDe: 'text'});
 baiVietSchema.plugin(mongoosePaginate);
