@@ -133,6 +133,7 @@ class PersonProfile extends React.Component {
       secret = JSON.parse(secret);
       var id = decode.user.userEntity._id;
       //Lấy thông tin sinh viên
+      console.log(id)
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios
         .post(`/student/get-info`, { id: id })

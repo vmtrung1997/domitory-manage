@@ -152,6 +152,16 @@
     -webkit-animation: tiltcard .5s ease-in-out 1s forwards;
             animation: tiltcard .5s ease-in-out 1s forwards;
     position: absolute;
+    border-radius: 20px;
+    width: 359px;
+    height: 226px;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    display: flex;
 }
 
 @-webkit-keyframes tiltcard {

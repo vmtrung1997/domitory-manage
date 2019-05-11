@@ -13,7 +13,8 @@ import InfoDormitory from "./infoDormitory/infoDormitory";
 import History from './securityHistory/history'
 import News from './news/news';
 import University from './university/university'
-import {Authorization} from './../../components/AuthenticationRoute/Authorization'
+import Registered from './registered/registered'
+import { Authorization } from './../../components/AuthenticationRoute/Authorization'
 import jwt_decode from 'jwt-decode';
 class Admin extends Component {
 	constructor(props) {
@@ -25,14 +26,14 @@ class Admin extends Component {
 	componentWillMount() {
 		let token = JSON.parse(localStorage.getItem('secret'));
 		let decode = jwt_decode(token.access_token)
-		if (decode && decode.user.userEntity.phanQuyen){
+		if (decode && decode.user.userEntity.phanQuyen) {
 			this.setState({
 				roles: decode.user.userEntity.phanQuyen.quyen
 			})
 		}
 	}
 	render() {
-		let {roles} = this.state
+		let { roles } = this.state
 		return (
 			<Layout>
 				<Route exact path={`${this.props.match.url}/student`} component={Authorization(roles)(InfoStudent, 'SV01')} />
@@ -46,7 +47,7 @@ class Admin extends Component {
 				<Route exact path={`${this.props.match.url}/account/detail/:id`} component={Authorization(roles)(AccountDetail, 'TK02')} />
 				<Route exact path={`${this.props.match.url}/dormitory`} component={Authorization(roles)(InfoDormitory, 'KT01')} />
 				<Route exact path={`${this.props.match.url}/university`} component={Authorization(roles)(University, 'TN01')} />
-
+				<Route exact path={`${this.props.match.url}/registered`} component={Registered} />
 			</Layout>
 		)
 	}

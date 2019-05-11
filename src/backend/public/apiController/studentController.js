@@ -26,6 +26,10 @@ exports.getSpecialized = (req, res) => {
       status: "success",
       data: result
     });
+  }).catch( err => {
+    res.status(400).json({
+      status: "get specialized false"
+    })
   });
 };
 
@@ -49,7 +53,17 @@ exports.getListActivities = (req, res) => {
         }
       }).countDocuments({}, (err, data) => {
         totalPages = parseInt(data) / limit;
+        if(err){
+          res.status(500).json({
+            status: 'fail'
+          })
+        }
       });
+    })
+    .catch(err => {
+      res.status(500).json({
+        status: 'fail'
+      })
     });
 
   KetQuaHD.find({ idSV: req.body.id })
@@ -83,7 +97,17 @@ exports.getListActivities = (req, res) => {
               totalPages: totalPages
             });
           }
+        })
+        .catch( err => {
+          res.status(500).json({
+            status: 'fail'
+          })
         });
+    })
+    .catch( err => {
+      res.status(500).json({
+        status: 'fail'
+      })
     });
 };
 
@@ -302,6 +326,11 @@ exports.getSchool = (req, res) => {
       status: "success",
       data: result
     });
+  })
+  .catch( err => {
+    res.status(500).json({
+      status: "fail"
+    })
   });
 };
 
@@ -311,6 +340,11 @@ exports.upcomingActivities = (req, res) => {
   var totalPages = 1;
   KetQuaHD.countDocuments({ idSV: req.body.id }, (err, data) => {
     totalPages = parseInt(data) / limit;
+    if( err ){
+      res.status(500).json({
+        status: "fail"
+      })
+    }
   });
 
   console.log(req.body.id, "------------");
@@ -331,12 +365,16 @@ exports.upcomingActivities = (req, res) => {
           data: "no data"
         });
       }
+    })
+    .catch( err => {
+      res.status(500).json({
+        status: "fail"
+      })
     });
 };
 
 exports.getInfo = (req, res) => {
   var id = req.body.id;
-
   Profile.findOne({ idTaiKhoan: id })
     .populate([
       { path: "truong", select: "tenTruong" },
@@ -350,7 +388,7 @@ exports.getInfo = (req, res) => {
           data: result
         });
       } else {
-        res.json({
+        res.status(400).json({
           status: "fail",
           data: "no data"
         });
@@ -358,6 +396,10 @@ exports.getInfo = (req, res) => {
     })
     .catch(err => {
       console.log(err);
+      res.status(500).json({
+          status: "fail",
+          data: "no data"
+        });
     });
 };
 
@@ -522,5 +564,10 @@ exports.getPoint = (req, res) => {
           data: result
         })
       }
+    })
+    .catch( err => {
+      res.status(500).json({
+        data: 'no data'
+      })
     });
 };

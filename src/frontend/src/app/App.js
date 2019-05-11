@@ -10,8 +10,6 @@ import InternalServer from './components/errorPages/InternalServer/InternalServe
 import SignInAdmin from './containers/admin/signIn/signinAdmin'
 import Student from './containers/student'
 import Security from './containers/security/index'
-var isAdmin = false
-var isSecurity = false
 
 const checkAuth = () => {
     const secret = JSON.parse(localStorage.getItem('secret'))
@@ -21,23 +19,21 @@ const checkAuth = () => {
         {
             case 'SA':
             case 'AM':
-                isAdmin = true
-                break
+                return 'isAdmin'
             case 'BV':
-                isSecurity = true
-                break
+                return 'isSecurity'
             default:
                 break
         }
     }
 }
 const AdminRoute = ({ component: Component, ...rest }) => {
-    checkAuth()
+    
     return(
         <Route
             {...rest}
             render = {props => 
-                isAdmin ? (
+                checkAuth() === 'isAdmin' ? (
                     <Component {...props} />
                 ) : (
                     <Redirect to={{ pathname: "/signin-admin", state: { from: props.location }}} />
@@ -47,12 +43,11 @@ const AdminRoute = ({ component: Component, ...rest }) => {
     )
 }
 const SecurityRoute = ({ component: Component, ...rest }) => {
-    checkAuth()
     return(
         <Route
             {...rest}
             render = {props =>
-                isSecurity ? (
+                checkAuth() === 'isSecurity' ? (
                     <Component {...props} />
                 ) : (
                     <Redirect to={{ pathname: "/signin-admin", state: { from: props.location }}} />
@@ -70,10 +65,10 @@ class App extends Component {
                     <AdminRoute path="/admin" component={Admin} />
                     <SecurityRoute path='/security' component={Security} />
                     <Route path="/signin-admin" component={SignInAdmin} />
+                    <Route path="/500" component={InternalServer} />
+                    <Route path="/401" component={NotAuthen}/>
                     <Route path='/' component = {Student}/>
-                    <Route exact path={'/500'} component={InternalServer} />
-                    <Route exact path={'/401'} component={NotAuthen}/>
-                    <Route exact component={NotFound} />
+                    <Route component={NotFound} />
                 </Switch>
             </Router>
         );
