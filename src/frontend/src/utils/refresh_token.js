@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from './../../src/app/config'
 import jwt_decode from 'jwt-decode';
 
 const refreshToken = async () => {

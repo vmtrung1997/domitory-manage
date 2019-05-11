@@ -9,7 +9,7 @@ var YeuCauLuuTruSchema = new Schema({
     date: {type: Date},
     isAccept: {type: Boolean}
 });
-baiVietSchema.plugin(mongoosePaginate);
+YeuCauLuuTruSchema.plugin(mongoosePaginate);
 
 const model = mongoose.model('YeuCauLuuTru', YeuCauLuuTruSchema, 'YeuCauLuuTru');
 module.exports = model;
