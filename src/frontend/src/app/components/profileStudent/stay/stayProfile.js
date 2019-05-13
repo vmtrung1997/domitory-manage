@@ -142,7 +142,8 @@ class StayProfile extends React.Component {
       var dayInFormat = d.getDate() + "/" + month + "/" + d.getFullYear();
 
       //Định dạng ngày ra
-      dof = new Date(this.state.ngayHetHan);
+
+      var dof = new Date(this.state.ngayHetHan);
       month = dof.getMonth() + 1;
       var dayOutFormat = dof.getDate() + "/" + month + "/" + dof.getFullYear();
     }
