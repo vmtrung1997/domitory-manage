@@ -132,7 +132,7 @@ class Expenses extends Component {
 				<ToastsContainer position={ToastsContainerPosition.TOP_CENTER} lightBackground store={ToastsStore} />
 				<Loader loading={this.state.loading} />
 				<Title> Chi phí </Title>
-				<div className={'content-body'}>
+				<div className={'content-body'}  style={{overflow: 'auto'}}>
 					<div>
 						<Row className={'m-b-10'}>
 							<Col md={2} xs={12}>

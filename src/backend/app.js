@@ -24,8 +24,6 @@ global.appRoot = path.resolve(__dirname);
 
 app.use(morgan('tiny'));
 app.use(cors());
-// for parsing multipart/form-data
-app.use(upload.array()); 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 var { verifyAccessToken, verifyAdmin, verifySecurity } = require('./public/repos/authRepo');

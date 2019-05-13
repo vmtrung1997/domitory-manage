@@ -89,7 +89,6 @@ class Confirm extends Component {
         {data.map((value, index) => {
           return (
             <React.Fragment>
-              <h1 className={'page-break'}/>
               <div key={index} >
                 <div>
                   {this.printDetailStructure(value)}
