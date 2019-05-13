@@ -35,6 +35,7 @@ function addOneStudent(data) {
           MSSV: data.mssv,
           ngaySinh: data.ngaySinh,
           ngayVaoO: new Date(),
+          ngayHetHan: data.ngayHetHan,
           flag: true
         });
         //------save profile-------
@@ -74,7 +75,6 @@ exports.addStudent =async (req, res) => {
 
 exports.importFile = async (req, res) => {
   const { data, expireDay } = req.body;
-  console.log('==data',data);
   let listExpired = [];
   let listSuccess =[];
   let listPromise = []
@@ -87,7 +87,6 @@ exports.importFile = async (req, res) => {
     listPromise.push(addOneStudent(student))
   })
   await Promise.all(listPromise).then(result=> {
-    console.log('==result all',result);
     let i = 0;
     result.forEach(r => {
       if(r.status !== 200)
@@ -228,10 +227,8 @@ exports.getListStudent = (req, res) => {
       Profile.find(query)
         .populate(populateQuery)
         .then(result => {
-          console.log('==result', result);
           res.status(200).json(result);
         }).catch(err => {
-        console.log('==err', err);
         res.status(400).json(err);
       })
     })
@@ -318,4 +315,94 @@ exports.getListActivities = (req, res) => {
   }).catch(err => {
     res.status(400).json({msg: "Lỗi"})
   })
+};
+
+exports.getDetail = async (req, res) => {
+  const id = req.params.id;
+  let data = {
+    activity: {},
+    profile: {}
+  };
+  //get activities
+  let getData = async (id, callback) => {
+    await ActivityResults.find({idSV: id})
+      .populate({ path: "idHD" })
+      .then(result => {
+        data.activity.list = result;
+      });
+
+    // get activity point
+    var result = [];
+    var ngayVaoO = new Date(req.body.ngayVaoO);
+    if (ngayVaoO === undefined) {
+      data.activity.point = 0
+    }
+    await ActivityResults.find({ idSV: req.body.id })
+      .populate({
+        path: "idHD",
+        match: {
+          ngayBD: { $gte: ngayVaoO }
+        },
+        select: "diem batBuoc ten diaDiem ngayBD ngayKT thang nam"
+      })
+      .then(rs => {
+        var year = ngayVaoO.getFullYear();
+        var now = new Date();
+        for (var yearpoint = year; yearpoint <= now.getFullYear(); yearpoint++) {
+          var point = 0;
+          var i = 0;
+          rs.some(item => {
+            if (
+              (item.idHD.ngayKT.getMonth() + 1 > 7 &&
+                item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
+              (item.idHD.ngayKT.getMonth() + 1 < 8 &&
+                item.idHD.ngayKT.getFullYear() === yearpoint) ||
+              (item.idHD.ngayKT.getFullYear() < yearpoint ||
+                item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
+              (item.idHD.ngayKT.getMonth() + 1 > now.getMonth() + 1)
+            ) {
+              return true;
+            }
+            else {
+              if (item.idHD.batBuoc && !item.isTG) {
+                point -= item.idHD.diem;
+              } else if (item.isTG) {
+                point += item.idHD.diem;
+              }
+            }
+          });
+
+          var temp = {
+            year: yearpoint,
+            point: point
+          };
+
+          result.push(temp);
+        }
+
+        data.activity.point = result;
+      });
+
+    // // get profile
+    let populateQuery = [
+      {path:'idPhong'},
+      {path:'truong'},
+      {path:'nganhHoc'},
+    ];
+
+    await Profile.findOne({MSSV: id})
+      .populate(populateQuery)
+      .then(result => {
+        console.log('==profile', result, id)
+        data.profile = result;
+      });
+    console.log('==data2222', data)
+
+    callback(data);
+  };
+
+  getData(id, (data) => {
+    console.log('==data111', data)
+      res.status(200).json(data);
+  });
 };

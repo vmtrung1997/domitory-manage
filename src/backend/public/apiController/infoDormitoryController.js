@@ -206,9 +206,7 @@ exports.getFloorRoom = async (req, res) => {
       listPromise.push(getRoom(floor));
     });
       await Promise.all(listPromise).then(result=> {
-        console.log('==result all',result);
         data = result.map(rooms => ({key: i++, floor: rooms[0].lau, rooms: rooms}))
-        console.log('==data',data);
 
         res.status(200).json(data)
       }).catch()

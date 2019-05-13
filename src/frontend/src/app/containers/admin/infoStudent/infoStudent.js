@@ -109,10 +109,10 @@ class InfoStudent extends Component{
     }
   };
 
-  onViewDetail = (info) => {
+  onViewDetail = (id) => {
     this.props.history.push({
-      pathname: '/admin/student/detail',
-      state: { info: info }
+      pathname: '/admin/student/detail/'+ id,
+      //state: { info: info }
     });
   }
 
@@ -543,7 +543,7 @@ class InfoStudent extends Component{
               {infoList && infoList.map(info => {
 
                 return(
-                  <tr onDoubleClick ={() => this.onViewDetail(info)} key={i++}>
+                  <tr onDoubleClick ={() => this.onViewDetail(info.MSSV)} key={i++}>
                     <td >{i}</td>
                     <td>{info.MSSV || 'Trống'}</td>
                     <td>{info.hoTen || 'Trống'}</td>
