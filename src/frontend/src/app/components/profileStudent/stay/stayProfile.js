@@ -220,7 +220,7 @@ class StayProfile extends React.Component {
                     </div>
                   </div>
                 </Col>
-                <Col sm={10}>
+                {/* <Col sm={10}>
                   <Table bordered hover responsive size="sm">
                     <thead className="thread-student">
                       <tr>
@@ -238,7 +238,7 @@ class StayProfile extends React.Component {
                       </tr>
                     </tbody>
                   </Table>
-                </Col>
+                </Col> */}
               </Row>
             </div>
           </div>

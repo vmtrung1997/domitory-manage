@@ -3,7 +3,7 @@ import "./newsList.css";
 import { Button, ButtonGroup, Pagination, Row } from "react-bootstrap";
 import Axios from "axios";
 import Loader from "react-loader-spinner";
-
+import { storage } from "../../firebase";
 class NewsList extends React.Component {
   constructor(props) {
     super(props);
@@ -21,11 +21,45 @@ class NewsList extends React.Component {
     };
   }
 
-  loadNews = date => {
+  loadImages = async () => {
+    var temp = [];
+   console.log(this.state.postsAll.length);
+    this.state.postsAll.forEach(async (item, index) => {
+      var rs = item.stamp + ".jpg";
+      await storage
+        .ref("news")
+        .child(rs)
+        .getDownloadURL()
+        .then(url => {
+          console.log(url);
+          var tmp = this.state.postsAll;
+          tmp[index].url = url;
+          this.setState({ postsAll: tmp });
+        });
+    });
+    console.log(this.state.pinnedPosts.length);
+
+    this.state.pinnedPosts.forEach(async (item, index) => {
+      var rs = item.stamp + ".jpg";
+      await storage
+        .ref("news")
+        .child(rs)
+        .getDownloadURL()
+        .then(url => {
+          var tmp = this.state.pinnedPosts;
+          tmp[index].url = url;
+          this.setState({ pinnedPosts: tmp });
+        });
+    });
+
+    return temp;
+  };
+
+  loadNews = async date => {
     var _post = [];
     var _postsActivity = [];
     var _postsNews = [];
-    Axios.post("/news/get-news", { data: date,skip: this.state.skip,limit: this.state.limit })
+    await Axios.post("/news/get-news", { data: date,skip: this.state.skip,limit: this.state.limit })
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map(item => {
@@ -48,10 +82,11 @@ class NewsList extends React.Component {
       });
   };
 
-  componentDidMount() {
+  componentDidMount  = async () =>{
     var date = new Date("2015-01-01"); //Ngaỳ mặc định
-    this.loadNews(date);
-    this.loadPinNews();
+    await this.loadNews(date);
+    await this.loadPinNews();
+    this.loadImages();
   }
   onViewDetail = id => {
     var address = `${window.location.host}/news/detail?id=${id}`;
@@ -61,14 +96,13 @@ class NewsList extends React.Component {
   newsFilter = type => {
     switch (type) {
       case 0: //Show tất cả tin tức
-        this.setState({ filter: 0 });
+        this.setState({ filter: 0,isFirst: false  });
         break;
       case 1: //Show Thoong tin
-        this.setState({ filter: 1,isFirst: false });
-
+        this.setState({ filter: 2,isFirst: false });
         break;
       case 2: //Show Hoat Dong
-        this.setState({ filter: 2,isFirst: false });
+        this.setState({ filter: 1,isFirst: false });
 
         break;
       default:
@@ -76,14 +110,14 @@ class NewsList extends React.Component {
     }
   };
 
-  loadPinNews = () => {
+  loadPinNews = async () => {
     this.setState({
       isLoad: true
     });
 
     var _post = [];
 
-    Axios.get("/news/get-pin-news")
+    await Axios.get("/news/get-pin-news")
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map(item => {
@@ -117,7 +151,7 @@ class NewsList extends React.Component {
             _post.push(item);
             if (item.loai === 0) {
               _postsNews.push(item);
-            } else _postsActivity.push(item);
+            } else if (item.loai === 1) _postsActivity.push(item);
           });
         }
       })
@@ -159,6 +193,8 @@ class NewsList extends React.Component {
       default:
         break;
     }
+   
+
     return (
       <React.Fragment>
         {/* section */}
@@ -189,7 +225,7 @@ class NewsList extends React.Component {
                         className="post-img"
                         onClick={e => this.onViewDetail(item._id)}
                       >
-                        <img src="/img/st.jpg" alt />
+                        <img style={{height: '400px',width: '100%'}} src={item.url} alt />
                       </a>
                       <div className="post-body" on>
                         <div className="post-meta">
@@ -242,14 +278,14 @@ class NewsList extends React.Component {
                         Tất cả
                       </Button>
                       <Button
-                        onClick={e => this.newsFilter(1)}
+                        onClick={e => this.newsFilter(2)}
                         variant="light"
                         className="section-news-hover"
                       >
                         Thông tin
                       </Button>
                       <Button
-                        onClick={e => this.newsFilter(2)}
+                        onClick={e => this.newsFilter(1)}
                         variant="light"
                         className="section-activity-hover"
                       >
@@ -280,7 +316,7 @@ class NewsList extends React.Component {
                         className="post-img"
                         onClick={e => this.onViewDetail(item._id)}
                       >
-                        <img src="/img/maxresdefault.jpg" alt />
+                      <img style={{height: '300px',width: '100%'}} src={item.url} alt />
                       </div>
                       <div className="post-body">
                         <div className="post-meta">

@@ -11,7 +11,7 @@ import draftToHtml from "draftjs-to-html";
 import "../../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import Input from "./../../../components/input/input";
 import axios from "axios";
-import jwt_decode from 'jwt-decode'
+import jwt_decode from "jwt-decode";
 import refreshToken from "../../../.././utils/refresh_token";
 import Checkbox from "./../../../components/checkbox/checkbox";
 import MySelectOption from "./../../../components/selectOption/select";
@@ -37,7 +37,7 @@ class EditorConvertToHTML extends Component {
       isFirst: true,
       pin: false,
       sendEmail: false,
-      loai: 2,
+      loai: 0,
       typeOptions: [
         { value: 0, label: "Thông Tin" },
         { value: 1, label: "Hoạt Động" }
@@ -72,9 +72,7 @@ class EditorConvertToHTML extends Component {
       convertToRaw(this.state.editorState.getCurrentContent())
     );
 
-    var value1 = convertToRaw(
-      this.state.editorState.getCurrentContent()
-    );
+    var value1 = convertToRaw(this.state.editorState.getCurrentContent());
 
     if (!this.state.title || value1.blocks[0].text === "") {
       ToastsStore.warning("Tiêu đề hoặc nội dung không được để trống!");
@@ -97,39 +95,37 @@ class EditorConvertToHTML extends Component {
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios.post("/manager/news/add", { data: data }).then(res => {
         if (res.status === 202) {
-          this.props.showPopup("add");
-          this.handleClose();
+          console.log(this.state.pictures);
+          const { pictures } = this.state;
+          var name = data.stamp + ".jpg";
+          const uploadTask = storage.ref(`news/${name}`).put(pictures[0]);
+          uploadTask.on(
+            "state_changed",
+            snapshot => {
+              //progress function
+            },
+            error => {
+              //error function
+              console.log(error);
+            },
+            () => {
+              //complete function
+              storage
+                .ref("news")
+                .child(name)
+                .getDownloadURL()
+                .then(url => {
+                  console.log(url);
+                  this.props.showPopup("add");
+                  this.handleClose();
+                });
+            }
+          );
         } else {
           ToastsStore.error("Thêm tin tức thất bại");
         }
       });
     }
-
-
-    console.log(this.state.pictures);
-    const { pictures } = this.state;
-    var name = data.stamp + ".jpg"
-    const uploadTask = storage.ref(`news/${name}`).put(pictures[0]);
-    uploadTask.on(
-      "state_changed",
-      snapshot => {
-        //progress function
-      },
-      error => {
-        //error function
-        console.log(error);
-      },
-      () => {
-        //complete function
-        storage
-          .ref("news")
-          .child(name)
-          .getDownloadURL()
-          .then(url => {
-            console.log(url);
-          });
-      }
-    );
   };
 
   kindSelected = value => {
@@ -219,7 +215,6 @@ class EditorConvertToHTML extends Component {
   };
 
   render() {
-  
     var type = this.props.type;
 
     if (type === "edit" && this.state.isFirst) {
