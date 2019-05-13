@@ -422,12 +422,12 @@ class InfoStudent extends Component{
                     searchValues={this.state.searchValues}
                   />
 
-                  <Button
-                    variant={'rounded'}
-                    color={'success'}
-                  >
-                    <i className="fas fa-address-card"/>
-                  </Button>
+                  {/*<Button*/}
+                    {/*variant={'rounded'}*/}
+                    {/*color={'success'}*/}
+                  {/*>*/}
+                    {/*<i className="fas fa-address-card"/>*/}
+                  {/*</Button>*/}
                 </div>
               </Col>
 

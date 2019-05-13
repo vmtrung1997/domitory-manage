@@ -414,74 +414,74 @@ class InfoDormitory extends React.Component{
           </Modal>
 
           {/*add room popup*/}
-          <Modal show={showAddRoomPopup} onHide={() =>this.handleClosePopup('addRoom')}>
-            <Modal.Header closeButton>
-              <Modal.Title>Thêm phòng</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Row>
-                <Col md={4}>
-                  Tên phòng:
-                </Col>
-                <Col md={8}>
-                  <Input getValue={this.onChange} name={'roomNameAdd'} />
-                </Col>
+          {/*<Modal show={showAddRoomPopup} onHide={() =>this.handleClosePopup('addRoom')}>*/}
+            {/*<Modal.Header closeButton>*/}
+              {/*<Modal.Title>Thêm phòng</Modal.Title>*/}
+            {/*</Modal.Header>*/}
+            {/*<Modal.Body>*/}
+              {/*<Row>*/}
+                {/*<Col md={4}>*/}
+                  {/*Tên phòng:*/}
+                {/*</Col>*/}
+                {/*<Col md={8}>*/}
+                  {/*<Input getValue={this.onChange} name={'roomNameAdd'} />*/}
+                {/*</Col>*/}
 
-                <Col md={4}>
-                  Số người tối đa:
-                </Col>
-                <Col md={8}>
-                  <Input getValue={this.onChange} name={'limitPersonAdd'} />
-                </Col>
+                {/*<Col md={4}>*/}
+                  {/*Số người tối đa:*/}
+                {/*</Col>*/}
+                {/*<Col md={8}>*/}
+                  {/*<Input getValue={this.onChange} name={'limitPersonAdd'} />*/}
+                {/*</Col>*/}
 
-                <Col md={4}>
-                  Loại phòng:
-                </Col>
-                <Col md={8}>
-                  <Select
-                    value={this.state.roomTypeAdd}
-                    options={roomTypeOptions}
-                    selected={this.roomTypeAddSelected}
-                  />
-                </Col>
+                {/*<Col md={4}>*/}
+                  {/*Loại phòng:*/}
+                {/*</Col>*/}
+                {/*<Col md={8}>*/}
+                  {/*<Select*/}
+                    {/*value={this.state.roomTypeAdd}*/}
+                    {/*options={roomTypeOptions}*/}
+                    {/*selected={this.roomTypeAddSelected}*/}
+                  {/*/>*/}
+                {/*</Col>*/}
 
-                <Col md={4}>
-                  Số điện hiện tại:
-                </Col>
-                <Col md={8}>
-                  <Input getValue={this.onChange} name={'electicalNumAdd'} />
-                </Col>
+                {/*<Col md={4}>*/}
+                  {/*Số điện hiện tại:*/}
+                {/*</Col>*/}
+                {/*<Col md={8}>*/}
+                  {/*<Input getValue={this.onChange} name={'electicalNumAdd'} />*/}
+                {/*</Col>*/}
 
-                <Col md={4}>
-                  Số nước hiện tại:
-                </Col>
-                <Col md={8}>
-                  <Input getValue={this.onChange} name={'waterNumAdd'} />
-                </Col>
+                {/*<Col md={4}>*/}
+                  {/*Số nước hiện tại:*/}
+                {/*</Col>*/}
+                {/*<Col md={8}>*/}
+                  {/*<Input getValue={this.onChange} name={'waterNumAdd'} />*/}
+                {/*</Col>*/}
 
-                <Col md={4}>
-                  Mô tả:
-                </Col>
-                <Col md={8}>
-                  <Input getValue={this.onChange} name={'descriptionAdd'} />
-                </Col>
-              </Row>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline" onClick={() =>this.handleClosePopup('room')}>
-                Cancel
-              </Button>
-              <Button  onClick={() =>this.handleSubmitAddRoom()}>
-                SAVE
-              </Button>
-            </Modal.Footer>
-          </Modal>
+                {/*<Col md={4}>*/}
+                  {/*Mô tả:*/}
+                {/*</Col>*/}
+                {/*<Col md={8}>*/}
+                  {/*<Input getValue={this.onChange} name={'descriptionAdd'} />*/}
+                {/*</Col>*/}
+              {/*</Row>*/}
+            {/*</Modal.Body>*/}
+            {/*<Modal.Footer>*/}
+              {/*<Button variant="outline" onClick={() =>this.handleClosePopup('room')}>*/}
+                {/*Cancel*/}
+              {/*</Button>*/}
+              {/*<Button  onClick={() =>this.handleSubmitAddRoom()}>*/}
+                {/*SAVE*/}
+              {/*</Button>*/}
+            {/*</Modal.Footer>*/}
+          {/*</Modal>*/}
           {/*end add room popup*/}
 
           {/*add floor popup*/}
-          <Modal show={showAddFloorPopup} onHide={() =>this.handleClosePopup('addFloor')}>
+          <Modal show={showAddRoomPopup} onHide={() =>this.handleClosePopup('addRoom')}>
             <Modal.Header closeButton>
-              <Modal.Title>Thêm Lầu</Modal.Title>
+              <Modal.Title>Thêm phòng</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Row>
@@ -491,8 +491,6 @@ class InfoDormitory extends React.Component{
                 <Col md={8}>
                   <Input getValue={this.onChange} name={'floorNameAdd'} />
                 </Col>
-
-                <span className={'id-addFloor_text'}>* Để thêm lầu bạn phải thêm tối thiểu một phòng</span>
                 <Col md={4}>
                   Tên phòng:
                 </Col>
@@ -721,15 +719,6 @@ class InfoDormitory extends React.Component{
             </Row>
 
             <Row style={{justifyContent: 'center'}}>
-              <div className={'id-add'}>
-                <Button
-                  shadow
-                  color={'danger'}
-                  onClick={() => this.handleShowPopup('addFloor')}
-                >
-                  <i className="fas fa-plus"/> Thêm Lầu
-                </Button>
-              </div>
               <div className={'id-add'}>
                 <Button
                   shadow
