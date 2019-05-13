@@ -21,16 +21,18 @@ exports.a = (req, res) => {
 };
 
 exports.getSpecialized = (req, res) => {
-  NganhHoc.find().then(result => {
-    res.status(200).json({
-      status: "success",
-      data: result
-    });
-  }).catch( err => {
-    res.status(400).json({
-      status: "get specialized false"
+  NganhHoc.find()
+    .then(result => {
+      res.status(200).json({
+        status: "success",
+        data: result
+      });
     })
-  });
+    .catch(err => {
+      res.status(400).json({
+        status: "get specialized false"
+      });
+    });
 };
 
 exports.getListActivities = (req, res) => {
@@ -53,17 +55,17 @@ exports.getListActivities = (req, res) => {
         }
       }).countDocuments({}, (err, data) => {
         totalPages = parseInt(data) / limit;
-        if(err){
+        if (err) {
           res.status(500).json({
-            status: 'fail'
-          })
+            status: "fail"
+          });
         }
       });
     })
     .catch(err => {
       res.status(500).json({
-        status: 'fail'
-      })
+        status: "fail"
+      });
     });
 
   KetQuaHD.find({ idSV: req.body.id })
@@ -98,16 +100,16 @@ exports.getListActivities = (req, res) => {
             });
           }
         })
-        .catch( err => {
+        .catch(err => {
           res.status(500).json({
-            status: 'fail'
-          })
+            status: "fail"
+          });
         });
     })
-    .catch( err => {
+    .catch(err => {
       res.status(500).json({
-        status: 'fail'
-      })
+        status: "fail"
+      });
     });
 };
 
@@ -321,56 +323,60 @@ exports.getLastBill = (req, res) => {
 };
 
 exports.getSchool = (req, res) => {
-  Truong.find().then(result => {
-    res.status(200).json({
-      status: "success",
-      data: result
-    });
-  })
-  .catch( err => {
-    res.status(500).json({
-      status: "fail"
+  Truong.find()
+    .then(result => {
+      res.status(200).json({
+        status: "success",
+        data: result
+      });
     })
-  });
+    .catch(err => {
+      res.status(500).json({
+        status: "fail"
+      });
+    });
 };
 
 exports.upcomingActivities = (req, res) => {
   var skip = req.body.options.skip;
   var limit = req.body.options.limit;
   var totalPages = 1;
+  console.log(req.body);
   KetQuaHD.countDocuments({ idSV: req.body.id }, (err, data) => {
     totalPages = parseInt(data) / limit;
-    if( err ){
-      res.status(500).json({
-        status: "fail"
-      })
+    if (err) {
+      console.log("loi dau");
+      // res.status(500).json({
+      //   status: "fail"
+      // })
+    } else {
+      KetQuaHD.find({ idSV: req.body.id })
+        .populate({ path: "idHD" })
+        .skip(skip)
+        .limit(limit)
+        .then(result => {
+          if (result.length > 0) {
+            res.status(200).json({
+              status: "success",
+              data: result,
+              totalPages: totalPages
+            });
+          } else {
+            console.log("vô đây");
+            res.status(204).json({
+              status: "fail",
+              data: "no data"
+            });
+          }
+        })
+        .catch(err => {
+          // console.log('loi sau');
+          // res.status(500).json({
+          //   status: "fail"
+          // })
+        });
     }
   });
-
-  console.log(req.body.id, "------------");
-  KetQuaHD.find({ idSV: req.body.id })
-    .populate({ path: "idHD" })
-    .skip(skip)
-    .limit(limit)
-    .then(result => {
-      if (result) {
-        res.status(200).json({
-          status: "success",
-          data: result,
-          totalPages: totalPages
-        });
-      } else {
-        res.json({
-          status: "fail",
-          data: "no data"
-        });
-      }
-    })
-    .catch( err => {
-      res.status(500).json({
-        status: "fail"
-      })
-    });
 };
 
 exports.getInfo = (req, res) => {
@@ -397,9 +403,9 @@ exports.getInfo = (req, res) => {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-          status: "fail",
-          data: "no data"
-        });
+        status: "fail",
+        data: "no data"
+      });
     });
 };
 
@@ -534,11 +540,10 @@ exports.getPoint = (req, res) => {
               item.idHD.ngayKT.getFullYear() === yearpoint) ||
             (item.idHD.ngayKT.getFullYear() < yearpoint ||
               item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
-              (item.idHD.ngayKT.getMonth() + 1 > now.getMonth() + 1)
+            item.idHD.ngayKT.getMonth() + 1 > now.getMonth() + 1
           ) {
             return true;
-          }
-          else {
+          } else {
             if (item.idHD.batBuoc && !item.isTG) {
               point -= item.idHD.diem;
             } else if (item.isTG) {
@@ -554,20 +559,19 @@ exports.getPoint = (req, res) => {
 
         result.push(temp);
       }
-      if(result.length === 0){
+      if (result.length === 0) {
         res.status(204).json({
           data: result
-        })
-      }
-      else{
+        });
+      } else {
         res.status(200).json({
           data: result
-        })
+        });
       }
     })
-    .catch( err => {
+    .catch(err => {
       res.status(500).json({
-        data: 'no data'
-      })
+        data: "no data"
+      });
     });
 };
