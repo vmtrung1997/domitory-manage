@@ -43,39 +43,16 @@ class InfoStudentDetail extends Component {
 
   componentWillMount(){
     this.getData()
+
   }
 
 
   componentDidMount() {
+    console.log('==did mount', this.state)
     this.getElement('room');
     this.getElement('school');
     // this.getActivities('5cbad213fb6fc041ab948375');
-    const { profile } = this.state;
-    if(profile.truong){
-      this.setState({
-        school: {
-          value: profile.truong._id,
-          label: profile.truong.tenTruong
-        }
-      })
-      this.getMajorOptions(profile.truong._id);
-    }
 
-    if(profile.idPhong)
-      this.setState({
-        room: {
-          value: profile.idPhong._id,
-          label: profile.idPhong.tenPhong
-        }
-      })
-
-    if(profile.nganhHoc)
-      this.setState({
-        major: {
-          value: profile.nganhHoc._id,
-          label: profile.nganhHoc.tenNganh
-        }
-      })
 
     // var birthDate = profile.ngaySinh ? new Date(profile.ngaySinh) : new Date();
     // var ngayHetHan = profile.ngayHetHan ? new Date(profile.ngayHetHan): new Date();
@@ -93,6 +70,25 @@ class InfoStudentDetail extends Component {
         this.setState({
           profile: result.data.profile,
         })
+        const { profile } = result.data;
+        if(profile.truong){
+          console.log('==school', profile)
+          this.setState({
+            school: {
+              value: profile.truong._id,
+              label: profile.truong.tenTruong
+            }
+          })
+          this.getMajorOptions(profile.truong._id);
+        }
+
+        if(profile.nganhHoc)
+          this.setState({
+            major: {
+              value: profile.nganhHoc._id,
+              label: profile.nganhHoc.tenNganh
+            }
+          })
       }).catch(err => {
         console.log('==err info detail', err.response)
     })
@@ -205,8 +201,8 @@ class InfoStudentDetail extends Component {
 
   handleSelectSchool = (selectedOption) => {
     this.setState({
-      info: {
-        ...this.state.info,
+      profile: {
+        ...this.state.profile,
         truong: {
           tenTruong: selectedOption.label,
           _id: selectedOption.value
@@ -240,8 +236,8 @@ class InfoStudentDetail extends Component {
 
   handleSelectMajor = selectedOption => {
     this.setState({
-      info: {
-        ...this.state.info,
+      profile: {
+        ...this.state.profile,
         nganhHoc: {
           tenNganh: selectedOption.label,
           _id: selectedOption.value
@@ -466,7 +462,7 @@ class InfoStudentDetail extends Component {
                           Điểm h.động:
                         </Col>
                         <Col md={4}>
-                          <Input value={activity ? activity.point : '0'} type={'number'} getValue={this.onChangeNumber} name={'diemHD'} />
+                          <Input value={activity ? activity.point : '0'} type={'number'} getValue={this.onChangeNumber} name={'diemHD'} disabled/>
                         </Col>
                         <Col md={2}>
                           Phòng:
@@ -486,7 +482,7 @@ class InfoStudentDetail extends Component {
                           show={this.state.showRoomPopup}
                           label={profile && profile.idPhong ? profile.idPhong.tenPhong : ''}
                           onChange={this.chooseRoom}
-                          room={profile ? profile.idPhong : ''}
+                          room={profile ? profile.idPhong : {}}
                           data={this.state.roomData}
                         />
                       </Row>

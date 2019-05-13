@@ -878,7 +878,6 @@ export class ChooseRoom extends Component{
       onChange: () => {},
       oldRoom: this.props.room,
       newRoom: this.props.room
-
     }
   }
 
@@ -896,6 +895,7 @@ export class ChooseRoom extends Component{
     if (nextProps.room !== this.state.oldRoom) {
       this.setState({
         oldRoom: nextProps.room,
+        newRoom: nextProps.room,
       })
     }
     if (nextProps.data !== this.state.data) {
