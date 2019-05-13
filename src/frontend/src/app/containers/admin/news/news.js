@@ -60,8 +60,10 @@ class News extends Component {
   };
 
   onViewDetail = id => {
-    var address = window.location.host +"/news/detail?id=" + id;
-    window.open(address, "_blank");
+    // window.alert(id);
+    var address = "/news/detail?id=" + id;
+    //console.log(address);
+    window.open(address,'_blank');
   };
 
   showPopupSuccess = val => {
