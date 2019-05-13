@@ -385,6 +385,7 @@ exports.getDetail = async (req, res) => {
 
     // // get profile
     let populateQuery = [
+      {path:'idTaiKhoan', select: 'isDelete'},
       {path:'idPhong'},
       {path:'truong'},
       {path:'nganhHoc'},
@@ -393,16 +394,13 @@ exports.getDetail = async (req, res) => {
     await Profile.findOne({MSSV: id})
       .populate(populateQuery)
       .then(result => {
-        console.log('==profile', result, id)
         data.profile = result;
       });
-    console.log('==data2222', data)
 
     callback(data);
   };
 
   getData(id, (data) => {
-    console.log('==data111', data)
       res.status(200).json(data);
   });
 };

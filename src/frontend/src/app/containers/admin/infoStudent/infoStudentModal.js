@@ -952,6 +952,7 @@ export class ChooseRoom extends Component{
       <React.Fragment>
         <div>{this.state.label}
         <Button
+          disabled={this.props.disabled}
           style={{marginLeft: '2px'}}
           onClick={() => this.handlePopup(true)}
         >Thay đổi</Button>
