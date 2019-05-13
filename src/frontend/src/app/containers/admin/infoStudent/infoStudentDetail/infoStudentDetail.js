@@ -4,24 +4,45 @@ import { Link } from 'react-router-dom'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from "react-toasts";
 import axios from "axios";
 
-import Input from './../../../components/input/input';
-import Button from './../../../components/button/button';
-import Title from './../../../components/title/title';
+import Input from '../../../../components/input/input';
+import Button from '../../../../components/button/button';
+import Title from '../../../../components/title/title';
 import './infoStudentDetail.css';
-import refreshToken from "../../../../utils/refresh_token";
-import Select from "../../../components/selectOption/select";
-import SearchSelect from '../../../components/selectOption/select'
-import { imageFile, defaultStudentImg } from '../../../function/imageFunction'
+import refreshToken from "../../../../../utils/refresh_token";
+import Select from "../../../../components/selectOption/select";
+import SearchSelect from '../../../../components/selectOption/select'
+import { imageFile, defaultStudentImg } from '../../../../function/imageFunction'
 import DatePicker from "react-datepicker/es/index";
-import './infoStudentFile.css';
-import { getSchools, getMajor } from './../university/universityAction'
-import Loader from '../../../components/loader/loader';
-import { ChooseRoom } from './infoStudentModal'
+import './../infoStudentFile.css';
+import { getSchools, getMajor } from './../../university/universityAction'
+import Loader from '../../../../components/loader/loader';
+import { ChooseRoom } from './../infoStudentModal'
+import { get_info_Student_detail } from './../infoStudentActions'
 
 class InfoStudentDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+        profile: {
+          // hoTen: '',
+          // MSSV: '',
+          // diaChi: '',
+          // maThe: '',
+          // ngayVaoO: {},
+          // moTa: '',
+          // danToc: '',
+          // sdt: '',
+          // email: '',
+          // ngaySinh: {},
+          // sdtNguoiThan: '',
+          // gioiTinh: {},
+          // idPhong: {},
+          // idTaiKhoan: {},
+          // diemHD: '',
+          // img: '',
+          // ngayHetHan: {},
+        },
+        activity: {},
       info: {},
       school: {},
       room: {},
@@ -36,44 +57,63 @@ class InfoStudentDetail extends Component {
     }
   }
 
+  componentWillMount(){
+    this.getData()
+  }
+
+
   componentDidMount() {
     this.getElement('room');
     this.getElement('school');
     // this.getActivities('5cbad213fb6fc041ab948375');
-    const { info } = this.props.location.state;
-    if(info.truong){
+    const { profile } = this.state;
+    if(profile.truong){
       this.setState({
         school: {
-          value: info.truong._id,
-          label: info.truong.tenTruong
+          value: profile.truong._id,
+          label: profile.truong.tenTruong
         }
       })
-      this.getMajorOptions(info.truong._id);
+      this.getMajorOptions(profile.truong._id);
     }
 
-    if(info.idPhong)
+    if(profile.idPhong)
       this.setState({
         room: {
-          value: info.idPhong._id,
-          label: info.idPhong.tenPhong
+          value: profile.idPhong._id,
+          label: profile.idPhong.tenPhong
         }
       })
 
-    if(info.nganhHoc)
+    if(profile.nganhHoc)
       this.setState({
         major: {
-          value: info.nganhHoc._id,
-          label: info.nganhHoc.tenNganh
+          value: profile.nganhHoc._id,
+          label: profile.nganhHoc.tenNganh
         }
       })
 
-    var birthDate = info.ngaySinh ? new Date(info.ngaySinh) : new Date();
-    var ngayHetHan = info.ngayHetHan ? new Date(info.ngayHetHan): new Date();
+    var birthDate = profile.ngaySinh ? new Date(profile.ngaySinh) : new Date();
+    var ngayHetHan = profile.ngayHetHan ? new Date(profile.ngayHetHan): new Date();
     //var stringDate = new DbirthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
     this.setState({
-      info: { ...info, ngaySinh: birthDate, ngayHetHan: ngayHetHan }
+      profile: {...profile, ngaySinh: birthDate, ngayHetHan: ngayHetHan}
     })
   }
+
+  getData = () => {
+    console.log('==hello')
+    get_info_Student_detail(this.state.info.MSSV)
+      .then(result => {
+        console.log('==info detail', result);
+        this.setState({
+          profile: result.data.profile,
+
+        })
+      }).catch(err => {
+        console.log('==err info detail', err.response)
+    })
+  };
 
   getElement = async (name) => {
     await refreshToken();
@@ -166,8 +206,8 @@ class InfoStudentDetail extends Component {
 
   getValue = (name, val) => {
     this.setState({
-      info: {
-        ...this.state.info,
+      profile: {
+        ...this.state.profile,
         [name]: val
       }
     })
@@ -252,29 +292,28 @@ class InfoStudentDetail extends Component {
   }
   render() {
     console.log('==state render', this.state);
-    const { info, genderOptions, schoolOptions, roomOptions, majorOptions, school, room, major, activities } = this.state;
-    const {
-      hoTen,
-      MSSV,
-      diaChi,
-      maThe,
-      ngayVaoO,
-      moTa,
-      danToc,
-      sdt,
-      email,
-      ngaySinh,
-      sdtNguoiThan,
-      gioiTinh,
-      idPhong,
-      idTaiKhoan,
-      diemHD,
-      img,
-      ngayHetHan,
-
-    } = info;
-    var imgFile = img ? img : defaultStudentImg
-    var ngayVaoOStr = this.getDateType(ngayVaoO)
+    const { profile, activity,info, genderOptions, schoolOptions, roomOptions, majorOptions, school, room, major, activities } = this.state;
+    // const {
+    //   hoTen,
+    //   MSSV,
+    //   diaChi,
+    //   maThe,
+    //   ngayVaoO,
+    //   moTa,
+    //   danToc,
+    //   sdt,
+    //   email,
+    //   ngaySinh,
+    //   sdtNguoiThan,
+    //   gioiTinh,
+    //   idPhong,
+    //   idTaiKhoan,
+    //   diemHD,
+    //   img,
+    //   ngayHetHan,
+    // } = profile;
+    var imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
+    //var ngayVaoOStr = this.getDateType(profile.ngayVaoO)
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -317,13 +356,13 @@ class InfoStudentDetail extends Component {
                           Họ và tên:
                         </Col>
                         <Col md={4}>
-                          <Input value={hoTen} getValue={this.onChange} name={'hoTen'} />
+                          <Input value={profile ? profile.hoTen : ''} getValue={this.onChange} name={'hoTen'} />
                         </Col>
                         <Col md={2}>
                           MSSV:
                         </Col>
                         <Col md={4}>
-                          <Input value={MSSV} disabled />
+                          <Input value={profile ? profile.MSSV : ''} disabled />
                         </Col>
                       </Row>
 
@@ -335,7 +374,7 @@ class InfoStudentDetail extends Component {
 
                           <DatePicker
                             dateFormat='dd/MM/yyyy'
-                            selected={ngaySinh}
+                            selected={profile ? profile.ngaySinh: ''}
                             onChange={(val) => this.getValue('ngaySinh', val)}
                             className='input-datepicker'
                           />
@@ -346,7 +385,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Select
                             placeholder={''}
-                            value={gioiTinh}
+                            value={profile ? profile.gioiTinh: {}}
                             selected={this.handleSelectGender}
                             options={genderOptions} />
 
@@ -358,13 +397,13 @@ class InfoStudentDetail extends Component {
                           Email:
                         </Col>
                         <Col md={4}>
-                          <Input value={email} getValue={this.onChange} name={'email'} />
+                          <Input value={profile ? profile.email : ''} getValue={this.onChange} name={'email'} />
                         </Col>
                         <Col md={2}>
                           Số điện thoại:
                         </Col>
                         <Col md={4}>
-                          <Input value={sdt} getValue={this.onChange} name={'sdt'} />
+                          <Input value={profile ? profile.sdt : ''} getValue={this.onChange} name={'sdt'} />
                         </Col>
                       </Row>
 
@@ -373,13 +412,13 @@ class InfoStudentDetail extends Component {
                           Dân tộc:
                         </Col>
                         <Col md={4}>
-                          <Input value={danToc} getValue={this.onChange} name={'danToc'} />
+                          <Input value={profile ? profile.danToc : ''} getValue={this.onChange} name={'danToc'} />
                         </Col>
                         <Col md={2}>
                           Sđt người thân:
                         </Col>
                         <Col md={4}>
-                          <Input value={sdtNguoiThan} getValue={this.onChange} name={'sdtNguoiThan'} />
+                          <Input value={profile ? profile.sdtNguoiThan : ''} getValue={this.onChange} name={'sdtNguoiThan'} />
                         </Col>
                       </Row>
 
@@ -388,7 +427,7 @@ class InfoStudentDetail extends Component {
                           Địa chỉ:
                         </Col>
                         <Col md={10}>
-                          <Input value={diaChi} getValue={this.onChange} name={'diaChi'} />
+                          <Input value={profile ? profile.diaChi : ''} getValue={this.onChange} name={'diaChi'} />
                         </Col>
                       </Row>
 
@@ -401,13 +440,13 @@ class InfoStudentDetail extends Component {
                           Username:
                         </Col>
                         <Col md={4}>
-                          <Input value={idTaiKhoan && idTaiKhoan.username} disabled />
+                          <Input value={profile && profile.idTaiKhoan ? profile.idTaiKhoan.username : ''} disabled />
                         </Col>
                         <Col md={2}>
                           Mã thẻ:
                         </Col>
                         <Col md={4}>
-                          <Input value={maThe} getValue={this.onChange} name={'maThe'} />
+                          <Input value={profile ? profile.maThe : ''} getValue={this.onChange} name={'maThe'} />
                         </Col>
                       </Row>
 
@@ -416,7 +455,7 @@ class InfoStudentDetail extends Component {
                           Ngày vào:
                         </Col>
                         <Col md={4}>
-                          <Input value={ngayVaoOStr} getValue={this.onChange} name={'ngayVaoO'} disabled />
+                          <Input value={profile ? profile.ngayVaoOStr : ''} getValue={this.onChange} name={'ngayVaoO'} disabled />
                         </Col>
                         <Col md={2}>
                           Ngày hết hạn:
@@ -424,7 +463,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <DatePicker
                             dateFormat='dd/MM/yyyy'
-                            selected={ngayHetHan}
+                            selected={profile ? profile.ngayHetHan : ''}
                             onChange={(val) => this.getValue('ngayHetHan', val)}
                             className='input-datepicker'
                           />
@@ -436,7 +475,7 @@ class InfoStudentDetail extends Component {
                           Điểm h.động:
                         </Col>
                         <Col md={4}>
-                          <Input value={diemHD ? diemHD : '0'} type={'number'} getValue={this.onChangeNumber} name={'diemHD'} />
+                          <Input value={activity ? activity.point : '0'} type={'number'} getValue={this.onChangeNumber} name={'diemHD'} />
                         </Col>
                         <Col md={2}>
                           Phòng:
@@ -454,9 +493,9 @@ class InfoStudentDetail extends Component {
                         {/*</Col>*/}
                         <ChooseRoom
                           show={this.state.showRoomPopup}
-                          label={this.state.info.idPhong ? this.state.info.idPhong.tenPhong : ''}
+                          label={profile && profile.idPhong ? profile.idPhong.tenPhong : ''}
                           onChange={this.chooseRoom}
-                          room={this.state.info.idPhong}
+                          room={profile ? profile.idPhong : ''}
                         />
                       </Row>
 
@@ -493,7 +532,7 @@ class InfoStudentDetail extends Component {
                           Mô tả:
                         </Col>
                         <Col md={10}>
-                          <Input value={moTa} getValue={this.onChange} name={'moTa'} />
+                          <Input value={profile ? profile.moTa : ''} getValue={this.onChange} name={'moTa'} />
                         </Col>
                       </Row>
                     </div>

@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom'
 
 import Layout from './layout/layout'
 import InfoStudent from './infoStudent/infoStudent'
-import InfoStudentDetail from './infoStudent/infoStudentDetail'
+import InfoStudentDetail from './infoStudent/infoStudentDetail/infoStudentDetail'
 import Expense from './expenses/expenses'
 import Activity from './activity/activity'
 import ActivityDetail from './activity/activityDetail'
