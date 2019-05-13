@@ -35,6 +35,7 @@ function addOneStudent(data) {
           MSSV: data.mssv,
           ngaySinh: data.ngaySinh,
           ngayVaoO: new Date(),
+          ngayHetHan: data.ngayHetHan,
           flag: true
         });
         //------save profile-------

@@ -141,7 +141,6 @@ export class AddStudentModal extends Component{
 								Hạn ở ký túc xá:
 							</Col>
 							<Col md={8}>
-
 								<DatePicker
 									dateFormat='dd/MM/yyyy'
 									selected={this.state.infoAdded.expiredDate}
