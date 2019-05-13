@@ -182,7 +182,7 @@ class InfoStudent extends Component{
 
   handleSearch = () => {
     this.setState({
-      pageActive: 1,
+      searchValues: {...this.state.searchValues, pageActive: 1},
       loading: true,
     });
     this.getData();
@@ -190,21 +190,21 @@ class InfoStudent extends Component{
 
   handleSelectRoom = selectedOption => {
     this.setState({
-      searchValues: {...this.state.searchValues, roomSelected: selectedOption, pageActive: 1}
+      searchValues: {...this.state.searchValues, roomSelected: selectedOption}
     })
   }
   handleSelectSchool = selectedOption => {
     this.setState({
-      searchValues: {...this.state.searchValues, schoolSelected: selectedOption, pageActive: 1}
+      searchValues: {...this.state.searchValues, schoolSelected: selectedOption}
     })
   }
   handleSelectFloor = selectedOption => {
-    this.setState({ floorSelected: selectedOption, pageActive: 1 })
+    this.setState({ floorSelected: selectedOption})
   }
 
   clickPage = async (page) => {
     await this.setState({
-      pageActive: page,
+      searchValues: {...this.state.searchValues, pageActive: page},
       loading: true
     });
     this.getData();
@@ -245,8 +245,7 @@ class InfoStudent extends Component{
       roomSelected: '',
       schoolSelected: '',
       floorSelected: '',
-
-    })
+    });
     this.getData();
   };
 
@@ -256,15 +255,6 @@ class InfoStudent extends Component{
       });
     this.getData();
   };
-
-  getValueDate = (name, val) => {
-    this.setState({
-      infoAdded: {
-        ...this.state.infoAdded,
-        [name]: val
-      }
-    })
-  }
 
   handleRoomHistory = async(id) => {
     this.handlePopup('history', true)
@@ -286,9 +276,6 @@ class InfoStudent extends Component{
   changeState = (key, value) => {
     this.setState({ [key]: value })
   };
-
-
-
   render(){
     console.log('==render state', this.state);
     const {
@@ -579,13 +566,15 @@ class InfoStudent extends Component{
             <Row>
               <Col md={3} className={'page-input'}>
                 <label style={{marginRight:'3px'}}>Trang</label>
-                <Input width='50px' textAlign='center' value={this.state.pageActive}/>
+                <Input width='50px' textAlign='center' value={this.state.searchValues.pageActive}/>
+                <label style={{marginLeft:'3px'}}>of {this.state.totalPages}</label>
               </Col>
               <Col md={9}>
                 <div className={'is-pagination'}>
-
-                  <MyPagination page={this.state.pageActive} totalPages={this.state.totalPages} clickPage={this.clickPage}/>
-
+                  <MyPagination
+                    page={this.state.searchValues.pageActive}
+                    totalPages={this.state.totalPages}
+                    clickPage={this.clickPage}/>
                 </div>
               </Col>
             </Row>
