@@ -48,7 +48,7 @@ class StudentLogin extends React.Component {
       wrongLogin: false
     });
     axios
-      .post(`http://localhost:4000/api/user/login`, {
+      .post(`/user/login`, {
         username: this.state.username,
         password: this.state.password
       })

@@ -25,7 +25,7 @@ class NewsList extends React.Component {
     var _post = [];
     var _postsActivity = [];
     var _postsNews = [];
-    Axios.post("http://localhost:4000/news/get-news", { data: date,skip: this.state.skip,limit: this.state.limit })
+    Axios.post("/news/get-news", { data: date,skip: this.state.skip,limit: this.state.limit })
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map(item => {
@@ -54,8 +54,8 @@ class NewsList extends React.Component {
     this.loadPinNews();
   }
   onViewDetail = id => {
-    var address = "http://localhost:3000/news/detail?id=" + id;
-    window.open(address, "_blank");
+    var address = `${window.location.host}/news/detail?id=${id}`;
+    window.open(address);
   };
 
   newsFilter = type => {
@@ -83,7 +83,7 @@ class NewsList extends React.Component {
 
     var _post = [];
 
-    Axios.get("http://localhost:4000/news/get-pin-news")
+    Axios.get("/news/get-pin-news")
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map(item => {
@@ -110,7 +110,7 @@ class NewsList extends React.Component {
     var lastPost = this.state.postsAll[this.state.postsAll.length - 1];
     var date = new Date(lastPost.ngayTao);
 
-    Axios.post("http://localhost:4000/news/get-news", { data: date,skip: this.state.skip,limit:this.state.limit })
+    Axios.post("/news/get-news", { data: date,skip: this.state.skip,limit:this.state.limit })
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map(item => {

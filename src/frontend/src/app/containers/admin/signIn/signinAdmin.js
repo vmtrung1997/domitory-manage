@@ -29,7 +29,7 @@ class SignInAdmin extends Component{
 		const secret = JSON.parse(localStorage.getItem('secret'))
 
 		if(secret){
-	        axios.get(`http://localhost:4000/api/logout`, {
+	        axios.get(`/logout`, {
 	            headers: {
 	                'x-refresh-token': secret.refresh_token
 	            }
@@ -46,7 +46,7 @@ class SignInAdmin extends Component{
 
 	login = () => {
 		this.setState({ loading: true })
-		axios.post(`http://localhost:4000/api/user/login`, { username: this.state.username, password: this.state.password })
+		axios.post(`/user/login`, { username: this.state.username, password: this.state.password })
 		.then(res => {
 			let from
 			if(res.data.access_token){

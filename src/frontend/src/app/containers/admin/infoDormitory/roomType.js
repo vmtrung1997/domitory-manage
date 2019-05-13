@@ -149,7 +149,7 @@ class Confirm extends Component {
         return;
       removeRoomType({data: {_id: row._id}}).then(result => {
         if (result.data.rs === 'success'){
-          ToastsStore.success('Xóa phòng thành công');
+          ToastsStore.success('Xóa loại phòng thành công');
           table.splice(index,1);
           this.setState({table: table});
         } else {

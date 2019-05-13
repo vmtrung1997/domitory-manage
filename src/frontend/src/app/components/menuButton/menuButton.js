@@ -17,7 +17,7 @@ export default class MenuButton extends React.Component {
     const { icon, label, link, ikey, path, subMenu } = this.props;
     var focus = ''
     if(path.split('/')[2] === link.split('/')[2]){
-      focus = 'focus'
+      focus = 'focus_lb'
     }
     return(
       <li className={`menu-button ${focus}`} key={ ikey} onClick={() => this.setState({ open: !open })} aria-controls="example-collapse-text">

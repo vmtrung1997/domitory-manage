@@ -37,7 +37,7 @@ class StudentActivity extends React.Component {
       var incomingActivities = [];
       var oldActivities = [];
       axios
-        .post(`http://localhost:4000/api/student/my-upcoming-activities`, {
+        .post(`/student/my-upcoming-activities`, {
           id: id
         })
         .then(res => {
@@ -102,7 +102,7 @@ class StudentActivity extends React.Component {
 
       //Hủy Đăng ký tham gia hoạt động
       axios
-        .post("http://localhost:4000/api/student/cancel-register-activities", {
+        .post("/student/cancel-register-activities", {
           data: info
         })
         .then(res => {

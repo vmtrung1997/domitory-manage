@@ -1,6 +1,7 @@
 .menu-button.active{
     border-left: 4px solid #19aa8d;
     background: #293846;
+    font-weight: 500;
 }
 
 .menu-button.active a{
@@ -10,6 +11,7 @@
 .mb_link:hover{
     background-color: #293846;
     color: white;
+    font-weight: 600;
 }
 
 .mb_link{
@@ -46,10 +48,15 @@ li{
     position: relative;
     width: 50%;
 }
-.focus{
+.focus_lb{
     border-right: 5px solid #1ABB9C;
     background: #293846;
 }
-.focus a{
-    color: white;
+.focus_lb a{
+    color: white !important;
+    font-weight: 600;
+}
+.focus_lb a:focus{
+    color: white !important;
+    font-weight: 600;
 }

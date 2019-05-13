@@ -1,4 +1,3 @@
-var sinhVien = require('../models/SinhVien');
 var TaiKhoan = require('../models/TaiKhoan')
 var ChiPhiPhong = require('../models/ChiPhiPhong')
 var Profile = require('../models/Profile')
