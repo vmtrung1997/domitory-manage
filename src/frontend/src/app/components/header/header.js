@@ -9,7 +9,7 @@ export default class Header extends React.Component{
     logout = () => {
         const secret = JSON.parse(localStorage.getItem('secret'))
 
-        axios.get(`http://localhost:4000/api/logout`, {
+        axios.get(`/logout`, {
             headers: {
                 'x-refresh-token': secret.refresh_token
             }

@@ -5,6 +5,7 @@ const Profile = require("../models/Profile");
 const ReToken = require("../models/refreshToken");
 const auth = require("../repos/authRepo");
 const nodemailer = require("nodemailer");
+require("../models/PhanQuyen")
 const smtpTransport = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
@@ -40,39 +41,38 @@ exports.register = (req, res) => {
 
 exports.login = (req, res) => {
   User.findOne(
-    { username: req.body.username, password: req.body.password, isDelete: 0 },
-    function(error, result) {
-      if (result) {
-        var userEntity = result;
-        Profile.findOne({ idTaiKhoan: userEntity._id }, (err, prof) => {
-          var userObj = { userEntity, profile: prof };
-          var acToken = auth.generateAccessToken(userObj);
-          var reToken = auth.generateRefreshToken();
-          auth
-            .updateRefreshToken(result._id, reToken)
-            .then(() => {
-              console.log("==login: success");
-              res.status(200).json({
-                status: "success",
-                access_token: acToken,
-                refresh_token: reToken
-              });
-            })
-            .catch(err => {
-              res.status(500).json({
-                status: "fail",
-                msg: err
-              });
+    { username: req.body.username, password: req.body.password, isDelete: 0 }
+  ).populate({path: "phanQuyen", select: "quyen"}).then(function(result) {
+    if (result) {
+      var userEntity = result;
+      Profile.findOne({ idTaiKhoan: userEntity._id }, (err, prof) => {
+        var userObj = { userEntity, profile: prof };
+        var acToken = auth.generateAccessToken(userObj);
+        var reToken = auth.generateRefreshToken();
+        auth
+          .updateRefreshToken(result._id, reToken)
+          .then(() => {
+            console.log("==login: success");
+            res.status(200).json({
+              status: "success",
+              access_token: acToken,
+              refresh_token: reToken
             });
-        });
-      } else {
-        res.status(401).json({
-          status: "fail",
-          auth: false
-        });
-      }
+          })
+          .catch(err => {
+            res.status(500).json({
+              status: "fail",
+              msg: err
+            });
+          });
+      });
+    } else {
+      res.status(401).json({
+        status: "fail",
+        auth: false
+      });
     }
-  );
+  });
 };
 
 exports.resetPassword = (req, res) => {

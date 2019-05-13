@@ -568,7 +568,7 @@ class InfoStudent extends Component{
                         <i className="fas fa-edit"/>
                       </Button>
                       {!isOld &&
-                        <Checkbox name={info.MSSV} isCheck={this.handleCheckDelete} check={this.handleValueCheck(info.MSSV)}/>
+                        <Checkbox name={info.MSSV} isCheck={this.handleCheckDelete} checkmark={'check-mark-fix'} check={this.handleValueCheck(info.MSSV)}/>
                       }
                     </td>
                   </tr>

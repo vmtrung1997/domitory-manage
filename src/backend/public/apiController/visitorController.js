@@ -53,6 +53,7 @@ exports.getPinNews = (req, res) => {
 
 exports.getNews = (req, res) => {
   var date = req.body.data;
+  console.log(req.body);
   var skip =  parseInt(req.body.skip);
   var limit = req.body.limit
   try {
