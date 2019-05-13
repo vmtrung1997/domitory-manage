@@ -37,7 +37,8 @@ class InfoStudentDetail extends Component {
       loading: false,
       custom: false,
       showRoomPopup: false,
-      roomData: {}
+      roomData: {},
+      isOld: false
     }
   }
 
@@ -45,7 +46,6 @@ class InfoStudentDetail extends Component {
     this.getData()
 
   }
-
 
   componentDidMount() {
     console.log('==did mount', this.state)
@@ -89,6 +89,12 @@ class InfoStudentDetail extends Component {
               label: profile.nganhHoc.tenNganh
             }
           })
+
+        if(profile.idTaiKhoan && profile.idTaiKhoan.isDelete){
+          this.setState({
+            isOld: true
+          })
+        }
       }).catch(err => {
         console.log('==err info detail', err.response)
     })
@@ -279,7 +285,19 @@ class InfoStudentDetail extends Component {
   }
   render() {
     console.log('==state render', this.state);
-    const { profile, activity,info, genderOptions, schoolOptions, roomOptions, majorOptions, school, room, major, activities } = this.state;
+    const {
+      profile,
+      activity,
+      genderOptions,
+      schoolOptions,
+      roomOptions,
+      majorOptions,
+      school,
+      room,
+      major,
+      activities,
+      isOld
+    } = this.state;
     // const {
     //   hoTen,
     //   MSSV,
@@ -325,7 +343,9 @@ class InfoStudentDetail extends Component {
                   <img alt='avater student' src={imgFile} />
                 </div>
                 <div className="box">
-                  <input type="file"
+                  <input
+                    disabled={isOld}
+                    type="file"
                     name="file-1[]"
                     id="file-1"
                     className="inputfile inputfile-1"
@@ -345,7 +365,11 @@ class InfoStudentDetail extends Component {
                           Họ và tên:
                         </Col>
                         <Col md={4}>
-                          <Input value={profile ? profile.hoTen : ''} getValue={this.onChange} name={'hoTen'} />
+                          <Input
+                            disabled={isOld}
+                            value={profile ? profile.hoTen : ''}
+                            getValue={this.onChange}
+                            name={'hoTen'} />
                         </Col>
                         <Col md={2}>
                           MSSV:
@@ -361,6 +385,7 @@ class InfoStudentDetail extends Component {
                         </Col>
                         <Col md={4}>
                           <DatePicker
+                            disabled={isOld}
                             dateFormat='dd/MM/yyyy'
                             selected={profile ? profile.ngaySinh: ''}
                             onChange={(val) => this.getValue('ngaySinh', val)}
@@ -372,6 +397,7 @@ class InfoStudentDetail extends Component {
                         </Col>
                         <Col md={4}>
                           <Select
+                            disabled={isOld}
                             placeholder={''}
                             value={profile.gioiTinh}
                             selected={this.handleSelectGender}
@@ -385,13 +411,21 @@ class InfoStudentDetail extends Component {
                           Email:
                         </Col>
                         <Col md={4}>
-                          <Input value={profile ? profile.email : ''} getValue={this.onChange} name={'email'} />
+                          <Input
+                            disabled={isOld}
+                            value={profile ? profile.email : ''}
+                            getValue={this.onChange}
+                            name={'email'} />
                         </Col>
                         <Col md={2}>
                           Số điện thoại:
                         </Col>
                         <Col md={4}>
-                          <Input value={profile ? profile.sdt : ''} getValue={this.onChange} name={'sdt'} />
+                          <Input
+                            disabled={isOld}
+                            value={profile ? profile.sdt : ''}
+                            getValue={this.onChange}
+                            name={'sdt'} />
                         </Col>
                       </Row>
 
@@ -400,13 +434,21 @@ class InfoStudentDetail extends Component {
                           Dân tộc:
                         </Col>
                         <Col md={4}>
-                          <Input value={profile ? profile.danToc : ''} getValue={this.onChange} name={'danToc'} />
+                          <Input
+                            disabled={isOld}
+                            value={profile ? profile.danToc : ''}
+                            getValue={this.onChange}
+                            name={'danToc'} />
                         </Col>
                         <Col md={2}>
                           Sđt người thân:
                         </Col>
                         <Col md={4}>
-                          <Input value={profile ? profile.sdtNguoiThan : ''} getValue={this.onChange} name={'sdtNguoiThan'} />
+                          <Input
+                            disabled={isOld}
+                            value={profile ? profile.sdtNguoiThan : ''}
+                            getValue={this.onChange}
+                            name={'sdtNguoiThan'} />
                         </Col>
                       </Row>
 
@@ -415,7 +457,11 @@ class InfoStudentDetail extends Component {
                           Địa chỉ:
                         </Col>
                         <Col md={10}>
-                          <Input value={profile ? profile.diaChi : ''} getValue={this.onChange} name={'diaChi'} />
+                          <Input
+                            disabled={isOld}
+                            value={profile ? profile.diaChi : ''}
+                            getValue={this.onChange}
+                            name={'diaChi'} />
                         </Col>
                       </Row>
 
@@ -434,7 +480,11 @@ class InfoStudentDetail extends Component {
                           Mã thẻ:
                         </Col>
                         <Col md={4}>
-                          <Input value={profile ? profile.maThe : ''} getValue={this.onChange} name={'maThe'} />
+                          <Input
+                            disabled={isOld}
+                            value={profile ? profile.maThe : ''}
+                            getValue={this.onChange}
+                            name={'maThe'} />
                         </Col>
                       </Row>
 
@@ -443,13 +493,18 @@ class InfoStudentDetail extends Component {
                           Ngày vào:
                         </Col>
                         <Col md={4}>
-                          <Input value={profile ? profile.ngayVaoOStr : ''} getValue={this.onChange} name={'ngayVaoO'} disabled />
+                          <Input
+                            value={profile ? profile.ngayVaoOStr : ''}
+                            getValue={this.onChange}
+                            name={'ngayVaoO'}
+                            disabled />
                         </Col>
                         <Col md={2}>
                           Ngày hết hạn:
                         </Col>
                         <Col md={4}>
                           <DatePicker
+                            disabled={isOld}
                             dateFormat='dd/MM/yyyy'
                             selected={profile ? profile.ngayHetHan : ''}
                             onChange={(val) => this.getValue('ngayHetHan', val)}
@@ -463,23 +518,18 @@ class InfoStudentDetail extends Component {
                           Điểm h.động:
                         </Col>
                         <Col md={4}>
-                          <Input value={activity ? activity.point : '0'} type={'number'} getValue={this.onChangeNumber} name={'diemHD'} disabled/>
+                          <Input
+                            value={activity ? activity.point : '0'}
+                            type={'number'}
+                            getValue={this.onChangeNumber}
+                            name={'diemHD'}
+                            disabled/>
                         </Col>
                         <Col md={2}>
                           Phòng:
                         </Col>
-                        {/*<p>{this.state.info.idPhong && this.state.info.idPhong.tenPhong}</p>*/}
-                        {/*<Col md={4}>*/}
-                          {/*<SearchSelect*/}
-                            {/*isSearchable*/}
-                            {/*placeholder={''}*/}
-                            {/*value={room}*/}
-                            {/*onClick={()=>{this.setState({showRoomPopup: true})}}*/}
-                            {/*onChange={this.handleSelectRoom}*/}
-                            {/*options={roomOptions}*/}
-                          {/*/>*/}
-                        {/*</Col>*/}
                         <ChooseRoom
+                          disabled={isOld}
                           show={this.state.showRoomPopup}
                           label={profile && profile.idPhong ? profile.idPhong.tenPhong : ''}
                           onChange={this.chooseRoom}
@@ -494,6 +544,7 @@ class InfoStudentDetail extends Component {
                         </Col>
                         <Col md={10}>
                           <SearchSelect
+                            disabled={isOld}
                             isSearchable={true}
                             placeholder={''}
                             value={school}
@@ -508,6 +559,7 @@ class InfoStudentDetail extends Component {
                         </Col>
                         <Col md={10}>
                           <SearchSelect
+                            disabled={isOld}
                             isSearchable={true}
                             placeholder={''}
                             value={major}
@@ -521,7 +573,11 @@ class InfoStudentDetail extends Component {
                           Mô tả:
                         </Col>
                         <Col md={10}>
-                          <Input value={profile ? profile.moTa : ''} getValue={this.onChange} name={'moTa'} />
+                          <Input
+                            disabled={isOld}
+                            value={profile ? profile.moTa : ''}
+                            getValue={this.onChange}
+                            name={'moTa'} />
                         </Col>
                       </Row>
                     </div>
@@ -579,9 +635,11 @@ class InfoStudentDetail extends Component {
 
           </div>
           <Row className={'isc-footer-btn'}>
-            <Button onClick={() => this.handleSaveChange()}>
-              Lưu thay đổi
-            </Button>
+            {!isOld &&
+              <Button onClick={() => this.handleSaveChange()}>
+                Lưu thay đổi
+              </Button>
+            }
           </Row>
         </div>
 
