@@ -81,6 +81,8 @@ router.post('/infoStudent/importFile', infoStudent.importFile);
 
 router.get('/infoStudent/getActivities/:id', infoStudent.getListActivities);
 
+router.get('/infoStudent/getDetail/:id', infoStudent.getDetail);
+
 router.get('/getElement/:name', repo.get_element);
 
 router.get('/getRoomHistory/:id', infoStudent.getRoomHistory);

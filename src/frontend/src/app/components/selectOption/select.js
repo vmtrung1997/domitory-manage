@@ -47,11 +47,18 @@ class Select extends Component {
 		isSearchable: false,
 		placeholder: ''
 	}
+	// constructor(props){
+	// 	super(props);
+	// 	this.state = {
+  //     value: () => { return this.props.options[0].value },
+  //   }
+	// }
 	onHandleChange = (event) => {
 		event.persist();
 		this.props.selected(event.target.value);
 	}
 	render() {
+		console.log('==renser select', this.props.value)
 		return (
 			<React.Fragment>
 				{this.props.isSearchable ?
