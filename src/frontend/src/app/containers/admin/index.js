@@ -13,24 +13,43 @@ import InfoDormitory from "./infoDormitory/infoDormitory";
 import History from './securityHistory/history'
 import News from './news/news';
 import University from './university/university'
-class Admin extends Component{
-	render(){
-		return(
+import Registered from './registered/registered'
+import { Authorization } from './../../components/AuthenticationRoute/Authorization'
+import jwt_decode from 'jwt-decode';
+class Admin extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			roles: []
+		}
+	}
+	componentWillMount() {
+		let token = JSON.parse(localStorage.getItem('secret'));
+		let decode = jwt_decode(token.access_token)
+		if (decode && decode.user.userEntity.phanQuyen) {
+			this.setState({
+				roles: decode.user.userEntity.phanQuyen.quyen
+			})
+		}
+	}
+	render() {
+		let { roles } = this.state
+		return (
 			<Layout>
-        		<Route exact path={`${this.props.match.url}/student`} component={InfoStudent} />
-        		<Route exact path={`${this.props.match.url}/student/detail/:id`} component={InfoStudentDetail} />
-				<Route exact path={`${this.props.match.url}/expense`} component={Expense} />
-        		<Route exact path={`${this.props.match.url}/activity`} component={Activity} />
-				<Route exact path={`${this.props.match.url}/news`} component={News} />
-				<Route exact path={`${this.props.match.url}/history`} component={History} />
-        		<Route exact path={`${this.props.match.url}/activity/detail/:id`} component={ActivityDetail} />
-       			<Route exact path={`${this.props.match.url}/account`} component={Account} />
-        		<Route exact path={`${this.props.match.url}/account/detail/:id`} component={AccountDetail} />
-       			<Route exact path={`${this.props.match.url}/dormitory`} component={InfoDormitory} />
-       			<Route exact path={`${this.props.match.url}/university`} component={University} />
-						 
-	    	</Layout>
-  		)
+				<Route exact path={`${this.props.match.url}/student`} component={Authorization(roles)(InfoStudent, 'SV01')} />
+				<Route exact path={`${this.props.match.url}/student/detail`} component={Authorization(roles)(InfoStudentDetail, 'SV02')} />
+				<Route exact path={`${this.props.match.url}/expense`} component={Authorization(roles)(Expense, 'CP01')} />
+				<Route exact path={`${this.props.match.url}/activity`} component={Authorization(roles)(Activity, 'HD01')} />
+				<Route exact path={`${this.props.match.url}/news`} component={Authorization(roles)(News, 'BV01')} />
+				<Route exact path={`${this.props.match.url}/history`} component={Authorization(roles)(History, 'LS01')} />
+				<Route exact path={`${this.props.match.url}/activity/detail/:id`} component={Authorization(roles)(ActivityDetail, 'HD01')} />
+				<Route exact path={`${this.props.match.url}/account`} component={Authorization(roles)(Account, 'TK01')} />
+				<Route exact path={`${this.props.match.url}/account/detail/:id`} component={Authorization(roles)(AccountDetail, 'TK02')} />
+				<Route exact path={`${this.props.match.url}/dormitory`} component={Authorization(roles)(InfoDormitory, 'KT01')} />
+				<Route exact path={`${this.props.match.url}/university`} component={Authorization(roles)(University, 'TN01')} />
+				<Route exact path={`${this.props.match.url}/registered`} component={Registered} />
+			</Layout>
+		)
 	}
 }
 
