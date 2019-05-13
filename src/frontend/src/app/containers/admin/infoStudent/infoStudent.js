@@ -236,15 +236,17 @@ class InfoStudent extends Component{
     return i !== -1;
   };
 
-  handleReload = () => {
-    this.setState({
+  handleReload = async() => {
+    await this.setState({
+      searchValues: {
+        ...this.state.searchValues,
+        name: '',
+        studentNumber: '',
+        pageActive: 1,
+        roomSelected: {},
+        schoolSelected: {}
+      },
       loading: true,
-      pageActive: 1,
-      hoTen: '',
-      mssv: '',
-      roomSelected: '',
-      schoolSelected: '',
-      floorSelected: '',
     });
     this.getData();
   };
