@@ -24,7 +24,8 @@ class IncomingStudentActivity extends React.Component {
       isLoad: true,
       pageActive: 1,
       totalPages: 1,
-      limit: 5
+      limit: 5,
+      onlyOneLoad: false //chỉ load api 1 lần duy nhất
     };
   }
 
@@ -33,6 +34,7 @@ class IncomingStudentActivity extends React.Component {
       isLoad: true
     });
 
+    console.log('getActivities');
     await refreshToken();
     const options = {
       skip: (this.state.pageActive - 1) * this.state.limit,
@@ -40,7 +42,7 @@ class IncomingStudentActivity extends React.Component {
     };
     var secret = localStorage.getItem("secret");
     const decode = jwt_decode(secret);
-    if(decode.user.profile){
+    if (decode.user.profile) {
       var id = decode.user.profile._id;
       //Lấy thông tin hoạt động
       var incomingActivities = [];
@@ -50,9 +52,11 @@ class IncomingStudentActivity extends React.Component {
           options: options
         })
         .then(res => {
+          if(res.data){
           this.setState({
             totalPages: res.data.totalPages
           });
+          console.log(res.data);
           res.data.data.map(item => {
             var d = new Date(item.idHD.ngayBD);
             var today = new Date();
@@ -63,6 +67,7 @@ class IncomingStudentActivity extends React.Component {
             }
             return true;
           });
+        }
         })
         .then(() => {
           this.setState({
@@ -147,7 +152,12 @@ class IncomingStudentActivity extends React.Component {
     this.getActivities();
   };
   componentDidMount() {
-    this.getActivities();
+    if (!this.state.onlyOneLoad) {
+      console.log("vpppppppppppp");
+      this.setState({ onlyOneLoad: true });
+      this.getActivities();
+      
+    }
   }
 
   render() {

@@ -5,8 +5,8 @@ axios.interceptors.response.use(function (response) {
 }, function(error) {
   if (error.response){
     if (error.response.status === 500) {
-      window.alert('500 error')
-      window.location = '/500'
+      // window.alert('500 error')
+      // window.location = '/500'
       return;
     }
     else if (error.response.status === 401) {

@@ -38,7 +38,7 @@ class EndedStudentActivity extends React.Component {
     };
     var secret = localStorage.getItem("secret");
     const decode = jwt_decode(secret);
-    if(decode.user.profile){
+    if (decode.user.profile) {
       var id = decode.user.profile._id;
       //Lấy thông tin hoạt động
       var oldActivities = [];
@@ -48,20 +48,22 @@ class EndedStudentActivity extends React.Component {
           options: options
         })
         .then(res => {
-          this.setState({
-            totalPages: res.data.totalPages
-          });
-          res.data.data.map(item => {
-    
-            var d = new Date(item.idHD.ngayKT);
+          if (res.data) {
+            this.setState({
+              totalPages: res.data.totalPages
+            });
+            console.log(res.data);
+            res.data.data.map(item => {
+              var d = new Date(item.idHD.ngayKT);
 
-            var today = new Date();
+              var today = new Date();
 
-            if (d < today) {
-              oldActivities.push(item);
-            }
-            return true;
-          });
+              if (d < today) {
+                oldActivities.push(item);
+              }
+              return true;
+            });
+          }
         })
         .then(() => {
           this.setState({
@@ -110,7 +112,6 @@ class EndedStudentActivity extends React.Component {
                   </div>
                 ) : (
                   <div className="profile-panel">
-
                     <div className="time-bill">
                       <div className="text-style">
                         <Table responsive bordered size="sm" hover>

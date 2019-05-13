@@ -41,18 +41,24 @@ class StudentActivity extends React.Component {
           id: id
         })
         .then(res => {
-          res.data.data.map(item => {
-            var d = new Date(item.idHD.ngayBD);
-            var today = new Date();
-
-            if (d > today) {
-              item.check = false;
-              incomingActivities.push(item);
-            } else {
-              oldActivities.push(item);
-            }
-            return true;
-          });
+          if(res.data){
+          console.log('-- res activity', res);
+          if(res.status === 200){
+            res.data.data.map(item => {
+              var d = new Date(item.idHD.ngayBD);
+              var today = new Date();
+  
+              if (d > today) {
+                item.check = false;
+                incomingActivities.push(item);
+              } else {
+                oldActivities.push(item);
+              }
+              return true;
+            });
+          }
+      }
+        
         })
         .then(() => {
           this.setState({
@@ -62,7 +68,7 @@ class StudentActivity extends React.Component {
           this.setState({
             isLoad: false
           });
-        });
+        }).catch(err => console.log(err));
     }
   };
 

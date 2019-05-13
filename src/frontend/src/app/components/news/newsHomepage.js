@@ -97,8 +97,9 @@ class NewsHomepage extends React.Component {
   };
   onViewDetail = id => {
     // window.alert(id);
-    var address = this.props.name + "/news/detail?id=" + id;
-    this.props.history.push(address);
+    var address = "/news/detail?id=" + id;
+    //console.log(address);
+    window.open(address,'_blank');
   };
 
   formatDay = item => {
