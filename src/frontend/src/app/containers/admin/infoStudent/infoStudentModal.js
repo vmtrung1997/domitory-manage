@@ -874,21 +874,12 @@ export class ChooseRoom extends Component{
     this.state = {
       show: this.props.show,
       label: this.props.label,
-      data: [],
+      data: this.props.data,
       onChange: () => {},
       oldRoom: this.props.room,
       newRoom: this.props.room
 
     }
-  }
-
-  componentWillMount(){
-    get_floor_room().then(result => {
-      console.log('==floor', result)
-      this.setState({data: result.data})
-    }).catch(err => {
-      console.log('==err floor', err)
-    })
   }
 
   componentWillReceiveProps(nextProps){
@@ -905,8 +896,11 @@ export class ChooseRoom extends Component{
     if (nextProps.room !== this.state.oldRoom) {
       this.setState({
         oldRoom: nextProps.room,
-        newRoom: nextProps.room,
-
+      })
+    }
+    if (nextProps.data !== this.state.data) {
+      this.setState({
+        data: nextProps.data,
       })
     }
   }
@@ -925,7 +919,7 @@ export class ChooseRoom extends Component{
 
   handleSaveRoom = () => {
     this.props.onChange(this.state.newRoom)
-  }
+  };
 
   handleCancel = () => {
     this.setState({
@@ -935,7 +929,6 @@ export class ChooseRoom extends Component{
   };
 
   render(){
-    console.log('==modal', this.state)
     return(
       <React.Fragment>
         <div>{this.state.label}

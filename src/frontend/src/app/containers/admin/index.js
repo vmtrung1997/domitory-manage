@@ -18,7 +18,7 @@ class Admin extends Component{
 		return(
 			<Layout>
         		<Route exact path={`${this.props.match.url}/student`} component={InfoStudent} />
-        		<Route exact path={`${this.props.match.url}/student/detail`} component={InfoStudentDetail} />
+        		<Route exact path={`${this.props.match.url}/student/detail/:id`} component={InfoStudentDetail} />
 				<Route exact path={`${this.props.match.url}/expense`} component={Expense} />
         		<Route exact path={`${this.props.match.url}/activity`} component={Activity} />
 				<Route exact path={`${this.props.match.url}/news`} component={News} />

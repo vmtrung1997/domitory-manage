@@ -393,6 +393,7 @@ exports.getDetail = async (req, res) => {
     await Profile.findOne({MSSV: id})
       .populate(populateQuery)
       .then(result => {
+        console.log('==profile', result, id)
         data.profile = result;
       });
     console.log('==data2222', data)

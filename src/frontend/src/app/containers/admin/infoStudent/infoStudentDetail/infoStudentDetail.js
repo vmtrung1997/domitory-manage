@@ -18,30 +18,13 @@ import { getSchools, getMajor } from './../../university/universityAction'
 import Loader from '../../../../components/loader/loader';
 import { ChooseRoom } from './../infoStudentModal'
 import { get_info_Student_detail } from './../infoStudentActions'
+import {get_floor_room} from "../infoStudentActions";
 
 class InfoStudentDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        profile: {
-          // hoTen: '',
-          // MSSV: '',
-          // diaChi: '',
-          // maThe: '',
-          // ngayVaoO: {},
-          // moTa: '',
-          // danToc: '',
-          // sdt: '',
-          // email: '',
-          // ngaySinh: {},
-          // sdtNguoiThan: '',
-          // gioiTinh: {},
-          // idPhong: {},
-          // idTaiKhoan: {},
-          // diemHD: '',
-          // img: '',
-          // ngayHetHan: {},
-        },
+        profile: {gioiTinh: 0},
         activity: {},
       info: {},
       school: {},
@@ -53,7 +36,8 @@ class InfoStudentDetail extends Component {
       majorOptions: [],
       loading: false,
       custom: false,
-      showRoomPopup: false
+      showRoomPopup: false,
+      roomData: {}
     }
   }
 
@@ -93,25 +77,30 @@ class InfoStudentDetail extends Component {
         }
       })
 
-    var birthDate = profile.ngaySinh ? new Date(profile.ngaySinh) : new Date();
-    var ngayHetHan = profile.ngayHetHan ? new Date(profile.ngayHetHan): new Date();
-    //var stringDate = new DbirthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
-    this.setState({
-      profile: {...profile, ngaySinh: birthDate, ngayHetHan: ngayHetHan}
-    })
+    // var birthDate = profile.ngaySinh ? new Date(profile.ngaySinh) : new Date();
+    // var ngayHetHan = profile.ngayHetHan ? new Date(profile.ngayHetHan): new Date();
+    // //var stringDate = new DbirthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
+    // this.setState({
+    //   profile: {...profile, ngaySinh: birthDate, ngayHetHan: ngayHetHan}
+    // })
   }
 
   getData = () => {
-    console.log('==hello')
-    get_info_Student_detail(this.state.info.MSSV)
+    console.log('==hello', this.props.match.params.id)
+    get_info_Student_detail(this.props.match.params.id)
       .then(result => {
         console.log('==info detail', result);
         this.setState({
           profile: result.data.profile,
-
         })
       }).catch(err => {
         console.log('==err info detail', err.response)
+    })
+    get_floor_room().then(result => {
+      console.log('==floor', result)
+      this.setState({roomData: result.data})
+    }).catch(err => {
+      console.log('==err floor', err)
     })
   };
 
@@ -166,13 +155,13 @@ class InfoStudentDetail extends Component {
 
   onChange = (event) => {
     this.setState({
-      info: { ...this.state.info, [event.name]: event.value }
+      profile: { ...this.state.profile, [event.name]: event.value }
     })
   }
 
   onChangeNumber = (event) => {
     this.setState({
-      info: { ...this.state.info, [event.name]: parseInt(event.value) }
+      profile: { ...this.state.profile, [event.name]: parseInt(event.value) }
     })
   }
 
@@ -183,17 +172,18 @@ class InfoStudentDetail extends Component {
     axios.post(`/manager/infoStudent/update`,
       {
         info: {
-          ...this.state.info,
-          idTaiKhoan: this.state.info.idTaiKhoan._id,
-          img: this.state.info.img,
-          nganhHoc: this.state.info.nganhHoc && this.state.info.nganhHoc._id,
-          truong: this.state.info.truong && this.state.info.truong._id,
-          idPhong: this.state.info.idPhong && this.state.info.idPhong._id
+          ...this.state.profile,
+          // img: this.state.profile.img,
+          // nganhHoc: this.state.profile.nganhHoc && this.state.profile.nganhHoc._id,
+          // truong: this.state.profile.truong && this.state.profile.truong._id,
+          // idPhong: this.state.profile.idPhong && this.state.profile.idPhong._id
         }
       }, { headers: { 'x-access-token': secret.access_token} }
     ).then(result => {
       ToastsStore.success("Cập nhật thành công!");
+      this.getData()
       this.setState({loading: false})
+
     }).catch(err => {
       ToastsStore.error("Cập nhật không thành công!");
       this.setState({loading: false})
@@ -201,7 +191,7 @@ class InfoStudentDetail extends Component {
   }
 
   handleSelectGender = selectedOption => {
-    this.setState({ info: { ...this.state.info, gioiTinh: parseInt(selectedOption) } })
+    this.setState({ profile: { ...this.state.profile, gioiTinh: parseInt(selectedOption) } })
   };
 
   getValue = (name, val) => {
@@ -242,8 +232,8 @@ class InfoStudentDetail extends Component {
 
   chooseRoom = selectedOption => {
     this.setState({
-      info: {
-        ...this.state.info,
+      profile: {
+        ...this.state.profile,
         idPhong: selectedOption
     }})
   }
@@ -314,6 +304,8 @@ class InfoStudentDetail extends Component {
     // } = profile;
     var imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
     //var ngayVaoOStr = this.getDateType(profile.ngayVaoO)
+    let gender = this.state.profile && this.state.profile.gioiTinh;
+    console.log('==gender', gender, typeof(gender))
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -371,7 +363,6 @@ class InfoStudentDetail extends Component {
                           Ngày sinh:
                         </Col>
                         <Col md={4}>
-
                           <DatePicker
                             dateFormat='dd/MM/yyyy'
                             selected={profile ? profile.ngaySinh: ''}
@@ -385,7 +376,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Select
                             placeholder={''}
-                            value={profile ? profile.gioiTinh: {}}
+                            value={profile.gioiTinh}
                             selected={this.handleSelectGender}
                             options={genderOptions} />
 
@@ -436,12 +427,12 @@ class InfoStudentDetail extends Component {
                   <Tab eventKey="infoGeneral" title="Thông tin chung">
                     <div className={'id-tab_frame'}>
                       <Row>
-                        <Col md={2}>
-                          Username:
-                        </Col>
-                        <Col md={4}>
-                          <Input value={profile && profile.idTaiKhoan ? profile.idTaiKhoan.username : ''} disabled />
-                        </Col>
+                        {/*<Col md={2}>*/}
+                          {/*Username:*/}
+                        {/*</Col>*/}
+                        {/*<Col md={4}>*/}
+                          {/*<Input value={profile && profile.idTaiKhoan ? profile.idTaiKhoan.username : ''} disabled />*/}
+                        {/*</Col>*/}
                         <Col md={2}>
                           Mã thẻ:
                         </Col>
@@ -496,6 +487,7 @@ class InfoStudentDetail extends Component {
                           label={profile && profile.idPhong ? profile.idPhong.tenPhong : ''}
                           onChange={this.chooseRoom}
                           room={profile ? profile.idPhong : ''}
+                          data={this.state.roomData}
                         />
                       </Row>
 
