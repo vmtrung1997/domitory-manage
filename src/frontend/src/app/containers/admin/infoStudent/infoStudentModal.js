@@ -256,7 +256,8 @@ export class ImportDataModal extends Component{
   handlePopup = (state) => {
     this.setState({
       show: state,
-
+      listExpired: undefined,
+      justFileServiceResponse: ''
     })
   };
 
@@ -285,6 +286,8 @@ export class ImportDataModal extends Component{
     this.setState({
       fileImport: file
     });
+
+    console.log('==file import', file)
   };
 
   convertData = async (file) => {
@@ -304,43 +307,59 @@ export class ImportDataModal extends Component{
     })
   };
 
+  getExtension = (filename) => {
+    var parts = filename.split('.');
+    return parts[parts.length - 1];
+  };
+
+  validateFile = (filename) => {
+    var ext = this.getExtension(filename);
+    return ((ext==='xlsx')||(ext==='xls'))
+  };
+
   handleImportData = async() => {
     if (!this.state.hasOwnProperty('fileImport')) {
       this.setState({
         justFileServiceResponse: 'Vui lòng chọn 1 file!!'
       });
-      return;
+
+    } else {
+      if(this.validateFile(this.state.fileImport.name)){
+        this.setState({
+          justFileServiceResponse: 'Vui lòng chờ!!'
+        });
+        this.convertData(this.state.fileImport).then(async(resolve) => {
+          resolve.shift();
+
+          await refreshToken();
+          var secret = JSON.parse(localStorage.getItem('secret'));
+          axios.post(`/manager/infoStudent/importFile`,{
+              data: resolve,
+              expireDay: new Date()
+            }, { headers: {'x-access-token': secret.access_token} }
+          ).then(result => {
+            console.log('==import success', result);
+            this.setState({
+              justFileServiceResponse: 'Thêm thành công!!'
+            });
+            this.props.onSave();
+            //this.handlePopup(false)
+          }).catch(err => {
+            console.log('==import err', err.response.data);
+            this.setState({
+              justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
+              listExpired: err.response.data.list
+            });
+          })
+        })
+      } else {
+        this.setState({
+          justFileServiceResponse: 'Vui lòng chọn file .xlsx hoặc .xls!!'
+        });
+      }
     }
 
-    this.setState({
-      justFileServiceResponse: 'Vui lòng chờ!!'
-    });
 
-    this.convertData(this.state.fileImport).then(async(resolve) => {
-      resolve.shift();
-
-      await refreshToken();
-      var secret = JSON.parse(localStorage.getItem('secret'));
-      axios.post(`/manager/infoStudent/importFile`,{
-          data: resolve,
-          expireDay: new Date()
-        }, { headers: {'x-access-token': secret.access_token} }
-      ).then(result => {
-        console.log('==import success', result);
-        this.setState({
-          justFileServiceResponse: 'Thêm thành công!!'
-        });
-        this.props.onSave();
-        this.handlePopup(false)
-      }).catch(err => {
-        console.log('==import err', err.response.data);
-        this.props.onSave();
-        this.setState({
-          justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
-          listExpired: err.response.data.list
-        });
-      })
-    })
   };
 
   render(){
@@ -389,7 +408,7 @@ export class ImportDataModal extends Component{
               </Col>
             </Row>
 
-            <input type="file" name="file" onChange={this.filesOnChange}/>
+            <input type="file" name="file" onChange={this.filesOnChange} accept=".xlsx, .xls"/>
 
 
             <p className={'noti-text-style'}><b>{this.state.justFileServiceResponse}</b></p>
@@ -933,6 +952,7 @@ export class ChooseRoom extends Component{
       <React.Fragment>
         <div>{this.state.label}
         <Button
+          disabled={this.props.disabled}
           style={{marginLeft: '2px'}}
           onClick={() => this.handlePopup(true)}
         >Thay đổi</Button>
