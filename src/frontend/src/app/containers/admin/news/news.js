@@ -17,6 +17,7 @@ import refreshToken from "../../../.././utils/refresh_token";
 import Loader from "./../../../components/loader/loader";
 import MyPagination from "./../../../components/pagination/pagination";
 import Select from './../../../components/selectOption/select'
+import Confirm from './../../../components/confirm/confirm'
 
 
 class News extends Component {
@@ -31,7 +32,9 @@ class News extends Component {
       loading: false,
       typeEdit: undefined,
       selectedItem: undefined,
-      type: -1
+      type: -1,
+      showDelete: false,
+      selectedItem: undefined
     };
   }
 
@@ -76,19 +79,8 @@ class News extends Component {
     }
   };
 
-  onDetete = async id => {
-    await refreshToken();
-    var secret = JSON.parse(localStorage.getItem("secret"));
-
-    axios.defaults.headers["x-access-token"] = secret.access_token;
-    axios.post("/manager/news/delete", { id: id }).then(res => {
-      if (res.status === 202) {
-        ToastsStore.success("Đã xóa");
-        this.getNews();
-      } else {
-        ToastsStore.error("Xóa thất bại");
-      }
-    });
+  onDetete = async (id) => {
+    this.setState({showDelete: true,selectedItem: id});
   };
 
   getNews = async () => {
@@ -116,6 +108,10 @@ class News extends Component {
     });
   };
 
+  handleClose = () =>{
+    this.setState({showDelete:false})
+  }
+
   clickPage = e => {
     this.setState({ pageActive: e });
     this.getNews();
@@ -129,6 +125,22 @@ class News extends Component {
     this.setState({ [key] : val})
   }
 
+  handleSave = async () =>{
+  await refreshToken();
+    var secret = JSON.parse(localStorage.getItem("secret"));
+
+    axios.defaults.headers["x-access-token"] = secret.access_token;
+    axios.post("/manager/news/delete", { id: this.state.selectedItem }).then(res => {
+      if (res.status === 202) {
+        ToastsStore.success("Đã xóa");
+        this.handleClose();
+        this.getNews();
+
+      } else {
+        ToastsStore.error("Xóa thất bại");
+      }
+    });
+  }
   render() {
     var type = [
       {value: -1, label: 'Tất cả'},
@@ -151,6 +163,13 @@ class News extends Component {
             hideLogin={this.hideLogin}
           />
         )}
+        <Confirm 
+					show={this.state.showDelete}
+					title={'Xóa bài viết'}
+					content={'Bạn có muốn xóa bài viết này !'}
+					handleClose={() => this.handleClose()}
+					handleSave={() => this.handleSave()}
+				/>
         <div>
           <Title>Quản lý bài viết</Title>
         </div>
