@@ -86,41 +86,43 @@ class EditorConvertToHTML extends Component {
         author: decode.user.profile.idTaiKhoan,
         trangThai: this.state.check === true ? 1 : 0,
         ghim: this.state.pin === true ? 1 : 0,
-        loai: this.state.loai,
-        stamp: stamp.getTime()
+        loai: this.state.loai
       };
 
-      console.log(data);
+      if (this.state.pictures.length > 0) {
+        data.stamp = stamp.getTime();
+      }
 
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios.post("/manager/news/add", { data: data }).then(res => {
         if (res.status === 202) {
           console.log(this.state.pictures);
           const { pictures } = this.state;
-          var name = data.stamp + ".jpg";
-          const uploadTask = storage.ref(`news/${name}`).put(pictures[0]);
-          uploadTask.on(
-            "state_changed",
-            snapshot => {
-              //progress function
-            },
-            error => {
-              //error function
-              console.log(error);
-            },
-            () => {
-              //complete function
-              storage
-                .ref("news")
-                .child(name)
-                .getDownloadURL()
-                .then(url => {
-                  console.log(url);
-                  this.props.showPopup("add");
-                  this.handleClose();
-                });
-            }
-          );
+          if (pictures.length > 0) {
+            var name = data.stamp + ".jpg";
+            const uploadTask = storage.ref(`news/${name}`).put(pictures[0]);
+            uploadTask.on(
+              "state_changed",
+              snapshot => {
+                //progress function
+              },
+              error => {
+                //error function
+                console.log(error);
+              },
+              () => {
+                //complete function
+                storage
+                  .ref("news")
+                  .child(name)
+                  .getDownloadURL()
+                  .then(url => {              
+                  });
+              }
+            );
+          }  
+          this.props.showPopup("add");
+          this.handleClose();
         } else {
           ToastsStore.error("Thêm tin tức thất bại");
         }

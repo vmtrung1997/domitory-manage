@@ -25,6 +25,7 @@ class NewsList extends React.Component {
     var temp = [];
    console.log(this.state.postsAll.length);
     this.state.postsAll.forEach(async (item, index) => {
+      if(item.stamp){
       var rs = item.stamp + ".jpg";
       await storage
         .ref("news")
@@ -36,6 +37,12 @@ class NewsList extends React.Component {
           tmp[index].url = url;
           this.setState({ postsAll: tmp });
         });
+      }
+      else{
+        var tmp = this.state.postsAll;
+        tmp[index].url = '/images/logo-hktn.jpg';
+        this.setState({ postsAll: tmp });
+      }
     });
     console.log(this.state.pinnedPosts.length);
 
@@ -227,7 +234,7 @@ class NewsList extends React.Component {
                         className="post-img"
                         onClick={e => this.onViewDetail(item._id)}
                       >
-                        <img style={{height: '400px',width: '100%'}} src={item.url} alt />
+                        <img style={{height: '400px',width: '100%'}} src={item.url} onError={(e)=>{e.target.onerror = null; e.target.src="/images/Logo-KHTN.jpg"}}/>
                       </a>
                       <div className="post-body" on>
                         <div className="post-meta">
@@ -318,7 +325,10 @@ class NewsList extends React.Component {
                         className="post-img"
                         onClick={e => this.onViewDetail(item._id)}
                       >
-                      <img style={{height: '300px',width: '100%'}} src={item.url} alt />
+
+<img style={{height: '300px',width: '100%'}} src={item.url} onError={(e)=>{e.target.onerror = null; e.target.src="https://kenh14cdn.com/2019/3/21/photo-1-1553155372658221231913.jpg"}}/>
+                      {/* <img style={{height: '300px',width: '100%'}} src={item.url} onerror='/images/Logo-KHTN.jpg' alt="Missing Image" /> */}
+                      {/* <img style={{height: '300px',width: '100%'}} src={item.url?'/images/Logo-KHTN.jpg':item.url} alt /> */}
                       </div>
                       <div className="post-body">
                         <div className="post-meta">
