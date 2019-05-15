@@ -120,7 +120,7 @@ class ListRoom extends React.Component {
           listProfile: rs.data.data === undefined?[]:rs.data.data,
           ten: room.loaiPhong.ten
         };
-        console.log(selectedRoom);
+       
       }
     });
 
