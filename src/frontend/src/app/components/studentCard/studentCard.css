@@ -1,7 +1,8 @@
 .card{
 	border-radius: 20px;
-	width: 359px;
-	height: 226px;
+	
+	min-height: 226px;
+	height: fit-content;
 	position: relative;
 }
 .logo-card{
