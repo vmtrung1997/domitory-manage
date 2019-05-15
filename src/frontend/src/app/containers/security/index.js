@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import ReactDOM from 'react-dom'
 import './index.css'
 import { getHistoryList, inputCard, logout } from './indexAction'
-import { imageFile, defaultImage } from '../../function/imageFunction'
+import { imageFile, defaultStudentImg } from '../../function/imageFunction'
 import axios from 'axios'
 class Security extends Component {
 	constructor(props) {
@@ -129,7 +129,7 @@ class Security extends Component {
 								<Col md={6} className={'col-outer'}>
 									<div className={'img-css'}>
 										{!this.state.notFound ?
-											<img src={mainHis && mainHis.imgFile !== "" ? mainHis.imgFile : defaultImage} /> :
+											<img src={mainHis && mainHis.imgFile !== "" ? mainHis.imgFile : defaultStudentImg} /> :
 											<img src={''} />}
 									</div>
 								</Col>
@@ -164,7 +164,7 @@ class Security extends Component {
 								return (
 									<div className={'item-history'} key={index}>
 										<div className={'item-image'}>
-											<img src={value.imgFile !== "" ? value.imgFile : defaultImage} />
+											<img src={value.imgFile !== "" ? value.imgFile : defaultStudentImg} />
 										</div>
 										<div className={'item-text'}>
 											<div>{value.profile.hoTen}</div>

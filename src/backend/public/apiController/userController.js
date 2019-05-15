@@ -213,11 +213,9 @@ exports.me_access = (req, res) => {
 
     if (result) {
       var id = new ObjectId(result.userid);
-      User.findOne({ _id: id }, function(err, userEntity) {
-        if (err) {
-          res.status(401).end("end");
-          console.log("==refresh_token: ", err);
-        }
+      User.findOne({ _id: id })
+      .populate({path: 'phanQuyen', select: 'quyen'})
+      .then(function(userEntity) {
         if (userEntity) {
           Profile.findOne({ idTaiKhoan: userEntity._id }, (err, prof) => {
             if (prof) {
@@ -235,8 +233,10 @@ exports.me_access = (req, res) => {
               console.log("==refresh_token: ", err);
             }
           });
+        } else {
+          res.status(400).end();
         }
-      });
+      })
     } else {
       res.status(401).end("end");
     }
