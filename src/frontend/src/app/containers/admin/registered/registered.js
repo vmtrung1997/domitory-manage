@@ -18,6 +18,9 @@ class Registered extends Component{
 
 		}
 	}
+	componentDidMount(){
+		
+	}
 	render(){
 		return(
 			<React.Fragment>

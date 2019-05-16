@@ -221,7 +221,7 @@ class BillStudent extends React.Component {
                       </tr>
                     </tbody>
                   </Table>
-                ) : null}
+                ) : <span>Chưa có ghi chép nào</span>}
               </div>
 
               <div className="time-bill">
@@ -229,6 +229,7 @@ class BillStudent extends React.Component {
                   <span className="label-font">Cũ hơn</span>
                 </div>
                 <div className="text-style">
+                {this.state.bills.length>0?
                   <Table responsive bordered size="sm" hover>
                     <thead className="thread-student">
                       <tr>
@@ -272,7 +273,7 @@ class BillStudent extends React.Component {
                         );
                       })}
                     </tbody>
-                  </Table>
+                  </Table>:  <span>Chưa có ghi chép nào</span>}
                   <div className="pagination-position">
                     <MyPagination
                       page={this.state.pageActive}

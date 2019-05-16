@@ -27,7 +27,7 @@ exports.getDetailNews = (req, res) => {
 
 exports.getPinNews = (req, res) => {
   try {
-    BaiViet.find({ ghim: 1 }, (err, doc) => {
+    BaiViet.find({ ghim: 1, trangThai: 1}, (err, doc) => {
       if (doc.length === 0) {
         res.status(204).json({
           message: "oke",

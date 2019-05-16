@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom'
 
 import Layout from './layout/layout'
 import InfoStudent from './infoStudent/infoStudent'
-import InfoStudentDetail from './infoStudent/infoStudentDetail'
+import InfoStudentDetail from './infoStudent/infoStudentDetail/infoStudentDetail'
 import Expense from './expenses/expenses'
 import Activity from './activity/activity'
 import ActivityDetail from './activity/activityDetail'
@@ -37,7 +37,7 @@ class Admin extends Component {
 		return (
 			<Layout>
 				<Route exact path={`${this.props.match.url}/student`} component={Authorization(roles)(InfoStudent, 'SV01')} />
-				<Route exact path={`${this.props.match.url}/student/detail`} component={Authorization(roles)(InfoStudentDetail, 'SV02')} />
+				<Route exact path={`${this.props.match.url}/student/detail/:id`} component={Authorization(roles)(InfoStudentDetail, 'SV02')} />
 				<Route exact path={`${this.props.match.url}/expense`} component={Authorization(roles)(Expense, 'CP01')} />
 				<Route exact path={`${this.props.match.url}/activity`} component={Authorization(roles)(Activity, 'HD01')} />
 				<Route exact path={`${this.props.match.url}/news`} component={Authorization(roles)(News, 'BV01')} />

@@ -61,14 +61,14 @@ exports.login = (req, res) => {
           })
           .catch(err => {
             res.status(500).json({
-              status: "fail",
+              status: "server fail",
               msg: err
             });
           });
       });
     } else {
-      res.status(401).json({
-        status: "fail",
+      res.status(400).json({
+        status: "login fail",
         auth: false
       });
     }

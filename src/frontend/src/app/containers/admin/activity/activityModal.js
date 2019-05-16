@@ -40,13 +40,14 @@ class ActivityModal extends Component{
   }
   handleSave = async () => {
     var {name, location, des, point, date, dateEnd} = this.state
-    if(!name || !location || !des || !point)
-    {
+    if(!name || !location || !des || !point) {
       ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
     } else if(parseInt(point) <= 0){
       ToastsStore.error("Điểm hoạt động phải lớn hơn 0!");
     } else if(date < new Date || dateEnd < new Date()){
       ToastsStore.error("Thời gian bắt đầu và kết thúc phải lớn hơn ngày hiện tại!");
+    } else if(dateEnd < date){
+      ToastsStore.error("Thời gian kết thúc không nhỏ hơn thời gian bắt đầu!");
     } else {
       await refreshToken()
       var secret = JSON.parse(localStorage.getItem('secret'))
