@@ -207,13 +207,13 @@ class BillStudent extends React.Component {
                           )}
                         </td>
 
-                        {this.state.lastBill[0].trangThai === "0" ? (
+                        {this.state.lastBill[0].trangThai === 0 ? (
                           <td className="is-dont-done">Chưa thanh toán</td>
                         ) : (
                           <td className="is-done">Đã thanh toán</td>
                         )}
                         <td
-                          onClick={e => this.showDetail(this.state.bills[0])}
+                          onClick={e => this.showDetail(this.state.lastBill[0])}
                           className="detail"
                         >
                           <i className="far fa-eye" />
@@ -256,7 +256,7 @@ class BillStudent extends React.Component {
                             <td>
                               {OpitmizeNumber.OpitmizeNumber(item.tongTien)}
                             </td>
-                            {item.trangThai === "0" ? (
+                            {item.trangThai === 0 ? (
                               <td className="is-dont-done">Chưa thanh toán</td>
                             ) : (
                               <td className="is-done">Đã thanh toán</td>
