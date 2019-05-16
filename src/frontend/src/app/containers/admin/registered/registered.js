@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Row, Col } from 'react-bootstrap'
 
+import refreshToken from './../../../../utils/refresh_token'
+import axios from './../../../config'
 import Input from './../../../components/input/input'
 import Button from './../../../components/button/button'
 import MyPagination from './../../../components/pagination/pagination'
@@ -18,8 +20,35 @@ class Registered extends Component{
 
 		}
 	}
+
 	componentDidMount(){
-		
+		this.getData()
+	}
+
+	getData = async () => {
+		this.setState({ loading: true})		
+		await refreshToken()
+		var secret = JSON.parse(localStorage.getItem('secret'))
+		axios({
+			method: 'post',
+      		url: `/manager/register/getListRegister`,
+			headers: { 'x-access-token': secret.access_token},
+			data: {
+				search: this.state.query,
+				rule: this.state.rule,
+			}
+		})
+      	.then(res => {
+      		console.log(res.data.rs.docs)
+       	    this.setState({
+    	    	data: res.data.rs.docs,
+				loading: false,
+				totalPages: res.data.rs.totalPages
+			})
+		})
+		.catch( err => {
+			this.setState({ loading: false })
+		})
 	}
 	render(){
 		return(
@@ -50,7 +79,7 @@ class Registered extends Component{
               				</Col>
               			</Row>		
 					</div>
-					<RegisteredTable/>
+					<RegisteredTable data={this.state.data}/>
 					<div className={'is-pagination'}>
 						<MyPagination 
 							page={this.state.page} 

@@ -58,6 +58,7 @@ exports.detail_activity = (req, res) => {
 };
 
 exports.post_activity = (req, res) => {
+	console.log(req.body)
 	var tmp = {
 		ten: req.body.name,
     	diaDiem: req.body.location,
@@ -70,6 +71,8 @@ exports.post_activity = (req, res) => {
     	diem: req.body.point,
     	moTa: req.body.des
 	}
+	console.log(tmp)
+
 	var timeFirst = req.body.time.split(':')
 	var timeFinal = req.body.timeEnd.split(':')
 
