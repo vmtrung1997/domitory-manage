@@ -58,7 +58,6 @@ class Select extends Component {
 		this.props.selected(event.target.value);
 	}
 	render() {
-		console.log('==renser select', this.props.value)
 		return (
 			<React.Fragment>
 				{this.props.isSearchable ?

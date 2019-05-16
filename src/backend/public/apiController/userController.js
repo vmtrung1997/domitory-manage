@@ -45,7 +45,8 @@ exports.login = (req, res) => {
   ).populate({path: "phanQuyen", select: "quyen"}).then(function(result) {
     if (result) {
       var userEntity = result;
-      Profile.findOne({ idTaiKhoan: userEntity._id }, (err, prof) => {
+      Profile.findOne({ idTaiKhoan: userEntity._id }, {"img": 0}, (err, prof) => {
+        console.log(prof)
         var userObj = { userEntity, profile: prof };
         var acToken = auth.generateAccessToken(userObj);
         var reToken = auth.generateRefreshToken();
@@ -217,7 +218,7 @@ exports.me_access = (req, res) => {
       .populate({path: 'phanQuyen', select: 'quyen'})
       .then(function(userEntity) {
         if (userEntity) {
-          Profile.findOne({ idTaiKhoan: userEntity._id }, (err, prof) => {
+          Profile.findOne({ idTaiKhoan: userEntity._id }, {"img": 0}, (err, prof) => {
             if (prof) {
               var userObj = { userEntity, profile: prof };
               var acToken = auth.generateAccessToken(userObj);
