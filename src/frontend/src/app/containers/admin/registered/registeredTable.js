@@ -13,7 +13,7 @@ class RegisteredTable extends Component{
 						<th>Họ và tên</th>
 						<th>Trường</th>
 						<th>Phòng</th>
-						<th>Điểm rèn luyện</th>
+						<th>Điểm hoạt động</th>
 						<th>Xác nhận</th>
 					</tr>
 				</thead>

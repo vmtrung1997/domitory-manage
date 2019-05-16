@@ -152,8 +152,8 @@ class StudentActivity extends React.Component {
           lightBackground
           store={ToastsStore}
         />
-        <div className="title-header ">
-          <span>HOẠT ĐỘNG CỦA BẠN</span>
+        <div >
+          <h1 className="title-header" >HOẠT ĐỘNG CỦA BẠN</h1>
         </div>
         <div className='title-header-line'></div>
         <Tabs id="controlled-tab-example" defaultActiveKey="incoming">

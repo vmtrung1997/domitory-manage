@@ -163,7 +163,6 @@ exports.registerActivities = (req, res) => {
 };
 
 exports.changePassword = (req, res) => {
-  console.log(req.body);
   User.findOne({
     username: req.body.username,
     password: req.body.oldPassword
@@ -204,7 +203,6 @@ exports.changePassword = (req, res) => {
 };
 
 exports.updateFisrtInfo = (req, res) => {
-  console.log(req.body.data);
   Profile.updateOne(
     { _id: req.body.data.id },
     {
@@ -342,7 +340,6 @@ exports.upcomingActivities = (req, res) => {
   var skip = req.body.options.skip;
   var limit = req.body.options.limit;
   var totalPages = 1;
-  console.log(req.body);
   KetQuaHD.countDocuments({ idSV: req.body.id }, (err, data) => {
     totalPages = parseInt(data) / limit;
     if (err) {
@@ -514,6 +511,9 @@ exports.getProfileByIdPhong = (res, req) => {
 exports.getPoint = (req, res) => {
   var result = [];
   var ngayVaoO = new Date(req.body.ngayVaoO);
+  //Tìm các hoạt động trong năm nay và năm trước
+  var now = new Date();
+  now = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
   if (ngayVaoO === undefined) {
     res.status(204).json({
       data: "no data"
@@ -523,43 +523,50 @@ exports.getPoint = (req, res) => {
     .populate({
       path: "idHD",
       match: {
-        ngayBD: { $gte: ngayVaoO }
+        ngayBD: { $gte: now }
       },
       select: "diem batBuoc ten diaDiem ngayBD ngayKT thang nam"
     })
     .then(rs => {
-      var year = ngayVaoO.getFullYear();
-      var now = new Date();
-      for (var yearpoint = year; yearpoint <= now.getFullYear(); yearpoint++) {
-        var point = 0;
-        var i = 0;
-        rs.some(item => {
-          if (
-            (item.idHD.ngayKT.getMonth() + 1 > 7 &&
-              item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
-            (item.idHD.ngayKT.getMonth() + 1 < 8 &&
-              item.idHD.ngayKT.getFullYear() === yearpoint) ||
-            (item.idHD.ngayKT.getFullYear() < yearpoint ||
-              item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
-            item.idHD.ngayKT.getMonth() + 1 > now.getMonth() + 1
-          ) {
-            return true;
-          } else {
-            if (item.idHD.batBuoc && !item.isTG) {
-              point -= item.idHD.diem;
-            } else if (item.isTG) {
-              point += item.idHD.diem;
-            }
-          }
-        });
+      var nowDate = new Date();
+      var hk1 = 0;
+      var hk2 = 0;
 
-        var temp = {
-          year: yearpoint,
-          point: point
-        };
+      var point = 0;
+      var i = 0;
+      rs.some(item => {
+        if (
+          //Các hoạt động từ t9 năm trước -> t2 năm sau
+          (item.idHD.ngayKT.getMonth() + 1 > 8 &&
+            item.idHD.ngayKT.getFullYear() === now.getFullYear()) ||
+          (item.idHD.ngayKT.getMonth() + 1 < 3 &&
+            item.idHD.ngayKT.getFullYear() === nowDate.getFullYear())
+        ) {
+          if (item.idHD.batBuoc === true && item.isTG === false)
+          hk1 -= item.idHD.diem;
+        if (item.isTG) hk1 += item.idHD.diem;
+        } else if (
+          //Các hoạt động từ t3 -> t7 năm nay
 
-        result.push(temp);
-      }
+          item.idHD.ngayKT.getMonth() + 1 > 2 &&
+          item.idHD.ngayKT.getFullYear() === nowDate.getFullYear() &&
+          (item.idHD.ngayKT.getMonth() + 1 < 8 &&
+            item.idHD.ngayKT.getFullYear() === nowDate.getFullYear())
+        ) {
+          if (item.idHD.batBuoc === true && item.isTG === false)
+            hk2 -= item.idHD.diem;
+          if (item.isTG) hk2 += item.idHD.diem;
+        }
+      });
+
+      var temp = {
+        hk1: hk1,
+        hk2: hk2
+      };
+
+      result.push(temp);
+
+      console.log(result);
       if (result.length === 0) {
         res.status(204).json({
           data: result
