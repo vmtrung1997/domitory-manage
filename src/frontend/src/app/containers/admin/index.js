@@ -34,7 +34,6 @@ class Admin extends Component {
 	}
 	render() {
 		let { roles } = this.state
-		console.log(roles)
 		return (
 			<Layout>
 				<Route exact path={`${this.props.match.url}/student`} component={Authorization(roles)(InfoStudent, 'SV01')} />

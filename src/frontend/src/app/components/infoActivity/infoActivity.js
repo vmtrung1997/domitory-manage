@@ -91,15 +91,17 @@ class InfoActivity extends Component{
 						<Button title={'Điểm danh'} onClick={(e) => {this.handleRollCall(row)}}>
 							<i className="fas fa-poll-h"></i>
 						</Button>
-						<Button title={'Chỉnh sửa'} color={'warning'} style={{margin: '0 5px'}} onClick={(e) => {this.handleEdit(row)}}>
-							<i className="fas fa-edit"></i>
-						</Button>
 						{curData > date ? (
 							<React.Fragment/>
 						):(
+							<>
+							<Button title={'Chỉnh sửa'} color={'warning'} style={{margin: '0 5px'}} onClick={(e) => {this.handleEdit(row)}}>
+								<i className="fas fa-edit"></i>
+							</Button>
 							<Button title={'Xóa'} color={'danger'} onClick={(e) => {this.handleDelete(row._id)}}>
 								<i className=" fas fa-trash-alt"></i>
 							</Button>
+							</>
 						)}
 					</td>
 				</tr>
