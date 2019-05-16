@@ -1,0 +1,422 @@
+/* *********************************************
+[Master Stylesheet]
+
+Template Name: Razo - Radio HTML5 Template
+Template Author: Colorlib
+Template Author URL: http://colorlib.com
+Version: 1.0.0
+Last Update: Jan 13, 2018
+
+*********************************************
+
+[Tables of CSS Content]
+
++ body
+
+    - 01.0 Reboot CSS
+    - 02.0 Spacing CSS
+    - 03.0 Preloader CSS
+    - 04.0 Heading CSS
+    - 05.0 Backtotop CSS
+    - 06.0 Buttons CSS
+    - 07.0 Header CSS
+    - 08.0 Hero CSS
+    - 09.0 App Download CSS
+    - 10.0 Table CSS
+    - 11.0 Blog CSS
+    - 12.0 Footer CSS
+    - 13.0 Music Chart CSS
+    - 14.0 Contact CSS
+    - 15.0 Show CSS
+    - 16.0 Event CSS
+    - 17.0 Podcast CSS
+
+  ---------------------------------------------
+  [Color Codes]
+
+  $heading: #191919; [Heading Color]
+  $text: #6e6e6e; [Text Color]
+  $bg-gray: #e7f2fd; [Gray Background]
+  $primary: #dc2878; [Primary Color]
+  $white: #ffffff; [White Color]
+  $dark: #000000; [Dark Color]
+  $border: #e5e5e5; [Border Color]
+  $hover: #dc2878; [Hover Color]
+  $secondary: #a6a6a6; [Secondary Color]
+
+  ---------------------------------------------
+  [Font Family: 'Open Sans & Oswald']
+--------------------------------------------- */
+/* Import Fonts & All CSS */
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Oswald:200,300,400,500,600,700");
+
+/* :: 1.0 Reboot CSS */
+* {
+  margin: 0;
+  padding: 0; }
+
+body {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  position: relative;
+  z-index: auto; }
+
+h1,
+h2,
+h3,
+h4,
+h6 {
+  font-family: "Oswald", sans-serif;
+  color: #191919;
+  line-height: 1.4;
+  font-weight: 500; }
+
+a,
+a:active,
+a:focus,
+a:hover {
+  font-family: "Open Sans", sans-serif;
+  color: #191919;
+  text-decoration: none;
+  -webkit-transition-duration: 500ms;
+  -o-transition-duration: 500ms;
+  transition-duration: 500ms;
+  outline: none;
+  font-size: 16px;
+  font-weight: 500; }
+
+li {
+  list-style: none; }
+
+p {
+  line-height: 1.8;
+  color: #6e6e6e;
+  font-size: 16px;
+  font-weight: 400; }
+
+img {
+  max-width: 100%;
+  height: auto; }
+
+ul {
+  margin: 0;
+  padding: 0; }
+  ul li {
+    margin: 0;
+    padding: 0; }
+
+.bg-overlay {
+  position: relative;
+  z-index: 1; }
+  .bg-overlay::after {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-color: rgba(0, 0, 0, 0.65); }
+
+.bg-img {
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat; }
+
+
+
+
+/* :: 2.0 Spacing CSS */
+.mt-15 {
+  margin-top: 15px; }
+
+.mt-30 {
+  margin-top: 30px; }
+
+.mt-40 {
+  margin-top: 40px; }
+
+.mt-50 {
+  margin-top: 50px; }
+
+.mt-70 {
+  margin-top: 70px; }
+
+.mt-80 {
+  margin-top: 80px; }
+
+.mt-100 {
+  margin-top: 100px; }
+
+.mt-150 {
+  margin-top: 150px; }
+
+.mr-15 {
+  margin-right: 15px; }
+
+.mr-30 {
+  margin-right: 30px; }
+
+.mr-50 {
+  margin-right: 50px; }
+
+.mr-100 {
+  margin-right: 100px; }
+
+.mb-15 {
+  margin-bottom: 15px; }
+
+.mb-30 {
+  margin-bottom: 30px; }
+
+.mb-40 {
+  margin-bottom: 40px; }
+
+.mb-50 {
+  margin-bottom: 50px; }
+
+.mb-60 {
+  margin-bottom: 60px; }
+
+.mb-70 {
+  margin-bottom: 70px; }
+
+.mb-80 {
+  margin-bottom: 80px; }
+
+.mb-100 {
+  margin-bottom: 100px; }
+
+.ml-15 {
+  margin-left: 15px; }
+
+.ml-30 {
+  margin-left: 30px; }
+
+.ml-50 {
+  margin-left: 50px; }
+
+.ml-100 {
+  margin-left: 100px; }
+
+.pt-50 {
+  padding-top: 50px !important; }
+
+.section-padding-80 {
+  padding-top: 80px;
+  padding-bottom: 80px; }
+
+.section-padding-0-80 {
+  padding-top: 0;
+  padding-bottom: 80px; }
+
+.section-padding-80-0 {
+  padding-top: 80px;
+  padding-bottom: 0; }
+
+/* :: 3.0 Preloader CSS */
+
+
+
+
+
+
+
+
+
+
+
+/* :: 8.0 Hero CSS */
+.single-welcome-slide {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 750px;
+  background-color: #ffffff; }
+  @media only screen and (min-width: 992px) and (max-width: 1199px) {
+    .single-welcome-slide {
+      height: 600px; } }
+  @media only screen and (min-width: 768px) and (max-width: 991px) {
+    .single-welcome-slide {
+      height: 550px; } }
+  @media only screen and (max-width: 767px) {
+    .single-welcome-slide {
+      height: 410px; } }
+  @media only screen and (min-width: 576px) and (max-width: 767px) {
+    .single-welcome-slide {
+      height: 460px; } }
+  .single-welcome-slide .welcome-text {
+    position: relative;
+    z-index: 1; }
+    .single-welcome-slide .welcome-text h2 {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 20px;
+      color: #ffffff; }
+      @media only screen and (max-width: 767px) {
+        .single-welcome-slide .welcome-text h2 {
+          font-size: 36px; } }
+      @media only screen and (min-width: 576px) and (max-width: 767px) {
+        .single-welcome-slide .welcome-text h2 {
+          font-size: 42px; } }
+    .single-welcome-slide .welcome-text h5 {
+      font-size: 18px;
+      color: #ffffff;
+      margin-bottom: 50px;
+      display: block; }
+
+
+/* :: 9.0 App Download CSS */
+.razo-app-download-area {
+  position: relative;
+  z-index: 1; }
+  .razo-app-download-area .app-download-text {
+    position: relative;
+    z-index: 1; }
+    .razo-app-download-area .app-download-text span {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #ffffff; }
+    .razo-app-download-area .app-download-text h2 {
+      font-size: 36px;
+      margin-bottom: 15px;
+      color: #ffffff; }
+    .razo-app-download-area .app-download-text p {
+      color: #ffffff;
+      margin-bottom: 40px; }
+      @media only screen and (min-width: 768px) and (max-width: 991px) {
+        .razo-app-download-area .app-download-text p {
+          font-size: 14px; } }
+      @media only screen and (max-width: 767px) {
+        .razo-app-download-area .app-download-text p {
+          font-size: 14px; } }
+    .razo-app-download-area .app-download-text .app-download-btn a {
+      display: inline-block;
+      margin-right: 10px; }
+      @media only screen and (max-width: 767px) {
+        .razo-app-download-area .app-download-text .app-download-btn a img {
+          max-width: 120px; } }
+
+/* :: 10.0 Tables CSS */
+
+
+/* :: 11.0 Blog CSS */
+.featured-post-area {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 430px;
+  overflow: hidden;
+  -webkit-transition-duration: 500ms;
+  -o-transition-duration: 500ms;
+  transition-duration: 500ms;
+  border-radius: 3px; }
+  @media only screen and (min-width: 768px) and (max-width: 991px) {
+    .featured-post-area {
+      height: 350px; } }
+  @media only screen and (max-width: 767px) {
+    .featured-post-area {
+      height: 350px; } }
+  .featured-post-area .post-overlay {
+    position: absolute;
+    width: 100%;
+    padding: 30px;
+    z-index: 100;
+    left: 0;
+    bottom: 0; }
+    .featured-post-area .post-overlay .post-meta a {
+      font-size: 14px;
+      color: #ffffff;
+      display: inline-block;
+      margin-bottom: 10px;
+      margin-right: 10px; }
+      .featured-post-area .post-overlay .post-meta a:hover, .featured-post-area .post-overlay .post-meta a:focus {
+        color: #007bff; }
+    .featured-post-area .post-overlay .post-title {
+      font-family: "Oswald", sans-serif;
+      font-size: 30px;
+      color: #ffffff;
+      margin-bottom: 0; }
+      @media only screen and (min-width: 768px) and (max-width: 991px) {
+        .featured-post-area .post-overlay .post-title {
+          font-size: 24px; } }
+      @media only screen and (max-width: 767px) {
+        .featured-post-area .post-overlay .post-title {
+          font-size: 20px; } }
+      .featured-post-area .post-overlay .post-title:hover, .featured-post-area .post-overlay .post-title:focus {
+        color: #007bff; }
+  .featured-post-area:hover, .featured-post-area:focus {
+    background-position: bottom center; }
+  .featured-post-area.small-featured-post {
+    height: 170px; }
+    .featured-post-area.small-featured-post .post-title {
+      font-size: 20px; }
+      @media only screen and (min-width: 992px) and (max-width: 1199px) {
+        .featured-post-area.small-featured-post .post-title {
+          font-size: 14px; } }
+      @media only screen and (max-width: 767px) {
+        .featured-post-area.small-featured-post .post-title {
+          font-size: 16px; } }
+      .featured-post-area.small-featured-post .post-title:hover, .featured-post-area.small-featured-post .post-title:focus {
+        color: #007bff; }
+
+.razo-single-post {
+  position: relative;
+  z-index: 1; }
+  .razo-single-post .post-thumbnail {
+    position: relative;
+    z-index: 1;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 100px;
+    flex: 0 0 100px;
+    max-width: 100px;
+    width: 100px; }
+    @media only screen and (min-width: 768px) and (max-width: 991px) {
+      .razo-single-post .post-thumbnail {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 70px;
+        flex: 0 0 70px;
+        max-width: 70px;
+        width: 70px; } }
+    @media only screen and (max-width: 767px) {
+      .razo-single-post .post-thumbnail {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 80px;
+        flex: 0 0 80px;
+        max-width: 80px;
+        width: 80px; } }
+    .razo-single-post .post-thumbnail a {
+      display: block; }
+    .razo-single-post .post-thumbnail img {
+      border-radius: 2px; }
+  .razo-single-post .post-content {
+    position: relative;
+    z-index: 1;
+    margin-left: 15px; }
+    .razo-single-post .post-content .post-meta a {
+      font-size: 14px;
+      color: #6e6e6e;
+      display: inline-block;
+      margin-bottom: 5px;
+      margin-right: 10px; }
+      .razo-single-post .post-content .post-meta a:hover, .razo-single-post .post-content .post-meta a:focus {
+        color: #007bff; }
+    .razo-single-post .post-content .post-title {
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      color: #191919;
+      margin-bottom: 0; }
+      @media only screen and (min-width: 992px) and (max-width: 1199px) {
+        .razo-single-post .post-content .post-title {
+          font-size: 18px; } }
+      @media only screen and (min-width: 768px) and (max-width: 991px) {
+        .razo-single-post .post-content .post-title {
+          font-size: 14px; } }
+      @media only screen and (max-width: 767px) {
+        .razo-single-post .post-content .post-title {
+          font-size: 16px; } }
+      .razo-single-post .post-content .post-title:hover, .razo-single-post .post-content .post-title:focus {
+        color: #007bff; }
+
