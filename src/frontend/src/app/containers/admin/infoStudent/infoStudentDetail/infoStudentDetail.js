@@ -187,7 +187,8 @@ class InfoStudentDetail extends Component {
       this.setState({loading: false})
 
     }).catch(err => {
-      ToastsStore.error("Cập nhật không thành công!");
+      console.log('==err update',err.response)
+      ToastsStore.error(err.response.data.msg);
       this.setState({loading: false})
     })
   }
@@ -268,7 +269,7 @@ class InfoStudentDetail extends Component {
       testImg.onload = () => {
         this.setState({
           profile: {
-            ...this.state.info,
+            ...this.state.profile,
             img: e.target.result
             
           }
@@ -278,10 +279,6 @@ class InfoStudentDetail extends Component {
         alert('Lỗi ảnh')
       }
     }
-  }
-  getDateType = (dateString) =>{
-    let date = new Date(dateString);
-    return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
   }
   render() {
     console.log('==state render', this.state);
