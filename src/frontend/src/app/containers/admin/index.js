@@ -34,6 +34,7 @@ class Admin extends Component {
 	}
 	render() {
 		let { roles } = this.state
+		console.log(roles)
 		return (
 			<Layout>
 				<Route exact path={`${this.props.match.url}/student`} component={Authorization(roles)(InfoStudent, 'SV01')} />
@@ -47,7 +48,7 @@ class Admin extends Component {
 				<Route exact path={`${this.props.match.url}/account/detail/:id`} component={Authorization(roles)(AccountDetail, 'TK02')} />
 				<Route exact path={`${this.props.match.url}/dormitory`} component={Authorization(roles)(InfoDormitory, 'KT01')} />
 				<Route exact path={`${this.props.match.url}/university`} component={Authorization(roles)(University, 'TN01')} />
-				<Route exact path={`${this.props.match.url}/registered`} component={Registered} />
+				<Route exact path={`${this.props.match.url}/registered`} component={Authorization(roles)(Registered, 'DK01')} />
 			</Layout>
 		)
 	}
