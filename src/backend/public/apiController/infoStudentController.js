@@ -111,31 +111,25 @@ exports.importFile = async (req, res) => {
 
 exports.deleteStudent = (req, res) => {
   const arrDel = req.body.arrDelete;
-  console.log('==body', req.body, arrDel);
   if(arrDel === undefined || arrDel.length == 0) {
-    console.log('==rỗng')
     res.status(400).json({msg: 'Không có dữ liệu để xóa'})
   }
   else {
     arrDel.forEach(id => {
-      console.log('==id', id);
       Account.findOneAndUpdate({username: id},{ $set: {isDelete: 1} })
         .then(result => {
-          console.log('==findone', result)
           Profile.findOneAndUpdate({MSSV: id},{ $set: {idPhong: null} })
             .then(result => {
-              console.log('==ahihi', result);
               if(result.idPhong){
                 Room.findOne({_id:result.idPhong})
                   .then(result => {
-                    console.log('==Phong', result)
                     result.soNguoi = result.soNguoi - 1;
                     result.save()
                   })
               }
               res.status(200).json({msg: 'Bạn đã xóa thành công'})
             }).catch(err =>
-            res.status(400).json({msg: 'Xóa thất bại 222'})
+            res.status(400).json({msg: 'Xóa thất bại'})
           )
         }).catch(err => {
         res.status(400).json({msg: 'Xóa thất bại'})
@@ -147,8 +141,23 @@ exports.deleteStudent = (req, res) => {
 
 exports.updateInfo = (req,res) => {
   const info = req.body.info;
-  Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info })
-    .then(result => {
+  Profile.findOne({MSSV: info.MSSV})
+    .then(async(result) => {
+      //if change number card
+      console.log('==update 111')
+
+      if(info.maThe !== result.maThe){
+        await Profile.findOne({maThe: info.maThe})
+          .then(result => {
+            console.log('==find maThe', result)
+            if(result){
+              console.log('==find maThe return', result)
+              res.status(400).json({msg: 'Mã thẻ đã tồn tại'})
+            }
+          }).catch(err => {
+            res.status(400)
+        })
+      }
       // if change room
       if(info.idPhong !== result.idPhong) {
         //update number of person in old room
@@ -187,7 +196,11 @@ exports.updateInfo = (req,res) => {
       res.status(200).json({msg: 'Cập nhật thành công!'})
     }).catch(err => {
       res.status(400).json({msg: 'cập nhật không thành công!'})
-  })
+  }).then(()=>{
+      console.log('==update info')
+      Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info })
+  }
+  )
 };
 
 exports.getListStudent = (req, res) => {

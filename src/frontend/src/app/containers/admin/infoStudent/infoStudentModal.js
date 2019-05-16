@@ -11,6 +11,7 @@ import axios from "axios";
 import Checkbox from "../../../components/checkbox/checkbox";
 import Loader from "../../../components/loader/loader";
 import ListRoom from '../../../components/listRoom/listroom'
+import { dateToString } from '../../../function/dateFunction'
 
 export class AddStudentModal extends Component{
   constructor(props) {
@@ -640,7 +641,7 @@ export class ExportDataModal extends Component{
         return({
           hoTen : name ? record.hoTen : undefined,
           MSSV : studentNumber ? record.MSSV : undefined,
-          ngaySinh : birthday ? record.ngaySinh : undefined,
+          ngaySinh : birthday && record.ngaySinh ? dateToString(record.ngaySinh) : undefined,
           gioiTinh : gender ? genderString : undefined,
           diaChi : address ? record.diaChi : undefined,
           email : email ? record.email : undefined,
@@ -648,8 +649,8 @@ export class ExportDataModal extends Component{
           sdtNguoiThan : relativesPhone ? record.sdtNguoiThan : undefined,
           tonGiao : religion ? record.tonGiao : undefined,
           danToc : folk ? record.danToc : undefined,
-          ngayVaoO : dayIn ? record.ngayVaoO : undefined,
-          ngayHetHan : dayOut ? record.ngayHetHan : undefined,
+          ngayVaoO : dayIn && record.ngayVaoO ? dateToString(record.ngayVaoO) : undefined,
+          ngayHetHan : dayOut && record.ngayHetHan ? dateToString(record.ngayHetHan) : undefined,
           //data.diemHD : diemHDEx ? record.hoTen : undefined,
           phong : room && record.idPhong ? record.idPhong.tenPhong : undefined,
           truong : school && record.truong ? record.truong.tenTruong : undefined,

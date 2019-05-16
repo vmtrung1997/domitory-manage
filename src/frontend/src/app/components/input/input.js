@@ -36,7 +36,7 @@ class Input extends Component {
     var {color} = this.props
     return (
       <React.Fragment>
-        <input 
+        <input
           style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`, textAlign: `${this.props.textAlign}`}}
           className={`input-control input-${color}`}
           name={this.props.name}

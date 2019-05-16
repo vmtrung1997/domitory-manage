@@ -164,8 +164,11 @@ class InfoStudent extends Component{
   };
 
   getData = () => {
+    console.log('==getdata')
     get_list_student_by_page(this.state.searchValues)
       .then(result => {
+        console.log('==getdata success', result)
+
         this.setState({
           infoList: result.data.docs,
           totalPages: result.data.totalPages,
@@ -324,19 +327,27 @@ class InfoStudent extends Component{
         <div className={'content-body'}>
 
           <div className={'is-header'}>
-            <Row>
+
+              <Row>
               <Col md={1}>
                 MSSV
               </Col>
               <Col md={2}>
-                <Input getValue={this.onChange} name={'studentNumber'} value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}/>
+                <Input
+                  getValue={this.onChange}
+                  name={'studentNumber'}
+                  value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}
+                />
               </Col>
 
               <Col md={1}>
                 Họ tên
               </Col>
               <Col md={4}>
-                <Input getValue={this.onChange} name={'name'} value={this.state.searchValues.name}/>
+                <Input
+                  getValue={this.onChange}
+                  name={'name'}
+                  value={this.state.searchValues.name}/>
               </Col>
 
               <Col md={1}>
@@ -352,65 +363,65 @@ class InfoStudent extends Component{
                 />
               </Col>
             </Row>
-            <Row>
-              <Col md={1}>
-                Năm
-              </Col>
-              <Col md={2}>
-                <Input getValue={this.onChange} name={'mssv'} />
-              </Col>
+              <Row>
+                <Col md={1}>
+                  Năm
+                </Col>
+                <Col md={2}>
+                  <Input getValue={this.onChange} name={'mssv'} />
+                </Col>
 
-              <Col md={1}>
-                Trường
-              </Col>
-              <Col md={4}>
-                <SearchSelect
-                  isSearchable={true}
-                  placeholder={''}
-                  value={this.state.searchValues.schoolSelected}
-                  onChange={this.handleSelectSchool}
-                  options={this.state.schoolOptions}
-                />
-              </Col>
+                <Col md={1}>
+                  Trường
+                </Col>
+                <Col md={4}>
+                  <SearchSelect
+                    isSearchable={true}
+                    placeholder={''}
+                    value={this.state.searchValues.schoolSelected}
+                    onChange={this.handleSelectSchool}
+                    options={this.state.schoolOptions}
+                  />
+                </Col>
 
-              <Col md={1}>
-                Lầu
-              </Col>
-              <Col md={2}>
-                <SearchSelect
-                  isSearchable={true}
-                  placeholder={''}
-                  value={floorSelected}
-                  onChange={this.handleSelectFloor}
-                  options={floorOptions}
-                />
-              </Col>
-            </Row>
+                <Col md={1}>
+                  Lầu
+                </Col>
+                <Col md={2}>
+                  <SearchSelect
+                    isSearchable={true}
+                    placeholder={''}
+                    value={floorSelected}
+                    onChange={this.handleSelectFloor}
+                    options={floorOptions}
+                  />
+                </Col>
+              </Row>
 
-            {/*search*/}
-            <Row style={{display: 'flex', justifyContent: 'center'}}>
-            <Col md={3} >
-              <Button
-                size={'md'}
-                fullWidth
-                onClick={() => this.handleSearch()}
-              >
-                <i className="fas fa-search"/>
-                Tìm kiếm
-              </Button>
-            </Col>
-            <Col md={1} >
-              <Button
-                size={'md'}
-                color={'default'}
-                fullWidth
-                onClick={() => this.handleReload()}
-              >
-                <i className="fas fa-sync-alt"/>
-              </Button>
-            </Col>
-            </Row>
-
+              {/*search*/}
+              <Row style={{display: 'flex', justifyContent: 'center'}}>
+                <Col md={3} >
+                  <Button
+                    size={'md'}
+                    fullWidth
+                    onClick={() => this.handleSearch()}
+                  >
+                    <i className="fas fa-search"/>
+                    Tìm kiếm
+                  </Button>
+                </Col>
+                <Col md={1} >
+                  <Button
+                    type={'submit'}
+                    size={'md'}
+                    color={'default'}
+                    fullWidth
+                    onClick={() => this.handleReload()}
+                  >
+                    <i className="fas fa-sync-alt"/>
+                  </Button>
+                </Col>
+              </Row>
             <Row>
               <Col md={6} className={''}>
                 <div className={'is-manipulation'}>
@@ -553,7 +564,7 @@ class InfoStudent extends Component{
                         >
                           <i className="fas fa-print"/>
                         </Button>
-                      <Button color={'warning'} style={{marginRight: '10px'}} onClick={() => this.onViewDetail(info)}>
+                      <Button color={'warning'} style={{marginRight: '10px'}} onClick={() => this.onViewDetail(info.MSSV)}>
                         <i className="fas fa-edit"/>
                       </Button>
                       {!isOld &&
@@ -569,7 +580,7 @@ class InfoStudent extends Component{
               <Col md={3} className={'page-input'}>
                 <label style={{marginRight:'3px'}}>Trang</label>
                 <Input width='50px' textAlign='center' value={this.state.searchValues.pageActive}/>
-                <label style={{marginLeft:'3px'}}>of {this.state.totalPages}</label>
+                <label style={{marginLeft:'3px'}}>trong {this.state.totalPages}</label>
               </Col>
               <Col md={9}>
                 <div className={'is-pagination'}>
