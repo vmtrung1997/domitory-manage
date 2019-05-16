@@ -106,8 +106,8 @@ class RequestStay extends React.Component {
           lightBackground
           store={ToastsStore}
         />
-        <div className="title-header ">
-          <span>ĐĂNG KÝ LƯU TRÚ</span>
+       <div >
+          <h1 className="title-header" >ĐĂNG KÝ LƯU TRÚ</h1>
         </div>
         <div className="title-header-line" />
         {/* TODO: Kiểm tra nếu đủ điểm sẽ hiện Đăng ký  */}

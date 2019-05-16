@@ -155,8 +155,8 @@ class BillStudent extends React.Component {
           <DetailBill hideDetail={this.hideDetail} data={this.state.data} />
         )}
 
-        <div className="title-header ">
-          <span>THÔNG TIN ĐIỆN NƯỚC</span>
+<div>
+          <h1 className="title-header">THÔNG TIN ĐIỆN NƯỚC</h1>
         </div>
         <div className="title-header-line" />
         {this.state.isLoad ? (

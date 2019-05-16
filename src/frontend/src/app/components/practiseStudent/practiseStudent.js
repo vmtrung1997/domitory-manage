@@ -47,8 +47,8 @@ class PractiseStudent extends React.Component {
       console.log(this.state.point);
     return (
       <React.Fragment>
-        <div className="title-header ">
-          <span>ĐIỂM RÈN LUYỆN</span>
+          <div>
+          <h1 className="title-header">ĐIỂM HOẠT ĐỘNG</h1>
         </div>
         <div className="title-header-line" />
 
