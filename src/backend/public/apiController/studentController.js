@@ -6,6 +6,7 @@ const HoatDong = require("../models/HoatDong");
 const KetQuaHD = require("../models/KetQuaHD");
 const Phong = require("../models/Phong");
 const User = require("../models/TaiKhoan");
+const YeuCauLuuTru = require("../models/YeuCauLuuTru");
 
 require("../models/Phong");
 require("../models/NganhHoc");
@@ -21,16 +22,18 @@ exports.a = (req, res) => {
 };
 
 exports.getSpecialized = (req, res) => {
-  NganhHoc.find().then(result => {
-    res.status(200).json({
-      status: "success",
-      data: result
-    });
-  }).catch( err => {
-    res.status(400).json({
-      status: "get specialized false"
+  NganhHoc.find()
+    .then(result => {
+      res.status(200).json({
+        status: "success",
+        data: result
+      });
     })
-  });
+    .catch(err => {
+      res.status(400).json({
+        status: "get specialized false"
+      });
+    });
 };
 
 exports.getListActivities = (req, res) => {
@@ -53,17 +56,17 @@ exports.getListActivities = (req, res) => {
         }
       }).countDocuments({}, (err, data) => {
         totalPages = parseInt(data) / limit;
-        if(err){
+        if (err) {
           res.status(500).json({
-            status: 'fail'
-          })
+            status: "fail"
+          });
         }
       });
     })
     .catch(err => {
       res.status(500).json({
-        status: 'fail'
-      })
+        status: "fail"
+      });
     });
 
   KetQuaHD.find({ idSV: req.body.id })
@@ -98,16 +101,16 @@ exports.getListActivities = (req, res) => {
             });
           }
         })
-        .catch( err => {
+        .catch(err => {
           res.status(500).json({
-            status: 'fail'
-          })
+            status: "fail"
+          });
         });
     })
-    .catch( err => {
+    .catch(err => {
       res.status(500).json({
-        status: 'fail'
-      })
+        status: "fail"
+      });
     });
 };
 
@@ -160,7 +163,6 @@ exports.registerActivities = (req, res) => {
 };
 
 exports.changePassword = (req, res) => {
-  console.log(req.body);
   User.findOne({
     username: req.body.username,
     password: req.body.oldPassword
@@ -201,7 +203,6 @@ exports.changePassword = (req, res) => {
 };
 
 exports.updateFisrtInfo = (req, res) => {
-  console.log(req.body.data);
   Profile.updateOne(
     { _id: req.body.data.id },
     {
@@ -321,17 +322,18 @@ exports.getLastBill = (req, res) => {
 };
 
 exports.getSchool = (req, res) => {
-  Truong.find().then(result => {
-    res.status(200).json({
-      status: "success",
-      data: result
-    });
-  })
-  .catch( err => {
-    res.status(500).json({
-      status: "fail"
+  Truong.find()
+    .then(result => {
+      res.status(200).json({
+        status: "success",
+        data: result
+      });
     })
-  });
+    .catch(err => {
+      res.status(500).json({
+        status: "fail"
+      });
+    });
 };
 
 exports.upcomingActivities = (req, res) => {
@@ -340,37 +342,39 @@ exports.upcomingActivities = (req, res) => {
   var totalPages = 1;
   KetQuaHD.countDocuments({ idSV: req.body.id }, (err, data) => {
     totalPages = parseInt(data) / limit;
-    if( err ){
-      res.status(500).json({
-        status: "fail"
-      })
+    if (err) {
+      console.log("loi dau");
+      // res.status(500).json({
+      //   status: "fail"
+      // })
+    } else {
+      KetQuaHD.find({ idSV: req.body.id })
+        .populate({ path: "idHD" })
+        .skip(skip)
+        .limit(limit)
+        .then(result => {
+          if (result.length > 0) {
+            res.status(200).json({
+              status: "success",
+              data: result,
+              totalPages: totalPages
+            });
+          } else {
+            console.log("vô đây");
+            res.status(204).json({
+              status: "fail",
+              data: "no data"
+            });
+          }
+        })
+        .catch(err => {
+          // console.log('loi sau');
+          // res.status(500).json({
+          //   status: "fail"
+          // })
+        });
     }
   });
-
-  console.log(req.body.id, "------------");
-  KetQuaHD.find({ idSV: req.body.id })
-    .populate({ path: "idHD" })
-    .skip(skip)
-    .limit(limit)
-    .then(result => {
-      if (result) {
-        res.status(200).json({
-          status: "success",
-          data: result,
-          totalPages: totalPages
-        });
-      } else {
-        res.json({
-          status: "fail",
-          data: "no data"
-        });
-      }
-    })
-    .catch( err => {
-      res.status(500).json({
-        status: "fail"
-      })
-    });
 };
 
 exports.getInfo = (req, res) => {
@@ -397,9 +401,9 @@ exports.getInfo = (req, res) => {
     .catch(err => {
       console.log(err);
       res.status(500).json({
-          status: "fail",
-          data: "no data"
-        });
+        status: "fail",
+        data: "no data"
+      });
     });
 };
 
@@ -507,6 +511,9 @@ exports.getProfileByIdPhong = (res, req) => {
 exports.getPoint = (req, res) => {
   var result = [];
   var ngayVaoO = new Date(req.body.ngayVaoO);
+  //Tìm các hoạt động trong năm nay và năm trước
+  var now = new Date();
+  now = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
   if (ngayVaoO === undefined) {
     res.status(204).json({
       data: "no data"
@@ -516,58 +523,121 @@ exports.getPoint = (req, res) => {
     .populate({
       path: "idHD",
       match: {
-        ngayBD: { $gte: ngayVaoO }
+        ngayBD: { $gte: now }
       },
       select: "diem batBuoc ten diaDiem ngayBD ngayKT thang nam"
     })
     .then(rs => {
-      var year = ngayVaoO.getFullYear();
-      var now = new Date();
-      for (var yearpoint = year; yearpoint <= now.getFullYear(); yearpoint++) {
-        var point = 0;
-        var i = 0;
-        rs.some(item => {
-          if (
-            (item.idHD.ngayKT.getMonth() + 1 > 7 &&
-              item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
-            (item.idHD.ngayKT.getMonth() + 1 < 8 &&
-              item.idHD.ngayKT.getFullYear() === yearpoint) ||
-            (item.idHD.ngayKT.getFullYear() < yearpoint ||
-              item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
-              (item.idHD.ngayKT.getMonth() + 1 > now.getMonth() + 1)
-          ) {
-            return true;
-          }
-          else {
-            if (item.idHD.batBuoc && !item.isTG) {
-              point -= item.idHD.diem;
-            } else if (item.isTG) {
-              point += item.idHD.diem;
-            }
-          }
-        });
+      var nowDate = new Date();
+      var hk1 = 0;
+      var hk2 = 0;
 
-        var temp = {
-          year: yearpoint,
-          point: point
-        };
+      var point = 0;
+      var i = 0;
+      rs.some(item => {
+        if (
+          //Các hoạt động từ t9 năm trước -> t2 năm sau
+          (item.idHD.ngayKT.getMonth() + 1 > 8 &&
+            item.idHD.ngayKT.getFullYear() === now.getFullYear()) ||
+          (item.idHD.ngayKT.getMonth() + 1 < 3 &&
+            item.idHD.ngayKT.getFullYear() === nowDate.getFullYear())
+        ) {
+          if (item.idHD.batBuoc === true && item.isTG === false)
+          hk1 -= item.idHD.diem;
+        if (item.isTG) hk1 += item.idHD.diem;
+        } else if (
+          //Các hoạt động từ t3 -> t7 năm nay
 
-        result.push(temp);
-      }
-      if(result.length === 0){
+          item.idHD.ngayKT.getMonth() + 1 > 2 &&
+          item.idHD.ngayKT.getFullYear() === nowDate.getFullYear() &&
+          (item.idHD.ngayKT.getMonth() + 1 < 8 &&
+            item.idHD.ngayKT.getFullYear() === nowDate.getFullYear())
+        ) {
+          if (item.idHD.batBuoc === true && item.isTG === false)
+            hk2 -= item.idHD.diem;
+          if (item.isTG) hk2 += item.idHD.diem;
+        }
+      });
+
+      var temp = {
+        hk1: hk1,
+        hk2: hk2
+      };
+
+      result.push(temp);
+
+      console.log(result);
+      if (result.length === 0) {
         res.status(204).json({
           data: result
-        })
-      }
-      else{
+        });
+      } else {
         res.status(200).json({
           data: result
-        })
+        });
       }
     })
-    .catch( err => {
+    .catch(err => {
       res.status(500).json({
-        data: 'no data'
-      })
+        data: "no data"
+      });
     });
+};
+
+exports.requestStay = (req, res) => {
+  try {
+    data = {
+      idProfile: req.body.data.idProfile,
+      des: req.body.data.des,
+      type: req.body.data.type,
+      date: req.body.data.date,
+      isAccept: false
+    };
+
+    // YeuCauLuuTru.find({idProfile: req.body.data.idProfile, ).then(rs=>{
+    //   if(rs.length>=0){
+
+    //   }
+    // })
+
+    Profile.updateOne(
+      { idProfile: req.body.data.idProfile },
+      {
+        $set: {
+          des: req.body.data.des,
+          type: req.body.data.type,
+          date: req.body.data.date,
+          isAccept: false
+        }
+      },
+      function(err, place) {
+        if (err) {
+          res.status(400).json({
+            err: err
+          });
+        } else {
+          res.status(202).json({
+            res: "success",
+            data: place
+          });
+        }
+      }
+    );
+
+    var register = new YeuCauLuuTru(data);
+    register
+      .save()
+      .then(() => {
+        console.log("==insert: success");
+        res.status(201).json({
+          message: "ok"
+        });
+      })
+      .catch(err => {
+        console.log("==insert: ", err);
+        res.status(500);
+      });
+  } catch (e) {
+    console.log(e);
+  }
 };

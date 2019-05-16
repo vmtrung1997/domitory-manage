@@ -5,7 +5,9 @@ export const get_headers = async() => {
   await refreshToken();
   let secret = JSON.parse(localStorage.getItem('secret'));
   let headers = {
-    'x-access-token': secret.access_token
+    headers: {
+      'x-access-token': secret.access_token
+    }
   };
   return headers
 };
@@ -36,7 +38,7 @@ export const get_list_student_by_page = async(params) => {
         idPhong: idPhong,
         idTruong: idTruong,
         isOld: isOld,
-      }, { headers: headers }
+      }, headers
     ).then(result => {
       resolve(result);
     }).catch((err) => {
@@ -49,9 +51,8 @@ export const get_element = async(name) => {
   const headers = await get_headers();
 
   return new Promise((resolve, reject) => {
-    axios.get(`/manager/getElement/` + name, {
-      headers: headers
-    }).then(result => {
+    axios.get(`/manager/getElement/` + name, headers)
+      .then(result => {
       switch (name) {
         case 'room':
           resolve(result.data);
@@ -82,7 +83,7 @@ export const add_student = async(params) => {
         ngaySinh: birthDay,
         hanDangKy: regisExpiredDate,
         ngayHetHan: expiredDate
-      }, { headers: headers }
+      }, headers
     ).then(result => {
       resolve (result);
     }).catch(err => {
@@ -98,7 +99,7 @@ export const mark_old_student = async(params) => {
     axios.post(`/manager/infoStudent/delete`,
       {
         arrDelete: params
-      }, { headers: headers }
+      }, headers
     ).then(result => {
       resolve(result);
     }).catch(err => {
@@ -130,7 +131,7 @@ export const get_list_student = async(searchValues) => {
         idPhong: idPhong,
         idTruong: idTruong,
         isOld: isOld,
-      }, { headers: headers }
+      }, headers
     ).then(result => {
       resolve(result);
     }).catch((err) => {
@@ -144,7 +145,7 @@ export const get_floor_room = async() => {
   const headers = await get_headers();
 
   return new Promise((resolve, reject) => {
-    axios.get(`/manager/getRoomWithFloor`,{ headers: headers }
+    axios.get(`/manager/getRoomWithFloor`, headers
     ).then(result => {
       resolve(result);
     }).catch((err) => {
@@ -153,4 +154,18 @@ export const get_floor_room = async() => {
     })
   })
 };
+
+export const get_info_Student_detail = async(id) => {
+  const headers = await get_headers();
+  console.log('==111')
+
+  return new Promise((resolve, reject) => {
+    axios.get('manager/infoStudent/getDetail/' + id, headers)
+      .then(result => {
+        resolve(result);
+      }).catch(err => {
+        reject(err)
+    })
+  })
+}
 

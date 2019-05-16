@@ -57,7 +57,7 @@ class ResetPassword extends React.Component {
 
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios
-        .post(`http://localhost:4000/api/student/change-password`, {
+        .post(`/student/change-password`, {
           username: username,
           oldPassword: this.state.oldPassword,
           newPassword: this.state.newPassword

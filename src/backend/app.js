@@ -22,13 +22,15 @@ mongoose.set('useCreateIndex', true);
 var app = express();
 global.appRoot = path.resolve(__dirname);
 
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
-app.use(bodyParser.json());
 app.use(cors());
+// for parsing multipart/form-data
+app.use(upload.array()); 
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 var { verifyAccessToken, verifyAdmin, verifySecurity } = require('./public/repos/authRepo');
 
-app.use('/news',require('./public/routes/visitor'));
+app.use('/api/news',require('./public/routes/visitor'));
 app.use('/api/user', require('./public/routes/user'));
 app.use('/api/manager', verifyAccessToken, verifyAdmin, require('./public/routes/manager'));
 app.use('/api/student', verifyAccessToken, require('./public/routes/student'));

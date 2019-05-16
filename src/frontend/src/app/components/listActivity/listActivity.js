@@ -111,7 +111,7 @@ class ListActivity extends React.Component {
       //Lấy thông tin hoạt động
       var activity = [];
       axios
-        .post(`http://localhost:4000/api/student/get-list-activities`, {
+        .post(`/student/get-list-activities`, {
           id: id,
           options: options
         })
@@ -160,8 +160,8 @@ class ListActivity extends React.Component {
           lightBackground
           store={ToastsStore}
         />
-        <div className="title-header ">
-          <span>HOẠT ĐỘNG SẮP DIỄN RA</span>
+        <div >
+          <h1 className="title-header" >HOẠT ĐỘNG SẮP DIỄN RA</h1>
         </div>
         <div className="title-header-line" />
 

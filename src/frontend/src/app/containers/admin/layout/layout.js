@@ -35,15 +35,15 @@ export default class Layout extends React.Component{
           <Navigation
             owner= {{ name: `${name}`, role: `${rule}` }}
             menuList={[
-              {key: 0, link: '/admin/student', label: 'Sinh viên',icon: 'fas fa-user-graduate'},
-              {key: 1, link: '/admin/expense', label: 'Chi phí', icon: 'fas fa-dollar-sign'},
-              {key: 2, link: '/admin/activity', label: 'Hoạt động', icon: 'fas fa-running'},
-              {key: 3, link: '/admin/dormitory', label: 'Phòng - Lầu', icon: 'fas fa-tasks'},
-              {key: 4, link: '/admin/account', label: 'Tài khoản', icon: 'fas fa-users'},
-              {key: 5, link: '/admin/news', label: 'Bài viết', icon: 'far fa-newspaper'},
-              {key: 6, link: '/admin/history', label: 'Lịch sử', icon: 'fas fa-history'},
-              {key: 7, link: '/admin/university', label: 'Trường - ngành', icon: 'fas fa-university'},
-              {key: 8, link: '/admin/registered', label: 'Đăng ký lưu trú', icon: 'fas fa-clipboard-list'}
+              {key: 'SV01', link: '/admin/student', label: 'Sinh viên',icon: 'fas fa-user-graduate'},
+              {key: 'CP01', link: '/admin/expense', label: 'Chi phí', icon: 'fas fa-dollar-sign'},
+              {key: 'HD01', link: '/admin/activity', label: 'Hoạt động', icon: 'fas fa-running'},
+              {key: 'KT01', link: '/admin/dormitory', label: 'Ký túc xá', icon: 'fas fa-tasks'},
+              {key: 'TK01', link: '/admin/account', label: 'Tài khoản', icon: 'fas fa-users'},
+              {key: 'BV01', link: '/admin/news', label: 'Bài viết', icon: 'far fa-newspaper'},
+              {key: 'LS01', link: '/admin/history', label: 'Lịch sử', icon: 'fas fa-history'},
+              {key: 'TN01', link: '/admin/university', label: 'Trường - ngành', icon: 'fas fa-university'},
+              {key: 'DK01', link: '/admin/registered', label: 'Đăng ký lưu trú', icon: 'fas fa-clipboard-list'}
             ]}
         />
         </div>

@@ -37,22 +37,28 @@ class StudentActivity extends React.Component {
       var incomingActivities = [];
       var oldActivities = [];
       axios
-        .post(`http://localhost:4000/api/student/my-upcoming-activities`, {
+        .post(`/student/my-upcoming-activities`, {
           id: id
         })
         .then(res => {
-          res.data.data.map(item => {
-            var d = new Date(item.idHD.ngayBD);
-            var today = new Date();
-
-            if (d > today) {
-              item.check = false;
-              incomingActivities.push(item);
-            } else {
-              oldActivities.push(item);
-            }
-            return true;
-          });
+          if(res.data){
+          console.log('-- res activity', res);
+          if(res.status === 200){
+            res.data.data.map(item => {
+              var d = new Date(item.idHD.ngayBD);
+              var today = new Date();
+  
+              if (d > today) {
+                item.check = false;
+                incomingActivities.push(item);
+              } else {
+                oldActivities.push(item);
+              }
+              return true;
+            });
+          }
+      }
+        
         })
         .then(() => {
           this.setState({
@@ -62,7 +68,7 @@ class StudentActivity extends React.Component {
           this.setState({
             isLoad: false
           });
-        });
+        }).catch(err => console.log(err));
     }
   };
 
@@ -102,7 +108,7 @@ class StudentActivity extends React.Component {
 
       //Hủy Đăng ký tham gia hoạt động
       axios
-        .post("http://localhost:4000/api/student/cancel-register-activities", {
+        .post("/student/cancel-register-activities", {
           data: info
         })
         .then(res => {
@@ -146,8 +152,8 @@ class StudentActivity extends React.Component {
           lightBackground
           store={ToastsStore}
         />
-        <div className="title-header ">
-          <span>HOẠT ĐỘNG CỦA BẠN</span>
+        <div >
+          <h1 className="title-header" >HOẠT ĐỘNG CỦA BẠN</h1>
         </div>
         <div className='title-header-line'></div>
         <Tabs id="controlled-tab-example" defaultActiveKey="incoming">

@@ -33,5 +33,6 @@ router.post('/get-profile-by-idPhong',studentController.getProfileByIdPhong);
 
 router.post('/get-point',studentController.getPoint);
 
+router.post('/request-stay',studentController.requestStay);
 
 module.exports = router;

@@ -111,14 +111,16 @@ class ListRoom extends React.Component {
     await Axios.post("/student/get-profile-by-idPhong", {
       id: room._id
     }).then(rs => {
-      if (rs.status === 200) {
+      if (rs.status === 200 || rs.status === 204) {
+        
         selectedRoom = {
           soNguoi: room.soNguoi,
           soNguoiToiDa: room.soNguoiToiDa,
           tenPhong: room.tenPhong,
-          listProfile: rs.data.data,
+          listProfile: rs.data.data === undefined?[]:rs.data.data,
           ten: room.loaiPhong.ten
         };
+       
       }
     });
 

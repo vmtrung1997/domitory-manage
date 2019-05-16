@@ -24,47 +24,48 @@ exports.getRoom = async (req, res) => {
   })
 };
 
-exports.addRoom = (req, res) => {
-  Room.findOne({ tenPhong: req.body.tenPhong, lau: req.body.lau }).then(result => {
+exports.addRoom = async(req, res) => {
+  await Room.findOne({ tenPhong: req.body.tenPhong, lau: req.body.lau }).then(result => {
     console.log('==find room', result)
     if (result)
       res.status(409).json({ msg: 'Tên phòng đã tồn tại' })
+    else{
+      const newRoom = {
+        tenPhong: req.body.tenPhong,
+        lau: req.body.lau,
+        soNguoi: 0,
+        soNguoiToiDa: req.body.soNguoiToiDa,
+        loaiPhong: req.body.loaiPhong
+      };
+
+      let room = new Room(newRoom);
+      room.save().then(result => {
+        console.log('==success add room', result);
+        const today = new Date()
+        const chiSoPhong = {
+          idPhong: result._id,
+          thang: today.getMonth(),
+          nam: today.getFullYear(),
+          soDien: req.body.soDien,
+          soNuoc: req.body.soNuoc,
+        };
+
+        let roomParams = new RoomParams(chiSoPhong);
+        roomParams.save().then(result => {
+
+          res.status(200).json({ msg: 'Tạo phòng thành công' })
+        }).catch(err => {
+          res.status(400).json({ msg: 'Tạo phòng không thành công' })
+        })
+      }).catch(err => {
+        res.status(400).json({ msg: 'Tạo phòng không thành công' })
+      })
+    }
   }).catch(err => {
     console.log('==err find room');
   });
 
-  const newRoom = {
-    tenPhong: req.body.tenPhong,
-    lau: req.body.lau,
-    soNguoi: 0,
-    soNguoiToiDa: req.body.soNguoiToiDa,
-    loaiPhong: req.body.loaiPhong
-  };
 
-  let room = new Room(newRoom);
-  room.save().then(result => {
-    console.log('==success add room', result);
-    const today = new Date()
-    const chiSoPhong = {
-      idPhong: result._id,
-      thang: today.getMonth(),
-      nam: today.getFullYear(),
-      soDien: req.body.soDien,
-      soNuoc: req.body.soNuoc,
-    };
-    console.log('==success add room222', chiSoPhong);
-
-    let roomParams = new RoomParams(chiSoPhong);
-    roomParams.save().then(result => {
-      console.log('==success add chiso', result);
-
-      res.status(200).json({ msg: 'Tạo phòng thành công' })
-    }).catch(err => {
-      res.status(400).json({ msg: 'Tạo phòng không thành công' })
-    })
-  }).catch(err => {
-    res.status(400).json({ msg: 'Tạo phòng không thành công' })
-  })
 };
 
 exports.delRoom = (req, res) => {
@@ -206,9 +207,7 @@ exports.getFloorRoom = async (req, res) => {
       listPromise.push(getRoom(floor));
     });
       await Promise.all(listPromise).then(result=> {
-        console.log('==result all',result);
         data = result.map(rooms => ({key: i++, floor: rooms[0].lau, rooms: rooms}))
-        console.log('==data',data);
 
         res.status(200).json(data)
       }).catch()

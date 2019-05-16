@@ -17,7 +17,7 @@ class NewsHomepage extends React.Component {
   loadNews = async date => {
     var _post = [];
 
-    await Axios.post("http://localhost:4000/news/get-news", { data: date })
+    await Axios.post("/news/get-news", { data: date })
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map((item, index) => {
@@ -40,7 +40,7 @@ class NewsHomepage extends React.Component {
 
     var _post = [];
 
-    await Axios.get("http://localhost:4000/news/get-pin-news")
+    await Axios.get("/news/get-pin-news")
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.map(item => {
@@ -59,16 +59,24 @@ class NewsHomepage extends React.Component {
     var temp = [];
     console.log(1, this.state.postsAll.length);
     this.state.postsAll.forEach(async (item, index) => {
-      var rs = item.stamp + ".jpg";
-      await storage
-        .ref("news")
-        .child(rs)
-        .getDownloadURL()
-        .then(url => {
+      if(item.stamp){
+        var rs = item.stamp + ".jpg";
+        await storage
+          .ref("news")
+          .child(rs)
+          .getDownloadURL()
+          .then(url => {
+            console.log(url);
+            var tmp = this.state.postsAll;
+            tmp[index].url = url;
+            this.setState({ postsAll: tmp });
+          });
+        }
+        else{
           var tmp = this.state.postsAll;
-          tmp[index].url = url;
+          tmp[index].url = '/images/logo-hktn.jpg';
           this.setState({ postsAll: tmp });
-        });
+        }
     });
 
     this.state.postPin.forEach(async (item, index) => {
@@ -97,8 +105,9 @@ class NewsHomepage extends React.Component {
   };
   onViewDetail = id => {
     // window.alert(id);
-    var address = "http://localhost:3000/news/detail?id=" + id;
-    window.open(address, "_blank");
+    var address = "/news/detail?id=" + id;
+    //console.log(address);
+    window.open(address,'_blank');
   };
 
   formatDay = item => {

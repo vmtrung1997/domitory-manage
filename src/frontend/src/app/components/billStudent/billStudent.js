@@ -155,8 +155,8 @@ class BillStudent extends React.Component {
           <DetailBill hideDetail={this.hideDetail} data={this.state.data} />
         )}
 
-        <div className="title-header ">
-          <span>THÔNG TIN ĐIỆN NƯỚC</span>
+<div>
+          <h1 className="title-header">THÔNG TIN ĐIỆN NƯỚC</h1>
         </div>
         <div className="title-header-line" />
         {this.state.isLoad ? (
@@ -207,13 +207,13 @@ class BillStudent extends React.Component {
                           )}
                         </td>
 
-                        {this.state.lastBill[0].trangThai === "0" ? (
+                        {this.state.lastBill[0].trangThai === 0 ? (
                           <td className="is-dont-done">Chưa thanh toán</td>
                         ) : (
                           <td className="is-done">Đã thanh toán</td>
                         )}
                         <td
-                          onClick={e => this.showDetail(this.state.bills[0])}
+                          onClick={e => this.showDetail(this.state.lastBill[0])}
                           className="detail"
                         >
                           <i className="far fa-eye" />
@@ -221,7 +221,7 @@ class BillStudent extends React.Component {
                       </tr>
                     </tbody>
                   </Table>
-                ) : null}
+                ) : <span>Chưa có ghi chép nào</span>}
               </div>
 
               <div className="time-bill">
@@ -229,6 +229,7 @@ class BillStudent extends React.Component {
                   <span className="label-font">Cũ hơn</span>
                 </div>
                 <div className="text-style">
+                {this.state.bills.length>0?
                   <Table responsive bordered size="sm" hover>
                     <thead className="thread-student">
                       <tr>
@@ -255,7 +256,7 @@ class BillStudent extends React.Component {
                             <td>
                               {OpitmizeNumber.OpitmizeNumber(item.tongTien)}
                             </td>
-                            {item.trangThai === "0" ? (
+                            {item.trangThai === 0 ? (
                               <td className="is-dont-done">Chưa thanh toán</td>
                             ) : (
                               <td className="is-done">Đã thanh toán</td>
@@ -272,7 +273,7 @@ class BillStudent extends React.Component {
                         );
                       })}
                     </tbody>
-                  </Table>
+                  </Table>:  <span>Chưa có ghi chép nào</span>}
                   <div className="pagination-position">
                     <MyPagination
                       page={this.state.pageActive}

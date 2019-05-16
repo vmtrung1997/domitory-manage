@@ -7,6 +7,7 @@ import DatePicker from '../../../components/datePicker/datePicker'
 import { get_data_print } from './expensesAction'
 import Input from '../../../components/input/input';
 import RadioButton from '../../../components/radioButton/radioButton'
+import './expensePrint.css'
 class ComponentToPrint extends React.Component {
   render() {
     return (
@@ -88,8 +89,7 @@ class Confirm extends Component {
         {data.map((value, index) => {
           return (
             <React.Fragment>
-              <h1 className={'page-break'}/>
-              <div key={index} >
+              <div key={index} style={{height:'100vh'}}>
                 <div>
                   {this.printDetailStructure(value)}
                 </div>

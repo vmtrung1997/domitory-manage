@@ -6,7 +6,6 @@ import "./../titleStudent/titleStudent.css";
 import PersonProfile from "./person/personProfile";
 import StayProfile from "./stay/stayProfile";
 
-
 class ProfileStudent extends React.Component {
   constructor(props) {
     super(props);
@@ -18,8 +17,8 @@ class ProfileStudent extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div className="title-header">
-          <span>HỒ SƠ CÁ NHÂN</span>
+        <div>
+          <h1 className="title-header">HỒ SƠ CÁ NHÂN</h1>
         </div>
         <div className="title-header-line" />
 
@@ -32,7 +31,6 @@ class ProfileStudent extends React.Component {
               <Tab eventKey="stay" title="Lưu trú">
                 <StayProfile />
               </Tab>
-             
             </Tabs>
           </div>
         </div>
