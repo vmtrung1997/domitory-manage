@@ -10,6 +10,9 @@ exports.get_list_register = (req, res) => {
 		},
 		populate: {
 			path: 'idProfile',
+			populate: {
+				path: 'idPhong',
+			}
 		},
 		page: req.query.page
 	}

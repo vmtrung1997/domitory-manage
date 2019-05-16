@@ -191,7 +191,6 @@ exports.updateInfo = (req,res) => {
 };
 
 exports.getListStudent = (req, res) => {
-  console.log('==test');
   let query = {};
   const params = req.body;
 
