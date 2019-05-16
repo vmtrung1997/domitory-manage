@@ -214,18 +214,13 @@ class PersonProfile extends React.Component {
         });
 
       //Lấy danh sách các trường
+      var options = [{ value: -1, label: "Chọn trường" }];
       axios
         .get("/student/get-school")
         .then(res => {
           if (res) {
-            // res.data.data.forEach(element => {
-            //     this.props.getSchool(element);
-            // });
-            var options = res.data.data.map((obj, index) => {
-              if (index === 0) {
-                return { value: -1, label: "Chọn trường" };
-              }
-              return { value: obj._id, label: obj.tenTruong };
+             res.data.data.map((obj, index) => {
+              options.push({ value: obj._id, label: obj.tenTruong });
             });
             this.setState({ truongOptions: options });
           }
