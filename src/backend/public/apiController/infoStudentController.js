@@ -15,7 +15,6 @@ function addOneStudent(data) {
     Account.findOne({username: data.mssv})
     .then( result => {
       if(result){
-        console.log('==exits ')
         resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data})
       } else {
         let acc = new Account({
@@ -51,7 +50,6 @@ function addOneStudent(data) {
         resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
       }
     }).catch(err => {
-      console.log('==err mssv', err)
       resolve( {status: 500, msg: 'truy vấn mssv thẻ err!', data: data})
     });
   })
@@ -64,10 +62,8 @@ exports.addStudent =async (req, res) => {
     res.status(400).json({msg: 'Thiếu thông tin'});
 
   addOneStudent(params).then(resolve => {
-    console.log('==add one', resolve)
     res.status(resolve.status).json({msg: resolve.msg})
   }).catch(reject => {
-    console.log('==err add one', reject)
     res.status(reject.status).json({msg: reject.msg})
 
   })
@@ -98,7 +94,6 @@ exports.importFile = async (req, res) => {
     });
   }).catch()
   if (listExpired.length !== 0){
-    console.log('==listExpired',listExpired);
     res.status(400).json({
       list: listExpired
     })
@@ -144,14 +139,10 @@ exports.updateInfo = (req,res) => {
   Profile.findOne({MSSV: info.MSSV})
     .then(async(result) => {
       //if change number card
-      console.log('==update 111')
-
       if(info.maThe !== result.maThe){
         await Profile.findOne({maThe: info.maThe})
           .then(result => {
-            console.log('==find maThe', result)
             if(result){
-              console.log('==find maThe return', result)
               res.status(400).json({msg: 'Mã thẻ đã tồn tại'})
             }
           }).catch(err => {
@@ -338,11 +329,7 @@ exports.getDetail = async (req, res) => {
   };
   //get activities
   let getData = async (id, callback) => {
-    await ActivityResults.find({idSV: id})
-      .populate({ path: "idHD" })
-      .then(result => {
-        data.activity.list = result;
-      });
+
 
     // get activity point
     var result = [];
@@ -406,14 +393,21 @@ exports.getDetail = async (req, res) => {
 
     await Profile.findOne({MSSV: id})
       .populate(populateQuery)
-      .then(result => {
+      .then(async(result) => {
         data.profile = result;
+        await ActivityResults.find({idSV: result._id})
+          .populate({ path: "idHD" })
+          .then(result => {
+            console.log('==list activity', result)
+            data.activity.list = result;
+          });
       });
 
     callback(data);
   };
 
   getData(id, (data) => {
+    console.log('==call back ', data)
       res.status(200).json(data);
   });
 };
