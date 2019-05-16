@@ -2,7 +2,9 @@ export const get_month = () => {
   return [...Array(13)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i, label: i } })
 }
 export const get_year = () => {
-  return [...Array(4)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + 2014, label: i + 2014 } });
+  var today = (new Date()).getFullYear() - 3;
+  console.log(today);
+  return [...Array(4)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + today, label: i + today } });
 }
 export const get_status = () => {
   return [
