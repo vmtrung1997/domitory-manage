@@ -27,6 +27,7 @@ class AccountDetail extends Component{
 	    }).catch(err => {})
 	}
 	render(){
+		console.log(this.props.data)
 		const data  = this.props.data
 		var isStudent = false
 		var rule = ''
@@ -66,7 +67,6 @@ class AccountDetail extends Component{
 		                    { isStudent ? (
 								<React.Fragment>
 		                    		<p> MSSV </p>
-		                    		<p> Trường </p>
 								</React.Fragment>
 		                    ):(
 								<React.Fragment/>	                    	 
@@ -79,10 +79,7 @@ class AccountDetail extends Component{
 		                    <Input value={data.username} disabled={true}/>
 		                    <Input value={rule} disabled={true}/>
 		                    { isStudent ? (
-								<React.Fragment>
-				                    <Input value={data.idProfile.MSSV} disabled={true}/>
-		                    		<p> Trường </p>
-								</React.Fragment>
+				                <Input value={data.idProfile.MSSV} disabled={true}/>
 		                    ):(
 								<React.Fragment/>	                    	 
 		                    )}

@@ -187,7 +187,8 @@ class InfoStudentDetail extends Component {
       this.setState({loading: false})
 
     }).catch(err => {
-      ToastsStore.error("Cập nhật không thành công!");
+      console.log('==err update',err.response)
+      ToastsStore.error(err.response.data.msg);
       this.setState({loading: false})
     })
   }
@@ -278,10 +279,6 @@ class InfoStudentDetail extends Component {
         alert('Lỗi ảnh')
       }
     }
-  }
-  getDateType = (dateString) =>{
-    let date = new Date(dateString);
-    return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
   }
   render() {
     console.log('==state render', this.state);
@@ -408,6 +405,29 @@ class InfoStudentDetail extends Component {
 
                       <Row>
                         <Col md={2}>
+                          CMND:
+                        </Col>
+                        <Col md={4}>
+                          <Input
+                            disabled={isOld}
+                            value={profile ? profile.CMND : ''}
+                            getValue={this.onChange}
+                            name={'CMND'} />
+                        </Col>
+                        <Col md={2}>
+                          Tôn giáo:
+                        </Col>
+                        <Col md={4}>
+                          <Input
+                            disabled={isOld}
+                            value={profile ? profile.tonGiao : ''}
+                            getValue={this.onChange}
+                            name={'tonGiao'} />
+                        </Col>
+                      </Row>
+
+                      <Row>
+                        <Col md={2}>
                           Email:
                         </Col>
                         <Col md={4}>
@@ -493,11 +513,19 @@ class InfoStudentDetail extends Component {
                           Ngày vào:
                         </Col>
                         <Col md={4}>
-                          <Input
-                            value={profile ? profile.ngayVaoOStr : ''}
-                            getValue={this.onChange}
-                            name={'ngayVaoO'}
-                            disabled />
+                          <DatePicker
+                            disabled
+                            dateFormat='dd/MM/yyyy'
+                            selected={profile ? profile.ngayVaoO: ''}
+                            onChange={(val) => this.getValue('ngayVaoO', val)}
+                            className='input-datepicker'
+                          />
+                          {/*<Input*/}
+                            {/*value={profile ? profile.ngayVaoO : ''}*/}
+                            {/*dateFormat='dd/MM/yyyy'*/}
+                            {/*getValue={this.onChange}*/}
+                            {/*name={'ngayVaoO'}*/}
+                            {/*disabled />*/}
                         </Col>
                         <Col md={2}>
                           Ngày hết hạn:

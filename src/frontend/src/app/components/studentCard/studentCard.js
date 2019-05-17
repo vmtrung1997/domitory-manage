@@ -52,8 +52,8 @@ class StudentCard extends Component{
         			</div>
         		</div>
         		<div className='footer-card'>
-        			<span style={{background: '#82D348', margin:'-2px 0'}}>{semester}</span>
-        			<span> KÍ TÚC XÁ 135B - TRẦN HƯNG ĐẠO, QUẬN 1, TP. HỒ CHÍ MINH</span>
+        			<span style={{background: '#82D348', marginRight:'4px'}}>{semester}</span>
+        			<span>  KÍ TÚC XÁ 135B - TRẦN HƯNG ĐẠO, Q1, TP. HỒ CHÍ MINH</span>
         		</div>
         	</div>
 		)
