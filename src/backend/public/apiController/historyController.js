@@ -8,14 +8,21 @@ require('../models/Phong')
 require('../models/TaiKhoan')
 
 exports.find_history = (req, res) => {
-  console.log(req.body)
   var {time, options} = req.body
   var fromDate = new Date(time.fromDate);
-  console.log(fromDate);
-  LichSu.paginate(
-    {
-      $and: [{ thoiGian: {$lte:new Date(time.toDate)} }, { thoiGian:{ $gte:new Date( time.fromDate)} }] 
-    },
+  var toDate = new Date(time.toDate);
+  let query = {}
+  if (fromDate.getDate() === toDate.getDate() 
+  && fromDate.getMonth() === toDate.getMonth() 
+  && fromDate.getFullYear() === toDate.getFullYear()){
+    query = {thoiGian: {$gte: fromDate}}
+  } else {
+    query = {
+      $and: [{ thoiGian: {$lte: toDate }}, { thoiGian: {$gte: fromDate} }]
+    }
+  }
+  console.log(query)
+  LichSu.paginate(query,
     {
       populate: {
         path: 'profile',

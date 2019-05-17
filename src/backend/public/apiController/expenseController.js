@@ -42,7 +42,7 @@ exports.select_expense_table = (req, res) => {
 	// console.log('==searchObj: ', searchObj);
 	// console.log('==options: ', options)
 	ChiPhiPhong.paginate(searchObj, options).then(value => {
-		// console.log(value);
+		console.log(value);
 		res.json({
 			rs: value
 		})

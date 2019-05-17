@@ -11,7 +11,7 @@ import './infoStudentDetail.css';
 import refreshToken from "../../../../../utils/refresh_token";
 import Select from "../../../../components/selectOption/select";
 import SearchSelect from '../../../../components/selectOption/select'
-import { imageFile, defaultStudentImg } from '../../../../function/imageFunction'
+import { defaultStudentImg } from '../../../../function/imageFunction'
 import DatePicker from "react-datepicker/es/index";
 import './../infoStudentFile.css';
 import { getSchools, getMajor } from './../../university/universityAction'
@@ -267,8 +267,8 @@ class InfoStudentDetail extends Component {
       testImg.crossOrigin = "Anonymous";
       testImg.onload = () => {
         this.setState({
-          info: {
-            ...this.state.info,
+          profile: {
+            ...this.state.profile,
             img: e.target.result
             
           }
