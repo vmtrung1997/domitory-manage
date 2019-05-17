@@ -138,6 +138,7 @@ exports.deleteStudent = (req, res) => {
 
 exports.updateInfo = (req,res) => {
   const info = req.body.info;
+  console.log('==info update', info)
   Profile.findOne({MSSV: info.MSSV})
     .then(async(result) => {
       //if change number card
@@ -186,12 +187,13 @@ exports.updateInfo = (req,res) => {
           res.status(400).json({msg: 'Cập nhật lịch sử phòng không thành công'})
         })
       }
-      res.status(200).json({msg: 'Cập nhật thành công!'})
     }).catch(err => {
       res.status(400).json({msg: 'cập nhật không thành công!'})
   }).then(()=>{
-      console.log('==update info')
-      Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info })
+      console.log('==update info nhe')
+      Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info }).then(result => {
+        res.status(200).json({data: result, msg: 'Cập nhật thành công!'})
+      }).catch()
   }
   ).catch()
 };

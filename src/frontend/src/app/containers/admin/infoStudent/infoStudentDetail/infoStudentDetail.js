@@ -62,18 +62,21 @@ class InfoStudentDetail extends Component {
         this.setState({
           profile: result.data,
         });
-        const { profile } = result.data;
-        if(profile.truong){
+        const profile = result.data;
+        console.log('==get result',result.data)
+
+        if(profile.truong ){
+          console.log('==get truong')
           this.setState({
             school: {
               value: profile.truong._id,
               label: profile.truong.tenTruong
             }
-          })
+          });
           this.getMajorOptions(profile.truong._id);
         }
 
-        if(profile.nganhHoc)
+        if(profile.nganhHoc !== undefined)
           this.setState({
             major: {
               value: profile.nganhHoc._id,
@@ -170,9 +173,9 @@ class InfoStudentDetail extends Component {
         info: {
           ...this.state.profile,
           // img: this.state.profile.img,
-          // nganhHoc: this.state.profile.nganhHoc && this.state.profile.nganhHoc._id,
-          // truong: this.state.profile.truong && this.state.profile.truong._id,
-          // idPhong: this.state.profile.idPhong && this.state.profile.idPhong._id
+          nganhHoc: this.state.profile.nganhHoc && this.state.profile.nganhHoc._id,
+          truong: this.state.profile.truong && this.state.profile.truong._id,
+          idPhong: this.state.profile.idPhong && this.state.profile.idPhong._id
         }
       }, { headers: { 'x-access-token': secret.access_token} }
     ).then(result => {
@@ -311,6 +314,7 @@ class InfoStudentDetail extends Component {
     var imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
     //var ngayVaoOStr = this.getDateType(profile.ngayVaoO)
     let gender = this.state.profile && this.state.profile.gioiTinh;
+    console.log(gender)
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -389,7 +393,7 @@ class InfoStudentDetail extends Component {
                           <Select
                             disabled={isOld}
                             placeholder={''}
-                            value={profile.gioiTinh}
+                            value={gender}
                             selected={this.handleSelectGender}
                             options={genderOptions} />
 
