@@ -17,10 +17,6 @@ exports.get_room = () => {
   })
 };
 
-exports.get_room_enable = (req, res) => {
-  Phong.find({})
-}
-
 exports.get_element = (req, res) => {
   let obj = req.params.name;
   switch (obj) {

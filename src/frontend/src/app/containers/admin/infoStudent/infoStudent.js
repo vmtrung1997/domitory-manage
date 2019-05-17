@@ -109,9 +109,9 @@ class InfoStudent extends Component{
     }
   };
 
-  onViewDetail = (id) => {
+  onViewDetail = (mssv) => {
     this.props.history.push({
-      pathname: '/admin/student/detail/'+ id,
+      pathname: '/admin/student/detail/'+ mssv,
       //state: { info: info }
     });
   }
