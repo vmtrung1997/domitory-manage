@@ -15,7 +15,6 @@ function addOneStudent(data) {
     Account.findOne({username: data.mssv})
     .then( result => {
       if(result){
-        console.log('==exits ')
         resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data})
       } else {
         let acc = new Account({
@@ -51,7 +50,6 @@ function addOneStudent(data) {
         resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
       }
     }).catch(err => {
-      console.log('==err mssv', err)
       resolve( {status: 500, msg: 'truy vấn mssv thẻ err!', data: data})
     });
   })
@@ -64,10 +62,8 @@ exports.addStudent =async (req, res) => {
     res.status(400).json({msg: 'Thiếu thông tin'});
 
   addOneStudent(params).then(resolve => {
-    console.log('==add one', resolve)
     res.status(resolve.status).json({msg: resolve.msg})
   }).catch(reject => {
-    console.log('==err add one', reject)
     res.status(reject.status).json({msg: reject.msg})
 
   })
@@ -83,6 +79,8 @@ exports.importFile = async (req, res) => {
       mssv: record.mssv,
       hoTen: record.hoTen,
       ngaySinh: record.ngaySinh,
+      ngayHetHan: req.body.ngayHetHan,
+      hanDangKy: req.body.hanDangKy
     }
     listPromise.push(addOneStudent(student))
   })
@@ -96,9 +94,8 @@ exports.importFile = async (req, res) => {
       if(r.status === 200)
         listSuccess.push({...r, key: i++});
     });
-  }).catch()
+  }).catch();
   if (listExpired.length !== 0){
-    console.log('==listExpired',listExpired);
     res.status(400).json({
       list: listExpired
     })
@@ -125,7 +122,7 @@ exports.deleteStudent = (req, res) => {
                   .then(result => {
                     result.soNguoi = result.soNguoi - 1;
                     result.save()
-                  })
+                  }).catch()
               }
               res.status(200).json({msg: 'Bạn đã xóa thành công'})
             }).catch(err =>
@@ -141,17 +138,14 @@ exports.deleteStudent = (req, res) => {
 
 exports.updateInfo = (req,res) => {
   const info = req.body.info;
+  console.log('==info update', info)
   Profile.findOne({MSSV: info.MSSV})
     .then(async(result) => {
       //if change number card
-      console.log('==update 111')
-
       if(info.maThe !== result.maThe){
         await Profile.findOne({maThe: info.maThe})
           .then(result => {
-            console.log('==find maThe', result)
             if(result){
-              console.log('==find maThe return', result)
               res.status(400).json({msg: 'Mã thẻ đã tồn tại'})
             }
           }).catch(err => {
@@ -193,14 +187,15 @@ exports.updateInfo = (req,res) => {
           res.status(400).json({msg: 'Cập nhật lịch sử phòng không thành công'})
         })
       }
-      res.status(200).json({msg: 'Cập nhật thành công!'})
     }).catch(err => {
       res.status(400).json({msg: 'cập nhật không thành công!'})
   }).then(()=>{
-      console.log('==update info')
-      Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info })
+      console.log('==update info nhe')
+      Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info }).then(result => {
+        res.status(200).json({data: result, msg: 'Cập nhật thành công!'})
+      }).catch()
   }
-  )
+  ).catch()
 };
 
 exports.getListStudent = (req, res) => {
@@ -273,7 +268,8 @@ exports.getListStudentPaging = (req, res) => {
   let options = params.options;
   options.populate = ['idTaiKhoan','idPhong', 'truong', 'nganhHoc'];
 
-  Account.find({isDelete: params.isOld, loai: 'SV'}).select('_id').then(accs => {
+  Account.find({isDelete: params.isOld, loai: 'SV'}).select('_id')
+    .then(accs => {
     console.log('==accs', accs)
     var arr = [];
     accs.forEach(acc => {
@@ -284,19 +280,17 @@ exports.getListStudentPaging = (req, res) => {
       .then(result => {
         res.status(200).json(result);
       }).catch(err => {
-      console.log('==fail', err);
-
-      res.statusCode(400).json({
-        err: 'get info student fail'
-      })
+        console.log('==fail', err);
+        res.statusCode(400).json({
+          err: 'get info student fail'
+        })
     })
-  })
+  }).catch()
 
   //}
 };
 
 exports.getRoomHistory = async(req, res) => {
-  console.log('==his', req.params.id);
   const id = req.params.id;
 
   await RoomHistory.find({idTaiKhoan: id}).populate('idPhong').sort({ ngayChuyen: 1 }).
@@ -308,7 +302,6 @@ exports.getRoomHistory = async(req, res) => {
       console.log('==err', err)
       res.status(400)
   })
-
 }
 
 exports.uploadImage = (req, res) => {
@@ -318,101 +311,37 @@ exports.uploadImage = (req, res) => {
   })
 };
 
-exports.getListActivities = (req, res) => {
-  const id = req.params.id;
-  ActivityResults.find({idSV: id})
-    .populate({ path: "idHD" })
+exports.getListActivitiesByMSSV = (req, res) => {
+  const mssv = req.params.mssv;
+  console.log('==get acti',mssv)
+  Profile.findOne({MSSV: mssv})
     .then(result => {
-      res.status(200).json(result)
-  }).catch(err => {
-    res.status(400).json({msg: "Lỗi"})
-  })
+      ActivityResults.find({idSV: result._id})
+        .populate({path:'idHD'})
+        .then(result => {
+          console.log('==get acti suc',result)
+          res.status(200).json(result)
+        }).catch(err => {
+        res.status(400).json({msg: "Lỗi"})
+      })
+    })
+
 };
 
-exports.getDetail = async (req, res) => {
-  const id = req.params.id;
-  let data = {
-    activity: {},
-    profile: {}
-  };
-  //get activities
-  let getData = async (id, callback) => {
-    await ActivityResults.find({idSV: id})
-      .populate({ path: "idHD" })
-      .then(result => {
-        data.activity.list = result;
-      });
+exports.getProfile = async (req, res) => {
+  const mssv = req.params.mssv;
+  let populateQuery = [
+    {path:'idTaiKhoan', select: 'isDelete'},
+    {path:'idPhong'},
+    {path:'truong'},
+    {path:'nganhHoc'},
+  ];
 
-    // get activity point
-    var result = [];
-    var ngayVaoO = new Date(req.body.ngayVaoO);
-    if (ngayVaoO === undefined) {
-      data.activity.point = 0
-    }
-    await ActivityResults.find({ idSV: req.body.id })
-      .populate({
-        path: "idHD",
-        match: {
-          ngayBD: { $gte: ngayVaoO }
-        },
-        select: "diem batBuoc ten diaDiem ngayBD ngayKT thang nam"
-      })
-      .then(rs => {
-        var year = ngayVaoO.getFullYear();
-        var now = new Date();
-        for (var yearpoint = year; yearpoint <= now.getFullYear(); yearpoint++) {
-          var point = 0;
-          var i = 0;
-          rs.some(item => {
-            if (
-              (item.idHD.ngayKT.getMonth() + 1 > 7 &&
-                item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
-              (item.idHD.ngayKT.getMonth() + 1 < 8 &&
-                item.idHD.ngayKT.getFullYear() === yearpoint) ||
-              (item.idHD.ngayKT.getFullYear() < yearpoint ||
-                item.idHD.ngayKT.getFullYear() > yearpoint + 1) ||
-              (item.idHD.ngayKT.getMonth() + 1 > now.getMonth() + 1)
-            ) {
-              return true;
-            }
-            else {
-              if (item.idHD.batBuoc && !item.isTG) {
-                point -= item.idHD.diem;
-              } else if (item.isTG) {
-                point += item.idHD.diem;
-              }
-            }
-          });
-
-          var temp = {
-            year: yearpoint,
-            point: point
-          };
-
-          result.push(temp);
-        }
-
-        data.activity.point = result;
-      });
-
-    // // get profile
-    let populateQuery = [
-      {path:'idTaiKhoan', select: 'isDelete'},
-      {path:'idPhong'},
-      {path:'truong'},
-      {path:'nganhHoc'},
-    ];
-
-    await Profile.findOne({MSSV: id})
-      .populate(populateQuery)
-      .then(result => {
-        data.profile = result;
-      });
-
-    callback(data);
-  };
-
-  getData(id, (data) => {
-      res.status(200).json(data);
-  });
+  Profile.findOne({MSSV: mssv})
+    .populate(populateQuery)
+    .then((result) => {
+      res.status(200).json(result)
+    }).catch(err => {
+      res.status(400).json({msg: 'Có lỗi'})
+  })
 };
