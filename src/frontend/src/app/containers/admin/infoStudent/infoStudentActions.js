@@ -167,5 +167,34 @@ export const get_info_Student_detail = async(id) => {
         reject(err)
     })
   })
-}
+};
 
+export const import_info_student_data = async(props) => {
+  const headers = await get_headers();
+
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/infoStudent/importFile', {
+      data: props.data,
+      hanDangKy: props.regisExpiredDate,
+      ngayHetHan: props.expiredDate,
+    }, headers)
+      .then(result => {
+        resolve(result);
+      }).catch(err => {
+        reject(err)
+    })
+  })
+};
+
+export const get_activites_by_MSSV = async(mssv) => {
+  const headers = await get_headers();
+
+  return new Promise((resolve, reject) => {
+    axios.get('/manager/infoStudent/getActivities/' + mssv, headers)
+      .then(result => {
+        resolve(result);
+      }).catch(err => {
+      reject(err)
+    })
+  })
+}

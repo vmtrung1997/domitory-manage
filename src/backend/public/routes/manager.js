@@ -79,9 +79,9 @@ router.post('/infoStudent/update', infoStudent.updateInfo);
 
 router.post('/infoStudent/importFile', infoStudent.importFile);
 
-router.get('/infoStudent/getActivities/:id', infoStudent.getListActivities);
+router.get('/infoStudent/getActivities/:mssv', infoStudent.getListActivitiesByMSSV);
 
-router.get('/infoStudent/getDetail/:id', infoStudent.getDetail);
+router.get('/infoStudent/getDetail/:mssv', infoStudent.getProfile);
 
 router.get('/getElement/:name', repo.get_element);
 
