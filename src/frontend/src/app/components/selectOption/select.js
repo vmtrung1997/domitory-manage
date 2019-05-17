@@ -69,7 +69,7 @@ class Select extends Component {
 						onChange={this.props.onChange}
 						options={this.props.options} /> :
 					<select className="select-control"
-						defaultValue={this.props.value}
+						value={this.props.value}
 						onChange={this.onHandleChange}
 						onSelect={this.onHandleChange}
 						disabled={this.props.disabled}>
