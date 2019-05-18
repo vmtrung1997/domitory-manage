@@ -3,11 +3,9 @@ import {Col, Modal, Row, Tab, Table, Tabs} from 'react-bootstrap'
 import Button from '../../../components/button/button';
 import Input from "../../../components/input/input";
 import DatePicker from "react-datepicker/es/index";
-import {add_student, mark_old_student, get_list_student, get_element, get_floor_room} from './infoStudentActions';
+import {add_student, mark_old_student, get_list_student, get_element, get_floor_room, import_info_student_data} from './infoStudentActions';
 import {ToastsStore} from "react-toasts";
 import XLSX from "xlsx";
-import refreshToken from "../../../../utils/refresh_token";
-import axios from "axios";
 import Checkbox from "../../../components/checkbox/checkbox";
 import Loader from "../../../components/loader/loader";
 import ListRoom from '../../../components/listRoom/listroom'
@@ -331,27 +329,41 @@ export class ImportDataModal extends Component{
         });
         this.convertData(this.state.fileImport).then(async(resolve) => {
           resolve.shift();
+          console.log('==resolve', resolve)
 
-          await refreshToken();
-          var secret = JSON.parse(localStorage.getItem('secret'));
-          axios.post(`/manager/infoStudent/importFile`,{
-              data: resolve,
-              expireDay: new Date()
-            }, { headers: {'x-access-token': secret.access_token} }
-          ).then(result => {
-            console.log('==import success', result);
-            this.setState({
-              justFileServiceResponse: 'Thêm thành công!!'
-            });
-            this.props.onSave();
-            //this.handlePopup(false)
-          }).catch(err => {
-            console.log('==import err', err.response.data);
-            this.setState({
-              justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
-              listExpired: err.response.data.list
-            });
+          import_info_student_data({data: resolve, regisExpiredDate:this.state.regisExpiredDate, expiredDate:this.state.expiredDate})
+            .then(result => {
+              this.setState({
+                justFileServiceResponse: 'Thêm thành công!!'
+              });
+              this.props.onSave();
+            }).catch(err => {
+              console.log('==import err', err.response.data);
+              this.setState({
+                justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
+                listExpired: err.response.data.list
+              });
           })
+          // await refreshToken();
+          // var secret = JSON.parse(localStorage.getItem('secret'));
+          // axios.post(`/manager/infoStudent/importFile`,{
+          //     data: resolve,
+          //     expireDay: new Date()
+          //   }, { headers: {'x-access-token': secret.access_token} }
+          // ).then(result => {
+          //   console.log('==import success', result);
+          //   this.setState({
+          //     justFileServiceResponse: 'Thêm thành công!!'
+          //   });
+          //   this.props.onSave();
+          //   //this.handlePopup(false)
+          // }).catch(err => {
+          //   console.log('==import err', err.response.data);
+          //   this.setState({
+          //     justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
+          //     listExpired: err.response.data.list
+          //   });
+          // })
         })
       } else {
         this.setState({

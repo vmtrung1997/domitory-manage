@@ -12,13 +12,14 @@ import refreshToken from "../../../../../utils/refresh_token";
 import Select from "../../../../components/selectOption/select";
 import SearchSelect from '../../../../components/selectOption/select'
 import { imageFile, defaultStudentImg } from '../../../../function/imageFunction'
+import { dateToString } from '../../../../function/dateFunction'
 import DatePicker from "react-datepicker/es/index";
 import './../infoStudentFile.css';
 import { getSchools, getMajor } from './../../university/universityAction'
 import Loader from '../../../../components/loader/loader';
 import { ChooseRoom } from './../infoStudentModal'
-import { get_info_Student_detail } from './../infoStudentActions'
-import {get_floor_room} from "../infoStudentActions";
+import { get_info_Student_detail, get_activites_by_MSSV, get_floor_room } from './../infoStudentActions'
+
 
 class InfoStudentDetail extends Component {
   constructor(props) {
@@ -51,38 +52,31 @@ class InfoStudentDetail extends Component {
     console.log('==did mount', this.state)
     this.getElement('room');
     this.getElement('school');
-    // this.getActivities('5cbad213fb6fc041ab948375');
-
-
-    // var birthDate = profile.ngaySinh ? new Date(profile.ngaySinh) : new Date();
-    // var ngayHetHan = profile.ngayHetHan ? new Date(profile.ngayHetHan): new Date();
-    // //var stringDate = new DbirthDate.getDate() + '/' +birthDate.getMonth()+'/'+birthDate.getFullYear();
-    // this.setState({
-    //   profile: {...profile, ngaySinh: birthDate, ngayHetHan: ngayHetHan}
-    // })
   }
 
   getData = () => {
-    console.log('==hello', this.props.match.params.id)
-    get_info_Student_detail(this.props.match.params.id)
+    console.log('==hello', this.props.match.params.mssv)
+    get_info_Student_detail(this.props.match.params.mssv)
       .then(result => {
-        console.log('==info detail', result);
+
         this.setState({
-          profile: result.data.profile,
-        })
-        const { profile } = result.data;
-        if(profile.truong){
-          console.log('==school', profile)
+          profile: result.data,
+        });
+        const profile = result.data;
+        console.log('==get result',result.data)
+
+        if(profile.truong ){
+          console.log('==get truong')
           this.setState({
             school: {
               value: profile.truong._id,
               label: profile.truong.tenTruong
             }
-          })
+          });
           this.getMajorOptions(profile.truong._id);
         }
 
-        if(profile.nganhHoc)
+        if(profile.nganhHoc !== undefined)
           this.setState({
             major: {
               value: profile.nganhHoc._id,
@@ -95,6 +89,8 @@ class InfoStudentDetail extends Component {
             isOld: true
           })
         }
+
+
       }).catch(err => {
         console.log('==err info detail', err.response)
     })
@@ -103,6 +99,16 @@ class InfoStudentDetail extends Component {
       this.setState({roomData: result.data})
     }).catch(err => {
       console.log('==err floor', err)
+    })
+    get_activites_by_MSSV(this.props.match.params.mssv).then(result => {
+      console.log('==acti ', result);
+      let i = 0;
+      let activities = result.data.map(acti => ({key: i++, data: acti}));
+      this.setState({
+        activities: activities
+      })
+    }).catch(err => {
+      console.log('==acti err', err)
     })
   };
 
@@ -136,24 +142,15 @@ class InfoStudentDetail extends Component {
     })
   }
 
-  getActivities = async(id) => {
-    console.log('==acti 1111');
-
-    await refreshToken();
-    let secret = JSON.parse(localStorage.getItem('secret'));
-    axios.get(`/manager/infoStudent/getActivities/` + id, {
-      headers: { 'x-access-token': secret.access_token }
-    }).then(result => {
-      console.log('==acti ', result);
-      let i = 0;
-      let activities = result.data.map(acti => ({key: i++, data: acti}));
-      this.setState({
-        activities: activities
-      })
-    }).catch(err => {
-      console.log('==acti err', err)
-    })
-  }
+  // getActivities = async() => {
+  //   console.log('==acti 1111');
+  //
+  //   await refreshToken();
+  //   let secret = JSON.parse(localStorage.getItem('secret'));
+  //   axios.get(`/manager/infoStudent/getActivities/` + this.props.match.params.mssv, {
+  //     headers: { 'x-access-token': secret.access_token }
+  //   })
+  // }
 
   onChange = (event) => {
     this.setState({
@@ -176,9 +173,9 @@ class InfoStudentDetail extends Component {
         info: {
           ...this.state.profile,
           // img: this.state.profile.img,
-          // nganhHoc: this.state.profile.nganhHoc && this.state.profile.nganhHoc._id,
-          // truong: this.state.profile.truong && this.state.profile.truong._id,
-          // idPhong: this.state.profile.idPhong && this.state.profile.idPhong._id
+          nganhHoc: this.state.profile.nganhHoc && this.state.profile.nganhHoc._id,
+          truong: this.state.profile.truong && this.state.profile.truong._id,
+          idPhong: this.state.profile.idPhong && this.state.profile.idPhong._id
         }
       }, { headers: { 'x-access-token': secret.access_token} }
     ).then(result => {
@@ -317,7 +314,7 @@ class InfoStudentDetail extends Component {
     var imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
     //var ngayVaoOStr = this.getDateType(profile.ngayVaoO)
     let gender = this.state.profile && this.state.profile.gioiTinh;
-    console.log('==gender', gender, typeof(gender))
+    console.log(gender)
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -396,7 +393,7 @@ class InfoStudentDetail extends Component {
                           <Select
                             disabled={isOld}
                             placeholder={''}
-                            value={profile.gioiTinh}
+                            value={gender}
                             selected={this.handleSelectGender}
                             options={genderOptions} />
 
@@ -490,12 +487,6 @@ class InfoStudentDetail extends Component {
                   <Tab eventKey="infoGeneral" title="Thông tin chung">
                     <div className={'id-tab_frame'}>
                       <Row>
-                        {/*<Col md={2}>*/}
-                          {/*Username:*/}
-                        {/*</Col>*/}
-                        {/*<Col md={4}>*/}
-                          {/*<Input value={profile && profile.idTaiKhoan ? profile.idTaiKhoan.username : ''} disabled />*/}
-                        {/*</Col>*/}
                         <Col md={2}>
                           Mã thẻ:
                         </Col>
@@ -506,6 +497,17 @@ class InfoStudentDetail extends Component {
                             getValue={this.onChange}
                             name={'maThe'} />
                         </Col>
+                        <Col md={2}>
+                          Phòng:
+                        </Col>
+                        <ChooseRoom
+                          disabled={isOld}
+                          show={this.state.showRoomPopup}
+                          label={profile && profile.idPhong ? profile.idPhong.tenPhong : ''}
+                          onChange={this.chooseRoom}
+                          room={profile ? profile.idPhong : {}}
+                          data={this.state.roomData}
+                        />
                       </Row>
 
                       <Row>
@@ -520,12 +522,6 @@ class InfoStudentDetail extends Component {
                             onChange={(val) => this.getValue('ngayVaoO', val)}
                             className='input-datepicker'
                           />
-                          {/*<Input*/}
-                            {/*value={profile ? profile.ngayVaoO : ''}*/}
-                            {/*dateFormat='dd/MM/yyyy'*/}
-                            {/*getValue={this.onChange}*/}
-                            {/*name={'ngayVaoO'}*/}
-                            {/*disabled />*/}
                         </Col>
                         <Col md={2}>
                           Ngày hết hạn:
@@ -541,30 +537,20 @@ class InfoStudentDetail extends Component {
                         </Col>
                       </Row>
 
-                      <Row>
-                        <Col md={2}>
-                          Điểm h.động:
-                        </Col>
-                        <Col md={4}>
-                          <Input
-                            value={activity ? activity.point : '0'}
-                            type={'number'}
-                            getValue={this.onChangeNumber}
-                            name={'diemHD'}
-                            disabled/>
-                        </Col>
-                        <Col md={2}>
-                          Phòng:
-                        </Col>
-                        <ChooseRoom
-                          disabled={isOld}
-                          show={this.state.showRoomPopup}
-                          label={profile && profile.idPhong ? profile.idPhong.tenPhong : ''}
-                          onChange={this.chooseRoom}
-                          room={profile ? profile.idPhong : {}}
-                          data={this.state.roomData}
-                        />
-                      </Row>
+                      {/*<Row>*/}
+                        {/*<Col md={2}>*/}
+                          {/*Điểm h.động:*/}
+                        {/*</Col>*/}
+                        {/*<Col md={4}>*/}
+                          {/*<Input*/}
+                            {/*value={activity ? activity.point : '0'}*/}
+                            {/*type={'number'}*/}
+                            {/*getValue={this.onChangeNumber}*/}
+                            {/*name={'diemHD'}*/}
+                            {/*disabled/>*/}
+                        {/*</Col>*/}
+                        {/**/}
+                      {/*</Row>*/}
 
                       <Row>
                         <Col md={2}>
@@ -625,14 +611,23 @@ class InfoStudentDetail extends Component {
                         <tbody>
                         {
                           activities && activities.map(acti => {
-                            //let happening = acti.data.idHD.ngayBD
+                            let present = new Date();
+                            let happening = new Date(acti.data.idHD.ngayKT) < present;
+                            console.log('==heppen', happening)
+                            let status = '';
+                            if(happening && !acti.data.isTG)
+                              status = 'Không tham gia'
+                            else if(happening && acti.data.isTG)
+                              status = 'Đã tham gia'
+                            else if(!happening && !acti.data.isTG)
+                              status = 'Chưa diễn ra'
                             return (
                               <tr key={acti.key}>
                                 <td>{acti.key + 1}</td>
-                                <td>{acti.data.idHD && acti.data.idHD.ngayBD}</td>
+                                <td>{acti.data.idHD && dateToString(acti.data.idHD.ngayBD)}</td>
                                 <td>{acti.data.idHD && acti.data.idHD.ten}</td>
                                 <td>{acti.data.isTG ? acti.data.idHD.diem : '0'}/{acti.data.idHD && acti.data.idHD.diem}</td>
-                                <td>{acti.data.isTG ? "Đã tham gia" : "Chưa tham gia"}</td>
+                                <td>{status}</td>
                               </tr>
                             )
                           })
