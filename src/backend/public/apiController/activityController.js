@@ -148,13 +148,11 @@ exports.rollcall_activity = async (req, res) => {
 		the: req.body.idThe,
 		sv: ''
 	}
-
 	var SV = await Profile.findOne({ maThe: data.the}, '_id').catch(err => {
 		console.log('==rollcall_activ:', err)
 		res.status(500)
 		return true
 	})
-	
 	if(!SV){
 		res.status(200).json({rs: 'not found student'})
 		return true
