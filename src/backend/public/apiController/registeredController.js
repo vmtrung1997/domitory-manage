@@ -45,10 +45,9 @@ exports.get_list_register = (req, res) => {
 		    })
 		    .then(rs => {
 		    	var point = 0 
-		    	console.log(rs)
 	 			rs.map( ac => {
 	 				if(ac.idHD){
-		 				if(ac.isHD.batBuoc && !ac.isTG){
+		 				if(ac.idHD.batBuoc && !ac.isTG && now > ac.idHD.ngayBD){
 		 					point -= ac.idHD.diem
 		 				} else if(ac.isTG){
 		 					point += ac.idHD.diem
@@ -62,10 +61,10 @@ exports.get_list_register = (req, res) => {
 				res.status(500)
 	      	})
 	    }))
-	    
-	    console.log(arrPoint)
+
 		console.log('==get_register: success')
 		res.json({
+			point: arrPoint,
 			rs: result,
 		})
 	}).catch(err => {
@@ -73,3 +72,4 @@ exports.get_list_register = (req, res) => {
 		res.status(500)
 	})                             
 }
+

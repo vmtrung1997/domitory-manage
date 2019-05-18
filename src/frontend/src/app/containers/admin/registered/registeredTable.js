@@ -5,9 +5,28 @@ import Checkbox from './../../../components/checkbox/checkbox'
 
 class RegisteredTable extends Component{
 	static defaultProps = {
-		data: []
+		data: [],
+		point: []
+	}
+	constructor(props) {
+		super(props)
+		this.state = {
+			check: []
+		}
+	}
+	componentDidMount(){
+		// var check = this.props.data.map((row, index) => { 
+		// 	console.log(row)
+		// 	return {[row._id]:row.isAc}
+		// })
+		console.log(1,	this.props.data)
+		//this.setState({check: this.props.data})
+	}
+	handleCheck = (index, e) => {
+		console.log(this.state)
 	}
 	render(){
+		const point = this.props.point
 		const table = this.props.data.map( (row, index) => {
 			return (
 				<tr key={index} >
@@ -17,7 +36,7 @@ class RegisteredTable extends Component{
 						<td>{row.idProfile.MSSV}</td>
 						<td>{row.idProfile.hoTen}</td>
 						<td style={{textAlign: 'center'}}>{row.idProfile.idPhong ? row.idProfile.idPhong.tenPhong : '---' }</td>
-						<td style={{textAlign: 'center'}}>{row.idProfile.hoTen}</td>
+						<td style={{textAlign: 'center'}}>{point[index]}</td>
 						</>
 					:
 						<>
@@ -30,13 +49,14 @@ class RegisteredTable extends Component{
 					<td className={'text-center'} >
 						<Checkbox 
 							style={{ display: 'flex', justifyContent: 'center' }} 
-							check={row.isAccept} 
+							check={row.isAc} 
+							name={row._id}
+							isCheck={(e) => this.handleCheck(index,e)}
 						/>
 					</td>
 				</tr>
 			)
 		})
-		console.log(this.props.data)
 		return(
 			<Table bordered hover responsive size="sm" className="table-activity">
 				<thead className="title-table">

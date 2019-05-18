@@ -39,8 +39,8 @@ class Registered extends Component{
 			}
 		})
       	.then(res => {
-      		console.log(res.data.rs.docs)
        	    this.setState({
+       	    	point: res.data.point,
     	    	data: res.data.rs.docs,
 				loading: false,
 				totalPages: res.data.rs.totalPages
@@ -60,7 +60,6 @@ class Registered extends Component{
 					<div>
 						<Row className={'m-b-10'}>
 							<Col>
-								<span> Tài khoản </span>
 								<Input 
 									placeholder={'Tìm kiếm'} 
 									getValue={ (obj) => this.changeState('query', obj.value)}
@@ -68,7 +67,6 @@ class Registered extends Component{
 								/>
 							</Col>
               				<Col md={2} xs={12}>
-              					<div>&nbsp;</div>
               					<Button 
               						title={'Tìm kiếm'}
               						style={{padding: '7px 15px'}}
@@ -79,7 +77,7 @@ class Registered extends Component{
               				</Col>
               			</Row>		
 					</div>
-					<RegisteredTable data={this.state.data}/>
+					<RegisteredTable data={this.state.data} point={this.state.point}/>
 					<div className={'is-pagination'}>
 						<MyPagination 
 							page={this.state.page} 
