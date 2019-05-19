@@ -130,7 +130,7 @@ exports.update_Account = (req, res) => {
 	if(req.body){
 		const rule = req.body.rule
 		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' ||  rule === 'SV'){
-			Account.update({ _id: id }, {loai: rule}, (err, val) => {
+			Account.updateOne({ _id: id }, {loai: rule}, (err, val) => {
 				if(!err){
 					res.json({ rs: 'ok'})
 					console.log('==update_account: success')
@@ -146,7 +146,7 @@ exports.update_Account = (req, res) => {
 
 exports.delete_Account = (req, res) =>{
 	const id = req.query.id
-	Account.update({ _id: id }, {isDelete: 1}, (err, val) => {
+	Account.updateOne({ _id: id }, {isDelete: 1}, (err, val) => {
 		if(!err){
 			res.json({ rs: 'ok'})
 			console.log('==delete_account: success')

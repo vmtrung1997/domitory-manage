@@ -130,7 +130,7 @@ exports.update_activity = (req, res) => {
 	data.ngayBD = dateFirst
 	data.ngayKT = dateFinal
 
-	Activity.update({ _id: id }, data, (err, val) => {
+	Activity.updateOne({ _id: id }, data, (err, val) => {
 		if(!err){
 			res.json({ rs: 'ok'})
 			console.log('==update_activity: success')

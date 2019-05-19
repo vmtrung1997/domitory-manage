@@ -5,7 +5,7 @@ const Register = require('./../models/YeuCauLuuTru');
 const resultActivity = require('./../models/KetQuaHD');
 
 
-exports.get_list_register = (req, res) => {
+exports.get_list_register = async (req, res) => {
 	var arrPoint = []
 	var now = new Date()
 	var lte = 0
@@ -27,9 +27,27 @@ exports.get_list_register = (req, res) => {
 				path: 'idPhong',
 			}
 		},
-		page: req.query.page
+		page: req.body.page
 	}
-	Register.paginate({}, options)
+	var query = {}
+	if(req.body.accept !== 'all'){
+		query.isAc = req.body.accept
+	}
+
+	if(parseInt(req.body.year) !== 0){
+		var year = parseInt(req.body.year)
+		query.date = {
+			$lte: new Date( year+1 , 7, 31),
+			$gte: new Date(  year, 8, 1)
+		}
+	}
+
+	var last = await Register.paginate( {} , { sort: {date : 1}}).catch(err => {
+		console.log('==get_activity: ',err)
+		res.status(500)
+	})
+
+	Register.paginate(query, options)
 	.then( async result => {
 		await Promise.all(result.docs.map( async sv => {
 			await resultActivity.find({ idSV: sv.idProfile._id })
@@ -64,8 +82,9 @@ exports.get_list_register = (req, res) => {
 
 		console.log('==get_register: success')
 		res.json({
+			last: last.docs[last.docs.length - 1],
 			point: arrPoint,
-			rs: result,
+			rs: result
 		})
 	}).catch(err => {
 		console.log('==get_register: ',err)
@@ -73,3 +92,16 @@ exports.get_list_register = (req, res) => {
 	})                             
 }
 
+exports.accept_request = (req, res) => {
+	var accRequest = req.body.check
+	for (var key in accRequest) {
+		Register.updateOne({ _id: key}, {isAc: accRequest[key]}, (err, val) => {
+			if(err){
+				console.log('==update_request:', err)
+				res.status(500)
+			}
+		})
+	}
+	res.status(200).json({ rs: 'ok'})
+	console.log('==update_request: success')
+}
