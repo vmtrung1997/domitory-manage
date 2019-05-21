@@ -58,7 +58,6 @@ exports.detail_activity = (req, res) => {
 };
 
 exports.post_activity = (req, res) => {
-	console.log(req.body)
 	var tmp = {
 		ten: req.body.name,
     	diaDiem: req.body.location,
@@ -71,8 +70,8 @@ exports.post_activity = (req, res) => {
     	diem: req.body.point,
     	moTa: req.body.des
 	}
-	console.log(tmp)
 
+	// Thêm hoạt động
 	var timeFirst = req.body.time.split(':')
 	var timeFinal = req.body.timeEnd.split(':')
 
@@ -88,6 +87,31 @@ exports.post_activity = (req, res) => {
 		console.log('==post_activity: ',err)
 		res.status(500)
 	})
+
+	// Nếu hoạt động bắt buộc thì tạo kết quả hoạt động cho sinh viên
+	if(act.batBuoc){
+		var now = new Date()
+		
+		var query = {
+			MSSV: {$ne: null},
+			ngayVaoO: { $lte: act.ngayBD},
+			ngayHetHan: {$gte: act.ngayBD}
+		}
+		Profile.find(query).then( result => {
+			result.map( item => {
+				var rs = new resultActivity({
+					idHD: act._id,
+					idSV: item._id,
+					isTG: false,
+					isDK: false
+				})
+				rs.save()
+			})
+		}).catch( err => {
+			console.log('==post_activity_creatResultActivity: ',err)
+			res.status(500)
+		})
+	}
 };
 
 exports.delete_activity = (req, res) => {
@@ -102,6 +126,10 @@ exports.delete_activity = (req, res) => {
 			res.status(500)
 		}
 	});
+	resultActivity.deleteMany({ idHD: id, isTG: false, isDK: false}, err => {
+		console.log('==delete_activity_deleteResultActivity: ',err)
+		res.status(500)
+	})
 };
 
 exports.update_activity = (req, res) => {
@@ -117,7 +145,6 @@ exports.update_activity = (req, res) => {
     	diem: req.body.point,
     	moTa: req.body.des
 	}
-
 	var timeFirst = req.body.time.split(':')
 	var timeFinal = req.body.timeEnd.split(':')
 
@@ -128,7 +155,7 @@ exports.update_activity = (req, res) => {
 	dateFinal.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
 
 	data.ngayBD = dateFirst
-	data.ngayKT = dateFinal
+	data.ngayKT = dateFinal	
 
 	Activity.updateOne({ _id: id }, data, (err, val) => {
 		if(!err){
@@ -140,6 +167,39 @@ exports.update_activity = (req, res) => {
 			res.status(500)
 		}
 	})
+
+	if(data.batBuoc){
+		var now = new Date()
+		
+		var query = {
+			MSSV: {$ne: null},
+			ngayVaoO: { $lte: data.ngayBD},
+			ngayHetHan: {$gte: data.ngayBD}
+		}
+		Profile.find(query).then( result => {
+			result.map( item => {
+				resultActivity.find({ idHD: id, idSV: item._id}).then( rs => {
+					if(rs.length === 0){
+						var tmp = new resultActivity({
+							idHD: id,
+							idSV: item._id,
+							isTG: false,
+							isDK: false
+						})
+						tmp.save()
+					}
+				})
+			})
+		}).catch( err => {
+			console.log('==update_activity_creatResultActivity: ',err)
+			res.status(500)
+		})
+	} else {
+		resultActivity.deleteMany({ idHD: id, isTG: false, isDK: false}, err => {
+			console.log('==update_activity_creatResultActivity: ',err)
+			res.status(500)
+		})
+	}
 };
 
 exports.rollcall_activity = async (req, res) => {
