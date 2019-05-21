@@ -21,6 +21,13 @@ exports.get_data = (req, res) => {
 		})
 	})
 }
+exports.get_year = (req, res) => {
+	ChiPhiPhong
+	.distinct('nam')
+	.then(value => {
+		res.json({year: value})
+	})
+}
 exports.select_expense_table = (req, res) => {
 	var search = req.body;
 	var options = req.body.options;
@@ -42,7 +49,7 @@ exports.select_expense_table = (req, res) => {
 	// console.log('==searchObj: ', searchObj);
 	// console.log('==options: ', options)
 	ChiPhiPhong.paginate(searchObj, options).then(value => {
-		// console.log(value);
+		console.log(value);
 		res.json({
 			rs: value
 		})
@@ -709,11 +716,10 @@ exports.reset_room = (req, res) => {
 	// 	}
 	// })
 	if (detail.dienCheck)
-		//roomUpdate.soDien = detail.dienCu === 0 ? detail.dienMoi : detail.dienMoi - (detail.dienCu - value.soDien)
 		roomUpdate.soDien = detail.dienMoi;
 	if (detail.nuocCheck)
-		//roomUpdate.soNuoc = detail.nuocCu === 0 ? detail.nuocMoi : detail.nuocCu - (detail.nuocCu - value.soNuoc);
-		roomUpdate.soNuoc = detail.nuocMoi
+		roomUpdate.soNuoc = detail.nuocMoi;
+		console.log(detail);
 	if (Object.keys(roomUpdate).length > 0) {
 		ChiPhiHienTai.updateOne({ idPhong: detail.idPhong }, {
 			$set: roomUpdate

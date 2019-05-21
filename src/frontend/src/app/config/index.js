@@ -10,7 +10,6 @@ axios.interceptors.response.use(function (response) {
       return;
     }
     else if (error.response.status === 401) {
-      window.alert('401 error')
       window.location = '/401'
         return
     }

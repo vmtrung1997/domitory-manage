@@ -31,6 +31,8 @@ router.post('/expense/report', expenseController.report_expense);
 
 router.get('/expense/get_parameter', expenseController.get_parameter);
 
+router.get('/expense/get_year', expenseController.get_year);
+
 router.post('/expense/config', expenseController.apply_config)
 
 router.post('/expense/find',expenseController.find_expense);
