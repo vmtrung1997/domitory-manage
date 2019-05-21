@@ -198,7 +198,7 @@ exports.updateInfo = (req,res) => {
   ).catch()
 };
 
-exports.getListStudent = (req, res) => {
+exports.getListStudent = async(req, res) => {
   let query = {};
   const params = req.body;
 
@@ -223,10 +223,23 @@ exports.getListStudent = (req, res) => {
   else if(params.idTruong === -1)
     query.truong = {"$exists": false};
 
-  if(params.nam && params.nam !== -1)
-    query.ngayVaoO = { ngayVaoO : {"$gte": new Date(params.nam, 1, 1), "$lt": new Date(params.nam + 1, 1, 1)}}
+  if(params.nam && params.nam !== 0){
+    let startTime =  new Date(params.nam, 1, 1);
+    startTime.setHours(0,0,0,0);
+    let endTime = new Date(params.nam + 1, 1, 1);
+    endTime.setHours(0,0,0,0);
+    query.ngayVaoO = {$gte: startTime, $lt: endTime}
+  }
 
-    console.log('==query', query)
+  if(params.lau !== 0)
+    await Room.find({lau: params.lau}).select('_id').then(result => {
+    console.log('==lau', result)
+    var arr = [];
+    result.forEach(acc => {
+      arr.push(acc._id)
+    });
+    query.idPhong = {$in: arr}
+  });
 
   Account.find({isDelete: params.isOld, loai: 'SV'})
     .select('_id')

@@ -112,7 +112,6 @@ export const get_list_student_by_page = async(params) => {
 
 export const get_list_student = async(searchValues) => {
   const headers = await get_headers();
-  console.log('==params',searchValues)
 
   const { studentNumber, name, roomSelected, schoolSelected, yearSelected, floorSelected, isOld } = searchValues;
   let idPhong = roomSelected.value;
@@ -133,8 +132,8 @@ export const get_list_student = async(searchValues) => {
         idPhong: idPhong,
         idTruong: idTruong,
         isOld: isOld,
-        lau: floorSelected,
-        nam: 2018,
+        lau: floorSelected.value,
+        nam: yearSelected.value
       }, headers
     ).then(result => {
       resolve(result);
