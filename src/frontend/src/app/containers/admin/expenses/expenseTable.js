@@ -1,10 +1,11 @@
 import React from 'react';
 import ExpenseDetail from './expenseDetail'
-import { Table } from 'react-bootstrap'
+import { Table, Row, Col } from 'react-bootstrap'
 import Optimize from '../../../optimization/optimizationNumber/optimizationNumber'
 import MyPagination from './../../../components/pagination/pagination'
 import './expenses.css'
 import Checkbox from '../../../components/checkbox/checkbox';
+import Input from '../../../components/input/input';
 
 export default class ExpenseTable extends React.Component {
 	constructor(props) {
@@ -12,8 +13,11 @@ export default class ExpenseTable extends React.Component {
 		this.state = {
 			showDetail: false,
 			detail: {},
-			checkAll: false
+			checkAll: false,
+			page: 1
 		}
+	}
+	componentDidMount() {
 	}
 	handlePageChange = (value) => {
 		this.props.pageChange(value)
@@ -23,6 +27,11 @@ export default class ExpenseTable extends React.Component {
 			showDetail: !this.state.showDetail,
 			detail: value
 		})
+	}
+	componentWillReceiveProps(props) {
+		if (props.table.page!=this.state.page){
+			this.setState({page: props.table.page})
+		}
 	}
 	showDetail = (value) => {
 		this.setState({ showDetail: value })
@@ -50,6 +59,9 @@ export default class ExpenseTable extends React.Component {
 		return (
 			<React.Fragment>
 				{this.state.showDetail && <ExpenseDetail expenseDetail={this.state.detail} show={this.showDetail} retriveSearch={this.retriveSearch} loading={this.handleLoading} />}
+				<Row>
+					<Col>
+					
 				<Table bordered hover responsive size="sm">
 					<thead className="title-table text-center">
 						<tr>
@@ -88,12 +100,19 @@ export default class ExpenseTable extends React.Component {
 						})}
 					</tbody>
 				</Table>
-				<div className="float-right">
+					</Col>
+				</Row>
+				<Row>
+					<Col md={4} className='flex'>
+					Trang&nbsp;{this.props.children}&nbsp;trong {this.props.table.totalPages}
+					</Col>
+					<Col md={8} className='flex flex-end'>
 					{
 					this.props.table.docs.length ?
 							<MyPagination page={this.props.table.page} totalPages={this.props.table.totalPages} clickPage={this.handlePageChange} /> : ''
 					}
-				</div>
+					</Col>
+				</Row>
 			</React.Fragment>
 		)
 	}

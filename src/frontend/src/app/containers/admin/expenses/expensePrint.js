@@ -46,7 +46,6 @@ class Confirm extends Component {
       this.setState({ show: props.show })
     }
     if (props.printTable !== this.state.tableData) {
-      console.log(props.printTable);
       this.setState({ tableData: {
         month: parseInt(props.printTable.month),
         year: parseInt(props.printTable.year),
@@ -89,11 +88,11 @@ class Confirm extends Component {
         {data.map((value, index) => {
           return (
             <React.Fragment>
-              <div key={index} style={{height:'100vh'}}>
-                <div>
+              <div key={index}>
+                <div style={{height:'100vh'}}>
                   {this.printDetailStructure(value)}
                 </div>
-                <div>
+                <div style={{height:'100vh'}}>
                   {this.printTableStructure(value)}
                 </div>
               </div>
@@ -297,7 +296,7 @@ class Confirm extends Component {
   render() {
     return (
       <React.Fragment>
-        <Button onClick={this.handleShow}><i className="fas fa-print"></i></Button>
+        <Button onClick={this.handleShow} title="In chi phí"><i className="fas fa-print"></i></Button>
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>In chi phí</Modal.Title>

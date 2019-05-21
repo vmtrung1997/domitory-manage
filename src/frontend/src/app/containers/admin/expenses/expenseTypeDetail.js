@@ -212,7 +212,7 @@ class Example extends React.Component {
           <Modal.Body>
             <Row>
               <Col>
-                {this.state.selectType.length > 0 && <Select options={this.state.selectType} selected={this.selectedType}></Select>}
+                {this.state.selectType.length > 0 && <Select options={this.state.selectType} value={this.state.selectedType} selected={this.selectedType}></Select>}
               </Col>
             </Row>
             {this.state.selectedDetail && this.state.selectedDetail.dien && <Row>

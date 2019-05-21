@@ -10,7 +10,8 @@ class Button extends Component{
 		className: '',
 		type: 'button',
 		title: null,
-		onClick: () => {}
+		onClick: () => {},
+		disabled: false
 	};
 
 	static propTypes = {
@@ -46,6 +47,7 @@ class Button extends Component{
 				onClick={e => this.props.onClick({key: this.props.keyButton})}
 				title={this.props.title}
 				type={this.props.type}
+				disabled={this.props.disabled}
 			>
 				{children}
 			</button>
