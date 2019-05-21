@@ -151,4 +151,6 @@ router.post('/university/removeMajor',universityController.removeMajor);
 //Registed
 router.post('/register/getListRegister', registeredController.get_list_register);
 
+router.post('/register/acceptRequest', registeredController.accept_request);
+
 module.exports = router;

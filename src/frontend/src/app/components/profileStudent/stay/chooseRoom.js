@@ -1,10 +1,16 @@
 import React from "react";
-import { Modal, Button, Tab, Tabs, Card, Table } from "react-bootstrap";
+import { Modal, Tab, Tabs, Card, Table } from "react-bootstrap";
 import Axios from "axios";
-import jwt_decode from 'jwt-decode'
+import jwt_decode from "jwt-decode";
 import "./chooseRoom.css";
 import { connect } from "react-redux";
 import refreshToken from "./../../../../utils/refresh_token";
+import Button from "./../../../components/button/button";
+import {
+  ToastsContainer,
+  ToastsContainerPosition,
+  ToastsStore
+} from "react-toasts";
 
 class ConfirmModal extends React.Component {
   constructor(props, context) {
@@ -33,33 +39,35 @@ class ConfirmModal extends React.Component {
     });
   }
 
-  conFirm = async () =>{
+  conFirm = async () => {
     //update Phòng
-    console.log(this.props.data)
+    console.log(this.props.data);
     await refreshToken();
 
     var secret = localStorage.getItem("secret");
-    if(secret){
-    secret = JSON.parse(secret);
-    Axios.defaults.headers["x-access-token"] = secret.access_token;
-      Axios.post('/student/update-room',{id: this.props.id, idPhong: this.props.data._id}).then(rs=>{
-        if(rs.status === 202){
+    if (secret) {
+      secret = JSON.parse(secret);
+      Axios.defaults.headers["x-access-token"] = secret.access_token;
+      Axios.post("/student/update-room", {
+        id: this.props.id,
+        idPhong: this.props.data._id
+      }).then(rs => {
+        if (rs.status === 202) {
           this.props.hideModal();
           this.handleClose();
-          window.alert("Bạn đã chọn phòng thành công!")
-        }
-        else{
-          window.alert("Có lỗi xảy ra. Vui lòng thử lại!")
+          ToastsStore.success("Chọn phòng thành công");
+        } else {
+          ToastsStore.error("Có lỗi xảy ra");
           this.handleClose();
         }
-      })
+      });
     }
-  }
+  };
 
   render() {
-  
     return (
       <>
+
         <Button variant="primary" onClick={this.handleShow}>
           Chọn
         </Button>
@@ -69,7 +77,9 @@ class ConfirmModal extends React.Component {
             <Modal.Title>Xác nhận phòng đã chọn</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div>Bạn chắc chắn muốn chọn phòng {this.props.data.tenPhong} này?</div>
+            <div>
+              Bạn chắc chắn muốn chọn phòng {this.props.data.tenPhong} này?
+            </div>
             <div style={{ marginTop: "10px" }}>
               Lưu ý: Không thể thay đổi phòng sau khi chọn, nếu muốn thay đổi
               vui lòng liên hệ BQL
@@ -79,7 +89,7 @@ class ConfirmModal extends React.Component {
             <Button variant="secondary" onClick={this.handleClose}>
               Đóng
             </Button>
-            <Button variant="primary"  onClick={this.conFirm}>
+            <Button variant="primary" onClick={this.conFirm}>
               Chọn
             </Button>
           </Modal.Footer>
@@ -112,15 +122,13 @@ class ListRoom extends React.Component {
       id: room._id
     }).then(rs => {
       if (rs.status === 200 || rs.status === 204) {
-        
         selectedRoom = {
           soNguoi: room.soNguoi,
           soNguoiToiDa: room.soNguoiToiDa,
           tenPhong: room.tenPhong,
-          listProfile: rs.data.data === undefined?[]:rs.data.data,
+          listProfile: rs.data.data === undefined ? [] : rs.data.data,
           ten: room.loaiPhong.ten
         };
-       
       }
     });
 
@@ -141,38 +149,49 @@ class ListRoom extends React.Component {
   render() {
     return (
       <React.Fragment>
-        {this.state.listRoom.map(item => {
-          if (item.loaiPhong !== null) {
-            return (
-              <Button
-                onClick={e => this.selectedRoom(item)}
-                className={
-                  item.loaiPhong.loai === 0
-                    ? "choose-room normal-room"
-                    : "choose-room vip-room"
-                }
-              >
-                {item.tenPhong}
-              </Button>
-            );
-          }
-        })}
-
+        <div style={{ margin: "20px" }}>
+          {this.state.listRoom.map(item => {
+            if (item.loaiPhong !== null) {
+              return (
+                <Button
+                  onClick={e => this.selectedRoom(item)}
+                  style={{ margin: "5px" }}
+                  className={
+                    item.loaiPhong.loai === 0 ? "normal-room" : "vip-room"
+                  }
+                  shadow
+                  variant={
+                    item.soNguoiToiDa - item.soNguoi ? "outline" : "default"
+                  }
+                  color={"info"}
+                >
+                  {item.tenPhong} ({item.soNguoi}/{item.soNguoiToiDa})
+                </Button>
+              );
+            }
+          })}
+        </div>
         {this.state.selectedRoom.ten === undefined ? (
-          <Card body>
+          <div>
             {" "}
-            <Card.Text>Chọn phòng để xem thông tin!</Card.Text>
-          </Card>
+            <Card.Text>
+              <div className="header-card-room">
+                <div className="">
+                  <span>Chọn phòng để xem thông tin!</span>
+                </div>
+                <img
+                  style={{ height: "150px", width: "150px" }}
+                  src="/images/notdatafound.png"
+                />
+              </div>
+            </Card.Text>
+            </div>
         ) : (
-          <Card body>
+          <div>
             <Card.Title>
               Thông tin phòng: {this.state.selectedRoom.tenPhong} (
               {this.state.selectedRoom.ten})
             </Card.Title>
-            <Card.Text>
-              Số người: {this.state.selectedRoom.soNguoi}/
-              {this.state.selectedRoom.soNguoiToiDa}
-            </Card.Text>
             <Table size="sm" striped bordered hover>
               <thead>
                 <tr>
@@ -193,7 +212,7 @@ class ListRoom extends React.Component {
                 })}
               </tbody>
             </Table>
-          </Card>
+            </div>
         )}
       </React.Fragment>
     );
@@ -209,7 +228,8 @@ class ChooseRoom extends React.Component {
 
     this.state = {
       show: false,
-      room: undefined
+      room: undefined,
+      floor: []
     };
   }
 
@@ -227,17 +247,30 @@ class ChooseRoom extends React.Component {
     });
   };
 
-  hindModal = () =>{
+  hindModal = () => {
     this.handleClose();
     this.props.isLoad();
+  };
+
+  componentDidMount() {
+    Axios.get("/student/get-floor").then(rs => {
+      if (rs.status === 200) {
+        this.setState({ floor: rs.data.data });
+      }
+    });
   }
 
   render() {
-    console.log(this.props.state)
+    console.log(this.props.state);
     return (
       <>
-        <span onClick={this.handleShow}style = {{color: '#29b6b4',cursor: 'pointer'}}>(Thay đổi)</span>
-
+      
+        <span
+          onClick={this.handleShow}
+          style={{ color: "#29b6b4", cursor: "pointer" }}
+        >
+          (Thay đổi)
+        </span>
 
         <Modal size="lg" show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
@@ -246,34 +279,32 @@ class ChooseRoom extends React.Component {
           <Modal.Body>
             {" "}
             <Tabs id="controlled-tab-example" defaultActiveKey="floor1">
-              <Tab eventKey="floor1" title="Lầu 1">
-                <ListRoom data="1" room={this.getRoom} />
-              </Tab>
-              <Tab eventKey="floor2" title="Lầu 2">
-                <ListRoom data="2" room={this.getRoom} />
-              </Tab>
-              <Tab eventKey="floor3" title="Lầu 3">
-                <ListRoom data="3" room={this.getRoom} />
-              </Tab>
-              <Tab eventKey="floor4" title="Lầu 4">
-                <ListRoom data="4" room={this.getRoom} />
-              </Tab>
-              <Tab eventKey="floor5" title="Lầu 5">
-                <ListRoom data="5" room={this.getRoom} />
-              </Tab>
-              <Tab eventKey="floor6" title="Lầu 6">
-                <ListRoom data="6" room={this.getRoom} />
-              </Tab>
-              <Tab eventKey="floor7" title="Lầu 7">
-                <ListRoom data="7" room={this.getRoom} />
-              </Tab>
+              {this.state.floor.map(item => {
+                var evt = "floor" + item;
+                var tit = "Lầu " + item;
+                return (
+                  <Tab eventKey={evt} title={tit}>
+                    <ListRoom data={item} room={this.getRoom} />
+                  </Tab>
+                );
+              })}
             </Tabs>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={this.handleClose}>
               Đóng
             </Button>
-            {this.state.room && <ConfirmModal hideModal = {this.hindModal} id = {this.props.userProfile._id} data={this.state.room} />}
+            <ToastsContainer
+                  position={ToastsContainerPosition.BOTTOM_CENTER}
+                  lightBackground
+                  store={ToastsStore}></ToastsContainer>
+            {this.state.room && (
+              <ConfirmModal
+                hideModal={this.hindModal}
+                id={this.props.userProfile._id}
+                data={this.state.room}
+              />
+            )}
           </Modal.Footer>
         </Modal>
       </>
@@ -286,6 +317,4 @@ var mapStateToProps = state => {
     userProfile: state.userProfile
   };
 };
-export default connect(
-  mapStateToProps
-)(ChooseRoom);
+export default connect(mapStateToProps)(ChooseRoom);

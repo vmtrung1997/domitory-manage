@@ -157,7 +157,7 @@ class StudentActivity extends React.Component {
         </div>
         <div className='title-header-line'></div>
         <Tabs id="controlled-tab-example" defaultActiveKey="incoming">
-          <Tab eventKey="incoming" title="Đang diễn ra">
+          <Tab eventKey="incoming" title="Sắp diễn ra">
             <IncomingStudentActivity />
           </Tab>
           <Tab eventKey="ended" title="Đã kết thúc">

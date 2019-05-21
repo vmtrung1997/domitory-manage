@@ -43,7 +43,12 @@ class ActivityRollCall extends Component{
           idThe: this.state.idThe
         }
       })
-      .catch(err => {
+      .then( rs => { 
+        if(rs.data.rs === "ok")
+          ToastsStore.success("Điểm danh thành công!")
+        else
+          ToastsStore.error("Mã thẻ không tồn tại!");
+      }).catch(err => {
         ToastsStore.error("Điểm danh không thành công!");
       })
       axios({
