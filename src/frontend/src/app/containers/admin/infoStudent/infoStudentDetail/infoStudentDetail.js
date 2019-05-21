@@ -381,7 +381,7 @@ class InfoStudentDetail extends Component {
                           <DatePicker
                             disabled={isOld}
                             dateFormat='dd/MM/yyyy'
-                            selected={profile ? profile.ngaySinh: ''}
+                            selected={profile ? profile.ngaySinh: new Date()}
                             onChange={(val) => this.getValue('ngaySinh', val)}
                             className='input-datepicker'
                           />
@@ -518,7 +518,7 @@ class InfoStudentDetail extends Component {
                           <DatePicker
                             disabled
                             dateFormat='dd/MM/yyyy'
-                            selected={profile ? profile.ngayVaoO: ''}
+                            selected={profile ? profile.ngayVaoO: new Date()}
                             onChange={(val) => this.getValue('ngayVaoO', val)}
                             className='input-datepicker'
                           />
@@ -530,7 +530,7 @@ class InfoStudentDetail extends Component {
                           <DatePicker
                             disabled={isOld}
                             dateFormat='dd/MM/yyyy'
-                            selected={profile ? profile.ngayHetHan : ''}
+                            selected={profile ? profile.ngayHetHan : new Date()}
                             onChange={(val) => this.getValue('ngayHetHan', val)}
                             className='input-datepicker'
                           />

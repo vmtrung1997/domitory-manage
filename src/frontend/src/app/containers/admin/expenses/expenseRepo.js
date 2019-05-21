@@ -1,11 +1,12 @@
 export const get_month = () => {
   return [...Array(13)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i, label: i } })
 }
-export const get_year = () => {
-  var today = (new Date()).getFullYear() - 3;
-  console.log(today);
-  return [...Array(4)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + today, label: i + today } });
+export const get_year_db = (yearArr) => {
+  let yearNow = (new Date).getFullYear();
+  let minYear = Math.min(...yearArr);
+  return [...Array(yearNow - minYear + 1)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + minYear -1, label: i + minYear -1 } });
 }
+
 export const get_status = () => {
   return [
     { value: 2, label: 'Tất cả' },

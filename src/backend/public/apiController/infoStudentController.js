@@ -60,7 +60,7 @@ exports.addStudent =async (req, res) => {
   const params = req.body;
   if( !params.mssv && !params.hoTen)
     res.status(400).json({msg: 'Thiếu thông tin'});
-
+  console.log(params);
   addOneStudent(params).then(resolve => {
     res.status(resolve.status).json({msg: resolve.msg})
   }).catch(reject => {
