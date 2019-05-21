@@ -20,6 +20,7 @@ var profileSchema = new Schema({
     moTa: String,
     sdtNguoiThan: String,
     ngayVaoO: Date,
+    nam: Number,
     ngayHetHan: Date,
     danToc: String,
     img:  String,

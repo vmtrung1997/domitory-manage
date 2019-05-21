@@ -223,6 +223,11 @@ exports.getListStudent = (req, res) => {
   else if(params.idTruong === -1)
     query.truong = {"$exists": false};
 
+  if(params.nam && params.nam !== -1)
+    query.ngayVaoO = { ngayVaoO : {"$gte": new Date(params.nam, 1, 1), "$lt": new Date(params.nam + 1, 1, 1)}}
+
+    console.log('==query', query)
+
   Account.find({isDelete: params.isOld, loai: 'SV'})
     .select('_id')
     .then(accs => {
@@ -242,7 +247,7 @@ exports.getListStudent = (req, res) => {
 
 };
 
-exports.getListStudentPaging = (req, res) => {
+exports.getListStudentPaging = async(req, res) => {
   let query = {};
   const params = req.body;
   if(params.hoTen)
@@ -260,13 +265,30 @@ exports.getListStudentPaging = (req, res) => {
   else if(params.idTruong === -1)
     query.truong = {"$exists": false};
 
+  if(params.nam && params.nam !== 0){
+    let startTime =  new Date(params.nam, 1, 1);
+    startTime.setHours(0,0,0,0);
+    let endTime = new Date(params.nam + 1, 1, 1);
+    endTime.setHours(0,0,0,0);
+    query.ngayVaoO = {$gte: startTime, $lt: endTime}
+  }
+
   if(!params.options)
     res.status(400).json({'msg': 'missing options'});
-  //query = {...query, truong:{$nin: [null, '']}};
-  //query.idTaiKhoan =  {isDelete: 0};
 
   let options = params.options;
   options.populate = ['idTaiKhoan','idPhong', 'truong', 'nganhHoc'];
+
+  if(params.lau !== 0)
+    await Room.find({lau: params.lau}).select('_id').then(result => {
+      console.log('==lau', result)
+      var arr = [];
+      result.forEach(acc => {
+        arr.push(acc._id)
+      });
+      query.idPhong = {$in: arr}
+    });
+
 
   Account.find({isDelete: params.isOld, loai: 'SV'}).select('_id')
     .then(accs => {
