@@ -130,7 +130,7 @@ exports.update_activity = (req, res) => {
 	data.ngayBD = dateFirst
 	data.ngayKT = dateFinal
 
-	Activity.update({ _id: id }, data, (err, val) => {
+	Activity.updateOne({ _id: id }, data, (err, val) => {
 		if(!err){
 			res.json({ rs: 'ok'})
 			console.log('==update_activity: success')
@@ -148,13 +148,11 @@ exports.rollcall_activity = async (req, res) => {
 		the: req.body.idThe,
 		sv: ''
 	}
-
 	var SV = await Profile.findOne({ maThe: data.the}, '_id').catch(err => {
 		console.log('==rollcall_activ:', err)
 		res.status(500)
 		return true
 	})
-	
 	if(!SV){
 		res.status(200).json({rs: 'not found student'})
 		return true

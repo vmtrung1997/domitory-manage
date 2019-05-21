@@ -171,12 +171,19 @@ class Activity extends Component{
 						</div>
 					</div>
 					<InfoActivity data={this.state.data} refresh={this.getData}/>
-					<div className={'is-pagination'}>
-						<MyPagination 
-							page={this.state.page}
-							totalPages={this.state.totalPages}
-							clickPage={this.handleSearch}
-						/>
+					<div style={{display: 'flex', justifyContent: 'space-between'}}>
+						<div style={{display: 'flex', alignItems: 'baseline'}}>
+			                <span style={{marginRight: '2px'}}>Trang</span>
+			                <Input width='40px' textAlign='center' value={this.state.page}/>
+			                <span>/{this.state.totalPages}</span>
+			            </div>
+						<div className={'is-pagination'}>
+							<MyPagination 
+								page={this.state.page} 
+								totalPages={this.state.totalPages} 
+								clickPage={this.handleSearch}
+							/>
+		            	</div>
 	            	</div>
 				</div>
 

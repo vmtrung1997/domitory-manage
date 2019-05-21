@@ -458,21 +458,30 @@ exports.updateRoom = (req, res) => {
       if (rs.length > 0) {
         if (rs[0].soNguoi < rs[0].soNguoiToiDa) {
           try {
-            Profile.findOneAndUpdate(
-              { _id: req.body.id },
-              { idPhong: req.body.idPhong }
-            ).then(rs => {
-              console.log(rs);
-              if (rs) {
-                res.status(202).json({
-                  data: rs
-                });
-              } else {
-                res.status(204).json({
-                  data: "no data"
+            Phong.findOneAndUpdate(
+              { _id: req.body.idPhong },
+              {soNguoi: rs[0].soNguoi + 1}
+            ).then(rs =>{
+              if(rs){
+                Profile.findOneAndUpdate(
+                  { _id: req.body.id },
+                  { idPhong: req.body.idPhong }
+                ).then(rs => {
+                  console.log(rs);
+                  if (rs) {
+                    res.status(202).json({
+                      data: rs
+                    });
+                  } else {
+                    res.status(204).json({
+                      data: "no data"
+                    });
+                  }
                 });
               }
-            });
+            })
+
+            
           } catch (e) {
             console.log(e);
           }
@@ -641,3 +650,17 @@ exports.requestStay = (req, res) => {
     console.log(e);
   }
 };
+
+
+exports.getListFloor = (req,res) =>{
+  Phong.find().distinct('lau').then(rs =>{
+    if(rs.length>0){
+      res.status(200).json({
+        data: rs
+      })
+    }
+    else {
+      res.status(204)
+    }
+  })
+}

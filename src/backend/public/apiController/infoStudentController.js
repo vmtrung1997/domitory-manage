@@ -270,7 +270,6 @@ exports.getListStudentPaging = (req, res) => {
 
   Account.find({isDelete: params.isOld, loai: 'SV'}).select('_id')
     .then(accs => {
-    console.log('==accs', accs)
     var arr = [];
     accs.forEach(acc => {
       arr.push(acc._id)
