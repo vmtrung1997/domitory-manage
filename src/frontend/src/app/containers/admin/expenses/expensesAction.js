@@ -217,3 +217,15 @@ export const get_data_print = async (exp) => {
     .catch(error => reject(error));
   })
 }
+
+export const getYear = async () => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.get('/manager/expense/get_year').then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}

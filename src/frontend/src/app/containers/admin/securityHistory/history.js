@@ -13,7 +13,7 @@ class Security extends Component{
 			super(props);
 			this.state ={
 				fromDate: new Date(),
-				toDate: new Date( new Date().valueOf() + 1000*3600*24),
+				toDate: new Date(),
 				page: 1,
 				limit: 10,
 				totalPages: 0,

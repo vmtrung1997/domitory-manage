@@ -95,7 +95,6 @@ class Example extends React.Component {
       expenseDetail.thayNuoc.nuocCu = parseInt(this.state.soNuocResetDau);
       expenseDetail.thayNuoc.nuocMoi = parseInt(this.state.soNuocResetCuoi);
     }
-    console.log(expenseDetail);
     if (expenseDetail.trangThai === 1 && this.state.thayDien && this.state.thayNuoc && !window.confirm(`Cập nhật đồng hồ điện [${expenseDetail.thayDien.dienMoi}] và đồng hồ nước [${expenseDetail.thayNuoc.nuocMoi}]`))
       return;
     else if (expenseDetail.trangThai === 1 && this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Cập nhật lại đồng hồ điện: [${expenseDetail.thayDien.dienMoi}]`))

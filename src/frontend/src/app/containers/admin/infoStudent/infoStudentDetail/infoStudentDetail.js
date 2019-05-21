@@ -11,7 +11,7 @@ import './infoStudentDetail.css';
 import refreshToken from "../../../../../utils/refresh_token";
 import Select from "../../../../components/selectOption/select";
 import SearchSelect from '../../../../components/selectOption/select'
-import { imageFile, defaultStudentImg } from '../../../../function/imageFunction'
+import { defaultStudentImg } from '../../../../function/imageFunction'
 import { dateToString } from '../../../../function/dateFunction'
 import DatePicker from "react-datepicker/es/index";
 import './../infoStudentFile.css';
