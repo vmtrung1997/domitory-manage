@@ -23,7 +23,7 @@ class Expenses extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			dataTable: { docs: [] },
+			dataTable: { docs: [], totalPages: 0 },
 			rooms: [],
 			sendRoom: [],
 			roomSelected: 0,
@@ -205,8 +205,7 @@ class Expenses extends Component {
 							retriveSearch={() => this.pageChange(1)}
 							loading={this.handleLoading}
 							sendTable={table => this.setState({ dataTable: { ...this.state.dataTable, docs: table } })}
-						>
-							<Input
+						><Input
 								type='number'
 								value={this.state.options.page}
 								width='60px'

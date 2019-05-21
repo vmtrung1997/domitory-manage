@@ -218,23 +218,23 @@ class Example extends React.Component {
             <div className={'p-10'}>
               <form onSubmit={e => this.addRow(e)}>
                 <Row>
-                  <Col md={1} xl={12}>
+                  <Col md={1} xs={12}>
                     Tháng
                   <Select options={this.state.monthOptions} value={this.state.month} selected={this.monthSelected} />
                   </Col>
-                  <Col md={2} xl={12}>
+                  <Col md={2} xs={12}>
                     Năm
                   <Select options={this.state.yearOptions} value={this.state.year} selected={this.yearSelected} />
                   </Col>
-                  <Col md={2} xl={12}>
+                  <Col md={2} xs={12}>
                     Phòng
                   <Select options={this.state.rooms} value={this.state.idRoom} selected={this.selected} />
                   </Col>
-                  <Col md={2} xl={12}>
+                  <Col md={2} xs={12}>
                     Số điện
                   <Input type="number" min={0} value={this.state.soDien} getValue={this.onChange} name={'soDien'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.dien} />
                   </Col>
-                  <Col md={1} xl={12}>&nbsp;
+                  <Col md={1} xs={12}>&nbsp;
                 <Col md='12'>
                       <Button title='Reset số điện' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.dien : false} onClick={() => { this.setState({ resetSoDien: !this.state.resetSoDien }) }}><i className="fas fa-retweet"></i></Button>
                     </Col>
@@ -243,7 +243,7 @@ class Example extends React.Component {
                     Số nước
                   <Input type="number" min={0} value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.nuoc} />
                   </Col>
-                  <Col md={1} xl={12}>&nbsp;
+                  <Col md={1} xs={12}>&nbsp;
                 <Col md='12'>
                       <Button title='Reset số nước' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.nuoc : false} onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button>
                     </Col>
@@ -274,13 +274,13 @@ class Example extends React.Component {
                     <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />}</Col>
                 </Row>}
                 {Object.keys(this.state.infoRoom).length && <Row className={'m-b-10'}>
-                  <Col md={4}  xl={12}>
+                  <Col md={4} xs={12}>
                     Loại: {this.state.infoRoom.loaiPhong.ten}
                   </Col>
-                  <Col md={4}  xl={12}>
+                  <Col md={4} xs={12}>
                     Số điện hiện tại: {this.state.infoRoom.chiPhi.soDien}
                   </Col>
-                  <Col md={4}  xl={12}>
+                  <Col md={4} xs={12}>
                     Số nước hiện tại: {this.state.infoRoom.chiPhi.soNuoc}
                   </Col>
                 </Row>}

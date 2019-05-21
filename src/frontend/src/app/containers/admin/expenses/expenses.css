@@ -12,6 +12,10 @@
 .flex-end{
     justify-content: flex-end;
 }
+.flex-baseline{
+    display: flex;
+    align-items: baseline;
+}
 .flex-between {
     justify-content: space-between;
 }
