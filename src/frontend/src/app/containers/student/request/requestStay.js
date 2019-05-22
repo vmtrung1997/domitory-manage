@@ -83,19 +83,19 @@ class RequestStay extends React.Component {
       type: "",
       content: ""
   })
-    // Axios.post("/student/request-stay", {
-    //   data: data
-    // }).then(rs => {
-    //   if(rs.status===201){
-    //     ToastsStore.success("Đăng ký thành công");
+    Axios.post("/student/request-stay", {
+      data: data
+    }).then(rs => {
+      if(rs.status===201){
+        ToastsStore.success("Đăng ký thành công");
         
-    //   }
-    //   else{
-    //     ToastsStore.success("Đăng ký không thành công");
-    //   }
+      }
+      else{
+        ToastsStore.error("Đăng ký không thành công");
+      }
 
-    //   //this.setState({ point: point });
-    // });
+      //this.setState({ point: point });
+    });
     console.log(data);
   };
   render() {
@@ -177,6 +177,7 @@ class RequestStay extends React.Component {
 
 var mapStateToProps = state => {
   return {
+    
     userProfile: state.userProfile
   };
 };

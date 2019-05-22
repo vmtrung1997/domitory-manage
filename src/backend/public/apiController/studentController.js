@@ -7,6 +7,7 @@ const KetQuaHD = require("../models/KetQuaHD");
 const Phong = require("../models/Phong");
 const User = require("../models/TaiKhoan");
 const YeuCauLuuTru = require("../models/YeuCauLuuTru");
+const TruongNganh = require("../models/TruongNganh");
 
 require("../models/Phong");
 require("../models/NganhHoc");
@@ -22,18 +23,32 @@ exports.a = (req, res) => {
 };
 
 exports.getSpecialized = (req, res) => {
-  NganhHoc.find()
-    .then(result => {
-      res.status(200).json({
-        status: "success",
-        data: result
-      });
-    })
-    .catch(err => {
-      res.status(400).json({
-        status: "get specialized false"
-      });
+  console.log(req.body.id);
+  TruongNganh.find({idTruong: req.body.id}).populate('idNganhHoc').select('idNganhHoc').then(result =>{
+    console.log(result);
+    res.status(200).json({
+      status: "success",
+      data: result
     });
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(400).json({
+      status: "get specialized false"
+    });
+  })
+  // NganhHoc.find()
+  //   .then(result => {
+  //     res.status(200).json({
+  //       status: "success",
+  //       data: result
+  //     });
+  //   })
+  //   .catch(err => {
+  //     res.status(400).json({
+  //       status: "get specialized false"
+  //     });
+  //   });
 };
 
 exports.getListActivities = (req, res) => {
@@ -522,7 +537,7 @@ exports.getPoint = (req, res) => {
   var ngayVaoO = new Date(req.body.ngayVaoO);
   //Tìm các hoạt động trong năm nay và năm trước
   var now = new Date();
-  now = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+  var now = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
   if (ngayVaoO === undefined) {
     res.status(204).json({
       data: "no data"
@@ -549,7 +564,7 @@ exports.getPoint = (req, res) => {
           (item.idHD.ngayKT.getMonth() + 1 > 8 &&
             item.idHD.ngayKT.getFullYear() === now.getFullYear()) ||
           (item.idHD.ngayKT.getMonth() + 1 < 3 &&
-            item.idHD.ngayKT.getFullYear() === nowDate.getFullYear())
+            item.idHD.ngayKT < nowDate)
         ) {
           if (item.idHD.batBuoc === true && item.isTG === false)
           hk1 -= item.idHD.diem;
@@ -558,9 +573,9 @@ exports.getPoint = (req, res) => {
           //Các hoạt động từ t3 -> t7 năm nay
 
           item.idHD.ngayKT.getMonth() + 1 > 2 &&
-          item.idHD.ngayKT.getFullYear() === nowDate.getFullYear() &&
+          item.idHD.ngayKT < nowDate &&
           (item.idHD.ngayKT.getMonth() + 1 < 8 &&
-            item.idHD.ngayKT.getFullYear() === nowDate.getFullYear())
+            item.idHD.ngayKT < nowDate)
         ) {
           if (item.idHD.batBuoc === true && item.isTG === false)
             hk2 -= item.idHD.diem;
@@ -603,35 +618,29 @@ exports.requestStay = (req, res) => {
       isAccept: false
     };
 
-    // YeuCauLuuTru.find({idProfile: req.body.data.idProfile, ).then(rs=>{
-    //   if(rs.length>=0){
-
+    // Profile.updateOne(
+    //   { idProfile: req.body.data.idProfile },
+    //   {
+    //     $set: {
+    //       des: req.body.data.des,
+    //       type: req.body.data.type,
+    //       date: req.body.data.date,
+    //       isAccept: false
+    //     }
+    //   },
+    //   function(err, place) {
+    //     if (err) {
+    //       res.status(400).json({
+    //         err: err
+    //       });
+    //     } else {
+    //       res.status(202).json({
+    //         res: "success",
+    //         data: place
+    //       });
+    //     }
     //   }
-    // })
-
-    Profile.updateOne(
-      { idProfile: req.body.data.idProfile },
-      {
-        $set: {
-          des: req.body.data.des,
-          type: req.body.data.type,
-          date: req.body.data.date,
-          isAccept: false
-        }
-      },
-      function(err, place) {
-        if (err) {
-          res.status(400).json({
-            err: err
-          });
-        } else {
-          res.status(202).json({
-            res: "success",
-            data: place
-          });
-        }
-      }
-    );
+    // );
 
     var register = new YeuCauLuuTru(data);
     register

@@ -44,7 +44,6 @@ class PractiseStudent extends React.Component {
   }
 
   render() {
-      console.log(this.state.point);
     return (
       <React.Fragment>
           <div>

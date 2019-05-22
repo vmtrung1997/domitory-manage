@@ -76,19 +76,7 @@ h6 {
   line-height: 1.4;
   font-weight: 500; }
 
-a,
-a:active,
-a:focus,
-a:hover {
-  font-family: "Open Sans", sans-serif;
-  color: #191919;
-  text-decoration: none;
-  -webkit-transition-duration: 500ms;
-  -o-transition-duration: 500ms;
-  transition-duration: 500ms;
-  outline: none;
-  font-size: 16px;
-  font-weight: 500; }
+
 
 li {
   list-style: none; }
@@ -103,12 +91,7 @@ img {
   max-width: 100%;
   height: auto; }
 
-ul {
-  margin: 0;
-  padding: 0; }
-  ul li {
-    margin: 0;
-    padding: 0; }
+
 
 .bg-overlay {
   position: relative;
