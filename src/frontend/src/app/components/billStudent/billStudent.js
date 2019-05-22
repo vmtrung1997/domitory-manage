@@ -46,7 +46,7 @@ class BillStudent extends React.Component {
       })
       .then(res => {
         if (res) {
-          if (res.data.data.idPhong !== undefined) {
+          if (res.data.data.idPhong !== undefined && res.data.data.idPhong != null) {
             axios
               .post(`/student/get-last-bill`, {
                 id: res.data.data.idPhong._id
@@ -90,10 +90,12 @@ class BillStudent extends React.Component {
       })
       .then(res => {
         if (res)
-          if (res.data.data.idPhong !== undefined) {
+        console.log(res.data.data);
+          if (res.data.data.idPhong !== undefined && res.data.data.idPhong != null) {
             // có dữ liệu phòng
             axios
               .post(`/student/get-bill`, {
+
                 id: res.data.data.idPhong._id,
                 options: options
               })

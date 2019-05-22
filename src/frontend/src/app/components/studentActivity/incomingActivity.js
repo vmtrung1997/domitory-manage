@@ -142,6 +142,7 @@ class IncomingStudentActivity extends React.Component {
     this.setState({ incomingActivities: act });
   };
 
+
   clickPage = e => {
     this.setState({
       pageActive: e
@@ -149,18 +150,20 @@ class IncomingStudentActivity extends React.Component {
     this.getActivities();
   };
   refresh = () => {
+   
     this.getActivities();
   };
-  componentDidMount() {
-    if (!this.state.onlyOneLoad) {
-      console.log("vpppppppppppp");
-      this.setState({ onlyOneLoad: true });
-      this.getActivities();
-      
-    }
+  componentDidMount() { 
+          this.getActivities();
   }
 
+  componentDidUpdate(){
+    this.props.setClick(this.refresh);
+  }
+
+
   render() {
+    console.log(this.props.dataFromListActivity);
     return (
       <React.Fragment>
         <ToastsContainer
@@ -175,7 +178,7 @@ class IncomingStudentActivity extends React.Component {
         ) : (
           <div>
             <div className="time-bill">
-              {this.state.incomingActivities.length === 0 ? (
+              {this.state.incomingActivities.length === 0?(
                 <div style={{ marginTop: "20px" }}>
                   <span>Bạn chưa có hoạt động nào</span>
                 </div>

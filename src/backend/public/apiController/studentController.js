@@ -603,35 +603,29 @@ exports.requestStay = (req, res) => {
       isAccept: false
     };
 
-    // YeuCauLuuTru.find({idProfile: req.body.data.idProfile, ).then(rs=>{
-    //   if(rs.length>=0){
-
+    // Profile.updateOne(
+    //   { idProfile: req.body.data.idProfile },
+    //   {
+    //     $set: {
+    //       des: req.body.data.des,
+    //       type: req.body.data.type,
+    //       date: req.body.data.date,
+    //       isAccept: false
+    //     }
+    //   },
+    //   function(err, place) {
+    //     if (err) {
+    //       res.status(400).json({
+    //         err: err
+    //       });
+    //     } else {
+    //       res.status(202).json({
+    //         res: "success",
+    //         data: place
+    //       });
+    //     }
     //   }
-    // })
-
-    Profile.updateOne(
-      { idProfile: req.body.data.idProfile },
-      {
-        $set: {
-          des: req.body.data.des,
-          type: req.body.data.type,
-          date: req.body.data.date,
-          isAccept: false
-        }
-      },
-      function(err, place) {
-        if (err) {
-          res.status(400).json({
-            err: err
-          });
-        } else {
-          res.status(202).json({
-            res: "success",
-            data: place
-          });
-        }
-      }
-    );
+    // );
 
     var register = new YeuCauLuuTru(data);
     register

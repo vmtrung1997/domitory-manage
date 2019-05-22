@@ -16,12 +16,14 @@ import refreshToken from "./../../../utils/refresh_token";
 class StudentActivity extends React.Component {
   constructor(props) {
     super(props);
+    this.child = React.createRef();
     this.state = {
       incomingActivities: [],
       oldActivities: [],
       isLoad: true
     };
   }
+
 
   getActivities = async () => {
     this.setState({
@@ -144,6 +146,10 @@ class StudentActivity extends React.Component {
   }
   componentWillUpdate = (nextProps, nextState) => {};
 
+  onClick = () =>{
+  
+    this.clickChild();
+  }
   render() {
     return (
       <React.Fragment>
@@ -157,8 +163,8 @@ class StudentActivity extends React.Component {
         </div>
         <div className='title-header-line'></div>
         <Tabs id="controlled-tab-example" defaultActiveKey="incoming">
-          <Tab eventKey="incoming" title="Sắp diễn ra">
-            <IncomingStudentActivity />
+          <Tab eventKey="incoming" title="Sắp diễn ra" >
+            <IncomingStudentActivity setClick={click => this.clickChild = click} dataFromListActivity = {this.props.dataFromListActivity}/>
           </Tab>
           <Tab eventKey="ended" title="Đã kết thúc">
             <EndedStudentActivity />
