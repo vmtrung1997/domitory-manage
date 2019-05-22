@@ -23,7 +23,7 @@ class Expenses extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			dataTable: { docs: [], totalPages: 0 },
+			dataTable: { docs: [], totalPages: 1 },
 			rooms: [],
 			sendRoom: [],
 			roomSelected: 0,
