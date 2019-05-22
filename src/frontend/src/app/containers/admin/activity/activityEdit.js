@@ -92,6 +92,7 @@ class ActivityEdit extends Component{
     })
   }
 	render(){
+	  console.log('==type', typeof(this.state.dateEnd))
 		return(
       <React.Fragment>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>

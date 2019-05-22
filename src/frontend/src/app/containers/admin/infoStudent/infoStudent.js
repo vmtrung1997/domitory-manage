@@ -13,6 +13,7 @@ import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import Checkbox from './../../../components/checkbox/checkbox';
+import Select from './../../../components/selectOption/select'
 import refreshToken from './../../../../utils/refresh_token';
 import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
@@ -34,8 +35,10 @@ class InfoStudent extends Component{
         pageActive: 1,
         limit: 10,
         isOld: 0,
-        roomSelected: {},
-        schoolSelected: {}
+        roomSelected: {value: 0, label: "Tất cả"},
+        schoolSelected: {value: 0, label: "Tất cả"},
+        floorSelected: {value: 0, label: "Tất cả"},
+        yearSelected: {value: 0, label: "Tất cả"}
       },
 
       schoolOptions: [],
@@ -121,6 +124,7 @@ class InfoStudent extends Component{
     this.getElement('room');
     this.getElement('school');
     this.getElement('floor');
+    this.getYear()
     // this.modifyData();
   }
 
@@ -147,7 +151,7 @@ class InfoStudent extends Component{
           break;
 
         case 'floor':
-          let i = 0;
+          let i = 1;
           result.sort();
           const floorOptions = result.map(floor => {
             return {value: i++, label: floor}
@@ -177,6 +181,17 @@ class InfoStudent extends Component{
       });
   };
 
+  getYear = () => {
+    let yearOptions = [{value: 0, label: 'Tất cả'}]
+      var today = new Date().getFullYear()
+      for(var i = today; i >= today - 5; i--){
+        yearOptions.push({value: i, label: i})
+      }
+    this.setState({
+      yearOptions: yearOptions
+    })
+  }
+
   onChange = (event) => {
     this.setState({
       searchValues: {...this.state.searchValues, [event.name]: event.value}
@@ -203,6 +218,12 @@ class InfoStudent extends Component{
   }
   handleSelectFloor = selectedOption => {
     this.setState({ floorSelected: selectedOption})
+  }
+
+  handleSelected = (name, selectedOption) => {
+    this.setState({
+      searchValues: {...this.state.searchValues, [name]: selectedOption}
+    })
   }
 
   clickPage = async (page) => {
@@ -368,7 +389,12 @@ class InfoStudent extends Component{
                   Năm
                 </Col>
                 <Col md={2}>
-                  <Input getValue={this.onChange} name={'mssv'} />
+                  <SearchSelect
+                    isSearchable={true}
+                    value={this.state.searchValues.yearSelected}
+                    onChange={(selectedOption) => this.handleSelected('yearSelected',selectedOption)}
+                    options={this.state.yearOptions}
+                  />
                 </Col>
 
                 <Col md={1}>
@@ -377,9 +403,8 @@ class InfoStudent extends Component{
                 <Col md={4}>
                   <SearchSelect
                     isSearchable={true}
-                    placeholder={''}
                     value={this.state.searchValues.schoolSelected}
-                    onChange={this.handleSelectSchool}
+                    onChange={(selectedOption) => this.handleSelected('schoolSelected',selectedOption)}
                     options={this.state.schoolOptions}
                   />
                 </Col>
@@ -390,9 +415,8 @@ class InfoStudent extends Component{
                 <Col md={2}>
                   <SearchSelect
                     isSearchable={true}
-                    placeholder={''}
-                    value={floorSelected}
-                    onChange={this.handleSelectFloor}
+                    value={this.state.searchValues.floorSelected}
+                    onChange={(selectedOption) => this.handleSelected('floorSelected',selectedOption)}
                     options={floorOptions}
                   />
                 </Col>
@@ -580,7 +604,7 @@ class InfoStudent extends Component{
               <Col md={3} className={'page-input'}>
                 <label style={{marginRight:'3px'}}>Trang</label>
                 <Input width='50px' textAlign='center' value={this.state.searchValues.pageActive}/>
-                <label style={{marginLeft:'3px'}}>trong {this.state.totalPages}</label>
+                <label style={{marginLeft:'3px'}}>/{this.state.totalPages}</label>
               </Col>
               <Col md={9}>
                 <div className={'is-pagination'}>

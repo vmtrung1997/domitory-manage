@@ -11,7 +11,7 @@ import './infoStudentDetail.css';
 import refreshToken from "../../../../../utils/refresh_token";
 import Select from "../../../../components/selectOption/select";
 import SearchSelect from '../../../../components/selectOption/select'
-import { imageFile, defaultStudentImg } from '../../../../function/imageFunction'
+import { defaultStudentImg } from '../../../../function/imageFunction'
 import { dateToString } from '../../../../function/dateFunction'
 import DatePicker from "react-datepicker/es/index";
 import './../infoStudentFile.css';
@@ -25,7 +25,23 @@ class InfoStudentDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        profile: {gioiTinh: 0},
+        profile: {
+          gioiTinh: 0,
+          ngaySinh: new Date(),
+          ngayVaoO : new Date(),
+          ngayHetHan: new Date(),
+          hoTen: '',
+          MSSV: '',
+          CMND: '',
+          tonGiao: '',
+          email: '',
+          sdt: '',
+          sdtNguoiThan: '',
+          danToc: '',
+          maThe: '',
+          diaChi: '',
+          moTa: ''
+        },
         activity: {},
       info: {},
       school: {},
@@ -45,13 +61,13 @@ class InfoStudentDetail extends Component {
 
   componentWillMount(){
     this.getData()
-
   }
 
   componentDidMount() {
     console.log('==did mount', this.state)
     this.getElement('room');
     this.getElement('school');
+
   }
 
   getData = () => {
@@ -60,13 +76,16 @@ class InfoStudentDetail extends Component {
       .then(result => {
 
         this.setState({
-          profile: result.data,
+          profile: {
+            ...result.data,
+            ngaySinh: new Date(result.data.ngaySinh),
+            ngayVaoO: new Date(result.data.ngayVaoO),
+            ngayHetHan: new Date(result.data.ngayHetHan)
+          },
         });
         const profile = result.data;
-        console.log('==get result',result.data)
 
         if(profile.truong ){
-          console.log('==get truong')
           this.setState({
             school: {
               value: profile.truong._id,
@@ -279,7 +298,7 @@ class InfoStudentDetail extends Component {
   }
   render() {
     console.log('==state render', this.state);
-    const {
+    let {
       profile,
       activity,
       genderOptions,
@@ -292,29 +311,11 @@ class InfoStudentDetail extends Component {
       activities,
       isOld
     } = this.state;
-    // const {
-    //   hoTen,
-    //   MSSV,
-    //   diaChi,
-    //   maThe,
-    //   ngayVaoO,
-    //   moTa,
-    //   danToc,
-    //   sdt,
-    //   email,
-    //   ngaySinh,
-    //   sdtNguoiThan,
-    //   gioiTinh,
-    //   idPhong,
-    //   idTaiKhoan,
-    //   diemHD,
-    //   img,
-    //   ngayHetHan,
-    // } = profile;
+    const { CMND } = profile;
     var imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
     //var ngayVaoOStr = this.getDateType(profile.ngayVaoO)
-    let gender = this.state.profile && this.state.profile.gioiTinh;
-    console.log(gender)
+    let gender = this.state.profile && this.state.profile.gioiTinh ? this.state.profile.gioiTinh: 0;
+    console.log("==type", typeof this.state.profile.ngaySinh)
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -361,7 +362,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile ? profile.hoTen : ''}
+                            value={ profile.hoTen ? profile.hoTen : ''}
                             getValue={this.onChange}
                             name={'hoTen'} />
                         </Col>
@@ -369,7 +370,7 @@ class InfoStudentDetail extends Component {
                           MSSV:
                         </Col>
                         <Col md={4}>
-                          <Input value={profile ? profile.MSSV : ''} disabled />
+                          <Input value={profile.MSSV} disabled />
                         </Col>
                       </Row>
 
@@ -381,7 +382,7 @@ class InfoStudentDetail extends Component {
                           <DatePicker
                             disabled={isOld}
                             dateFormat='dd/MM/yyyy'
-                            selected={profile ? profile.ngaySinh: ''}
+                            selected={this.state.profile.ngaySinh}
                             onChange={(val) => this.getValue('ngaySinh', val)}
                             className='input-datepicker'
                           />
@@ -407,7 +408,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile ? profile.CMND : ''}
+                            value={CMND ? CMND : ''}
                             getValue={this.onChange}
                             name={'CMND'} />
                         </Col>
@@ -417,7 +418,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile ? profile.tonGiao : ''}
+                            value={profile.tonGiao ? profile.tonGiao : ''}
                             getValue={this.onChange}
                             name={'tonGiao'} />
                         </Col>
@@ -430,7 +431,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile ? profile.email : ''}
+                            value={profile.email ? profile.email : ''}
                             getValue={this.onChange}
                             name={'email'} />
                         </Col>
@@ -440,7 +441,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile ? profile.sdt : ''}
+                            value={profile.sdt ? profile.sdt : ''}
                             getValue={this.onChange}
                             name={'sdt'} />
                         </Col>
@@ -453,7 +454,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile ? profile.danToc : ''}
+                            value={profile.danToc ? profile.danToc : ''}
                             getValue={this.onChange}
                             name={'danToc'} />
                         </Col>
@@ -463,7 +464,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile ? profile.sdtNguoiThan : ''}
+                            value={profile.sdtNguoiThan ? profile.sdtNguoiThan : ''}
                             getValue={this.onChange}
                             name={'sdtNguoiThan'} />
                         </Col>
@@ -476,7 +477,7 @@ class InfoStudentDetail extends Component {
                         <Col md={10}>
                           <Input
                             disabled={isOld}
-                            value={profile ? profile.diaChi : ''}
+                            value={profile.diaChi ? profile.diaChi : ''}
                             getValue={this.onChange}
                             name={'diaChi'} />
                         </Col>
@@ -493,7 +494,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile ? profile.maThe : ''}
+                            value={profile.maThe ? profile.maThe : ''}
                             getValue={this.onChange}
                             name={'maThe'} />
                         </Col>
@@ -518,7 +519,7 @@ class InfoStudentDetail extends Component {
                           <DatePicker
                             disabled
                             dateFormat='dd/MM/yyyy'
-                            selected={profile ? profile.ngayVaoO: ''}
+                            selected={profile.ngayVaoO}
                             onChange={(val) => this.getValue('ngayVaoO', val)}
                             className='input-datepicker'
                           />
@@ -530,27 +531,12 @@ class InfoStudentDetail extends Component {
                           <DatePicker
                             disabled={isOld}
                             dateFormat='dd/MM/yyyy'
-                            selected={profile ? profile.ngayHetHan : ''}
+                            selected={profile.ngayHetHan}
                             onChange={(val) => this.getValue('ngayHetHan', val)}
                             className='input-datepicker'
                           />
                         </Col>
                       </Row>
-
-                      {/*<Row>*/}
-                        {/*<Col md={2}>*/}
-                          {/*Điểm h.động:*/}
-                        {/*</Col>*/}
-                        {/*<Col md={4}>*/}
-                          {/*<Input*/}
-                            {/*value={activity ? activity.point : '0'}*/}
-                            {/*type={'number'}*/}
-                            {/*getValue={this.onChangeNumber}*/}
-                            {/*name={'diemHD'}*/}
-                            {/*disabled/>*/}
-                        {/*</Col>*/}
-                        {/**/}
-                      {/*</Row>*/}
 
                       <Row>
                         <Col md={2}>
@@ -589,7 +575,7 @@ class InfoStudentDetail extends Component {
                         <Col md={10}>
                           <Input
                             disabled={isOld}
-                            value={profile ? profile.moTa : ''}
+                            value={ profile.moTa ? profile.moTa : ''}
                             getValue={this.onChange}
                             name={'moTa'} />
                         </Col>

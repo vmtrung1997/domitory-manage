@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 var profileSchema = new Schema({
     idTaiKhoan: {type: Schema.Types.String, ref: 'TaiKhoan'},
-    CMND: Number,
+    CMND: String,
     hoTen: String,
     ngaySinh: Date,
     gioiTinh: {type: Number, enum: [0,1]}, //1 nam 0 nu
@@ -20,6 +20,7 @@ var profileSchema = new Schema({
     moTa: String,
     sdtNguoiThan: String,
     ngayVaoO: Date,
+    nam: Number,
     ngayHetHan: Date,
     danToc: String,
     img:  String,

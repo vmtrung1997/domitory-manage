@@ -31,6 +31,8 @@ router.post('/expense/report', expenseController.report_expense);
 
 router.get('/expense/get_parameter', expenseController.get_parameter);
 
+router.get('/expense/get_year', expenseController.get_year);
+
 router.post('/expense/config', expenseController.apply_config)
 
 router.post('/expense/find',expenseController.find_expense);
@@ -148,5 +150,7 @@ router.post('/university/removeMajor',universityController.removeMajor);
 
 //Registed
 router.post('/register/getListRegister', registeredController.get_list_register);
+
+router.post('/register/acceptRequest', registeredController.accept_request);
 
 module.exports = router;
