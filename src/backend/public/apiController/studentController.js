@@ -537,7 +537,7 @@ exports.getPoint = (req, res) => {
   var ngayVaoO = new Date(req.body.ngayVaoO);
   //Tìm các hoạt động trong năm nay và năm trước
   var now = new Date();
-  now = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+  var now = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
   if (ngayVaoO === undefined) {
     res.status(204).json({
       data: "no data"
@@ -564,7 +564,7 @@ exports.getPoint = (req, res) => {
           (item.idHD.ngayKT.getMonth() + 1 > 8 &&
             item.idHD.ngayKT.getFullYear() === now.getFullYear()) ||
           (item.idHD.ngayKT.getMonth() + 1 < 3 &&
-            item.idHD.ngayKT.getFullYear() === nowDate.getFullYear())
+            item.idHD.ngayKT < nowDate)
         ) {
           if (item.idHD.batBuoc === true && item.isTG === false)
           hk1 -= item.idHD.diem;
@@ -573,9 +573,9 @@ exports.getPoint = (req, res) => {
           //Các hoạt động từ t3 -> t7 năm nay
 
           item.idHD.ngayKT.getMonth() + 1 > 2 &&
-          item.idHD.ngayKT.getFullYear() === nowDate.getFullYear() &&
+          item.idHD.ngayKT < nowDate &&
           (item.idHD.ngayKT.getMonth() + 1 < 8 &&
-            item.idHD.ngayKT.getFullYear() === nowDate.getFullYear())
+            item.idHD.ngayKT < nowDate)
         ) {
           if (item.idHD.batBuoc === true && item.isTG === false)
             hk2 -= item.idHD.diem;

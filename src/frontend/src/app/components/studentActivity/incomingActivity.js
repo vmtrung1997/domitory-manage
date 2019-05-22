@@ -56,7 +56,7 @@ class IncomingStudentActivity extends React.Component {
             totalPages: res.data.totalPages
           });
           res.data.data.map(item => {
-            var d = new Date(item.idHD.ngayBD);
+            var d = new Date(item.idHD.ngayKT);
             var today = new Date();
 
             if (d >= today) {
