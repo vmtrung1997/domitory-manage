@@ -7,6 +7,7 @@ const KetQuaHD = require("../models/KetQuaHD");
 const Phong = require("../models/Phong");
 const User = require("../models/TaiKhoan");
 const YeuCauLuuTru = require("../models/YeuCauLuuTru");
+const TruongNganh = require("../models/TruongNganh");
 
 require("../models/Phong");
 require("../models/NganhHoc");
@@ -22,18 +23,32 @@ exports.a = (req, res) => {
 };
 
 exports.getSpecialized = (req, res) => {
-  NganhHoc.find()
-    .then(result => {
-      res.status(200).json({
-        status: "success",
-        data: result
-      });
-    })
-    .catch(err => {
-      res.status(400).json({
-        status: "get specialized false"
-      });
+  console.log(req.body.id);
+  TruongNganh.find({idTruong: req.body.id}).populate('idNganhHoc').select('idNganhHoc').then(result =>{
+    console.log(result);
+    res.status(200).json({
+      status: "success",
+      data: result
     });
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(400).json({
+      status: "get specialized false"
+    });
+  })
+  // NganhHoc.find()
+  //   .then(result => {
+  //     res.status(200).json({
+  //       status: "success",
+  //       data: result
+  //     });
+  //   })
+  //   .catch(err => {
+  //     res.status(400).json({
+  //       status: "get specialized false"
+  //     });
+  //   });
 };
 
 exports.getListActivities = (req, res) => {

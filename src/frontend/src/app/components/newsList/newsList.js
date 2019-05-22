@@ -23,7 +23,6 @@ class NewsList extends React.Component {
 
   loadImages = async () => {
     var temp = [];
-   console.log(this.state.postsAll.length);
     this.state.postsAll.forEach(async (item, index) => {
       if(item.stamp){
       var rs = item.stamp + ".jpg";
@@ -32,7 +31,7 @@ class NewsList extends React.Component {
         .child(rs)
         .getDownloadURL()
         .then(url => {
-          console.log(url);
+         
           var tmp = this.state.postsAll;
           tmp[index].url = url;
           this.setState({ postsAll: tmp });
@@ -44,7 +43,6 @@ class NewsList extends React.Component {
         this.setState({ postsAll: tmp });
       }
     });
-    console.log(this.state.pinnedPosts.length);
 
     this.state.pinnedPosts.forEach(async (item, index) => {
       var rs = item.stamp + ".jpg";

@@ -29,7 +29,7 @@ class NewsHomepage extends React.Component {
         this.setState({
           postsAll: _post
         });
-        console.log("load news");
+      
       });
   };
 
@@ -57,7 +57,6 @@ class NewsHomepage extends React.Component {
 
   loadImages = async () => {
     var temp = [];
-    console.log(1, this.state.postsAll.length);
     this.state.postsAll.forEach(async (item, index) => {
       if(item.stamp){
         var rs = item.stamp + ".jpg";
@@ -66,7 +65,6 @@ class NewsHomepage extends React.Component {
           .child(rs)
           .getDownloadURL()
           .then(url => {
-            console.log(url);
             var tmp = this.state.postsAll;
             tmp[index].url = url;
             this.setState({ postsAll: tmp });
@@ -127,7 +125,6 @@ class NewsHomepage extends React.Component {
     return formatDay;
   };
   render() {
-    console.log(this.state.postsAll);
     return (
       <React.Fragment>
         <section className="razo-blog-area section-padding-80-0">
@@ -184,7 +181,7 @@ class NewsHomepage extends React.Component {
                   <div className="row">
                     {/* Single Post Area */}
                     {this.state.postsAll.map((item, index) => {
-                      console.log(item.url);
+
                       if (index !== 0) {
                         return (
                           <div className="col-12 col-md-6">

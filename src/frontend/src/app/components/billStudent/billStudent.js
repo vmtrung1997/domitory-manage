@@ -74,7 +74,6 @@ class BillStudent extends React.Component {
 
     secret = JSON.parse(secret);
     var id = decode.user.userEntity._id;
-    console.log(decode);
 
     const options = {
       skip: (this.state.pageActive - 1) * this.state.limit,
@@ -90,7 +89,7 @@ class BillStudent extends React.Component {
       })
       .then(res => {
         if (res)
-        console.log(res.data.data);
+
           if (res.data.data.idPhong !== undefined && res.data.data.idPhong != null) {
             // có dữ liệu phòng
             axios
@@ -149,7 +148,6 @@ class BillStudent extends React.Component {
 
   render() {
     var isFirstRow = false;
-    console.log(this.state.lastBill);
 
     return (
       <React.Fragment>

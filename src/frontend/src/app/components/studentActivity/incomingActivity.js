@@ -34,7 +34,6 @@ class IncomingStudentActivity extends React.Component {
       isLoad: true
     });
 
-    console.log('getActivities');
     await refreshToken();
     const options = {
       skip: (this.state.pageActive - 1) * this.state.limit,
@@ -56,7 +55,6 @@ class IncomingStudentActivity extends React.Component {
           this.setState({
             totalPages: res.data.totalPages
           });
-          console.log(res.data);
           res.data.data.map(item => {
             var d = new Date(item.idHD.ngayBD);
             var today = new Date();
@@ -163,7 +161,6 @@ class IncomingStudentActivity extends React.Component {
 
 
   render() {
-    console.log(this.props.dataFromListActivity);
     return (
       <React.Fragment>
         <ToastsContainer

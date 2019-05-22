@@ -5,7 +5,7 @@ router.post('/get-info', studentController.getInfo);
 
 router.post('/get-info-by-idCard', studentController.getInfoByIdCard);
 
-router.get('/get-specialized', studentController.getSpecialized);
+router.post('/get-specialized', studentController.getSpecialized);
 
 router.get('/get-school',studentController.getSchool);
 
