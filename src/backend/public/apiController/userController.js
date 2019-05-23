@@ -1,5 +1,6 @@
 const ObjectId = require("mongoose").mongo.ObjectId;
 const md5 = require("md5");
+const jwt_decode = require("jwt-decode");
 const User = require("../models/TaiKhoan");
 const Profile = require("../models/Profile");
 const ReToken = require("../models/refreshToken");
@@ -200,8 +201,41 @@ exports.resetPasswordAdmin = (req, res) => {
     res.status(500).json({
       msg: 'Lỗi server'
     });
-  })
-  
+  })  
+};
+
+exports.changePasswordAdmin = (req, res) => {
+  const token = req.body.token
+  const oldPas = req.body.oldPas
+  const newPas = req.body.newPas
+  if(token){
+    const user = jwt_decode(token.access_token)
+    if(user.user)
+    {
+      const username = user.user.userEntity.username
+      User.findOne({username: username, password: md5(oldPas)}, (err, val) => {
+        if(err){
+          res.status(500).json({
+            rs: 'Server error'
+          })
+          console.log('==ChangePassAdmin:', err)
+        }
+        if(val){
+          val.password = md5(newPas)
+          val.save()
+          res.status(200).json({
+            rs: 'Success change passwork'
+          })
+          console.log('==ChangePassAdmin: success')
+        } else {
+          res.status(401).json({
+            rs: 'Wrong passwork'
+          });
+          console.log('==ChangePassAdmin: false')
+        }
+      })
+    }
+  }
 };
 
 exports.me_access = (req, res) => {
