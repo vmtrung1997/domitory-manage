@@ -20,14 +20,15 @@ var profileSchema = new Schema({
     moTa: String,
     sdtNguoiThan: String,
     ngayVaoO: Date,
+    nam: Number,
     ngayHetHan: Date,
     danToc: String,
     img:  String,
     //img:  String,//{ data: Buffer, contentType: String }
-    //expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
+    //expireAt: {type: Schema.Types.Date,default: Date.now(), expireAfterSeconds: 15},
     flag: Boolean
 });
-
 profileSchema.plugin(mongoosePaginate);
+// profileSchema.index('expireAt',{expireAfterSeconds: 15});
 const model = mongoose.model('Profile', profileSchema, 'Profile');
 module.exports = model;

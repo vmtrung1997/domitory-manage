@@ -65,6 +65,15 @@ class ListActivity extends React.Component {
         user: id
       };
 
+      info.activity.forEach(item=>{
+        //this.props.registerActivity(item._id);
+        //this.props.addMyActivity(item);
+      })
+
+    //Truyền danh sách đăng ký mới sang Hoạt động của tôi
+      // this.props.listActivity(data);
+
+      // this.props.listActivity(data);
       //Đăng ký tham gia hoạt động
       axios
         .post("/student/register-activities", { data: info })
@@ -73,6 +82,9 @@ class ListActivity extends React.Component {
             ToastsStore.success("Đăng ký thành công");
             //load lại danh sách hoạt động
             this.getActivity();
+
+            //Truyền danh sách đăng ký mới sang Hoạt động của tôi
+            //this.props.listActivity(data);
           } else {
             ToastsStore.warning("Đăng ký không thành công");
           }
@@ -125,7 +137,7 @@ class ListActivity extends React.Component {
             if (item) {
               item.check = false;
               activity.push(item);
-              this.props.getActivity(item);
+              //this.props.getActivity(item);
             }
             return true;
           });
@@ -135,6 +147,7 @@ class ListActivity extends React.Component {
             activities: activity,
             isLoad: false
           });
+      
         });
     }
   };
@@ -150,6 +163,8 @@ class ListActivity extends React.Component {
   };
   componentDidMount() {
     this.getActivity();
+    this.props.setClick(this.refresh);
+
   }
 
   render() {
@@ -161,7 +176,7 @@ class ListActivity extends React.Component {
           store={ToastsStore}
         />
         <div >
-          <h1 className="title-header" >HOẠT ĐỘNG SẮP DIỄN RA</h1>
+          <h1 className="title-header">HOẠT ĐỘNG SẮP DIỄN RA</h1>
         </div>
         <div className="title-header-line" />
 
@@ -287,11 +302,7 @@ var mapStateToProps = state => {
 
 var mapDispatchToProps = dispatch => {
   return {
-    getActivity: bindActionCreators(StudentAction.GET_LIST_ACTIVITY, dispatch),
-    updateActivity: bindActionCreators(
-      StudentAction.REGISTER_ACTIVITY,
-      dispatch
-    )
+
   };
 };
 

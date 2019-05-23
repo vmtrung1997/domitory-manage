@@ -41,7 +41,6 @@ class ConfirmModal extends React.Component {
 
   conFirm = async () => {
     //update Phòng
-    console.log(this.props.data);
     await refreshToken();
 
     var secret = localStorage.getItem("secret");
@@ -261,7 +260,6 @@ class ChooseRoom extends React.Component {
   }
 
   render() {
-    console.log(this.props.state);
     return (
       <>
       
