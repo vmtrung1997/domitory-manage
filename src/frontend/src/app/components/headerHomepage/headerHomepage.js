@@ -5,7 +5,9 @@ import {
   Dropdown,
   Nav,
   Form,
-  Navbar
+  Navbar,
+  Row,
+  Col
 } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
@@ -170,10 +172,12 @@ class HeaderHomepage extends Component {
 
         >
           <Navbar.Brand>
+            <Row>
             <div className="nav-img">
               <img alt="img_header" src="/images/Logo-KHTN.jpg" />
             </div>
-            <span className="header-title">Kí túc xá Trần Hưng Đạo</span>
+            <h2 className="header-title">Kí túc xá Trần Hưng Đạo</h2>
+            </Row>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
