@@ -8,7 +8,26 @@ import './layout.css';
 import jwt_decode from 'jwt-decode';
 
 export default class Layout extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {
+      navStyle : ''
+    }
+  }
+
+  onChangeStyleNavigation = (turnOn) => {
+    console.log('==change style')
+    if(turnOn)
+      this.setState({
+        navStyle: 'collapsed'
+      });
+    else
+      this.setState({
+        navStyle: ''
+      });
+  }
   render() {
+    console.log('==state layout', this.state)
     const { children } = this.props;
     var rule = ''
     var name = ''
@@ -30,7 +49,7 @@ export default class Layout extends React.Component{
     }
 
     return(
-      <div className={'layout'}>
+      <div className={'layout ' + this.state.navStyle}>
         <div className={'layout-sub'}>
           <Navigation
             owner= {{ name: `${name}`, role: `${rule}` }}
@@ -49,7 +68,9 @@ export default class Layout extends React.Component{
         </div>
 
         <div className={'layout-main'}>
-          <Header/>
+          <Header
+            onChangeStyleNav={this.onChangeStyleNavigation}
+          />
           <Content>
             {children}
           </Content>

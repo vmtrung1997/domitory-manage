@@ -9,6 +9,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    transition: all 0.5s;
 }
 
 .header a{
