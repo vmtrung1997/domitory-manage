@@ -25,7 +25,7 @@ class SignInAdmin extends Component{
 		}
 	}
 
-	componentWillMount = () => {
+	componentDidMount = () => {
 		const secret = JSON.parse(localStorage.getItem('secret'))
 
 		if(secret){
