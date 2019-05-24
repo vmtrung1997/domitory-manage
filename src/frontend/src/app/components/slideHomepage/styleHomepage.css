@@ -55,7 +55,7 @@ Last Update: Jan 13, 2018
   margin: 0;
   padding: 0; }
 
-p{
+p,span,a{
   font-family: "Open Sans", sans-serif;
 }
 
