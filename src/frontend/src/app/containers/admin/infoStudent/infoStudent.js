@@ -90,7 +90,6 @@ class InfoStudent extends Component{
   }
 
   handlePopup = (type, state) => {
-    console.log('==handle popup')
     switch(type){
       case 'add':
         this.setState({ showAddPopup: state });
@@ -129,7 +128,6 @@ class InfoStudent extends Component{
   }
 
   getElement = (name) => {
-    console.log('==ahihi')
     get_element(name).then(result => {
       switch (name) {
         case 'room':
@@ -168,11 +166,8 @@ class InfoStudent extends Component{
   };
 
   getData = () => {
-    console.log('==getdata')
     get_list_student_by_page(this.state.searchValues)
       .then(result => {
-        console.log('==getdata success', result)
-
         this.setState({
           infoList: result.data.docs,
           totalPages: result.data.totalPages,
@@ -288,7 +283,6 @@ class InfoStudent extends Component{
     var secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getRoomHistory/` + id, { headers: {'x-access-token': secret.access_token} }
     ).then(result => {
-      console.log('==history', result);
       let i=1;
       const history = result.data && result.data.map(his => {
         return{key: i++, data: his}
@@ -303,7 +297,6 @@ class InfoStudent extends Component{
     this.setState({ [key]: value })
   };
   render(){
-    console.log('==render state', this.state);
     const {
       searchValues: {
         limit,

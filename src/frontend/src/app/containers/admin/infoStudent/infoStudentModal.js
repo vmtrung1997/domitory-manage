@@ -48,10 +48,8 @@ export class AddStudentModal extends Component{
 
   handleSubmitAddStudent = () => {
     const { infoAdded, infoAdded: {name, studentNumber, birthDay, regisExpiredDate, expiredDate} } = this.state;
-    console.log('==submit add', this.state.infoAdded);
     if(!name || !studentNumber || !birthDay || !regisExpiredDate || !expiredDate )
     {
-      console.log('==please fill');
       this.setState({
         message: 'Vui lòng điền đầy đủ thông tin!!'
       });
@@ -286,7 +284,6 @@ export class ImportDataModal extends Component{
       fileImport: file
     });
 
-    console.log('==file import', file)
   };
 
   convertData = async (file) => {
@@ -329,7 +326,6 @@ export class ImportDataModal extends Component{
         });
         this.convertData(this.state.fileImport).then(async(resolve) => {
           resolve.shift();
-          console.log('==resolve', resolve)
 
           import_info_student_data({data: resolve, regisExpiredDate:this.state.regisExpiredDate, expiredDate:this.state.expiredDate})
             .then(result => {
@@ -338,7 +334,6 @@ export class ImportDataModal extends Component{
               });
               this.props.onSave();
             }).catch(err => {
-              console.log('==import err', err.response.data);
               this.setState({
                 justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
                 listExpired: err.response.data.list
@@ -586,7 +581,6 @@ export class ExportDataModal extends Component{
 
   handleExportData = async() => {
     await this.setState({loading: true});
-    console.log('==load', this.state)
 
     const {
       valueExport: {
@@ -644,7 +638,6 @@ export class ExportDataModal extends Component{
       header.nganhHoc = "Ngành học"
     // if(ghiChuEx)
     //   header.email = "Email"
-    console.log('==params11',searchValues)
 
     get_list_student(searchValues).then(result => {
 
@@ -683,7 +676,6 @@ export class ExportDataModal extends Component{
       this.handlePopup(false)
 
     }).catch(err => {
-      console.log('==getall', err)
       ToastsStore.error("Có lỗi!");
     })
 
@@ -691,7 +683,6 @@ export class ExportDataModal extends Component{
   };
 
   render(){
-    console.log('==state modal0', this.state)
   	const {
       valueExport: {
         name,

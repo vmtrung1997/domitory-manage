@@ -179,7 +179,6 @@ class HeaderHomepage extends Component {
         >
           <Navbar.Brand>
             <Row>
-              {/* <Link to "/"> */}
 
               <Link className="nav-img" to="/">
                 <div >

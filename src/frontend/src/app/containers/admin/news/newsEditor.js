@@ -96,7 +96,6 @@ class EditorConvertToHTML extends Component {
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios.post("/manager/news/add", { data: data }).then(res => {
         if (res.status === 202) {
-          console.log(this.state.pictures);
           const { pictures } = this.state;
           if (pictures.length > 0) {
             var name = data.stamp + ".jpg";
@@ -108,7 +107,6 @@ class EditorConvertToHTML extends Component {
               },
               error => {
                 //error function
-                console.log(error);
               },
               () => {
                 //complete function
@@ -210,7 +208,6 @@ class EditorConvertToHTML extends Component {
   };
 
   onDrop = picture => {
-    console.log(picture);
     this.setState({
       pictures: this.state.pictures.concat(picture)
     });

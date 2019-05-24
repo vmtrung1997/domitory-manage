@@ -96,7 +96,6 @@ class RequestStay extends React.Component {
 
       //this.setState({ point: point });
     });
-    console.log(data);
   };
   render() {
     return (

@@ -102,14 +102,14 @@ class InfoDormitory extends React.Component{
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/infoDormitory/getRoomType`, { headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
-      console.log('==get room type', result)
+    
       const roomOptions = result.data.map(item => ({value: item._id, label: item.ten}))
       this.setState({
         roomTypeOptions: roomOptions,
         roomTypeAdd: roomOptions[0].value
       })
     }).catch(err => {
-      console.log('==get room type err', err)
+     
     })
   }
 
@@ -200,7 +200,6 @@ class InfoDormitory extends React.Component{
   };
 
   handleShowDetail = (room) => {
-    console.log('==handleShowDetail', room)
     this.setState({
       roomActive: {...room, loaiPhong: room.loaiPhong._id},
       limitPersonDetail: room.soNguoiToiDa,
@@ -342,7 +341,6 @@ class InfoDormitory extends React.Component{
 
 
   render(){
-    console.log('==render', this.state)
     const {
       floorActive,
       roomList,
