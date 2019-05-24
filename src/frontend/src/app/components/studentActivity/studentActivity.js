@@ -44,7 +44,6 @@ class StudentActivity extends React.Component {
         })
         .then(res => {
           if(res.data){
-          console.log('-- res activity', res);
           if(res.status === 200){
             res.data.data.map(item => {
               var d = new Date(item.idHD.ngayBD);
@@ -70,7 +69,7 @@ class StudentActivity extends React.Component {
           this.setState({
             isLoad: false
           });
-        }).catch(err => console.log(err));
+        }).catch(err => {});
     }
   };
 

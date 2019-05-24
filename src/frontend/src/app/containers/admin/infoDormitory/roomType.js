@@ -116,7 +116,7 @@ class Confirm extends Component {
           this.setState({table: table})
         } else 
           ToastsStore.error('Có lỗi xảy ra')
-      }).catch(err => console.log(err))
+      }).catch(err => {})
     } else {
       dataObject._id = data._id
       updateRoomType({data: dataObject}).then(result => {

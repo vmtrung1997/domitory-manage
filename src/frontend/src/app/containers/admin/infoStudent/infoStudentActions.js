@@ -138,7 +138,6 @@ export const get_list_student = async(searchValues) => {
     ).then(result => {
       resolve(result);
     }).catch((err) => {
-      console.log('==getall', err)
       reject(err)
     })
   })
@@ -152,7 +151,6 @@ export const get_floor_room = async() => {
     ).then(result => {
       resolve(result);
     }).catch((err) => {
-      console.log('==getall', err)
       reject(err)
     })
   })
@@ -160,7 +158,6 @@ export const get_floor_room = async() => {
 
 export const get_info_Student_detail = async(id) => {
   const headers = await get_headers();
-  console.log('==111')
 
   return new Promise((resolve, reject) => {
     axios.get('manager/infoStudent/getDetail/' + id, headers)

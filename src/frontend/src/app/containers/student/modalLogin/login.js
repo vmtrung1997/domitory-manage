@@ -53,7 +53,6 @@ class StudentLogin extends React.Component {
         password: this.state.password
       })
       .then(res => {
-        console.log(res.status);
         if (res.data) {
           localStorage.setItem("secret", JSON.stringify(res.data));
           

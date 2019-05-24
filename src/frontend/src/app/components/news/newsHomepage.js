@@ -229,7 +229,7 @@ class NewsHomepage extends React.Component {
                   </div>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Link to="/news">
-                      <Button>Xem thêm</Button>
+                      <Button><span>Xem thêm></span></Button>
                     </Link>
                   </div>
                 </div>
