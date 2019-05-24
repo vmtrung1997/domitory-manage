@@ -58,7 +58,7 @@ class DetailBill extends React.Component {
                                         <td>Tiền rác</td>
                                         <td></td>
                                         <td></td>
-                                        <td>{data.tienRac}</td>
+                                        <td>{OpimizationNumber.OpitmizeNumber(data.tienRac)}</td>
                                     </tr>
                                 </tbody>
                             </Table>
