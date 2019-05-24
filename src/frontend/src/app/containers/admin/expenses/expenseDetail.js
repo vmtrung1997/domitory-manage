@@ -7,6 +7,8 @@ import { remove_expense, update_expense, submit_expense } from './expensesAction
 import { ToastsStore } from 'react-toasts';
 import './expenses.css'
 import Checkbox from '../../../components/checkbox/checkbox';
+import jwt_decode from 'jwt-decode';
+
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -23,7 +25,8 @@ class Example extends React.Component {
       soDienResetDau: 0,
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
-      soNuocResetCuoi: 0
+      soNuocResetCuoi: 0,
+      roles: []
     };
   }
   componentDidMount() {
@@ -36,6 +39,16 @@ class Example extends React.Component {
       this.setState({ thayNuoc: true, soNuocResetDau: expenseDetail.thayNuoc.nuocCu, soNuocResetCuoi: expenseDetail.thayNuoc.nuocMoi })
     }
   }
+  getRoles = () => {
+		let token = JSON.parse(localStorage.getItem('secret'));
+		let decode = jwt_decode(token.access_token)
+		if (decode && decode.user.userEntity.phanQuyen){
+			this.setState({
+				roles: decode.user.userEntity.phanQuyen.quyen
+			})
+
+		}
+	}
   handleClose() {
     this.setState({ show: false, disabled: true, capNhat: false });
     this.props.show(false)
@@ -244,6 +257,7 @@ class Example extends React.Component {
               <Button variant="default" color="default" onClick={this.handleClose}>
                 Đóng
             </Button>
+            {this.state.roles && this.state.roles.includes('CP02') && <div>
               {exp.trangThai === 0 && <Button color="danger" onClick={this.handleDelete}>
                 Xóa
             </Button>}
@@ -256,6 +270,7 @@ class Example extends React.Component {
               {exp.trangThai === 0 && <Button variant="default" onClick={this.handleSubmit}>
                 Xác nhận thanh toán
         </Button>}
+            </div>}
             </Modal.Footer>
           </form>
         </Modal>

@@ -16,6 +16,7 @@ import ModalReset from './expenseReset'
 import ModalPrint from './expensePrint'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from 'react-toasts';
 import Input from '../../../components/input/input';
+import jwt_decode from 'jwt-decode'
 class Expenses extends Component {
 	static propTypes = {
 		label: PropTypes.string,
@@ -39,12 +40,14 @@ class Expenses extends Component {
 				limit: 10
 			},
 			show: true,
-			showPrint: false
+			showPrint: false,
+			roles: []
 		}
 	}
 	componentDidMount() {
 		var self = this;
 		this.showPrint = false;
+		this.getRoles();
 		getData().then(result => {
 			if (result.data) {
 				var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong, idLoaiPhong: room.idLoaiPhong }))
@@ -63,6 +66,16 @@ class Expenses extends Component {
 				})
 			}
 		}).catch(err => { })
+	}
+	getRoles = () => {
+		let token = JSON.parse(localStorage.getItem('secret'));
+		let decode = jwt_decode(token.access_token)
+		if (decode && decode.user.userEntity.phanQuyen){
+			this.setState({
+				roles: decode.user.userEntity.phanQuyen.quyen
+			})
+
+		}
 	}
 	searchTable = (page) => {
 		this.handleLoading(true)
@@ -192,12 +205,14 @@ class Expenses extends Component {
 										tableModel={this.state.tableModel} />
 
 									<ModalReset loading={this.handleLoading} />
-									<ModalConfig loading={this.handleLoading} />
+									{this.state.roles && this.state.roles.includes('CP02') &&
+									<ModalConfig loading={this.handleLoading} />}
 									<ModalExport loading={this.handleLoading} roomList={this.state.rooms} />
 								</div>
-								<div className='button-control'>
-									<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)} />
-								</div>
+								{this.state.roles && this.state.roles.includes('CP02') &&
+							<div className='button-control'>
+							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)} />
+						</div>}
 							</Col>
 						</Row>
 						<ExpenseTable table={this.state.dataTable}
