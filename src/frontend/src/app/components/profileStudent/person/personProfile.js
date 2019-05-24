@@ -84,7 +84,6 @@ class PersonProfile extends React.Component {
       flag: false
     };
 
-    console.log(data);
     //Kiểm tra các giá trị đã nhập
     if (
       data.CMND === undefined ||
@@ -133,7 +132,6 @@ class PersonProfile extends React.Component {
       secret = JSON.parse(secret);
       var id = decode.user.userEntity._id;
       //Lấy thông tin sinh viên
-      console.log(id)
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios
         .post(`/student/get-info`, { id: id })
@@ -159,7 +157,6 @@ class PersonProfile extends React.Component {
               value: res.data.data.truong ? res.data.data.truong._id : undefined
             };
 
-            console.log(nganhHoc, truong);
             //Lưu trong state
             this.setState({
               MSSV: res.data.data.MSSV,
@@ -192,26 +189,7 @@ class PersonProfile extends React.Component {
         .catch(err => {
         });
 
-      //Lấy danh sách các ngành học
-      axios
-        .get("/student/get-specialized")
-        .then(res => {
-          if (res) {
-            // res.data.data.forEach(element => {
-            //     this.props.getSpecialized(element);
-            // });
-
-            var options = res.data.data.map((obj, index) => {
-              if (index === 0) {
-                return { value: -1, label: "Chọn ngành" };
-              }
-              return { value: obj._id, label: obj.tenNganh };
-            });
-            this.setState({ nganhOptions: options });
-          }
-        })
-        .catch(err => {
-        });
+      
 
       //Lấy danh sách các trường
       var options = [{ value: -1, label: "Chọn trường" }];
@@ -236,6 +214,7 @@ class PersonProfile extends React.Component {
     this.setState({
       nganhHoc: nganh
     });
+
   };
 
   genderSelected = value => {
@@ -243,10 +222,27 @@ class PersonProfile extends React.Component {
   };
 
   truongSelected = value => {
+    if(value != -1)
+    {
     var truong = this.state.truongOptions.find(obj => obj.value === value);
     this.setState({
       truong: truong
     });
+    //Lấy danh sách các ngành học
+    axios
+    .post("/student/get-specialized",{id:truong.value})
+    .then(res => {
+      if (res) {
+        var options = [{ value: -1, label: "Chọn ngành" }];
+        res.data.data.map((obj, index) => {
+          options.push({ value: obj.idNganhHoc._id, label: obj.idNganhHoc.tenNganh });
+        });
+        this.setState({ nganhOptions: options });
+      }
+    })
+    .catch(err => {
+    });
+  }
   };
 
   render() {

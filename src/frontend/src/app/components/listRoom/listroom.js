@@ -16,12 +16,11 @@ export default class ListRoom extends React.Component{
   }
 
   chooseRoom = (room) => {
-    console.log('==click')
+
     this.props.onClick(room);
   }
   render(){
     const { data } = this.state;
-    console.log('==render state listroom', this.state, this.props)
     return(
       <Tabs id="controlled-tab-example" defaultActiveKey={data && 'Lầu ' + data[0].floor}>
         {data && data.map(floor => {

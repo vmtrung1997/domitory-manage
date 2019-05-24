@@ -12,7 +12,7 @@ const Slideshow = () => {
           {/* Single Welcome Slide */}
           <div
             className="single-welcome-slide bg-img bg-overlay"
-            style={{ backgroundImage: "url(img/slide_1.jpg)" }}
+            style={{ backgroundImage: "url(images/sl1.jpg)" }}
           >
             {/* Welcome Content */}
             <div className="welcome-content h-100">
@@ -22,10 +22,10 @@ const Slideshow = () => {
                   <div className="col-12 col-md-9 col-lg-6">
                     <div className="welcome-text text-center">
                       <h2 data-animation="fadeInUpBig" data-delay="100ms">
-                        Designed For Music, Engineered to Last
+                        Học tập
                       </h2>
                       <h5 data-animation="fadeInUpBig" data-delay="400ms">
-                        31st Dec - Night out party....Don't miss it
+                        Môi trường yên tĩnh, tập trung
                       </h5>
                      
                     </div>
@@ -39,7 +39,7 @@ const Slideshow = () => {
           {/* Single Welcome Slide */}
           <div
             className="single-welcome-slide bg-img bg-overlay"
-            style={{ backgroundImage: "url(img/slide_2.jpg)" }}
+            style={{ backgroundImage: "url(images/sl2.png)" }}
           >
             {/* Welcome Content */}
             <div className="welcome-content h-100">
@@ -49,10 +49,10 @@ const Slideshow = () => {
                   <div className="col-12 col-md-9 col-lg-6">
                     <div className="welcome-text text-center">
                       <h2 data-animation="fadeInUpBig" data-delay="100ms">
-                        Designed For Music, Engineered to Last
+                       Tiện nghi
                       </h2>
                       <h5 data-animation="fadeInUpBig" data-delay="400ms">
-                        31st Dec - Night out party....Don't miss it
+                        Nằm ngay trung tâm thành phố, thuận tiện di chuyển
                       </h5>
                       <a
                         href="#"
@@ -74,7 +74,7 @@ const Slideshow = () => {
           {/* Single Welcome Slide */}
           <div
             className="single-welcome-slide bg-img bg-overlay"
-            style={{ backgroundImage: "url(img/slide_3.jpg)" }}
+            style={{ backgroundImage: "url(images/sl3.jpg)" }}
           >
             {/* Welcome Content */}
             <div className="welcome-content h-100">
@@ -84,10 +84,10 @@ const Slideshow = () => {
                   <div className="col-12 col-md-9 col-lg-6">
                     <div className="welcome-text text-center">
                       <h2 data-animation="fadeInUpBig" data-delay="100ms">
-                        Designed For Music, Engineered to Last
+                        Rèn luyện
                       </h2>
                       <h5 data-animation="fadeInUpBig" data-delay="400ms">
-                        31st Dec - Night out party....Don't miss it
+                        Các hoạt động nâng cao đời sống tinh thân cho sinh viên
                       </h5>
                       <a
                         href="#"

@@ -96,13 +96,13 @@ class ActivityDetail extends Component{
               		<div className="title-detail"> Chi tiết hoạt động </div>
 					<div className="detail-activity">
 						<Col md={3} style={{textAlign: 'right'}}>
-							<p style={{fontWeight: 'bold'}}> Hoạt động </p>
-							<p style={{fontWeight: 'bold'}}> Thời gian bắt đầu </p>
-							<p style={{fontWeight: 'bold'}}> Thời gian kết thúc </p>
-							<p style={{fontWeight: 'bold'}}> Địa điểm </p>
-							<p style={{fontWeight: 'bold'}}> Điểm </p>
-							<p style={{fontWeight: 'bold'}}> Bắt buộc </p>
-							<p style={{fontWeight: 'bold'}}> Mô tả </p>
+							<p style={{fontWeight: 'bold'}}> Hoạt động: </p>
+							<p style={{fontWeight: 'bold'}}> Thời gian bắt đầu: </p>
+							<p style={{fontWeight: 'bold'}}> Thời gian kết thúc: </p>
+							<p style={{fontWeight: 'bold'}}> Địa điểm: </p>
+							<p style={{fontWeight: 'bold'}}> Điểm: </p>
+							<p style={{fontWeight: 'bold'}}> Bắt buộc: </p>
+							<p style={{fontWeight: 'bold'}}> Mô tả: </p>
 						</Col>
 						<Col>
 							<p>	{this.state.hd.ten} </p>

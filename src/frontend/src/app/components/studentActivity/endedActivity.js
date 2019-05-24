@@ -52,7 +52,6 @@ class EndedStudentActivity extends React.Component {
             this.setState({
               totalPages: res.data.totalPages
             });
-            console.log(res.data);
             res.data.data.map(item => {
               var d = new Date(item.idHD.ngayKT);
 

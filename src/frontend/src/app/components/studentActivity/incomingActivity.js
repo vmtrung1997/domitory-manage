@@ -34,7 +34,6 @@ class IncomingStudentActivity extends React.Component {
       isLoad: true
     });
 
-    console.log('getActivities');
     await refreshToken();
     const options = {
       skip: (this.state.pageActive - 1) * this.state.limit,
@@ -56,9 +55,8 @@ class IncomingStudentActivity extends React.Component {
           this.setState({
             totalPages: res.data.totalPages
           });
-          console.log(res.data);
           res.data.data.map(item => {
-            var d = new Date(item.idHD.ngayBD);
+            var d = new Date(item.idHD.ngayKT);
             var today = new Date();
 
             if (d >= today) {
@@ -142,6 +140,7 @@ class IncomingStudentActivity extends React.Component {
     this.setState({ incomingActivities: act });
   };
 
+
   clickPage = e => {
     this.setState({
       pageActive: e
@@ -149,16 +148,17 @@ class IncomingStudentActivity extends React.Component {
     this.getActivities();
   };
   refresh = () => {
+   
     this.getActivities();
   };
-  componentDidMount() {
-    if (!this.state.onlyOneLoad) {
-      console.log("vpppppppppppp");
-      this.setState({ onlyOneLoad: true });
-      this.getActivities();
-      
-    }
+  componentDidMount() { 
+          this.getActivities();
   }
+
+  componentDidUpdate(){
+    this.props.setClick(this.refresh);
+  }
+
 
   render() {
     return (
@@ -175,7 +175,7 @@ class IncomingStudentActivity extends React.Component {
         ) : (
           <div>
             <div className="time-bill">
-              {this.state.incomingActivities.length === 0 ? (
+              {this.state.incomingActivities.length === 0?(
                 <div style={{ marginTop: "20px" }}>
                   <span>Bạn chưa có hoạt động nào</span>
                 </div>

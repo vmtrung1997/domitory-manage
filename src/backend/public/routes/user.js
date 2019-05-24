@@ -12,6 +12,8 @@ router.post('/reset-password',taiKhoan.resetPassword)
 
 router.post('/reset-password-admin', taiKhoan.resetPasswordAdmin)
 
+router.post('/change-password-admin', taiKhoan.changePasswordAdmin)
+
 // router.get('/test_sv', require('../repos/testDb').update_image)
 
 // router.post('/test_file_excel', require('../repos/testDb').uploadExcelFile)

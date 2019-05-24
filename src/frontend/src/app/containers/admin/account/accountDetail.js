@@ -27,7 +27,6 @@ class AccountDetail extends Component{
 	    }).catch(err => {})
 	}
 	render(){
-		console.log(this.props.data)
 		const data  = this.props.data
 		var isStudent = false
 		var rule = ''
