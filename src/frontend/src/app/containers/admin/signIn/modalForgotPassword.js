@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Modal } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 
 import axios from './../../../config'
