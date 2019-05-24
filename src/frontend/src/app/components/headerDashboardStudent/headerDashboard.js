@@ -15,8 +15,8 @@ class HeaderDashboardStudent extends React.Component {
                         <Nav className="mr-auto">
                             <Nav.Link href="#home">Trang chủ</Nav.Link>
                             <Nav.Link href="#link">Tin tức</Nav.Link>
-                            <Nav.Link href="#link">Giới thiệu</Nav.Link>
-                            
+                            {/* <Nav.Link href="#link">Giới thiệu</Nav.Link>
+                             */}
                         </Nav>
                         <Form inline>
                             <Nav className="mr-auto">
