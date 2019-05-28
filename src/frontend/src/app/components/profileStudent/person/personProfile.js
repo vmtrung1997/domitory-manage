@@ -345,7 +345,7 @@ class PersonProfile extends React.Component {
                     <div>
                       <Row>
                         <Col>
-                          <span className="label-font">Mã số sinh viên</span>
+                          <span className="label-font">MSSV</span>
 
                           <MyInput
                             getValue={this.getValue}
@@ -358,7 +358,7 @@ class PersonProfile extends React.Component {
 
                         <Col>
                           <span className="label-font">
-                            Chứng minh nhân dân
+                            CMND
                           </span>
                           <MyInput
                             name="CMND"
@@ -462,7 +462,7 @@ class PersonProfile extends React.Component {
                         </Col>
                         <Col>
                           <span className="label-font">
-                            Số điện thoại người thân
+                            SDT người thân
                           </span>
                           <MyInput
                             getValue={this.getValue}

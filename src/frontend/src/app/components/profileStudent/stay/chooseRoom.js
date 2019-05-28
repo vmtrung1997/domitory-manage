@@ -122,7 +122,7 @@ class ListRoom extends React.Component {
     }).then(rs => {
       if (rs.status === 200 || rs.status === 204) {
         selectedRoom = {
-          soNguoi: room.soNguoi,
+          soNguoi: rs.data.data.length,
           soNguoiToiDa: room.soNguoiToiDa,
           tenPhong: room.tenPhong,
           listProfile: rs.data.data === undefined ? [] : rs.data.data,
@@ -137,20 +137,35 @@ class ListRoom extends React.Component {
   };
 
   componentDidMount = async () => {
-    Axios.post("/student/get-room", {
+    var listRoom = [];
+    await Axios.post("/student/get-room", {
       room: this.state.room
     }).then(rs => {
       if (rs.status === 200) {
-        this.setState({ listRoom: rs.data.data });
+        rs.data.data.forEach(element => {
+           Axios.post("/student/get-profile-by-idPhong", {
+            id: element._id
+          }).then(rs=>{
+            listRoom = this.state.listRoom;
+            listRoom.push({...element,
+            soNguoi: rs.data.data === undefined?0:rs.data.data.length})
+            this.setState({
+              listRoom: listRoom
+            })
+          })
+        })          
+
       }
-    });
+    })
+
   };
   render() {
     return (
       <React.Fragment>
         <div style={{ margin: "20px" }}>
           {this.state.listRoom.map(item => {
-            if (item.loaiPhong !== null) {
+            if (item.loaiPhong) {
+              console.log(item);
               return (
                 <Button
                   onClick={e => this.selectedRoom(item)}

@@ -99,6 +99,7 @@ class RequestStay extends React.Component {
   };
   render() {
     return (
+      <div className = 'padding-menu'>
       <>
         <ToastsContainer
           position={ToastsContainerPosition.BOTTOM_CENTER}
@@ -170,6 +171,7 @@ class RequestStay extends React.Component {
           </Modal.Footer>
         </Modal>
       </>
+      </div>
     );
   }
 }
