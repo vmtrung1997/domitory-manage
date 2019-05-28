@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import jwt_decode from 'jwt-decode';
-import axios from 'axios'
 import './App.css'
 import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'
@@ -56,18 +55,17 @@ const SecurityRoute = ({ component: Component, ...rest }) => {
         />
     )
 }
-
 class App extends Component {
 	render() {
       	return (
-      		<Router>
+      		<Router basename="">
                 <Switch>
-                    <AdminRoute path="/admin" component={Admin} />
-                    <SecurityRoute path='/security' component={Security} />
-                    <Route path="/signin-admin" component={SignInAdmin} />
-                    <Route path="/500" component={InternalServer} />
-                    <Route path="/401" component={NotAuthen}/>
-                    <Route path='/' component = {Student}/>
+                    <AdminRoute path={`/admin`} component={Admin} />
+                    <SecurityRoute path={`/security`} component={Security} />
+                    <Route path={`/signin-admin`} component={SignInAdmin} />
+                    <Route path={`/500`} component={InternalServer} />
+                    <Route path={`/401`} component={NotAuthen}/>
+                    <Route path={`/`} component = {Student}/>
                     <Route component={NotFound} />
                 </Switch>
             </Router>
