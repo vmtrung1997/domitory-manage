@@ -177,6 +177,8 @@ class ListRoom extends React.Component {
                   variant={
                     item.soNguoiToiDa - item.soNguoi ? "outline" : "default"
                   }
+
+                  disable = {item.soNguoiToiDa -item.soNguoi <=0 ? false:true}
                   color={"info"}
                 >
                   {item.tenPhong} ({item.soNguoi}/{item.soNguoiToiDa})

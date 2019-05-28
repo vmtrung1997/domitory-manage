@@ -1,6 +1,7 @@
 import React from "react";
-import { InputGroup, Row, Col, Button } from "react-bootstrap";
+import { InputGroup, Row, Col } from "react-bootstrap";
 import "./../profileStudent.css";
+import Button from './../../button/button'
 import "react-datepicker/dist/react-datepicker.css";
 import MyInput from "../../input/input";
 import MySelectOption from "../../selectOption/select";
