@@ -106,9 +106,13 @@ class EndedStudentActivity extends React.Component {
             <div className="time-bill">
               <div className="text-style">
                 {this.state.oldActivities.length === 0 ? (
-                  <div style={{ marginTop: "30px" }}>
-                    <span>Bạn chưa có hoạt động nào</span>
-                  </div>
+                  <div style={{ marginTop: "30px",textAlign:'center' }}>
+                  <img
+                    style={{ height: "150px", width: "150px" }}
+                    src="/images/notdatafound.png"
+                  />
+                  <p>Bạn chưa tham gia hoạt động nào</p>                
+                  </div> 
                 ) : (
                   <div className="profile-panel">
                     <div className="time-bill">

@@ -167,8 +167,27 @@
   .header-title{
       font-weight: bold;
       color: #5BA3EF;
-      font-size: 1em;
-      margin-right: 1em;
+      font-size: 0.9em;
+      margin-top: 1px;
+      margin-right: 0.15em;
       display: flex;
       align-self: center
+  }
+
+  .navbar-toggle{
+      background-color: #ffffff;
+      text-align: right;
+
+      
+      
+  }
+
+  .navbar-toggle-btn{
+      display: flex;
+      justify-content: flex-end;
+
+  }
+
+  .dropdown-login{
+      background-color: #ffffff;
   }

@@ -46,6 +46,7 @@ class PractiseStudent extends React.Component {
   render() {
     return (
       <React.Fragment>
+        <div className = 'padding-menu'>
           <div>
           <h1 className="title-header">ĐIỂM HOẠT ĐỘNG</h1>
         </div>
@@ -81,6 +82,7 @@ class PractiseStudent extends React.Component {
               </tbody>
             </Table>
           </div>
+        </div>
         </div>
       </React.Fragment>
     );

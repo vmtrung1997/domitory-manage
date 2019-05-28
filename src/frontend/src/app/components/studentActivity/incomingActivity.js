@@ -176,9 +176,13 @@ class IncomingStudentActivity extends React.Component {
           <div>
             <div className="time-bill">
               {this.state.incomingActivities.length === 0?(
-                <div style={{ marginTop: "20px" }}>
-                  <span>Bạn chưa có hoạt động nào</span>
-                </div>
+                <div style={{ marginTop: "30px",textAlign:'center' }}>
+                <img
+                  style={{ height: "150px", width: "150px" }}
+                  src="/images/notdatafound.png"
+                />
+                <p>Bạn chưa tham gia hoạt động nào</p>                
+              </div>
               ) : (
                 <div>
                   <div className="profile-panel">

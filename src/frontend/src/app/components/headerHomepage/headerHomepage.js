@@ -122,7 +122,7 @@ class HeaderHomepage extends Component {
       );
     } else {
       isLogin = (
-        <Dropdown>
+        <Dropdown className = "dropdown-login">
           <Dropdown.Toggle
             variant="light"
             id="dropdown-basic"
@@ -175,7 +175,7 @@ class HeaderHomepage extends Component {
           sticky="top"
           expand="sm"
           className="HeaderHomepage"
-          style={{ backgroundColor: "#fffffff7", height: "60px" }}
+          style={{ backgroundColor: "#fffffff7" }}
         >
           <Navbar.Brand>
             <Row>
@@ -189,10 +189,12 @@ class HeaderHomepage extends Component {
               <Link className="header-title" to="/">
                 <h2 className="header-title"  >Kí túc xá Trần Hưng Đạo</h2>
               </Link>
+  
             </Row>
+           
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
+          <Navbar.Toggle   aria-controls="basic-navbar-nav "/>
+            <Navbar.Collapse id="basic-navbar-nav" className="navbar-toggle">
             <Nav className="mr-auto">
               <Link to="/" className="list-item-menu">
                 Trang chủ
@@ -204,8 +206,9 @@ class HeaderHomepage extends Component {
                 Giới thiệu
               </Link> */}
             </Nav>
-            <Form inline>{isLogin}</Form>
+            <Form className = "navbar-toggle-btn" inline>{isLogin}</Form>
           </Navbar.Collapse>
+         
         </Navbar>
       </React.Fragment>
     );

@@ -152,6 +152,7 @@ class StudentActivity extends React.Component {
   render() {
     return (
       <React.Fragment>
+        <div className='padding-menu'>
         <ToastsContainer
           position={ToastsContainerPosition.BOTTOM_CENTER}
           lightBackground
@@ -169,6 +170,7 @@ class StudentActivity extends React.Component {
             <EndedStudentActivity />
           </Tab>
         </Tabs>
+        </div>
       </React.Fragment>
     );
   }

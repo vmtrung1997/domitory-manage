@@ -471,7 +471,7 @@ exports.updateRoom = (req, res) => {
   try {
     Phong.find({ _id: req.body.idPhong }).then(rs => {
       if (rs.length > 0) {
-        if (rs[0].soNguoi < rs[0].soNguoiToiDa) {
+        
           try {
             Phong.findOneAndUpdate(
               { _id: req.body.idPhong },
@@ -500,11 +500,7 @@ exports.updateRoom = (req, res) => {
           } catch (e) {
             console.log(e);
           }
-        } else {
-          res.status(204).json({
-            data: "no data"
-          });
-        }
+        
       } else {
         res.status(204).json({
           data: "no data"
