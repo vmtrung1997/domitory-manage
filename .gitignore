@@ -22,4 +22,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
-src/frontend/package-lock.json
+/src/frontend/package-lock.json

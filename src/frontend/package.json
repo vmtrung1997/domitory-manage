@@ -59,7 +59,6 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "homepage": "http://localhost:9000",
   "browserslist": [
     ">0.2%",
     "not dead",
