@@ -3,6 +3,7 @@ import { Table } from 'react-bootstrap'
 import { withRouter, Link } from 'react-router-dom'
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 import axios from './../../config'
+import jwt_decode from 'jwt-decode'
 
 import './infoActivity.css'
 import Confirm from './../confirm/confirm'
@@ -66,6 +67,10 @@ class InfoActivity extends Component{
 		})
 	}
 	render(){
+		const secret = JSON.parse(localStorage.getItem('secret'))
+		const user = jwt_decode(secret.access_token).user
+      	const isAdmin = user.userEntity.loai == 'DD' ? false : true
+
 		const table = this.props.data.map((row, index) => {
 			var curData = new Date();
 			var date = new Date(row.ngayBD);
@@ -91,7 +96,7 @@ class InfoActivity extends Component{
 						<Button title={'Điểm danh'} onClick={(e) => {this.handleRollCall(row)}}>
 							<i className="fas fa-poll-h"></i>
 						</Button>
-						{curData > date ? (
+						{curData > date || !isAdmin ? (
 							<React.Fragment/>
 						):(
 							<>

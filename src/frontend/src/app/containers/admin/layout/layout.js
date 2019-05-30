@@ -21,8 +21,14 @@ export default class Layout extends React.Component{
         case 'SA':
           rule = 'Super Admin'
           break
-        case 'BV':
-          rule = 'Bảo Vệ'
+        case 'AM':
+          rule = 'Admin'
+          break
+        case 'ADCP':
+          rule = 'Quản lý chi phí'
+          break
+        case 'DD':
+          rule = 'Điểm danh'
           break
         default:
           break
