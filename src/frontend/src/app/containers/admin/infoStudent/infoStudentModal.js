@@ -339,26 +339,6 @@ export class ImportDataModal extends Component{
                 listExpired: err.response.data.list
               });
           })
-          // await refreshToken();
-          // var secret = JSON.parse(localStorage.getItem('secret'));
-          // axios.post(`/manager/infoStudent/importFile`,{
-          //     data: resolve,
-          //     expireDay: new Date()
-          //   }, { headers: {'x-access-token': secret.access_token} }
-          // ).then(result => {
-          //   console.log('==import success', result);
-          //   this.setState({
-          //     justFileServiceResponse: 'Thêm thành công!!'
-          //   });
-          //   this.props.onSave();
-          //   //this.handlePopup(false)
-          // }).catch(err => {
-          //   console.log('==import err', err.response.data);
-          //   this.setState({
-          //     justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
-          //     listExpired: err.response.data.list
-          //   });
-          // })
         })
       } else {
         this.setState({

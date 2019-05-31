@@ -64,17 +64,14 @@ class InfoStudentDetail extends Component {
   }
 
   componentDidMount() {
-    console.log('==did mount', this.state)
     this.getElement('room');
     this.getElement('school');
 
   }
 
   getData = () => {
-    console.log('==hello', this.props.match.params.mssv)
     get_info_Student_detail(this.props.match.params.mssv)
       .then(result => {
-
         this.setState({
           profile: {
             ...result.data,
@@ -108,16 +105,11 @@ class InfoStudentDetail extends Component {
             isOld: true
           })
         }
-
-
       }).catch(err => {
-        console.log('==err info detail', err.response)
     })
     get_floor_room().then(result => {
-      console.log('==floor', result)
       this.setState({roomData: result.data})
     }).catch(err => {
-      console.log('==err floor', err)
     })
     get_activites_by_MSSV(this.props.match.params.mssv).then(result => {
       console.log('==acti ', result);
@@ -159,29 +151,13 @@ class InfoStudentDetail extends Component {
       }
     }).catch(err => {
     })
-  }
-
-  // getActivities = async() => {
-  //   console.log('==acti 1111');
-  //
-  //   await refreshToken();
-  //   let secret = JSON.parse(localStorage.getItem('secret'));
-  //   axios.get(`/manager/infoStudent/getActivities/` + this.props.match.params.mssv, {
-  //     headers: { 'x-access-token': secret.access_token }
-  //   })
-  // }
+  };
 
   onChange = (event) => {
     this.setState({
       profile: { ...this.state.profile, [event.name]: event.value }
     })
-  }
-
-  onChangeNumber = (event) => {
-    this.setState({
-      profile: { ...this.state.profile, [event.name]: parseInt(event.value) }
-    })
-  }
+  };
 
   handleSaveChange = async () => {
     await refreshToken()
@@ -203,7 +179,6 @@ class InfoStudentDetail extends Component {
       this.setState({loading: false})
 
     }).catch(err => {
-      console.log('==err update',err.response)
       ToastsStore.error(err.response.data.msg);
       this.setState({loading: false})
     })
@@ -241,7 +216,6 @@ class InfoStudentDetail extends Component {
 
   getMajorOptions = (idSchool) => {
     getMajor({id: idSchool}).then(result =>{
-      console.log('==get major', idSchool, result)
       if (result.data.rs === 'success') {
         let majorList = result.data.data.map(major => ({ value: major.idNganhHoc._id, label: major.idNganhHoc.tenNganh }))
         this.setState({
@@ -280,7 +254,6 @@ class InfoStudentDetail extends Component {
     
     fileReader.onload = (e) => {
       var data = e.target.result;
-      console.log(e);
       var testImg = new Image();
       testImg.src = data;
       testImg.crossOrigin = "Anonymous";
@@ -302,22 +275,17 @@ class InfoStudentDetail extends Component {
     console.log('==state render', this.state);
     let {
       profile,
-      activity,
       genderOptions,
       schoolOptions,
-      roomOptions,
       majorOptions,
       school,
-      room,
       major,
       activities,
       isOld
     } = this.state;
     const { CMND } = profile;
-    var imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
-    //var ngayVaoOStr = this.getDateType(profile.ngayVaoO)
+    let imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
     let gender = this.state.profile && this.state.profile.gioiTinh ? this.state.profile.gioiTinh: 0;
-    console.log("==type", typeof this.state.profile.ngaySinh)
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -503,6 +471,7 @@ class InfoStudentDetail extends Component {
                         <Col md={2}>
                           Phòng:
                         </Col>
+                        <Col md={4}>
                         <ChooseRoom
                           disabled={isOld}
                           show={this.state.showRoomPopup}
@@ -511,6 +480,7 @@ class InfoStudentDetail extends Component {
                           room={profile ? profile.idPhong : {}}
                           data={this.state.roomData}
                         />
+                        </Col>
                       </Row>
 
                       <Row>

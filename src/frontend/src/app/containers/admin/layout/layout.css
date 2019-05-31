@@ -1,38 +1,68 @@
 .layout{
     display: flex;
 }
-
-.layout-sub{
-	z-index: 200;
-    width: 20%;
-	height: 100vh;
-	background-color: #2f4050;
-	position: fixed;
-    transition: all 0.5s;
-}
-
-.layout-main{
-	position: absolute;
-	right: 0;
-    width: 80%;
-    transition: all 0.5s;
-}
-
 body{
     margin: 0;
 }
 
-.collapsed span.mb_nav-label{
-    display: none;
+.layout-sub{
+    z-index: 200;
+    width: 16%;
+    background-color: #2f4050;
+    position: fixed;
+    transition: all 0.5s;
 }
 
-.collapsed .layout-sub{
-    width: 8%;
+.layout-main{
+    position: absolute;
+    right: 0;
+    width: 84%;
+    transition: all 0.5s;
 }
 
-.collapsed .layout-main{
-    width: 92%;
+@media screen and (min-width: 768px){
 
+    .collapsed span.mb_nav-label{
+        display: none;
+    }
+
+    .collapsed .layout-sub{
+        width: 6%;
+    }
+
+    .collapsed .layout-main{
+        width: 94%;
+    }
+
+    .collapsed .header{
+        width: 94%;
+    }
+
+
+}
+
+@media screen and (max-width: 768px) {
+    .collapsed .layout-main{
+        width: 100%;
+    }
+    .collapsed .layout-sub{
+        display: none;
+    }
+    span.mb_nav-label{
+        display: none;
+    }
+    .collapsed .header{
+        width: 100%;
+    }
+
+    .user-name{
+        display: none;
+    }
+
+    .avt{
+        width: 30px;
+        height: 30px;
+    }
 }
 
 .collapsed .user-name{
@@ -44,6 +74,3 @@ body{
     height: 50px;
 }
 
-.collapsed .header{
-    width: 92%;
-}
