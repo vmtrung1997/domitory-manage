@@ -120,12 +120,22 @@ class ListRoom extends React.Component {
     await Axios.post("/student/get-profile-by-idPhong", {
       id: room._id
     }).then(rs => {
-      if (rs.status === 200 || rs.status === 204) {
+      if (rs.status === 200 ) {
+        console.log(rs.data.data)
         selectedRoom = {
-          soNguoi: rs.data.data.length,
+          soNguoi: rs.data.data.length, 
           soNguoiToiDa: room.soNguoiToiDa,
           tenPhong: room.tenPhong,
           listProfile: rs.data.data === undefined ? [] : rs.data.data,
+          ten: room.loaiPhong.ten
+        };
+      }
+      else if(rs.status === 204){
+        selectedRoom = {
+          soNguoi: 0, 
+          soNguoiToiDa: room.soNguoiToiDa,
+          tenPhong: room.tenPhong,
+          listProfile: [],
           ten: room.loaiPhong.ten
         };
       }
@@ -165,7 +175,7 @@ class ListRoom extends React.Component {
         <div style={{ margin: "20px" }}>
           {this.state.listRoom.map(item => {
             if (item.loaiPhong) {
-              console.log(item);
+        
               return (
                 <Button
                   onClick={e => this.selectedRoom(item)}
@@ -175,10 +185,11 @@ class ListRoom extends React.Component {
                   }
                   shadow
                   variant={
-                    item.soNguoiToiDa - item.soNguoi ? "outline" : "default"
+                    item.soNguoiToiDa - item.soNguoi ===0? "outline" : "default"
                   }
 
-                  disable = {item.soNguoiToiDa -item.soNguoi <=0 ? false:true}
+                  disabled = {item.soNguoiToiDa -item.soNguoi ===0 ? true:false}
+                  // disabled
                   color={"info"}
                 >
                   {item.tenPhong} ({item.soNguoi}/{item.soNguoiToiDa})
@@ -294,11 +305,11 @@ class ChooseRoom extends React.Component {
           <Modal.Body>
             {" "}
             <Tabs id="controlled-tab-example" defaultActiveKey="floor1">
-              {this.state.floor.map(item => {
+              {this.state.floor.map((item,index) => {
                 var evt = "floor" + item;
                 var tit = "Lầu " + item;
                 return (
-                  <Tab eventKey={evt} title={tit}>
+                  <Tab eventKey={evt} key = {index} title={tit}>
                     <ListRoom data={item} room={this.getRoom} />
                   </Tab>
                 );
@@ -306,7 +317,7 @@ class ChooseRoom extends React.Component {
             </Tabs>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleClose}>
+            <Button  onClick={this.handleClose}>
               Đóng
             </Button>
             <ToastsContainer

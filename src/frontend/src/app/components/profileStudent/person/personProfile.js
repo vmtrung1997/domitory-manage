@@ -520,7 +520,7 @@ class PersonProfile extends React.Component {
                         <div className="profile-panel-button">
                           <Button
                             disabled={this.state.isDisable}
-                            variant="success"
+                           
                             onClick={this.updateProfile}
                           >
                             Lưu
