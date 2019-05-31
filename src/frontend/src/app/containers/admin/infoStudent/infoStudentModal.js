@@ -493,10 +493,10 @@ export class ImportDataModal extends Component{
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline" onClick={() =>this.handlePopup(false)}>
-              Cancel
+              Hủy bỏ
             </Button>
             <Button  onClick={() => this.handleImportData()}>
-              Upload
+              Tải lên
             </Button>
           </Modal.Footer>
         </Modal>
@@ -858,10 +858,10 @@ export class ExportDataModal extends Component{
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline" onClick={() =>this.handlePopup(false)}>
-              Cancel
+              Hủy bỏ
             </Button>
             <Button onClick={() => this.handleExportData()}>
-              Save file
+              Xuất file
             </Button>
           </Modal.Footer>
         </Modal>

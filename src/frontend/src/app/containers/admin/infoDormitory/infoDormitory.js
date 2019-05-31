@@ -54,10 +54,8 @@ class InfoDormitory extends React.Component{
   getData = async() => {
     this.getFloor()
       .then(() => {
-      console.log('==get room after')
       this.getRoom();
     }).catch(() =>{
-      console.log('==get room err')
     })
 
     this.getRoomOptions();
@@ -65,28 +63,23 @@ class InfoDormitory extends React.Component{
 
   getFloor = () => {
     return new Promise(async(resolve) => {
-      console.log('==get floor')
       await refreshToken();
       let secret = JSON.parse(localStorage.getItem('secret'));
 
       axios.get(`/manager/getElement/floor`,  {
         headers: { 'x-access-token': secret.access_token }
       }).then(result => {
-        console.log('==success', result)
-
         let i = 0;
         let floorList = result.data.sort();
         floorList = floorList.map(floor => {
           return {key: i++, label: floor}
         });
-        console.log('==set state')
         this.setState({
           floorList: floorList,
           floorActive: floorList[0].label
         })
         resolve()
       }).catch(err => {
-        console.log('==floor err')
 
       });
     })
@@ -94,12 +87,10 @@ class InfoDormitory extends React.Component{
   };
 
   getRoom = async() => {
-    console.log('==floor', this.state.floorActive)
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/infoDormitory/getRoom/` + this.state.floorActive, { headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
-      console.log('==new api room', result)
       this.setState({
         roomList: result.data
       })
@@ -155,7 +146,15 @@ class InfoDormitory extends React.Component{
         this.setState({ showAddFloorPopup: false });
         break;
       case 'addRoom':
-        this.setState({ showAddRoomPopup: false });
+        this.setState({
+          showAddRoomPopup: false,
+          floorNameAdd: undefined,
+          roomNameAdd: undefined,
+          roomTypeAdd: '5ccbef2fe7179a596b1a4ba3',
+          limitPersonAdd: 0,
+          electicalNumAdd: 0,
+          waterNumAdd: 0,
+        });
         break;
       default:
         break
@@ -186,27 +185,39 @@ class InfoDormitory extends React.Component{
   };
 
   handleSubmitAddRoom = async() => {
-    const { roomNameAdd, limitPersonAdd, descriptionAdd, statusAddRoom, floorActive, roomTypeAdd, electicalNumAdd, waterNumAdd } = this.state;
-    await refreshToken();
-    let secret = JSON.parse(localStorage.getItem('secret'));
-    axios.post(`/manager/infoDormitory/addRoom`, {
-      tenPhong: roomNameAdd,
-      soNguoiToiDa: parseInt(limitPersonAdd),
-      moTa: descriptionAdd,
-      trangThai: statusAddRoom,
-      lau: floorActive,
-      loaiPhong: roomTypeAdd,
-      soDien: parseInt(electicalNumAdd),
-      soNuoc: parseInt(waterNumAdd),
-      },{ headers: { 'x-access-token': secret.access_token } }
-    ).then(result => {
-      ToastsStore.success("Thêm phòng thành công!");
-      this.handleClosePopup('addRoom');
-      this.handleClosePopup('addFloor');
-      this.getData();
-    }).catch(err => {
-      ToastsStore.error( err.response.data.msg);
-    })
+    const { roomNameAdd, limitPersonAdd, descriptionAdd, statusAddRoom, floorNameAdd, roomTypeAdd, electicalNumAdd, waterNumAdd } = this.state;
+    if(!roomNameAdd && !floorNameAdd)
+      this.setState({
+        messErrAddRoom: 'Vui lòng nhập đầy đủ thông tin'
+      });
+    else{
+      const params = {
+        tenPhong: roomNameAdd,
+        soNguoiToiDa: parseInt(limitPersonAdd),
+        moTa: descriptionAdd,
+        trangThai: statusAddRoom,
+        lau: parseInt(floorNameAdd),
+        loaiPhong: roomTypeAdd,
+        soDien: parseInt(electicalNumAdd),
+        soNuoc: parseInt(waterNumAdd),
+      }
+      await refreshToken();
+      let secret = JSON.parse(localStorage.getItem('secret'));
+      axios.post(`/manager/infoDormitory/addRoom`, params,{ headers: { 'x-access-token': secret.access_token } }
+      ).then(async(result) => {
+        ToastsStore.success("Thêm phòng thành công!");
+        this.handleClosePopup('addRoom');
+        this.handleClosePopup('addFloor');
+
+        await this.getData();
+        this.setState({
+          floorActive: parseInt(floorNameAdd)
+        })
+      }).catch(err => {
+        ToastsStore.error( err.response.data.msg);
+      })
+    }
+
   };
 
   handleShowDetail = async(room) => {
@@ -215,7 +226,6 @@ class InfoDormitory extends React.Component{
     axios.get(`/manager/infoDormitory/getPersonInRoom/` + room._id
       ,{  headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
-      console.log('==person', result)
       this.setState({
         listPerson: result.data.length === 0 ? undefined : result.data
       })
@@ -223,7 +233,7 @@ class InfoDormitory extends React.Component{
         this.setState({
           messRoomDetail: 'Phòng trống'
         })
-    }).catch(err => console.log('==person err', err))
+    }).catch(err => {})
     this.setState({
       roomActive: {...room, loaiPhong: room.loaiPhong._id},
       limitPersonDetail: room.soNguoiToiDa,
@@ -464,16 +474,18 @@ class InfoDormitory extends React.Component{
                   <Input getValue={this.onChange} name={'descriptionAdd'} />
                 </Col>
               </Row>
+              <Row style={{margin: 0}}>
+                <span className={'messError'} >{this.state.messErrAddRoom}</span>
+              </Row>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="outline" onClick={() =>this.handleClosePopup('room')}>
                 Hủy bỏ
               </Button>
               <Button  onClick={async() =>{
-                await this.setState({floorActive: this.state.floorNameAdd});
                 this.handleSubmitAddRoom()
               }}>
-                Lưu
+                Thêm
               </Button>
             </Modal.Footer>
           </Modal>
