@@ -3,7 +3,7 @@ export const get_month = () => {
 }
 export const get_year_db = (yearArr) => {
   let yearNow = (new Date).getFullYear();
-  let minYear = yearArr?Math.min(...yearArr):yearNow;
+  let minYear = yearArr.length>0?Math.min(...yearArr):yearNow;
   return [...Array(yearNow - minYear + 1)].map((_, i) => { return i === 0 ? { value: i, label: 'Tất cả' } : { value: i + minYear -1, label: i + minYear -1 } })
 }
 
