@@ -35,6 +35,12 @@ exports.get_List = (req, res) => {
 		case 'SV':
 			query.loai = 'SV'
 			break
+		case 'ADCP':
+			query.loai = 'ADCP'
+			break
+		case 'DD':
+			query.loai = 'DD'
+			break
 		default:
 			break
 	}
@@ -96,18 +102,19 @@ exports.add_Account = async (req, res) => {
 			}
 
 			if(!val || val.CMND === undefined){
-				var person = new Profile({
+				let person = new Profile({
 					hoTen: data.name,
 					CMND: data.CMND,
-					email: data.Email,
+					email: data.Email
 				})
 				person.save()
-				
 				account.idProfile = person._id
 				account.save()
 
 				person.idTaiKhoan = account._id
-				person.save()
+				person.save().catch(err =>{
+		          resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
+		        })
 
 				console.log('==add_account: success')
 				res.status(201).json({
@@ -129,7 +136,7 @@ exports.update_Account = (req, res) => {
 	const id = req.query.id
 	if(req.body){
 		const rule = req.body.rule
-		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' ||  rule === 'SV'){
+		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' ||  rule === 'SV' || rule === 'ADCP' || rule === 'DD' ){
 			Account.updateOne({ _id: id }, {loai: rule}, (err, val) => {
 				if(!err){
 					res.json({ rs: 'ok'})

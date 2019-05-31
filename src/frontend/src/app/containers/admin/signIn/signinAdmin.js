@@ -25,9 +25,8 @@ class SignInAdmin extends Component{
 		}
 	}
 
-	componentDidMount = () => {
+	componentWillMount = () => {
 		const secret = JSON.parse(localStorage.getItem('secret'))
-
 		if(secret){
 	        axios.get(`/logout`, {
 	            headers: {
@@ -55,8 +54,13 @@ class SignInAdmin extends Component{
 				switch(decode.user.userEntity.loai){
 					case 'SA':
 					case 'AM':
+					case 'ADCP':
 						localStorage.setItem('secret', JSON.stringify(res.data));
 						from = { pathname: "/admin/student" }
+						break
+					case 'DD':
+						localStorage.setItem('secret', JSON.stringify(res.data));
+						from = { pathname: "/admin/activity" }
 						break
 					case 'BV':
 						localStorage.setItem('secret', JSON.stringify(res.data));
@@ -67,7 +71,6 @@ class SignInAdmin extends Component{
 						break
 				}
 			}
-
 			this.props.history.push(from)
 		})
 		.catch( err => {
