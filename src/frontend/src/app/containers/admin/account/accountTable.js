@@ -83,6 +83,12 @@ class AccountTable extends Component{
 				case 'SV':
 					rule = 'Sinh viên'
 					break
+				case 'ADCP':
+					rule = 'Quản lý chi phí'
+					break
+				case 'DD':
+					rule = 'Điểm danh'
+					break
 				default:
 					break
 			}

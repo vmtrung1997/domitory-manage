@@ -6,7 +6,7 @@ var taiKhoanSchema = new Schema({
     idProfile: {type: Schema.Types.String, ref: 'Profile'},
     username: {type: String, unique: true},
     password: { type: String , select: false},
-    loai: {type: String, enum: ['SA', 'AM', 'SV', 'BV']},
+    loai: {type: String, enum: ['SA', 'AM', 'SV', 'BV', 'ADCP', 'DD']},
     isDelete: {type: Number, enum: [0, 1], select: false}
 });
 taiKhoanSchema.virtual('phanQuyen', {

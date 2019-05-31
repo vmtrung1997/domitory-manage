@@ -47,7 +47,6 @@ exports.login = (req, res) => {
     if (result) {
       var userEntity = result;
       Profile.findOne({ idTaiKhoan: userEntity._id }, {"img": 0}, (err, prof) => {
-        console.log(prof)
         var userObj = { userEntity, profile: prof };
         var acToken = auth.generateAccessToken(userObj);
         var reToken = auth.generateRefreshToken();
