@@ -1,23 +1,44 @@
 const Room = require('../models/Phong');
 const RoomType = require('../models/LoaiPhong');
 const RoomParams = require('../models/ChiSoHienTai');
+const Profile = require('../models/Profile');
 
-function getRoom(floor){
+
+function getRoomDetail(floor){
   return new Promise((resolve, reject) => {
     Room.find({ lau: floor }).populate({
       path: 'loaiPhong',
       options: { sort: { name: -1 } }
-    }).exec(function (err, kittens) {
+    }).exec(async(err, kittens) => {
       if (err)
         reject(err);
-      resolve(kittens)
+      let listPromise = [];
+      kittens.forEach(async(room) => {
+        listPromise.push(getPersonInRoom(room._doc))
+      });
+      Promise.all(listPromise).then(result => {
+        resolve(result)
+      }).catch(err => {
+        reject(err);
+      })
     })
   })
 }
+
+function getPersonInRoom(room){
+  return new Promise((resolve, reject) => {
+    Profile.countDocuments({idPhong: room._id},function (err, count){
+      if(err)
+        resolve({...room, soNguoi: -1});
+      else
+        resolve({...room, soNguoi: count});
+    })
+  })
+
+}
 exports.getRoom = async (req, res) => {
   const floor = req.params.floor;
-  //let roomList = {};
-  getRoom(floor).then(result => {
+  getRoomDetail(floor).then(async(result) => {
     res.status(200).json(result)
   }).catch(err => {
     res.status(400).json(err)
@@ -26,7 +47,6 @@ exports.getRoom = async (req, res) => {
 
 exports.addRoom = async(req, res) => {
   await Room.findOne({ tenPhong: req.body.tenPhong, lau: req.body.lau }).then(result => {
-    console.log('==find room', result)
     if (result)
       res.status(409).json({ msg: 'Tên phòng đã tồn tại' })
     else{
@@ -35,12 +55,12 @@ exports.addRoom = async(req, res) => {
         lau: req.body.lau,
         soNguoi: 0,
         soNguoiToiDa: req.body.soNguoiToiDa,
-        loaiPhong: req.body.loaiPhong
+        loaiPhong: req.body.loaiPhong,
+        moTa: req.body.moTa
       };
 
       let room = new Room(newRoom);
       room.save().then(result => {
-        console.log('==success add room', result);
         const today = new Date()
         const chiSoPhong = {
           idPhong: result._id,
@@ -62,28 +82,28 @@ exports.addRoom = async(req, res) => {
       })
     }
   }).catch(err => {
-    console.log('==err find room');
+    res.status(400).json({ msg: 'Tạo phòng không thành công' })
   });
-
-
 };
 
 exports.delRoom = (req, res) => {
   const id = req.params.id;
-  Room.findOne({ _id: id }).then(result => {
-    if (result.soNguoi !== 0)
+  Profile.findOne({ idPhong: id }).then(result => {
+    console.log('==del room', result)
+    if (result)
       res.status(409).json({ msg: "Phòng này đang có người sử dụng không thể xóa!!" })
-    result.remove().then(result => {
-      RoomParams.findOneAndRemove({ idPhong: result._id }).then(result => {
-        res.status(200).json({ msg: 'Xóa phòng thành công' })
+    else
+      Room.findOneAndRemove({_id:id}).then(result => {
+        RoomParams.findOneAndRemove({ idPhong: result._id }).then(result => {
+          res.status(200).json({ msg: 'Xóa phòng thành công' })
+        }).catch(err => {
+          res.status(401).json({ msg: 'Xóa chỉ số phòng không thành công' })
+        })
       }).catch(err => {
-        res.status(401).json({ msg: 'Xóa không thành công' })
+        res.status(401).json({ msg: 'Xóa phòng không thành công' })
       })
-    }).catch(err => {
-      res.status(401).json({ msg: 'Xóa không thành công' })
-    })
   }).catch(err => {
-    res.status(400).json({ msg: 'Xóa không thành công' })
+    res.status(400).json({ msg: 'Xóa phòng không thành công' })
   })
 };
 
@@ -204,7 +224,7 @@ exports.getFloorRoom = async (req, res) => {
     let listPromise = [];
     let data = [];
     await result.forEach(async(floor) => {
-      listPromise.push(getRoom(floor));
+      listPromise.push(getRoomDetail(floor));
     });
       await Promise.all(listPromise).then(result=> {
         data = result.map(rooms => ({key: i++, floor: rooms[0].lau, rooms: rooms}))
@@ -216,3 +236,17 @@ exports.getFloorRoom = async (req, res) => {
     res.status(400).json({err: err});
   })
 };
+
+exports.getPersonInRoom = (req, res) => {
+  const id = req.params.idPhong;
+  Profile.find({idPhong: id})
+    .populate({
+      path: 'truong',
+      select: 'tenTruong'
+    })
+    .select('MSSV hoTen truong')
+    .then(result => {
+      res.status(200).json(result)
+    })
+    .catch(err => console.log('==err getperson in room', err))
+}

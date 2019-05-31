@@ -106,6 +106,8 @@ router.post('/infoDormitory/updateRoomType', infoDormitory.updateRoomType);
 
 router.post('/infoDormitory/removeRoomType', infoDormitory.removeRoomType);
 
+router.get('/infoDormitory/getPersonInRoom/:idPhong', infoDormitory.getPersonInRoom);
+
 router.get('/getRoomWithFloor', infoDormitory.getFloorRoom);
 
 //News

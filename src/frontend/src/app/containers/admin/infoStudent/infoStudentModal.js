@@ -147,7 +147,7 @@ export class AddStudentModal extends Component{
 							</Col>
 						</Row>
 
-						<Row style={{color: 'red'}}>
+						<Row className={'messDanger'}>
 							{this.state.message}
 						</Row>
 					</Modal.Body>
@@ -339,26 +339,6 @@ export class ImportDataModal extends Component{
                 listExpired: err.response.data.list
               });
           })
-          // await refreshToken();
-          // var secret = JSON.parse(localStorage.getItem('secret'));
-          // axios.post(`/manager/infoStudent/importFile`,{
-          //     data: resolve,
-          //     expireDay: new Date()
-          //   }, { headers: {'x-access-token': secret.access_token} }
-          // ).then(result => {
-          //   console.log('==import success', result);
-          //   this.setState({
-          //     justFileServiceResponse: 'Thêm thành công!!'
-          //   });
-          //   this.props.onSave();
-          //   //this.handlePopup(false)
-          // }).catch(err => {
-          //   console.log('==import err', err.response.data);
-          //   this.setState({
-          //     justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
-          //     listExpired: err.response.data.list
-          //   });
-          // })
         })
       } else {
         this.setState({
@@ -513,10 +493,10 @@ export class ImportDataModal extends Component{
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline" onClick={() =>this.handlePopup(false)}>
-              Cancel
+              Hủy bỏ
             </Button>
             <Button  onClick={() => this.handleImportData()}>
-              Upload
+              Tải lên
             </Button>
           </Modal.Footer>
         </Modal>
@@ -878,10 +858,10 @@ export class ExportDataModal extends Component{
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline" onClick={() =>this.handlePopup(false)}>
-              Cancel
+              Hủy bỏ
             </Button>
             <Button onClick={() => this.handleExportData()}>
-              Save file
+              Xuất file
             </Button>
           </Modal.Footer>
         </Modal>

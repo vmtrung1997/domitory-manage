@@ -20,6 +20,7 @@ export default class ListRoom extends React.Component{
     this.props.onClick(room);
   }
   render(){
+    console.log('==data listroom', this.state)
     const { data } = this.state;
     return(
       <Tabs id="controlled-tab-example" defaultActiveKey={data && 'Lầu ' + data[0].floor}>
