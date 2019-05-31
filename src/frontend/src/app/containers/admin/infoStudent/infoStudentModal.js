@@ -147,7 +147,7 @@ export class AddStudentModal extends Component{
 							</Col>
 						</Row>
 
-						<Row style={{color: 'red'}}>
+						<Row className={'messDanger'}>
 							{this.state.message}
 						</Row>
 					</Modal.Body>
