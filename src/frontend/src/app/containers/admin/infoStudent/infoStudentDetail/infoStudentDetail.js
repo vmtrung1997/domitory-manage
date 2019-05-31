@@ -113,10 +113,8 @@ class InfoStudentDetail extends Component {
     })
     get_activites_by_MSSV(this.props.match.params.mssv).then(result => {
       console.log('==acti ', result);
-      let i = 0;
-      let activities = result.data.map(acti => ({key: i++, data: acti}));
       this.setState({
-        activities: activities
+        activities: result.data.length === 0 ? undefined : result.data
       })
     }).catch(err => {
       console.log('==acti err', err)

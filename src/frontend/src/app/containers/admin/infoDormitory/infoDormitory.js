@@ -396,7 +396,7 @@ class InfoDormitory extends React.Component{
                   </tbody>
                 </Table>
                   :
-                  <span style={{color: 'red'}}><b>{this.state.messRoomDetail}</b></span>
+                  <span className={'messDanger'}><b>{this.state.messRoomDetail}</b></span>
                 }
               </div>
             </Modal.Body>
@@ -475,7 +475,7 @@ class InfoDormitory extends React.Component{
                 </Col>
               </Row>
               <Row style={{margin: 0}}>
-                <span className={'messError'} >{this.state.messErrAddRoom}</span>
+                <span className={'messDanger'} >{this.state.messErrAddRoom}</span>
               </Row>
             </Modal.Body>
             <Modal.Footer>

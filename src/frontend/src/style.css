@@ -91,7 +91,7 @@ input:disabled {
     padding: 5%
 }
 
-.messError{
+.messDanger{
     color: red;
     font-weight: bold;
 }

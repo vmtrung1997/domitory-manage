@@ -72,6 +72,7 @@
     height: 3px;
     background-color: rgb(96, 180, 244);
     margin: 5px;
+    transition: all cubic-bezier(0.26, 0.1, 0.27, 1.55) 0.35s;
 }
 
 @media screen and (max-width: 425px){
@@ -144,4 +145,17 @@ body{
 
 .animation-menu{
     animation: navLinkFade 0.5s ease forwards 0.5s
+}
+
+.icon.close .line1 {
+	transform:rotate(-135deg);
+    top:48%;
+    background-color: rgb(226, 226, 226)
+
+}
+.icon.close .line2, .icon.close .line3 {
+    transform:rotate(-135deg);
+    color: #fff;
+    background-color:rgb(226, 226, 226)
+	/* top:48%; */
 }
