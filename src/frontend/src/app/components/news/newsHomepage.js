@@ -154,7 +154,7 @@ class NewsHomepage extends React.Component {
                   {this.state.postsAll.map((item, index) => {
                     if (index === 0) {
                       return (
-                        <div
+                        <div key = {index}
                           className="featured-post-area bg-img bg-overlay mb-30"
                           style={{ backgroundImage: `url(${item.url})` }}
                         >
@@ -194,14 +194,14 @@ class NewsHomepage extends React.Component {
 
                       if (index !== 0) {
                         return (
-                          <div className="col-12 col-md-6">
+                          <div key = {index} className="col-12 col-md-6">
                             <div className="razo-single-post d-flex mb-30">
                               {/* Post Thumbnail */}
                               <div className="post-thumbnail">
                                 <img
                                   src={item.url}
                                   style={{ cursor: "pointer" }}
-                                  alt
+                                  alt = "true"
                                 />
                               </div>
                               {/* Post Content */}

@@ -303,7 +303,7 @@ class NewsList extends React.Component {
                 </div>
               </div>
               {/* post */}
-              {posts.map(item => {
+              {posts.map((item,index) => {
                 var day = new Date(item.ngayTao);
                 var month = day.getMonth() + 1;
                 var formatDay =
@@ -317,7 +317,7 @@ class NewsList extends React.Component {
                   ":" +
                   day.getMinutes();
                 return (
-                  <div className="col-md-4">
+                  <div key ={index} className="col-md-4">
                     <div className="post">
                       <div
                         className="post-img"

@@ -335,15 +335,7 @@ class HeaderHomepage extends Component {
     );
   }
 }
-var mapStateToProps = state => {
-  return {
-    userProfile: state.userProfile
-  };
-};
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    null
-  )(HeaderHomepage)
+(HeaderHomepage)
 );
