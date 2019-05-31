@@ -264,7 +264,7 @@ class HeaderHomepage extends Component {
               </li>
             </ul>
 
-            <div onClick={this.showHamburgerMenu} className="burger">
+            <div onClick={this.showHamburgerMenu} className={this.state.isShowMenu?"burger icon close":"burger icon"}>
               <div class="line1" />
               <div class="line2" />
               <div class="line3" />
