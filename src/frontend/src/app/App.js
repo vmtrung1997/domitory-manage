@@ -19,6 +19,8 @@ const checkAuth = () => {
         {
             case 'SA':
             case 'AM':
+            case 'DD':
+            case 'ADCP':
                 return 'isAdmin'
             case 'BV':
                 return 'isSecurity'

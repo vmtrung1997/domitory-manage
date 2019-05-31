@@ -44,6 +44,12 @@ class AccountDetail extends Component{
 				rule = 'Sinh viên'
 				isStudent = true
 				break
+			case 'ADCP':
+				rule = 'Quản lý chi phí'
+				break
+			case 'DD':
+				rule = 'Điểm danh'
+				break
 			default:
 				break
 		}

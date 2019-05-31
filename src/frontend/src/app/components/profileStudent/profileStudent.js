@@ -17,6 +17,7 @@ class ProfileStudent extends React.Component {
   render() {
     return (
       <React.Fragment>
+        <div className='padding-menu'>
         <div>
           <h1 className="title-header">HỒ SƠ CÁ NHÂN</h1>
         </div>
@@ -33,6 +34,7 @@ class ProfileStudent extends React.Component {
               </Tab>
             </Tabs>
           </div>
+        </div>
         </div>
       </React.Fragment>
     );

@@ -170,6 +170,8 @@ class ListActivity extends React.Component {
   render() {
     return (
       <React.Fragment>
+        <div className='padding-menu'>
+    
         <ToastsContainer
           position={ToastsContainerPosition.BOTTOM_CENTER}
           lightBackground
@@ -187,8 +189,13 @@ class ListActivity extends React.Component {
         ) : (
           <div>
             {this.state.activities.length === 0 ? (
-              <div style={{ marginTop: "30px" }}>
-                <span>Bạn chưa có hoạt động nào</span>
+              <div style={{ marginTop: "30px",textAlign:'center' }}>
+                <img
+                  style={{ height: "150px", width: "150px" }}
+                  src="/images/notdatafound.png"
+                />
+                <p>Hiện tại chưa có hoạt động mới nào</p>
+                
                 {/* <Button style={{ marginLeft: '20px' }} onClick={this.refresh}>Làm mới <i className="fas fa-spinner"></i></Button> */}
               </div>
             ) : (
@@ -288,6 +295,7 @@ class ListActivity extends React.Component {
             )}
           </div>
         )}
+        </div>
       </React.Fragment>
     );
   }
