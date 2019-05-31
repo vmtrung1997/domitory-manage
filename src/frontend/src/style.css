@@ -90,3 +90,8 @@ input:disabled {
 .padding-menu{
     padding: 5%
 }
+
+.messError{
+    color: red;
+    font-weight: bold;
+}

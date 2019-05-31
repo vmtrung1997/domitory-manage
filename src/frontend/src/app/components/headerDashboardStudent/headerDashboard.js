@@ -10,8 +10,8 @@ class HeaderDashboardStudent extends React.Component {
                     <Navbar.Brand >
                         Kí túc xá Trần Hưng Đạo
                     </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
+                    <Navbar.Toggle appear = {true} aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse appear = {true} id="basic-navbar-nav">
                         <Nav className="mr-auto">
                             <Nav.Link href="#home">Trang chủ</Nav.Link>
                             <Nav.Link href="#link">Tin tức</Nav.Link>

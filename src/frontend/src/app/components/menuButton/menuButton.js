@@ -58,22 +58,25 @@ export class MenuButtonHeader extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      show: false
+      show: false,
     }
   }
 
   getValue = (key, value) => {
     this.setState({ [key]: value})
-  }
+  };
 
   render(){
     const { name, role } = this.props;
     return(
       <div style={{color: 'white', textAlign: 'center', marginTop: '-30px'}}>
         <ChangePas show={this.state.show} handleClose={ e => this.getValue('show', false)}/>
-        <img alt="avatar" className="img-circle center" src={Logo} style={{width: '80px', height: '80px'}}/>
+        <img alt="avatar" className="img-circle center avt" src={Logo} />
+
+        <div className={'user-name '}>
+
         <Dropdown>
-          <Dropdown.Toggle childBsPrefix="dropdown" variant="success" id="dropdown-basic">
+          <Dropdown.Toggle childBsPrefix="dropdown" variant="success" id="dropdown-basic" >
             {name}
           </Dropdown.Toggle>
 
@@ -81,7 +84,9 @@ export class MenuButtonHeader extends React.Component {
             <Dropdown.Item onClick={ e => this.getValue('show', true)}>Đổi mật khẩu</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+
         <div style={{fontSize: '14px', marginBottom: '5px'}}> {role} </div>
+        </div>
       </div>
     );
   }

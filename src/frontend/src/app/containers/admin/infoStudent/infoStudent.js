@@ -416,8 +416,8 @@ class InfoStudent extends Component{
               </Row>
 
               {/*search*/}
-              <Row style={{display: 'flex', justifyContent: 'center'}}>
-                <Col md={3} >
+              <Row style={{display: 'flex', justifyContent: 'center', margin: '15px 0'}}>
+                <Col sm={3} className={'btn-search'}>
                   <Button
                     size={'md'}
                     fullWidth
@@ -427,7 +427,7 @@ class InfoStudent extends Component{
                     Tìm kiếm
                   </Button>
                 </Col>
-                <Col md={1} >
+                <Col sm={1} >
                   <Button
                     type={'submit'}
                     size={'md'}
@@ -439,8 +439,7 @@ class InfoStudent extends Component{
                   </Button>
                 </Col>
               </Row>
-            <Row>
-              <Col md={6} className={''}>
+            <Row className={'group-btn'}>
                 <div className={'is-manipulation'}>
                   <ImportDataModal
                     show={this.state.showImportPopup}
@@ -451,7 +450,6 @@ class InfoStudent extends Component{
                     show={this.state.showExportPopup}
                     searchValues={this.state.searchValues}
                   />
-
                   {/*<Button*/}
                     {/*variant={'rounded'}*/}
                     {/*color={'success'}*/}
@@ -459,9 +457,7 @@ class InfoStudent extends Component{
                     {/*<i className="fas fa-address-card"/>*/}
                   {/*</Button>*/}
                 </div>
-              </Col>
 
-              <Col md={6} >
                 <div className={'is-manipulation'} style={{float: 'right'}}>
                   <AddStudentModal
                     show={this.state.showAddPopup}
@@ -476,12 +472,10 @@ class InfoStudent extends Component{
 
                   />
                 </div>
-              </Col>
             </Row>
           </div>
 
           <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-
           {/*end modal*/}
 
           {/*modal popup room history student*/}

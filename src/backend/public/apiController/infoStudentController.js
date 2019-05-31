@@ -138,7 +138,6 @@ exports.deleteStudent = (req, res) => {
 
 exports.updateInfo = (req,res) => {
   const info = req.body.info;
-  console.log('==info update', info)
   Profile.findOne({MSSV: info.MSSV})
     .then(async(result) => {
       //if change number card
@@ -154,43 +153,22 @@ exports.updateInfo = (req,res) => {
       }
       // if change room
       if(info.idPhong !== result.idPhong) {
-        //update number of person in old room
-        if (result.idPhong) {
-          Room.findOne({_id: result.idPhong})
-            .then(result => {
-              result.soNguoi = result.soNguoi - 1;
-              result.save()
-            }).catch(err => {
-            res.status(400).json({msg: 'Cập nhật phòng cũ không thành công!'})
-          })
-        }
-        //update number of person in new room
-        Room.findOne({_id : info.idPhong})
-          .then(result => {
-            result.soNguoi = result.soNguoi + 1;
-            result.save()
-          }).catch(err => {
-          res.status(400).json({msg: 'Cập nhật phòng mới không thành công!'})
-        })
-
         //create room history
         const history  = {
           idTaiKhoan: info.idTaiKhoan,
           idPhong: info.idPhong,
           ngayChuyen: new Date()
-        }
+        };
         let his = new RoomHistory(history);
-        his.save().then(result => {
+        his.save().then(() => {
           res.status(200).json({msg: 'Cập nhật thành công!'})
         }).catch(err => {
-          console.log('==roomHis', err);
           res.status(400).json({msg: 'Cập nhật lịch sử phòng không thành công'})
         })
       }
     }).catch(err => {
       res.status(400).json({msg: 'cập nhật không thành công!'})
   }).then(()=>{
-      console.log('==update info nhe')
       Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info }).then(result => {
         res.status(200).json({data: result, msg: 'Cập nhật thành công!'})
       }).catch()
@@ -233,7 +211,6 @@ exports.getListStudent = async(req, res) => {
 
   if(params.lau !== 0)
     await Room.find({lau: params.lau}).select('_id').then(result => {
-    console.log('==lau', result)
     var arr = [];
     result.forEach(acc => {
       arr.push(acc._id)
@@ -294,7 +271,6 @@ exports.getListStudentPaging = async(req, res) => {
 
   if(params.lau !== 0)
     await Room.find({lau: params.lau}).select('_id').then(result => {
-      console.log('==lau', result)
       var arr = [];
       result.forEach(acc => {
         arr.push(acc._id)
@@ -314,14 +290,11 @@ exports.getListStudentPaging = async(req, res) => {
       .then(result => {
         res.status(200).json(result);
       }).catch(err => {
-        console.log('==fail', err);
         res.statusCode(400).json({
           err: 'get info student fail'
         })
     })
   }).catch()
-
-  //}
 };
 
 exports.getRoomHistory = async(req, res) => {
@@ -329,11 +302,9 @@ exports.getRoomHistory = async(req, res) => {
 
   await RoomHistory.find({idTaiKhoan: id}).populate('idPhong').sort({ ngayChuyen: 1 }).
     then(async(result) => {
-      console.log('==his', result);
     res.status(200).json(result)
 
   }).catch(err => {
-      console.log('==err', err)
       res.status(400)
   })
 }
@@ -347,13 +318,11 @@ exports.uploadImage = (req, res) => {
 
 exports.getListActivitiesByMSSV = (req, res) => {
   const mssv = req.params.mssv;
-  console.log('==get acti',mssv)
   Profile.findOne({MSSV: mssv})
     .then(result => {
       ActivityResults.find({idSV: result._id})
         .populate({path:'idHD'})
         .then(result => {
-          console.log('==get acti suc',result)
           res.status(200).json(result)
         }).catch(err => {
         res.status(400).json({msg: "Lỗi"})
