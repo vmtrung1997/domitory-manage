@@ -156,8 +156,7 @@ class BillStudent extends React.Component {
   };
 
   render() {
-    var isFirstRow = false;
-    console.log(this.state.isLoad)
+
     return (
       
       <React.Fragment>
@@ -184,7 +183,7 @@ class BillStudent extends React.Component {
               <div>
                 {this.state.lastBill.length <= 0 ? (
                       <div style={{ marginTop: "30px", textAlign: "center" }}>
-                        <img
+                        <img alt = "true"
                           style={{ height: "150px", width: "150px" }}
                           src="/images/notdatafound.png"
                         />

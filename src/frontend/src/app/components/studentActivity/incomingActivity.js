@@ -101,8 +101,7 @@ class IncomingStudentActivity extends React.Component {
       data = this.state.incomingActivities.filter(obj => obj.check === true);
 
       await refreshToken();
-      var secret = localStorage.getItem("secret");
-      const decode = jwt_decode(secret);
+
       var id = this.props.profile._id;
 
       var info = {
@@ -177,7 +176,7 @@ class IncomingStudentActivity extends React.Component {
             <div className="time-bill">
               {this.state.incomingActivities.length === 0?(
                 <div style={{ marginTop: "30px",textAlign:'center' }}>
-                <img
+                <img alt = "true"
                   style={{ height: "150px", width: "150px" }}
                   src="/images/notdatafound.png"
                 />

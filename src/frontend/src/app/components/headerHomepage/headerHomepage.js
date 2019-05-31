@@ -265,9 +265,9 @@ class HeaderHomepage extends Component {
             </ul>
 
             <div onClick={this.showHamburgerMenu} className={this.state.isShowMenu?"burger icon close":"burger icon"}>
-              <div class="line1" />
-              <div class="line2" />
-              <div class="line3" />
+              <div className="line1" />
+              <div className="line2" />
+              <div className="line3" />
             </div>
           </nav>
           {/* <Navbar.Toggle aria-controls="basic-navbar-nav " /> */}
