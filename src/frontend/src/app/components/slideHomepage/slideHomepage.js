@@ -54,14 +54,7 @@ const Slideshow = () => {
                       <h5 data-animation="fadeInUpBig" data-delay="400ms">
                         Nằm ngay trung tâm thành phố, thuận tiện di chuyển
                       </h5>
-                      <a
-                        href="#"
-                        className="btn razo-btn btn-2"
-                        data-animation="fadeInUpBig"
-                        data-delay="700ms"
-                      >
-                        Book Now
-                      </a>
+                     
                     </div>
                   </div>
                 </div>
@@ -89,14 +82,7 @@ const Slideshow = () => {
                       <h5 data-animation="fadeInUpBig" data-delay="400ms">
                         Các hoạt động nâng cao đời sống tinh thân cho sinh viên
                       </h5>
-                      <a
-                        href="#"
-                        className="btn razo-btn btn-2"
-                        data-animation="fadeInUpBig"
-                        data-delay="700ms"
-                      >
-                        Book Now
-                      </a>
+                     
                     </div>
                   </div>
                 </div>

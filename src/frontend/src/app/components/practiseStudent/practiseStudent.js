@@ -28,7 +28,7 @@ class PractiseStudent extends React.Component {
           id: id,
           ngayVaoO: decode.user.profile.ngayVaoO
         }).then(rs => {
-          var point = [];
+          
           rs.data.data.forEach(item => {
             this.setState({ point: {hk1: item.hk1, hk2: item.hk2}});
           });

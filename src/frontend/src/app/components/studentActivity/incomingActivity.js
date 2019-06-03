@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import "./../titleStudent/titleStudent.css";
 import "./../tableStudentTextStyle/tableStudentTextStyle.css";
 import axios from "axios";
@@ -15,6 +15,7 @@ import {
   ToastsStore
 } from "react-toasts";
 import refreshToken from "./../../../utils/refresh_token";
+import Button from '../button/button'
 
 class IncomingStudentActivity extends React.Component {
   constructor(props) {
@@ -267,7 +268,7 @@ class IncomingStudentActivity extends React.Component {
                     >
                       Làm mới <i className="fas fa-spinner" />
                     </Button> */}
-                    <Button variant="success" onClick={this.cancelRegister}>
+                    <Button color="success" onClick={this.cancelRegister}>
                       Huỷ đăng ký
                     </Button>
                   </div>

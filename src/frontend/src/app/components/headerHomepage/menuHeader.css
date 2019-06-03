@@ -148,13 +148,13 @@ body{
 }
 
 .icon.close .line1 {
-	transform:rotate(-135deg);
+	transform:rotate(360deg);
     top:48%;
     background-color: rgb(226, 226, 226)
 
 }
 .icon.close .line2, .icon.close .line3 {
-    transform:rotate(-135deg);
+    transform:rotate(360deg);
     color: #fff;
     background-color:rgb(226, 226, 226)
 	/* top:48%; */

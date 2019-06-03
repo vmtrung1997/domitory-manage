@@ -1,14 +1,14 @@
 import React from "react";
-import { Table, Button } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import "./listActivity.css";
 import "./../titleStudent/titleStudent.css";
 import "./../tableStudentTextStyle/tableStudentTextStyle.css";
-import { bindActionCreators } from "redux";
+
 import { connect } from "react-redux";
 import axios from "axios";
 import MyPagination from "./../pagination/pagination";
 import jwt_decode from "jwt-decode";
-import * as StudentAction from "../../actions/studentAction";
+
 import {
   ToastsContainer,
   ToastsContainerPosition,
@@ -16,6 +16,7 @@ import {
 } from "react-toasts";
 import Loader from "./../loader/loader";
 import refreshToken from "./../../../utils/refresh_token";
+import Button from '../button/button'
 
 class ListActivity extends React.Component {
   constructor(props) {
@@ -287,7 +288,7 @@ class ListActivity extends React.Component {
                 {/* <div><span style={{ 'color': 'red' }}>* Các hoạt động Bắt buộc yêu cầu sinh viên phải đăng ký</span></div> */}
                 <div className="register-activity">
                   {/* <Button style={{ marginRight: '20px' }} onClick={this.refresh}>Làm mới <i className="fas fa-spinner"></i></Button> */}
-                  <Button variant="success" onClick={this.register}>
+                  <Button color="success" onClick={this.register}>
                     Đăng ký
                   </Button>
                 </div>

@@ -6,7 +6,7 @@ import {
   convertFromHTML
 } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { Modal, Button, FormControl, Col, Row } from "react-bootstrap";
+import { Modal, Button, Col, Row } from "react-bootstrap";
 import draftToHtml from "draftjs-to-html";
 import "../../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import Input from "./../../../components/input/input";
@@ -219,7 +219,7 @@ class EditorConvertToHTML extends Component {
     if (type === "edit" && this.state.isFirst) {
       loai = this.props.content.loai;
     }
-    const { editorState } = this.state;
+   
     const editorStyle = {
       padding: "5px",
       height: "400px",

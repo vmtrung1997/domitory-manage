@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import { Collapse, Dropdown } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 
 import Logo from './../../../utils/image/logo_HCMUS.jpg'
 import ChangePas from './../changePas/changePas'

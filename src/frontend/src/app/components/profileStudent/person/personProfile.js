@@ -1,5 +1,5 @@
 import React from "react";
-import { InputGroup, Row, Col } from "react-bootstrap";
+import {  Row, Col } from "react-bootstrap";
 import "./../profileStudent.css";
 import Button from './../../button/button'
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,7 +19,6 @@ import {
 import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
 
-import { css } from '@emotion/core';
 
 class PersonProfile extends React.Component {
   constructor(props) {
@@ -223,7 +222,7 @@ class PersonProfile extends React.Component {
   };
 
   truongSelected = value => {
-    if(value != -1)
+    if(value !== -1)
     {
     var truong = this.state.truongOptions.find(obj => obj.value === value);
     this.setState({
@@ -268,7 +267,7 @@ class PersonProfile extends React.Component {
             name="gioiTinh"
             getValue={this.getValue}
             disabled={this.state.flag? this.state.readOnly: true}
-            value={this.state.gioiTinh}
+            value={this.state.gioiTinh?this.state.gioiTinh:""}
             options={gender}
             selected={this.genderSelected}
           />
@@ -279,7 +278,7 @@ class PersonProfile extends React.Component {
             name="nganhHoc"
             getValue={this.getValue}
             disabled={this.state.flag? this.state.readOnly:true}
-            value={this.state.nganhHoc.value}
+            value={this.state.nganhHoc.value?this.state.nganhHoc.value:""}
             options={this.state.nganhOptions}
             selected={this.nganhSelected}
           />
@@ -290,7 +289,7 @@ class PersonProfile extends React.Component {
             name="truong"
             getValue={this.getValue}
             disabled={this.state.flag?this.state.readOnly:true}
-            value={this.state.truong.value}
+            value={this.state.truong.value?this.state.truong.value:""}
             options={this.state.truongOptions}
             selected={this.truongSelected}
           />
@@ -301,7 +300,7 @@ class PersonProfile extends React.Component {
             getValue={this.getValue}
             name="truong"
             disabled={this.state.readOnly}
-            value={this.state.truong.label}
+            value={this.state.truong.label?this.state.truong.label:""}
             borderRadius="3px"
           />
         );
@@ -310,7 +309,7 @@ class PersonProfile extends React.Component {
             getValue={this.getValue}
             name="nganhHoc"
             disabled={this.state.readOnly}
-            value={this.state.nganhHoc.label}
+            value={this.state.nganhHoc.label?this.state.nganhHoc.label:""}
             borderRadius="3px"
           />
         );
@@ -365,7 +364,7 @@ class PersonProfile extends React.Component {
                             name="CMND"
                             getValue={this.getValue}
                             disabled={this.state.flag? this.state.readOnly:true}
-                            value={this.state.CMND}
+                            value={this.state.CMND?this.state.CMND:""}
                             className="input-picker"
                             borderRadius="3px"
                           />
@@ -417,7 +416,7 @@ class PersonProfile extends React.Component {
                             getValue={this.getValue}
                             name="email"
                             disabled={this.state.readOnly}
-                            value={this.state.email}
+                            value={this.state.email?this.state.email:""}
                             borderRadius="3px"
                           />
                         </Col>
@@ -432,7 +431,7 @@ class PersonProfile extends React.Component {
                             getValue={this.getValue}
                             name="danToc"
                             disabled={this.state.flag? this.state.readOnly:true}
-                            value={this.state.danToc}
+                            value={this.state.danToc?this.state.danToc:""}
                             borderRadius="3px"
                           />
                         </Col>
@@ -443,7 +442,7 @@ class PersonProfile extends React.Component {
                             getValue={this.getValue}
                             name="tonGiao"
                             disabled={this.state.readOnly}
-                            value={this.state.tonGiao}
+                            value={this.state.tonGiao?this.state.tonGiao:""}
                             borderRadius="3px"
                           />
                         </Col>
@@ -457,7 +456,7 @@ class PersonProfile extends React.Component {
                             getValue={this.getValue}
                             name="sdt"
                             disabled={this.state.readOnly}
-                            value={this.state.sdt}
+                            value={this.state.sdt?this.state.sdt:""}
                             borderRadius="3px"
                           />
                         </Col>
@@ -469,7 +468,7 @@ class PersonProfile extends React.Component {
                             getValue={this.getValue}
                             name="sdtNguoiThan"
                             disabled={this.state.readOnly}
-                            value={this.state.sdtNguoiThan}
+                            value={this.state.sdtNguoiThan?this.state.sdtNguoiThan:""}
                             borderRadius="3px"
                           />
                         </Col>
@@ -494,7 +493,7 @@ class PersonProfile extends React.Component {
                             getValue={this.getValue}
                             name="diaChi"
                             disabled={this.state.flag? this.state.readOnly: true}
-                            value={this.state.diaChi}
+                            value={this.state.diaChi?this.state.diaChi:""}
                           />
                         </Col>
                         <Col />

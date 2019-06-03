@@ -1,9 +1,9 @@
 import React from "react";
 import { Modal, Button, Container } from "react-bootstrap";
-import md5 from "md5";
+
 import { connect } from "react-redux";
 import Input from "../../../components/input/input";
-import jwt_decode from "jwt-decode";
+
 import refreshToken from "./../../../../utils/refresh_token";
 
 import axios from "axios";
