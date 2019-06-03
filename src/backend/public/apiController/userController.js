@@ -29,9 +29,14 @@ exports.register = (req, res) => {
         hoTen: userObject.hoTen,
         gioiTinh: 1 
       })
-      profile.save().then(() => {
-        console.log("==register: success");
-        res.status(201).json(req.body);
+      profile.save().then(profileObj => {
+        User.updateOne({_id: new ObjectId(userObj._id)}, {
+          $set:{
+            idProfile: profileObj._id
+          }
+        }, (err, raw) => {
+          res.status(201).json(req.body);
+        })
       })
     })
     .catch(err => {
