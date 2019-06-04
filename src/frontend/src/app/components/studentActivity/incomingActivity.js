@@ -101,8 +101,6 @@ class IncomingStudentActivity extends React.Component {
       data = this.state.incomingActivities.filter(obj => obj.check === true);
 
       await refreshToken();
-      var secret = localStorage.getItem("secret");
-      const decode = jwt_decode(secret);
       var id = this.props.profile._id;
 
       var info = {

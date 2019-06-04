@@ -11,7 +11,6 @@ import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toast
 import RoomType from './roomType'
 const PHONG_SV = 0;
 const PHONG_DVU = 1;
-const PHONG_CNANG = 2;
 
 class InfoDormitory extends React.Component{
   constructor(props){

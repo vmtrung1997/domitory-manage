@@ -156,8 +156,6 @@ class BillStudent extends React.Component {
   };
 
   render() {
-    var isFirstRow = false;
-    console.log(this.state.isLoad)
     return (
       
       <React.Fragment>

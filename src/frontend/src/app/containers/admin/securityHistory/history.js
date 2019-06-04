@@ -120,7 +120,7 @@ class Security extends Component{
 									return (
 										<div className={'item-history'} key={index}>
 											<div className={'item-image'}>
-												<img src={value.imgFile !== "" ? value.imgFile : defaultImage} />
+												<img src={value.imgFile !== "" ? value.imgFile : defaultImage} alt="hinh"/>
 											</div>
 											<div className={'item-text'}>
 												<div>{value.profile.hoTen}</div>
@@ -130,6 +130,7 @@ class Security extends Component{
 										</div>
 									)
 								}
+								return true
 							})}
 						</div>}
 						</div>

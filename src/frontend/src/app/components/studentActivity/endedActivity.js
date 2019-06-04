@@ -108,6 +108,7 @@ class EndedStudentActivity extends React.Component {
                 {this.state.oldActivities.length === 0 ? (
                   <div style={{ marginTop: "30px",textAlign:'center' }}>
                   <img
+                    alt="hinh"
                     style={{ height: "150px", width: "150px" }}
                     src="/images/notdatafound.png"
                   />
