@@ -1,6 +1,6 @@
 import React from "react";
 import "./info.css";
-import { Container, Row, Col } from "react-bootstrap";
+
 
 class InfoHomePage extends React.Component {
   render() {
@@ -18,7 +18,7 @@ class InfoHomePage extends React.Component {
       {/* App Thumbnail */}
       <div className="col-12 col-md-6">
         <div className="app-thumbnail mb-80">
-          <img src="images/info-min.png" alt />
+          <img src="images/info-min.png" alt = "true" />
         </div>
       </div>
       {/* App Download Text */}

@@ -20,6 +20,7 @@ export default class ListRoom extends React.Component{
     this.props.onClick(room);
   }
   render(){
+    console.log('==data listroom', this.state)
     const { data } = this.state;
     return(
       <Tabs id="controlled-tab-example" defaultActiveKey={data && 'Lầu ' + data[0].floor}>
@@ -30,7 +31,7 @@ export default class ListRoom extends React.Component{
               title={'Lầu ' + floor.floor}
             >
               <div className={'list-room_box'}>
-              {floor && floor.rooms.map(room => {
+              {floor && floor.rooms.forEach(room => {
                 if((room.loaiPhong.loai === 0) || (room.loaiPhong.loai === 1)){
                   let isFull = false;
                   let isActive = false;

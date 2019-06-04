@@ -12,7 +12,7 @@ import refreshToken from "../../../../../utils/refresh_token";
 import Select from "../../../../components/selectOption/select";
 import SearchSelect from '../../../../components/selectOption/select'
 import { defaultStudentImg } from '../../../../function/imageFunction'
-import { dateToString } from '../../../../function/dateFunction'
+import TabActivities from './tabActivities';
 import DatePicker from "react-datepicker/es/index";
 import './../infoStudentFile.css';
 import { getSchools, getMajor } from './../../university/universityAction'
@@ -64,17 +64,14 @@ class InfoStudentDetail extends Component {
   }
 
   componentDidMount() {
-    console.log('==did mount', this.state)
     this.getElement('room');
     this.getElement('school');
 
   }
 
   getData = () => {
-    console.log('==hello', this.props.match.params.mssv)
     get_info_Student_detail(this.props.match.params.mssv)
       .then(result => {
-
         this.setState({
           profile: {
             ...result.data,
@@ -108,23 +105,16 @@ class InfoStudentDetail extends Component {
             isOld: true
           })
         }
-
-
       }).catch(err => {
-        console.log('==err info detail', err.response)
     })
     get_floor_room().then(result => {
-      console.log('==floor', result)
       this.setState({roomData: result.data})
     }).catch(err => {
-      console.log('==err floor', err)
     })
     get_activites_by_MSSV(this.props.match.params.mssv).then(result => {
       console.log('==acti ', result);
-      let i = 0;
-      let activities = result.data.map(acti => ({key: i++, data: acti}));
       this.setState({
-        activities: activities
+        activities: result.data.length === 0 ? undefined : result.data
       })
     }).catch(err => {
       console.log('==acti err', err)
@@ -159,29 +149,13 @@ class InfoStudentDetail extends Component {
       }
     }).catch(err => {
     })
-  }
-
-  // getActivities = async() => {
-  //   console.log('==acti 1111');
-  //
-  //   await refreshToken();
-  //   let secret = JSON.parse(localStorage.getItem('secret'));
-  //   axios.get(`/manager/infoStudent/getActivities/` + this.props.match.params.mssv, {
-  //     headers: { 'x-access-token': secret.access_token }
-  //   })
-  // }
+  };
 
   onChange = (event) => {
     this.setState({
       profile: { ...this.state.profile, [event.name]: event.value }
     })
-  }
-
-  onChangeNumber = (event) => {
-    this.setState({
-      profile: { ...this.state.profile, [event.name]: parseInt(event.value) }
-    })
-  }
+  };
 
   handleSaveChange = async () => {
     await refreshToken()
@@ -203,7 +177,6 @@ class InfoStudentDetail extends Component {
       this.setState({loading: false})
 
     }).catch(err => {
-      console.log('==err update',err.response)
       ToastsStore.error(err.response.data.msg);
       this.setState({loading: false})
     })
@@ -223,23 +196,24 @@ class InfoStudentDetail extends Component {
   }
 
   handleSelectSchool = (selectedOption) => {
+    delete this.state.profile.nganhHoc
     this.setState({
       profile: {
         ...this.state.profile,
         truong: {
           tenTruong: selectedOption.label,
-          _id: selectedOption.value
+          _id: selectedOption.value,
         }
       },
-      school: selectedOption
-    })
+      school: selectedOption,
+      major: {}
+    });
 
     this.getMajorOptions(selectedOption.value);
   };
 
   getMajorOptions = (idSchool) => {
     getMajor({id: idSchool}).then(result =>{
-      console.log('==get major', idSchool, result)
       if (result.data.rs === 'success') {
         let majorList = result.data.data.map(major => ({ value: major.idNganhHoc._id, label: major.idNganhHoc.tenNganh }))
         this.setState({
@@ -278,7 +252,6 @@ class InfoStudentDetail extends Component {
     
     fileReader.onload = (e) => {
       var data = e.target.result;
-      console.log(e);
       var testImg = new Image();
       testImg.src = data;
       testImg.crossOrigin = "Anonymous";
@@ -300,22 +273,17 @@ class InfoStudentDetail extends Component {
     console.log('==state render', this.state);
     let {
       profile,
-      activity,
       genderOptions,
       schoolOptions,
-      roomOptions,
       majorOptions,
       school,
-      room,
       major,
       activities,
       isOld
     } = this.state;
     const { CMND } = profile;
-    var imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
-    //var ngayVaoOStr = this.getDateType(profile.ngayVaoO)
+    let imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
     let gender = this.state.profile && this.state.profile.gioiTinh ? this.state.profile.gioiTinh: 0;
-    console.log("==type", typeof this.state.profile.ngaySinh)
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -501,6 +469,7 @@ class InfoStudentDetail extends Component {
                         <Col md={2}>
                           Phòng:
                         </Col>
+                        <Col md={4}>
                         <ChooseRoom
                           disabled={isOld}
                           show={this.state.showRoomPopup}
@@ -509,6 +478,7 @@ class InfoStudentDetail extends Component {
                           room={profile ? profile.idPhong : {}}
                           data={this.state.roomData}
                         />
+                        </Col>
                       </Row>
 
                       <Row>
@@ -583,60 +553,11 @@ class InfoStudentDetail extends Component {
                     </div>
                   </Tab>
                   <Tab eventKey="infoActivities" title="Thông tin hoạt động">
-                    <div className={'id-tab_frame'}>
-                      <Table responsive bordered size="sm" hover>
-                        <thead>
-                          <tr>
-                            <th>STT</th>
-                            <th>Thời gian</th>
-                            <th>Tên hoạt động</th>
-                            <th>Điểm</th>
-                            <th>Trạng thái</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        {
-                          activities && activities.map(acti => {
-                            let present = new Date();
-                            let happening = new Date(acti.data.idHD.ngayKT) < present;
-                            console.log('==heppen', happening)
-                            let status = '';
-                            if(happening && !acti.data.isTG)
-                              status = 'Không tham gia'
-                            else if(happening && acti.data.isTG)
-                              status = 'Đã tham gia'
-                            else if(!happening && !acti.data.isTG)
-                              status = 'Chưa diễn ra'
-                            return (
-                              <tr key={acti.key}>
-                                <td>{acti.key + 1}</td>
-                                <td>{acti.data.idHD && dateToString(acti.data.idHD.ngayBD)}</td>
-                                <td>{acti.data.idHD && acti.data.idHD.ten}</td>
-                                <td>{acti.data.isTG ? acti.data.idHD.diem : '0'}/{acti.data.idHD && acti.data.idHD.diem}</td>
-                                <td>{status}</td>
-                              </tr>
-                            )
-                          })
-                        }
-                        </tbody>
-                      </Table>
-
-                      {/*<div className={'id-tab-activities_total-frame'}>*/}
-                        {/*<Row>*/}
-                          {/*<span>Số hoạt động đã tham gia: 3</span>*/}
-                        {/*</Row>*/}
-                        {/*<Row>*/}
-                          {/*<span>Số hoạt động không tham gia: 1</span>*/}
-                        {/*</Row>*/}
-                        {/*<Row>*/}
-                          {/*<span>Số hoạt động chưa tham gia: 1</span>*/}
-                        {/*</Row>*/}
-                        {/*<Row>*/}
-                          {/*<span>Tổng điểm: 30</span>*/}
-                        {/*</Row>*/}
-                      {/*</div>*/}
-                    </div>
+                    <TabActivities
+                      activities={activities}
+                    />
                   </Tab>
+
                 </Tabs>
 
               </Col>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Nav, Button } from "react-bootstrap";
+import {  Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./newsHomepage.css";
 import Axios from "axios";
@@ -20,7 +20,7 @@ class NewsHomepage extends React.Component {
     await Axios.post("/news/get-news", { data: date })
       .then(rs => {
         if (rs.status === 200) {
-          rs.data.data.map((item, index) => {
+          rs.data.data.forEach((item, index) => {
             if (index < 5) _post.push(item);
           });
         }
@@ -43,7 +43,7 @@ class NewsHomepage extends React.Component {
     await Axios.get("/news/get-pin-news")
       .then(rs => {
         if (rs.status === 200) {
-          rs.data.data.map(item => {
+          rs.data.data.forEach(item => {
             _post.push(item);
           });
         }
@@ -129,13 +129,23 @@ class NewsHomepage extends React.Component {
       <React.Fragment>
         <section className="razo-blog-area section-padding-80-0">
           <div className="container">
+            <div ><h2 style = {{fontSize: '36px', marginBottom: '15px',textAlign:'center'}}>TIN TỨC</h2></div>
+            {this.state.postsAll.length === 0?
+                  <div style={{ marginTop: "30px", textAlign: "center" }}>
+                        <img
+                          style={{ marginTop: '14vh',
+                            height: '50%',
+                            width: '50%' }}
+                          src="/images/notdatafound.png"
+                        ></img>
+                      </div> :
             <div className="row">
               {/* Weekly News Area */}
               <div className="col-12 col-md-8">
                 <div className="weekly-news-area mb-50">
                   {/* Section Heading */}
                   <div className="section-heading">
-                    <h2>Tin Tức</h2>
+                    <h2>Phổ biến</h2>
                   </div>
                   {/* Featured Post Area */}
 
@@ -144,7 +154,7 @@ class NewsHomepage extends React.Component {
                   {this.state.postsAll.map((item, index) => {
                     if (index === 0) {
                       return (
-                        <div
+                        <div key = {index}
                           className="featured-post-area bg-img bg-overlay mb-30"
                           style={{ backgroundImage: `url(${item.url})` }}
                         >
@@ -184,14 +194,14 @@ class NewsHomepage extends React.Component {
 
                       if (index !== 0) {
                         return (
-                          <div className="col-12 col-md-6">
+                          <div key = {index} className="col-12 col-md-6">
                             <div className="razo-single-post d-flex mb-30">
                               {/* Post Thumbnail */}
                               <div className="post-thumbnail">
                                 <img
                                   src={item.url}
                                   style={{ cursor: "pointer" }}
-                                  alt
+                                  alt = "true"
                                 />
                               </div>
                               {/* Post Content */}
@@ -229,7 +239,7 @@ class NewsHomepage extends React.Component {
                   </div>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Link to="/news">
-                      <Button><span>Xem thêm></span></Button>
+                      <Button><span>Xem thêm</span></Button>
                     </Link>
                   </div>
                 </div>
@@ -282,7 +292,9 @@ class NewsHomepage extends React.Component {
                   })}
 
                   {/* Single Post Area */}
-                  {this.state.postPin.map((item, index) => {
+                  {this.state.postPin.length === 0?
+                  <div>Chưa có bài viết nào</div>:
+                  this.state.postPin.map((item, index) => {
                     if (index != 0) {
                       return (
                         <div className="razo-single-post d-flex mb-30">
@@ -319,18 +331,22 @@ class NewsHomepage extends React.Component {
                           </div>
                         </div>
                       );
-                    }
+                              }
                   })}
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Link to="/news">
                       <Button>Xem thêm</Button>
                     </Link>
                   </div>
+              
+                  
                 </div>
               </div>
             </div>
+            }
           </div>
         </section>
+                
         {/* Blog Area End */}
       </React.Fragment>
     );
