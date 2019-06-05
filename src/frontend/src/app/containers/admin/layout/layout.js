@@ -16,7 +16,6 @@ export default class Layout extends React.Component{
   }
 
   onChangeStyleNavigation = (turnOn) => {
-    console.log('==change style')
     if(turnOn)
       this.setState({
         navStyle: 'collapsed'
@@ -27,7 +26,6 @@ export default class Layout extends React.Component{
       });
   }
   render() {
-    console.log('==state layout', this.state)
     const { children } = this.props;
     var rule = ''
     var name = ''

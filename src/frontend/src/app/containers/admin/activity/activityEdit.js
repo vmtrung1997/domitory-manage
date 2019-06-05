@@ -49,9 +49,9 @@ class ActivityEdit extends Component{
       ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
     } else if(parseInt(point) <= 0) {
       ToastsStore.error("Điểm hoạt động phải lớn hơn 0!");
-    } else if(date < new Date().setHours(0,0,0) || dateEnd < new Date().setHours(0,0,0)) {
+    } else if(date < new Date() || dateEnd < new Date()) {
       ToastsStore.error("Thời gian bắt đầu và kết thúc phải lớn hơn ngày hiện tại!");
-    } else if(dateEnd.setHours(0,0,0) < date.setHours(0,0,0)){
+    } else if(dateEnd < date){
       ToastsStore.error("Thời gian kết thúc không nhỏ hơn thời gian bắt đầu!");
     } else {
       await refreshToken()
