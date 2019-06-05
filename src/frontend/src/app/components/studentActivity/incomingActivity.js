@@ -52,6 +52,7 @@ class IncomingStudentActivity extends React.Component {
           options: options
         })
         .then(res => {
+          console.log(res.data);
           if(res.data){
           this.setState({
             totalPages: res.data.totalPages
