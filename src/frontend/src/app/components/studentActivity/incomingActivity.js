@@ -102,7 +102,7 @@ class IncomingStudentActivity extends React.Component {
       data = this.state.incomingActivities.filter(obj => obj.check === true);
 
       await refreshToken();
-
+      
       var id = this.props.profile._id;
 
       var info = {

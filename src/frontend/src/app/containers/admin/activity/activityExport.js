@@ -7,8 +7,6 @@ import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toast
 import Loader from './../../../components/loader/loader'
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
-import Input from './../../../components/input/input'
-import CheckBox from './../../../components/checkbox/checkbox'
 
 class ActivityExport extends Component{
 	static defaultProps = {
