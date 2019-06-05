@@ -24,11 +24,9 @@ var profileSchema = new Schema({
     ngayHetHan: Date,
     danToc: String,
     img:  String,
-    //img:  String,//{ data: Buffer, contentType: String }
-    //expireAt: {type: Schema.Types.Date,default: Date.now(), expireAfterSeconds: 15},
-    flag: Boolean
+    isActive: Boolean,
+    hanDangKy: Date,
 });
 profileSchema.plugin(mongoosePaginate);
-// profileSchema.index('expireAt',{expireAfterSeconds: 15});
 const model = mongoose.model('Profile', profileSchema, 'Profile');
 module.exports = model;
