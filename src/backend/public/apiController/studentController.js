@@ -374,38 +374,7 @@ exports.upcomingActivities = (req, res) => {
         .limit(limit)
         .then(result => {
           var data = [];
-          //Lấy hoạt động bắt buộc
-          HoatDong.find({ batBuoc: true }).then(rs => {
-            if (result.length > 0 || rs.length > 0) {
-              var flag = 0;
-              var item = {};
-              rs.forEach(itemrs => {
-                result.forEach(itemresult => {
-                  if (itemrs._id === itemresult.idHD._id) {
-                    flag = 1;
-                    item = itemrs;
-                  } else {
-                    flag = 0;
-                    item = itemrs;
-                  }
-                });
-                if (flag === 0) {
-                  data = {
-                    idHD: item,
-                    idSV: req.body.id,
-                    isDK: true,
-                    isTG: false
-                  };
-                } else {
-                  data = {
-                    idHD: item,
-                    idSV: req.body.id,
-                    isDK: true,
-                    isTG: true
-                  };
-                }
-                result.push(data);
-              });
+              if(result.length>0){
               res.status(200).json({
                 status: "success",
                 data: result,
@@ -418,8 +387,7 @@ exports.upcomingActivities = (req, res) => {
                 data: "no data"
               });
             }
-          });
-        })
+          })
         .catch(err => {
           // console.log('loi sau');
           // res.status(500).json({
