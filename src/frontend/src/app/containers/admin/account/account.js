@@ -89,7 +89,7 @@ class Account extends Component{
 					handleClose={() => this.changeState('showAdd', false)}
 					handleSave={this.getData}
 				/>
-				<Title> Hoạt động sinh viên </Title>
+				<Title> Tài khoản </Title>
 
         		<div className={'content-body full'}>
 					<div>

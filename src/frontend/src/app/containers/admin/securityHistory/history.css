@@ -1,13 +1,7 @@
-<<<<<<< HEAD
-.content-body{
-  min-height: 60vh;
-}
-=======
 /*.content-body{*/
   /*overflow: auto;*/
   /*min-height: 60vh;*/
 /*}*/
->>>>>>> a587708a1e0326b26ad3876df6a42fa037ac63aa
 
 a>div{display: none;}
 a:hover>div{display: block;}

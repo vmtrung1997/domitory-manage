@@ -44,7 +44,7 @@ class Example extends React.Component {
       tienRac: true,
       tongTien: true,
       room: 0,
-      status: 0,
+      status: 2,
       disableToMonth: true,
       monthOptions: [],
       yearOptions: []
@@ -60,7 +60,9 @@ class Example extends React.Component {
           fromYear: Math.max(...result.data.year),
           toYear: Math.max(...result.data.year),
           fromMonth: (new Date).getMonth()+1,
-          toMonth: (new Date).getMonth() +1
+          toMonth: (new Date).getMonth() +1,
+          status: 2
+
         })
       }
     })

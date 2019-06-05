@@ -53,6 +53,7 @@ router.post('/expense/reset_room', expenseController.reset_room);
 
 router.post('/expense/get_data_print', expenseController.get_data_print);
 
+router.post('/expense/get_person_in_room', expenseController.get_person_room)
 // Activity
 router.post('/activity/get_activity', activityController.get_list_activity);
 
