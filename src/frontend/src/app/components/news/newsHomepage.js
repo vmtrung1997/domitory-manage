@@ -1,5 +1,5 @@
 import React from "react";
-import { Nav, Button } from "react-bootstrap";
+import {  Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./newsHomepage.css";
 import Axios from "axios";
@@ -20,7 +20,7 @@ class NewsHomepage extends React.Component {
     await Axios.post("/news/get-news", { data: date })
       .then(rs => {
         if (rs.status === 200) {
-          rs.data.data.map((item, index) => {
+          rs.data.data.forEach((item, index) => {
             if (index < 5) _post.push(item);
           });
         }
@@ -43,7 +43,7 @@ class NewsHomepage extends React.Component {
     await Axios.get("/news/get-pin-news")
       .then(rs => {
         if (rs.status === 200) {
-          rs.data.data.map(item => {
+          rs.data.data.forEach(item => {
             _post.push(item);
           });
         }
@@ -154,7 +154,7 @@ class NewsHomepage extends React.Component {
                   {this.state.postsAll.map((item, index) => {
                     if (index === 0) {
                       return (
-                        <div
+                        <div key = {index}
                           className="featured-post-area bg-img bg-overlay mb-30"
                           style={{ backgroundImage: `url(${item.url})` }}
                         >
@@ -194,14 +194,14 @@ class NewsHomepage extends React.Component {
 
                       if (index !== 0) {
                         return (
-                          <div className="col-12 col-md-6">
+                          <div key = {index} className="col-12 col-md-6">
                             <div className="razo-single-post d-flex mb-30">
                               {/* Post Thumbnail */}
                               <div className="post-thumbnail">
                                 <img
                                   src={item.url}
                                   style={{ cursor: "pointer" }}
-                                  alt
+                                  alt = "true"
                                 />
                               </div>
                               {/* Post Content */}

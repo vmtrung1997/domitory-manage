@@ -12,7 +12,16 @@ import Input from './../../../components/input/input'
 import CheckBox from './../../../components/checkbox/checkbox'
 
 const today = new Date()
-const time = today.getHours() + ':' + today.getMinutes()
+var getStringTime = () => {
+  var h = today.getHours()
+  var m = today.getMinutes()
+  if (today.getHours() < 10)
+    h = '0' + today.getHours()
+  if (today.getMinutes() < 10)
+    m = '0' + today.getMinutes()
+  return h + ':' + m
+}
+const time = getStringTime()
 const initialState = {
   name: '',
   location: '',
@@ -42,6 +51,7 @@ class ActivityModal extends Component{
     var {name, location, des, point} = this.state
     var date = this.state.date
     var dateEnd = this.state.dateEnd
+    console.log(this.state)
     if(!name || !location || !des || !point) {
       ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
     } else if(parseInt(point) <= 0){
@@ -53,6 +63,7 @@ class ActivityModal extends Component{
     } else {
       await refreshToken()
       var secret = JSON.parse(localStorage.getItem('secret'))
+      console.log(this.state)
       axios({
         method: 'post',
         url: '/manager/activity/post',

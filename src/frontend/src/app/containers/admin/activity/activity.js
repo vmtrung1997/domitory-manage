@@ -108,7 +108,7 @@ class Activity extends Component{
 			lastDate = new Date(this.state.last.ngayBD).getFullYear()
 		const secret = JSON.parse(localStorage.getItem('secret'))
 		const user = jwt_decode(secret.access_token).user
-      	const isAdmin = user.userEntity.loai == 'DD' ? false : true
+      	const isAdmin = user.userEntity.loai === 'DD' ? false : true
 
 		return(
 			<React.Fragment>

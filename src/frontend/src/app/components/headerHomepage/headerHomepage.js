@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import {
   Button,
-  FormControl,
+ 
   Dropdown,
   Nav,
-  Form,
+
   Navbar,
   Row,
-  Col
+
 } from "react-bootstrap";
-import { connect } from "react-redux";
+
 import { Link, withRouter } from "react-router-dom";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
@@ -264,10 +264,10 @@ class HeaderHomepage extends Component {
               </li>
             </ul>
 
-            <div onClick={this.showHamburgerMenu} className="burger">
-              <div class="line1" />
-              <div class="line2" />
-              <div class="line3" />
+            <div onClick={this.showHamburgerMenu} className={this.state.isShowMenu?"burger icon close":"burger icon"}>
+              <div className="line1" />
+              <div className="line2" />
+              <div className="line3" />
             </div>
           </nav>
           {/* <Navbar.Toggle aria-controls="basic-navbar-nav " /> */}
@@ -335,15 +335,7 @@ class HeaderHomepage extends Component {
     );
   }
 }
-var mapStateToProps = state => {
-  return {
-    userProfile: state.userProfile
-  };
-};
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    null
-  )(HeaderHomepage)
+(HeaderHomepage)
 );

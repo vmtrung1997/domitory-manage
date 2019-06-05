@@ -514,14 +514,15 @@ exports.updateRoom = (req, res) => {
 
 //----Get danh sách Profile in Phong
 exports.getProfileByIdPhong = (res, req) => {
-  Profile.find({ idPhong: res.body.id }).then(rs => {
+  Profile.find({ idPhong: res.body.id })
+  .select("hoTen MSSV").then(rs=>{
     if (rs.length > 0) {
       req.status(200).json({
         data: rs
       });
     } else {
       req.status(204).json({
-        data: rs
+        data: []
       });
     }
   });

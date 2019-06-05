@@ -69,7 +69,7 @@ class InfoActivity extends Component{
 	render(){
 		const secret = JSON.parse(localStorage.getItem('secret'))
 		const user = jwt_decode(secret.access_token).user
-      	const isAdmin = user.userEntity.loai == 'DD' ? false : true
+      	const isAdmin = user.userEntity.loai === 'DD' ? false : true
 
 		const table = this.props.data.map((row, index) => {
 			var curData = new Date();

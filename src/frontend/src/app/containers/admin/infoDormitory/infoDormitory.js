@@ -12,7 +12,6 @@ import RoomType from './roomType'
 import { Link } from 'react-router-dom'
 const PHONG_SV = 0;
 const PHONG_DVU = 1;
-const PHONG_CNANG = 2;
 
 class InfoDormitory extends React.Component{
   constructor(props){

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import jwt_decode from 'jwt-decode';
-import axios from 'axios'
 import './App.css'
 import Admin from './containers/admin'
 import NotFound from './containers/404error/notfound'

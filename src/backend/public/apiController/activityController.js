@@ -90,8 +90,6 @@ exports.post_activity = (req, res) => {
 
 	// Nếu hoạt động bắt buộc thì tạo kết quả hoạt động cho sinh viên
 	if(act.batBuoc){
-		var now = new Date()
-		
 		var query = {
 			MSSV: {$ne: null},
 			ngayVaoO: { $lte: act.ngayBD},
@@ -169,7 +167,6 @@ exports.update_activity = (req, res) => {
 	})
 
 	if(data.batBuoc){
-		var now = new Date()
 		
 		var query = {
 			MSSV: {$ne: null},

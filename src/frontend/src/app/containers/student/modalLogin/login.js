@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, Button, Container } from "react-bootstrap";
 import md5 from "md5";
 import axios from "axios";
-import { Link } from "react-router-dom";
+
 import { connect } from "react-redux";
 import Input from "../../../components/input/input";
 import "./login.css";

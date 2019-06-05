@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal, Tab, Tabs, Card, Table } from "react-bootstrap";
-import Axios from "axios";
-import jwt_decode from "jwt-decode";
+import Axios from "axios"
 import "./chooseRoom.css";
 import { connect } from "react-redux";
 import refreshToken from "./../../../../utils/refresh_token";
@@ -67,7 +66,7 @@ class ConfirmModal extends React.Component {
     return (
       <>
 
-        <Button variant="primary" onClick={this.handleShow}>
+        <Button variant="default" onClick={this.handleShow}>
           Chọn
         </Button>
 
@@ -85,10 +84,10 @@ class ConfirmModal extends React.Component {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleClose}>
+            <Button variant="default" onClick={this.handleClose}>
               Đóng
             </Button>
-            <Button variant="primary" onClick={this.conFirm}>
+            <Button variant="default" onClick={this.conFirm}>
               Chọn
             </Button>
           </Modal.Footer>
@@ -120,12 +119,22 @@ class ListRoom extends React.Component {
     await Axios.post("/student/get-profile-by-idPhong", {
       id: room._id
     }).then(rs => {
-      if (rs.status === 200 || rs.status === 204) {
+      if (rs.status === 200 ) {
+    
         selectedRoom = {
-          soNguoi: rs.data.data.length,
+          soNguoi: rs.data.data.length, 
           soNguoiToiDa: room.soNguoiToiDa,
           tenPhong: room.tenPhong,
           listProfile: rs.data.data === undefined ? [] : rs.data.data,
+          ten: room.loaiPhong.ten
+        };
+      }
+      else if(rs.status === 204){
+        selectedRoom = {
+          soNguoi: 0, 
+          soNguoiToiDa: room.soNguoiToiDa,
+          tenPhong: room.tenPhong,
+          listProfile: [],
           ten: room.loaiPhong.ten
         };
       }
@@ -163,23 +172,24 @@ class ListRoom extends React.Component {
     return (
       <React.Fragment>
         <div style={{ margin: "20px" }}>
-          {this.state.listRoom.map(item => {
+          {this.state.listRoom.map((item,index) => {
             if (item.loaiPhong) {
-              console.log(item);
+        
               return (
                 <Button
+                key = {index}
                   onClick={e => this.selectedRoom(item)}
                   style={{ margin: "5px" }}
-                  className={
-                    item.loaiPhong.loai === 0 ? "normal-room" : "vip-room"
+                  color={
+                    item.loaiPhong.loai === 0 ? "info" : "primary"
                   }
                   shadow
                   variant={
-                    item.soNguoiToiDa - item.soNguoi ? "outline" : "default"
+                    item.soNguoiToiDa - item.soNguoi ===0? "default" : "outline"
                   }
 
-                  disable = {item.soNguoiToiDa -item.soNguoi <=0 ? false:true}
-                  color={"info"}
+                  disabled = {item.soNguoiToiDa -item.soNguoi ===0 ? true:false}
+                  // disabled
                 >
                   {item.tenPhong} ({item.soNguoi}/{item.soNguoiToiDa})
                 </Button>
@@ -188,20 +198,19 @@ class ListRoom extends React.Component {
           })}
         </div>
         {this.state.selectedRoom.ten === undefined ? (
-          <div>
-            {" "}
-            <Card.Text>
+
+            
               <div className="header-card-room">
-                <div className="">
-                  <span>Chọn phòng để xem thông tin!</span>
-                </div>
+                
+                  <p>Chọn phòng để xem thông tin!</p>
+                
                 <img
                   style={{ height: "150px", width: "150px" }}
                   src="/images/notdatafound.png"
+                  alt = "true"
                 />
               </div>
-            </Card.Text>
-            </div>
+           
         ) : (
           <div>
             <Card.Title>
@@ -219,7 +228,7 @@ class ListRoom extends React.Component {
               <tbody>
                 {this.state.selectedRoom.listProfile.map((item, index) => {
                   return (
-                    <tr>
+                    <tr key = {index}>
                       <td>{index}</td>
                       <td>{item.MSSV}</td>
                       <td>{item.hoTen}</td>
@@ -294,11 +303,11 @@ class ChooseRoom extends React.Component {
           <Modal.Body>
             {" "}
             <Tabs id="controlled-tab-example" defaultActiveKey="floor1">
-              {this.state.floor.map(item => {
+              {this.state.floor.map((item,index) => {
                 var evt = "floor" + item;
                 var tit = "Lầu " + item;
                 return (
-                  <Tab eventKey={evt} title={tit}>
+                  <Tab eventKey={evt} key = {index} title={tit}>
                     <ListRoom data={item} room={this.getRoom} />
                   </Tab>
                 );
@@ -306,7 +315,7 @@ class ChooseRoom extends React.Component {
             </Tabs>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleClose}>
+            <Button  onClick={this.handleClose}>
               Đóng
             </Button>
             <ToastsContainer
