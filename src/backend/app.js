@@ -6,7 +6,7 @@ var express = require('express'),
     cors = require('cors')
 var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
-
+// //admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao
 mongoose.connect('mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao', 
 { 
   useNewUrlParser: true,
