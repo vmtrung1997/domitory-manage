@@ -12,6 +12,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# build procduction
+
 # Editor directories and files
 .idea
 .vscode
@@ -20,4 +22,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
-src/frontend/package-lock.json
+/src/frontend/package-lock.json

@@ -13,13 +13,13 @@
     border-style: solid solid none;
     border-width: 4px 0 0;
     padding: 14px 15px 7px;
-  overflow: auto;
 }
 .img-css{
   float: right;
 }
 .img-css img{
-  height: 100vh;
+  height: 90vh;
+  width: auto;
 }
 .info{
   font-family: 'Podkova', serif;
