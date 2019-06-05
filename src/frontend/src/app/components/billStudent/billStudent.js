@@ -24,7 +24,7 @@ class BillStudent extends React.Component {
       lastBill: [],
       pageActive: 1,
       totalPages: 1,
-      limit: 2
+      limit: 6
     };
   }
 
@@ -156,7 +156,6 @@ class BillStudent extends React.Component {
   };
 
   render() {
-
     return (
       
       <React.Fragment>

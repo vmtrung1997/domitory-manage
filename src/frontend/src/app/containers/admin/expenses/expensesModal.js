@@ -16,8 +16,8 @@ class Example extends React.Component {
       rooms: [],
       table: [],
       room: 0,
-      month: (new Date).getMonth() + 1,
-      year: (new Date).getFullYear(),
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
       monthOptions: [],
       yearOptions: [],
       soDien: 0,
@@ -60,7 +60,7 @@ class Example extends React.Component {
       if (result.data) {
         let monthOptions = get_month();
         monthOptions.shift();
-        let yearNow = (new Date).getFullYear() - 1;
+        let yearNow = new Date().getFullYear() - 1;
         let yearOptions = [...Array(3)].map((_, i) => { return { value: i + yearNow, label: i + yearNow } })
         var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong, loaiPhong: room.loaiPhong }))
         self.setState({

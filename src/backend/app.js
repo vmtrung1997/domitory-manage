@@ -6,7 +6,8 @@ var express = require('express'),
     cors = require('cors')
 var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
-// //admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao
+var { background } = require('./background')
+
 mongoose.connect('mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao', 
 { 
   useNewUrlParser: true,
@@ -46,6 +47,8 @@ app.get('/', (_, res) => {
 app.use((req, res, next) => {
   res.sendStatus(404)
 })
+
+background()
 
 app.use((err, req, res, next) => {
   res.status(500)

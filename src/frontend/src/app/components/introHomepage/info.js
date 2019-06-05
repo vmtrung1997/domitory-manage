@@ -1,6 +1,6 @@
 import React from "react";
 import "./info.css";
-import { Container, Row, Col } from "react-bootstrap";
+
 
 class InfoHomePage extends React.Component {
   render() {

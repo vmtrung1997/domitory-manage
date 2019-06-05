@@ -16,10 +16,17 @@ class ActivityEdit extends Component{
 		handleClose: () => {},
 		handleSave: () => {},
 	}
+
   constructor(props){
     super(props)
     var today = new Date()
-    var time = today.getHours() + ':' + today.getMinutes()
+    var h = today.getHours()
+    var m = today.getMinutes()
+    if (today.getHours() < 10)
+      h = '0' + today.getHours()
+    if (today.getMinutes() < 10)
+      m = '0' + today.getMinutes()
+    var time = h + ':' + m
     this.state = {
       name: '',
       location: '',
@@ -42,9 +49,9 @@ class ActivityEdit extends Component{
       ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
     } else if(parseInt(point) <= 0) {
       ToastsStore.error("Điểm hoạt động phải lớn hơn 0!");
-    } else if(date < new Date().setHours(0,0,0) || dateEnd < new Date().setHours(0,0,0)) {
+    } else if(date < new Date() || dateEnd < new Date()) {
       ToastsStore.error("Thời gian bắt đầu và kết thúc phải lớn hơn ngày hiện tại!");
-    } else if(dateEnd.setHours(0,0,0) < date.setHours(0,0,0)){
+    } else if(dateEnd < date){
       ToastsStore.error("Thời gian kết thúc không nhỏ hơn thời gian bắt đầu!");
     } else {
       await refreshToken()
@@ -77,15 +84,26 @@ class ActivityEdit extends Component{
     }
   }
 
+  getStringTime = (today) => {
+    var h = today.getHours()
+    var m = today.getMinutes()
+    if (today.getHours() < 10)
+      h = '0' + today.getHours()
+    if (today.getMinutes() < 10)
+      m = '0' + today.getMinutes()
+    return h + ':' + m
+  }
+
   componentWillMount(){
     const data = this.props.data
+    
     this.setState({
       name: data.ten,
       location: data.diaDiem,
       date: new Date(data.ngayBD),
-      time: new Date(data.ngayBD).getHours() + ':' + new Date(data.ngayBD).getMinutes(),
+      time: this.getStringTime(new Date(data.ngayBD)),
       dateEnd: new Date(data.ngayKT),
-      timeEnd: new Date(data.ngayKT).getHours() + ':' + new Date(data.ngayKT).getMinutes(),
+      timeEnd: this.getStringTime(new Date(data.ngayKT)),
       isRequire: data.batBuoc,
       des: data.moTa,
       point: data.diem

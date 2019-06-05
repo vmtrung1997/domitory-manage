@@ -24,19 +24,22 @@ exports.a = (req, res) => {
 
 exports.getSpecialized = (req, res) => {
   console.log(req.body.id);
-  TruongNganh.find({idTruong: req.body.id}).populate('idNganhHoc').select('idNganhHoc').then(result =>{
-    console.log(result);
-    res.status(200).json({
-      status: "success",
-      data: result
+  TruongNganh.find({ idTruong: req.body.id })
+    .populate("idNganhHoc")
+    .select("idNganhHoc")
+    .then(result => {
+      console.log(result);
+      res.status(200).json({
+        status: "success",
+        data: result
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(400).json({
+        status: "get specialized false"
+      });
     });
-  })
-  .catch(err => {
-    console.log(err);
-    res.status(400).json({
-      status: "get specialized false"
-    });
-  })
   // NganhHoc.find()
   //   .then(result => {
   //     res.status(200).json({
@@ -57,32 +60,33 @@ exports.getListActivities = (req, res) => {
   var limit = req.body.options.limit;
   var totalPages = 1;
 
-  KetQuaHD.find({ idSV: req.body.id })
-    .select("idHD")
-    .then(result => {
-      var arr = [];
-      result.forEach(item => {
-        arr.push(item.idHD);
-      });
-      HoatDong.find({
-        _id: { $nin: arr },
-        ngayBD: {
-          $gte: new Date(date.getFullYear(), date.getMonth(), date.getDate())
-        }
-      }).countDocuments({}, (err, data) => {
-        totalPages = parseInt(data) / limit;
-        if (err) {
-          res.status(500).json({
-            status: "fail"
-          });
-        }
-      });
-    })
-    .catch(err => {
-      res.status(500).json({
-        status: "fail"
-      });
-    });
+  // KetQuaHD.find({ idSV: req.body.id })
+  //   .select("idHD")
+  //   .then(result => {
+  //     var arr = [];
+  //     result.forEach(item => {
+  //       arr.push(item.idHD);
+  //     });
+  //     HoatDong.find({
+  //       _id: { $nin: arr },
+  //       batBuoc: false,
+  //       ngayBD: {
+  //         $gte: new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  //       }
+  //     }).countDocuments({}, (err, data) => {
+  //       totalPages = parseInt(data) / limit;
+  //       if (err) {
+  //         res.status(500).json({
+  //           status: "fail"
+  //         });
+  //       }
+  //     });
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({
+  //       status: "fail"
+  //     });
+  //   });
 
   KetQuaHD.find({ idSV: req.body.id })
     .select("idHD")
@@ -95,6 +99,7 @@ exports.getListActivities = (req, res) => {
       });
       HoatDong.find({
         _id: { $nin: arr },
+        batBuoc: false,
         ngayBD: {
           $gte: new Date(date.getFullYear(), date.getMonth(), date.getDate())
         }
@@ -358,7 +363,7 @@ exports.upcomingActivities = (req, res) => {
   KetQuaHD.countDocuments({ idSV: req.body.id }, (err, data) => {
     totalPages = parseInt(data) / limit;
     if (err) {
-      console.log("loi dau");
+      console.log(err);
       // res.status(500).json({
       //   status: "fail"
       // })
@@ -368,20 +373,21 @@ exports.upcomingActivities = (req, res) => {
         .skip(skip)
         .limit(limit)
         .then(result => {
-          if (result.length > 0) {
-            res.status(200).json({
-              status: "success",
-              data: result,
-              totalPages: totalPages
-            });
-          } else {
-            console.log("vô đây");
-            res.status(204).json({
-              status: "fail",
-              data: "no data"
-            });
-          }
-        })
+          var data = [];
+              if(result.length>0){
+              res.status(200).json({
+                status: "success",
+                data: result,
+                totalPages: totalPages
+              });
+            } else {
+              console.log("vô đây");
+              res.status(204).json({
+                status: "fail",
+                data: "no data"
+              });
+            }
+          })
         .catch(err => {
           // console.log('loi sau');
           // res.status(500).json({
@@ -471,36 +477,32 @@ exports.updateRoom = (req, res) => {
   try {
     Phong.find({ _id: req.body.idPhong }).then(rs => {
       if (rs.length > 0) {
-        
-          try {
-            Phong.findOneAndUpdate(
-              { _id: req.body.idPhong },
-              {soNguoi: rs[0].soNguoi + 1}
-            ).then(rs =>{
-              if(rs){
-                Profile.findOneAndUpdate(
-                  { _id: req.body.id },
-                  { idPhong: req.body.idPhong }
-                ).then(rs => {
-                  console.log(rs);
-                  if (rs) {
-                    res.status(202).json({
-                      data: rs
-                    });
-                  } else {
-                    res.status(204).json({
-                      data: "no data"
-                    });
-                  }
-                });
-              }
-            })
-
-            
-          } catch (e) {
-            console.log(e);
-          }
-        
+        try {
+          Phong.findOneAndUpdate(
+            { _id: req.body.idPhong },
+            { soNguoi: rs[0].soNguoi + 1 }
+          ).then(rs => {
+            if (rs) {
+              Profile.findOneAndUpdate(
+                { _id: req.body.id },
+                { idPhong: req.body.idPhong }
+              ).then(rs => {
+                console.log(rs);
+                if (rs) {
+                  res.status(202).json({
+                    data: rs
+                  });
+                } else {
+                  res.status(204).json({
+                    data: "no data"
+                  });
+                }
+              });
+            }
+          });
+        } catch (e) {
+          console.log(e);
+        }
       } else {
         res.status(204).json({
           data: "no data"
@@ -515,22 +517,25 @@ exports.updateRoom = (req, res) => {
 //----Get danh sách Profile in Phong
 exports.getProfileByIdPhong = (res, req) => {
   Profile.find({ idPhong: res.body.id })
-  .select("hoTen MSSV").then(rs=>{
-    if (rs.length > 0) {
-      req.status(200).json({
-        data: rs
-      });
-    } else {
-      req.status(204).json({
-        data: []
-      });
-    }
-  });
+    .select("hoTen MSSV")
+    .then(rs => {
+      if (rs.length > 0) {
+        req.status(200).json({
+          data: rs
+        });
+      } else {
+        req.status(204).json({
+          data: []
+        });
+      }
+    });
 };
 
 //------------- Get điểm rèn luyện
 exports.getPoint = (req, res) => {
   var result = [];
+  var hk1 = 0;
+  var hk2 = 0;
   var ngayVaoO = new Date(req.body.ngayVaoO);
   //Tìm các hoạt động trong năm nay và năm trước
   var now = new Date();
@@ -550,29 +555,25 @@ exports.getPoint = (req, res) => {
     })
     .then(rs => {
       var nowDate = new Date();
-      var hk1 = 0;
-      var hk2 = 0;
-
       var point = 0;
       var i = 0;
       rs.some(item => {
         if (
+          // TODO: theem ddieemr renf kuyeenj với các hoạt động bắt buộc
           //Các hoạt động từ t9 năm trước -> t2 năm sau
           (item.idHD.ngayKT.getMonth() + 1 > 8 &&
             item.idHD.ngayKT.getFullYear() === now.getFullYear()) ||
-          (item.idHD.ngayKT.getMonth() + 1 < 3 &&
-            item.idHD.ngayKT < nowDate)
+          (item.idHD.ngayKT.getMonth() + 1 < 3 && item.idHD.ngayKT < nowDate)
         ) {
           if (item.idHD.batBuoc === true && item.isTG === false)
-          hk1 -= item.idHD.diem;
-        if (item.isTG) hk1 += item.idHD.diem;
+            hk1 -= item.idHD.diem;
+          if (item.isTG) hk1 += item.idHD.diem;
         } else if (
           //Các hoạt động từ t3 -> t7 năm nay
 
           item.idHD.ngayKT.getMonth() + 1 > 2 &&
           item.idHD.ngayKT < nowDate &&
-          (item.idHD.ngayKT.getMonth() + 1 < 8 &&
-            item.idHD.ngayKT < nowDate)
+          (item.idHD.ngayKT.getMonth() + 1 < 8 && item.idHD.ngayKT < nowDate)
         ) {
           if (item.idHD.batBuoc === true && item.isTG === false)
             hk2 -= item.idHD.diem;
@@ -586,8 +587,35 @@ exports.getPoint = (req, res) => {
       };
 
       result.push(temp);
+      return result;
+    })
+    .then(rs => {
+      console.log(rs);
+      HoatDong.find({ batBuoc: true }, { ngayBD: { $gte: now } }).then(rs => {
+        var nowDate = new Date();
+        rs.some(item => {
+          if (
+            //Các hoạt động từ t9 năm trước -> t2 năm sau
+            (item.ngayKT.getMonth() + 1 > 8 &&
+              item.ngayKT.getFullYear() === now.getFullYear()) ||
+            (item.ngayKT.getMonth() + 1 < 3 && item.ngayKT < nowDate)
+          ) {
+            if (item.batBuoc === true && item.isTG === false)
+              hk1 -= item.idHD.diem;
+            if (item.isTG) hk1 += item.idHD.diem;
+          } else if (
+            //Các hoạt động từ t3 -> t7 năm nay
 
-      console.log(result);
+            item.idHD.ngayKT.getMonth() + 1 > 2 &&
+            item.idHD.ngayKT < nowDate &&
+            (item.idHD.ngayKT.getMonth() + 1 < 8 && item.idHD.ngayKT < nowDate)
+          ) {
+            if (item.idHD.batBuoc === true && item.isTG === false)
+              hk2 -= item.idHD.diem;
+            if (item.isTG) hk2 += item.idHD.diem;
+          }
+        });
+      });
       if (result.length === 0) {
         res.status(204).json({
           data: result
@@ -657,16 +685,16 @@ exports.requestStay = (req, res) => {
   }
 };
 
-
-exports.getListFloor = (req,res) =>{
-  Phong.find().distinct('lau').then(rs =>{
-    if(rs.length>0){
-      res.status(200).json({
-        data: rs
-      })
-    }
-    else {
-      res.status(204)
-    }
-  })
-}
+exports.getListFloor = (req, res) => {
+  Phong.find()
+    .distinct("lau")
+    .then(rs => {
+      if (rs.length > 0) {
+        res.status(200).json({
+          data: rs
+        });
+      } else {
+        res.status(204);
+      }
+    });
+};

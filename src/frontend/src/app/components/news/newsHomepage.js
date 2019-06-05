@@ -1,5 +1,5 @@
 import React from "react";
-import { Nav, Button } from "react-bootstrap";
+import {  Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./newsHomepage.css";
 import Axios from "axios";
@@ -20,7 +20,7 @@ class NewsHomepage extends React.Component {
     await Axios.post("/news/get-news", { data: date })
       .then(rs => {
         if (rs.status === 200) {
-          rs.data.data.map((item, index) => {
+          rs.data.data.forEach((item, index) => {
             if (index < 5) _post.push(item);
           });
         }
@@ -43,7 +43,7 @@ class NewsHomepage extends React.Component {
     await Axios.get("/news/get-pin-news")
       .then(rs => {
         if (rs.status === 200) {
-          rs.data.data.map(item => {
+          rs.data.data.forEach(item => {
             _post.push(item);
           });
         }

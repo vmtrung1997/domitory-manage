@@ -12,7 +12,16 @@ import Input from './../../../components/input/input'
 import CheckBox from './../../../components/checkbox/checkbox'
 
 const today = new Date()
-const time = today.getHours() + ':' + today.getMinutes()
+var getStringTime = () => {
+  var h = today.getHours()
+  var m = today.getMinutes()
+  if (today.getHours() < 10)
+    h = '0' + today.getHours()
+  if (today.getMinutes() < 10)
+    m = '0' + today.getMinutes()
+  return h + ':' + m
+}
+const time = getStringTime()
 const initialState = {
   name: '',
   location: '',
@@ -42,17 +51,19 @@ class ActivityModal extends Component{
     var {name, location, des, point} = this.state
     var date = this.state.date
     var dateEnd = this.state.dateEnd
+
     if(!name || !location || !des || !point) {
       ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
     } else if(parseInt(point) <= 0){
       ToastsStore.error("Điểm hoạt động phải lớn hơn 0!");
-    } else if(date < new Date().setHours(0,0,0) || dateEnd < new Date().setHours(0,0,0)){
+    } else if(date < new Date() || dateEnd < new Date()) {
       ToastsStore.error("Thời gian bắt đầu và kết thúc phải lớn hơn ngày hiện tại!");
-    } else if(dateEnd.setHours(0,0,0) < date.setHours(0,0,0)){
+    } else if(dateEnd < date){
       ToastsStore.error("Thời gian kết thúc không nhỏ hơn thời gian bắt đầu!");
     } else {
       await refreshToken()
       var secret = JSON.parse(localStorage.getItem('secret'))
+      console.log(this.state)
       axios({
         method: 'post',
         url: '/manager/activity/post',

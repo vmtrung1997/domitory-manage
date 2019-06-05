@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import {
   Button,
-  FormControl,
+ 
   Dropdown,
   Nav,
-  Form,
+
   Navbar,
   Row,
-  Col
+
 } from "react-bootstrap";
-import { connect } from "react-redux";
+
 import { Link, withRouter } from "react-router-dom";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
