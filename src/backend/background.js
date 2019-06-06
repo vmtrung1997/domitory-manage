@@ -13,6 +13,8 @@ exports.background = () => {
 		if(err) { console.log("==background: ", err )}
 		else {
 			val.map((item, index) => {
+				item.isActive = false
+				item.save()
 				Account.updateOne({idProfile: item._id}, {isDelete: 1}, (err, res) => {
 					if(err) { console.log("==background: ", err )}
 				})
