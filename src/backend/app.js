@@ -48,7 +48,7 @@ app.use((req, res, next) => {
   res.sendStatus(404)
 })
 
-setInterval(background, 1000*3600*24*7);
+setInterval(background, 1000*3600*24);
 
 
 app.use((err, req, res, next) => {

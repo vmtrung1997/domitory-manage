@@ -25,6 +25,7 @@ var profileSchema = new Schema({
     danToc: String,
     img:  String,
     isActive: Boolean,
+    flag: Boolean,
     hanDangKy: Date,
 });
 profileSchema.plugin(mongoosePaginate);
