@@ -37,7 +37,12 @@ class Activity extends Component{
 		this.getData()
 	}
 
+	sleep = (ms) => {
+		return new Promise(resolve => setTimeout(resolve, ms))
+	}
+
 	getData = async () => {
+		await this.sleep(750)
 		this.setState({ loading: true})		
 		await refreshToken()
 		var secret = JSON.parse(localStorage.getItem('secret'))

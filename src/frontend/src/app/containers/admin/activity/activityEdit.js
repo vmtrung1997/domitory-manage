@@ -44,14 +44,22 @@ class ActivityEdit extends Component{
     this.setState({ [name]: val })
   }
   handleSave = async () => {
-    var {name, location, des, point, date, dateEnd} = this.state
+    var {name, location, des, point} = this.state
+    var date = this.state.date
+    var dateEnd = this.state.dateEnd
+    var cur = new Date()
+
+    var tmp = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    var tmpEnd = new Date(dateEnd.getFullYear(), dateEnd.getMonth(), dateEnd.getDate())
+    var tmpCur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate())
+
     if(!name || !location || !des || !point) {
       ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
     } else if(parseInt(point) <= 0) {
       ToastsStore.error("Điểm hoạt động phải lớn hơn 0!");
-    } else if(date < new Date().setHours(0,0,0) || dateEnd < new Date().setHours(0,0,0)) {
-      ToastsStore.error("Thời gian bắt đầu và kết thúc phải lớn hơn ngày hiện tại!");
-    } else if(dateEnd.setHours(0,0,0) < date.setHours(0,0,0)){
+    } else if(tmp < tmpCur || tmpEnd < tmpCur) {
+      ToastsStore.error("Thời gian bắt đầu và kết thúc không nhỏ hơn ngày hiện tại!");
+    } else if(tmp > tmpEnd){
       ToastsStore.error("Thời gian kết thúc không nhỏ hơn thời gian bắt đầu!");
     } else {
       await refreshToken()
@@ -67,8 +75,8 @@ class ActivityEdit extends Component{
           name: this.state.name,
           location: this.state.location,
           time: this.state.time,
-          date: this.state.date,
-          dateEnd: this.state.dateEnd,
+          date: this.state.date.toString(),
+          dateEnd: this.state.dateEnd.toString(),
           timeEnd: this.state.timeEnd,
           isRequire: this.state.isRequire,
           des: this.state.des,

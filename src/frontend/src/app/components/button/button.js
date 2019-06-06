@@ -46,7 +46,6 @@ class Button extends Component{
 				className={'bt bt-' + size + ' bt-' + color + ' bt-' + variant  + classDisabled  + classFullWidth + ' ' + className + classDiminsion + classActived + classShadow}
 				onClick={e => this.props.onClick({key: this.props.keyButton})}
 				title={this.props.title}
-				type={this.props.type}
 				disabled={this.props.disabled}
 			>
 				{children}
