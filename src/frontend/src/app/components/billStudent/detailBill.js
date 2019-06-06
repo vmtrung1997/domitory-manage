@@ -31,7 +31,7 @@ class DetailBill extends React.Component {
                         <Modal.Body >
                             <div style={{ 'color': '#2680EB' }}><h2>Chi Tiết Hóa Đơn</h2></div>
                             <div style={{ 'paddingBottom': '5px' }}><h5>{data.thang}/{data.nam}</h5></div>
-                            <div style={{ 'paddingBottom': '20px' }}>{data.trangThai === 0?<div className='is-dont-done'>Chưa thanh toán</div> : <div className='is-done'>Đã thanh toán</div>}</div>
+                            <div style={{ 'paddingBottom': '20px' }}>{data.trangThai === '0'?<div className='is-dont-done'>Chưa thanh toán</div> : <div className='is-done'>Đã thanh toán</div>}</div>
                             <Table   striped bordered hover size="sm">
                                 <thead>
                                     <tr>

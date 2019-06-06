@@ -24,7 +24,7 @@ class BillStudent extends React.Component {
       lastBill: [],
       pageActive: 1,
       totalPages: 1,
-      limit: 6
+      limit: 2
     };
   }
 

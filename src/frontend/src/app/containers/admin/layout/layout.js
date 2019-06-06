@@ -9,7 +9,7 @@ import jwt_decode from 'jwt-decode';
 
 export default class Layout extends React.Component{
   constructor(props){
-    super(props)
+    super(props);
     this.state = {
       navStyle : ''
     }
@@ -24,29 +24,30 @@ export default class Layout extends React.Component{
       this.setState({
         navStyle: ''
       });
-  }
+  };
+
   render() {
     const { children } = this.props;
-    var rule = ''
-    var name = ''
-    const secret = JSON.parse(localStorage.getItem('secret'))
+    var rule = '';
+    var name = '';
+    const secret = JSON.parse(localStorage.getItem('secret'));
     if(secret)
     {
-      const user = jwt_decode(secret.access_token).user
-      name = user.profile.hoTen
+      const user = jwt_decode(secret.access_token).user;
+      name = user.profile.hoTen;
       switch(user.userEntity.loai){
         case 'SA':
-          rule = 'Super Admin'
-          break
+          rule = 'Super Admin';
+          break;
         case 'AM':
-          rule = 'Admin'
-          break
+          rule = 'Admin';
+          break;
         case 'ADCP':
-          rule = 'Quản lý chi phí'
-          break
+          rule = 'Quản lý chi phí';
+          break;
         case 'DD':
-          rule = 'Điểm danh'
-          break
+          rule = 'Điểm danh';
+          break;
         default:
           break
       }

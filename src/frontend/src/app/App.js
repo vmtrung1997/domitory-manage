@@ -57,17 +57,18 @@ const SecurityRoute = ({ component: Component, ...rest }) => {
         />
     )
 }
+
 class App extends Component {
 	render() {
       	return (
-      		<Router basename="">
+      		<Router>
                 <Switch>
-                    <AdminRoute path={`/admin`} component={Admin} />
-                    <SecurityRoute path={`/security`} component={Security} />
-                    <Route path={`/signin-admin`} component={SignInAdmin} />
-                    <Route path={`/500`} component={InternalServer} />
-                    <Route path={`/401`} component={NotAuthen}/>
-                    <Route path={`/`} component = {Student}/>
+                    <AdminRoute path="/admin" component={Admin} />
+                    <SecurityRoute path='/security' component={Security} />
+                    <Route path="/signin-admin" component={SignInAdmin} />
+                    <Route path="/500" component={InternalServer} />
+                    <Route path="/401" component={NotAuthen}/>
+                    <Route path='/' component = {Student}/>
                     <Route component={NotFound} />
                 </Switch>
             </Router>

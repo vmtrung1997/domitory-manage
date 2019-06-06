@@ -13,7 +13,6 @@ import Input from './../../../components/input/input';
 import Button from './../../../components/button/button';
 import Title from './../../../components/title/title';
 import Checkbox from './../../../components/checkbox/checkbox';
-import Select from './../../../components/selectOption/select'
 import refreshToken from './../../../../utils/refresh_token';
 import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
@@ -262,8 +261,9 @@ class InfoStudent extends Component{
         name: '',
         studentNumber: '',
         pageActive: 1,
-        roomSelected: {},
-        schoolSelected: {}
+        roomSelected: {value: 0, label: "Tất cả"},
+        schoolSelected: {value: 0, label: "Tất cả"},
+        floorSelected: {value: 0, label: "Tất cả"}
       },
       loading: true,
     });
@@ -304,31 +304,8 @@ class InfoStudent extends Component{
         isOld
       },
       infoList,
-      floorSelected,
       floorOptions,
-      hoTen,
-      mssv,
       roomHistory,
-      infoAdded: { dateAdded, expiredDateAdded, regisExpiredDateAdded},
-      valueExport :{
-        hoTenEx,
-        mssvEx,
-        ngaySinhEx,
-        gioiTinhEx,
-        diaChiEx,
-        emailEx,
-        sdtEx,
-        sdtNguoiThanEx,
-        tonGiaoEx,
-        danTocEx,
-        ngayVaoOEx,
-        ngayHetHanEx,
-        diemHDEx,
-        phongEx,
-        truongEx,
-        nganhHocEx,
-        ghiChuEx,
-      }
     } = this.state;
     let i = pageActive*limit - 10;
     return(

@@ -31,12 +31,7 @@ class Account extends Component{
 		this.getData()
 	}
 
-	sleep = (ms) => {
-		return new Promise(resolve => setTimeout(resolve, ms))
-	}
-
 	getData = async () => {
-		await this.sleep(750)
 		this.setState({ loading: true})		
 		await refreshToken()
 		var secret = JSON.parse(localStorage.getItem('secret'))
@@ -94,7 +89,7 @@ class Account extends Component{
 					handleClose={() => this.changeState('showAdd', false)}
 					handleSave={this.getData}
 				/>
-				<Title> Tài khoản </Title>
+				<Title> Hoạt động sinh viên </Title>
 
         		<div className={'content-body full'}>
 					<div>

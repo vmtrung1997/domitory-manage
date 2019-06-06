@@ -56,7 +56,7 @@ class internalServer extends React.Component {
             elem.querySelector('.code ul').appendChild(node).setAttribute('style', '--linelength: ' + lineLength + '%;');
 
             //draw lines of code 1 by 1
-            if (index === 0) {
+            if (index == 0) {
               elem.querySelector('.code ul .node-' + index).classList.add('writeLine');
             } else {
               elem.querySelector('.code ul .node-' + (index - 1)).addEventListener('animationend', function (e) {

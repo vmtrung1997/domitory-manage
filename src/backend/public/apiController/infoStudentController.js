@@ -4,14 +4,10 @@ const Account = require('../models/TaiKhoan');
 const Room = require('../models/Phong');
 const RoomHistory = require('../models/LichSuPhong');
 const ActivityResults = require('../models/KetQuaHD');
-const Activity = require('../models/HoatDong');
-const ReToken = require('../models/refreshToken');
-let auth = require('../repos/authRepo');
 const md5 = require('md5');
-var fs = require('fs')
 
 function addOneStudent(data) {
-  return new Promise( (resolve, reject) => {
+  return new Promise( (resolve) => {
     Account.findOne({username: data.mssv})
     .then( result => {
       if(result){
@@ -24,43 +20,50 @@ function addOneStudent(data) {
           isDelete: 0,
         });
         //----save account---------
-        acc.save().catch(err =>{
-          resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
-        })
+        acc.save()
+          .then(acc => {
+            let student = new Profile({
+              idTaiKhoan: acc._id,
+              hoTen: data.hoTen,
+              MSSV: data.mssv,
+              ngaySinh: data.ngaySinh,
+              ngayVaoO: new Date(),
+              ngayHetHan: data.ngayHetHan,
+              hanDangKy: data.hanDangKy,
+              isActive: false,
+              flag: true
+            });
+            //------save profile-------
+            student.save()
+              .then((result) => {
+                resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
+              })
+              .catch(err =>{
+                Account.findOneAndDelete({username: data.mssv}).catch()
+                resolve( {status: 400, msg: 'tạo thông tin cá nhân không thành công, vui lòng thử lại!', data: data, err: err})
+              });
 
-        let student = new Profile({
-          idTaiKhoan: acc._id,
-          hoTen: data.hoTen,
-          MSSV: data.mssv,
-          ngaySinh: data.ngaySinh,
-          ngayVaoO: new Date(),
-          ngayHetHan: data.ngayHetHan,
-          flag: true
+            acc.idProfile = student._id;
+            acc.save().catch(err =>{
+              resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data, err: err})
+            });
+          })
+          .catch(() =>{
+          resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
         });
-        //------save profile-------
-        student.save().catch(err =>{
-          resolve( {status: 400, msg: 'tạo thông tin cá nhân không thành công!', data: data})
-        })
 
-        acc.idProfile = student._id;
-        acc.save().catch(err =>{
-          resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
-        })
 
-        resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
       }
     }).catch(err => {
-      resolve( {status: 500, msg: 'truy vấn mssv thẻ err!', data: data})
+      resolve( {status: 500, msg: 'truy vấn mssv thẻ err!', data: data, err: err})
     });
   })
-
-};
+}
 
 exports.addStudent =async (req, res) => {
   const params = req.body;
   if( !params.mssv && !params.hoTen)
     res.status(400).json({msg: 'Thiếu thông tin'});
-  console.log(params);
   addOneStudent(params).then(resolve => {
     res.status(resolve.status).json({msg: resolve.msg})
   }).catch(reject => {
@@ -70,20 +73,23 @@ exports.addStudent =async (req, res) => {
 };
 
 exports.importFile = async (req, res) => {
-  const { data, expireDay } = req.body;
+  const { data } = req.body;
   let listExpired = [];
   let listSuccess =[];
-  let listPromise = []
+  let listPromise = [];
   data.forEach(record => {
+    let [ngay, thang, nam] = [0, 0 , 0]
+    if(record.ngaySinh)
+      [ngay, thang, nam] = record.ngaySinh.split("/");
     let student = {
       mssv: record.mssv,
       hoTen: record.hoTen,
-      ngaySinh: record.ngaySinh,
+      ngaySinh: record.ngaySinh ? new Date(`${thang}/${ngay}/${nam}`) : new Date(),
       ngayHetHan: req.body.ngayHetHan,
       hanDangKy: req.body.hanDangKy
-    }
+    };
     listPromise.push(addOneStudent(student))
-  })
+  });
   await Promise.all(listPromise).then(result=> {
     let i = 0;
     result.forEach(r => {
@@ -108,13 +114,13 @@ exports.importFile = async (req, res) => {
 
 exports.deleteStudent = (req, res) => {
   const arrDel = req.body.arrDelete;
-  if(arrDel === undefined || arrDel.length == 0) {
+  if(arrDel === undefined || arrDel.length === 0) {
     res.status(400).json({msg: 'Không có dữ liệu để xóa'})
   }
   else {
     arrDel.forEach(id => {
       Account.findOneAndUpdate({username: id},{ $set: {isDelete: 1} })
-        .then(result => {
+        .then(() => {
           Profile.findOneAndUpdate({MSSV: id},{ $set: {idPhong: null} })
             .then(result => {
               if(result.idPhong){
@@ -126,10 +132,10 @@ exports.deleteStudent = (req, res) => {
               }
               res.status(200).json({msg: 'Bạn đã xóa thành công'})
             }).catch(err =>
-            res.status(400).json({msg: 'Xóa thất bại'})
+            res.status(400).json({msg: 'Xóa thất bại', err: err})
           )
         }).catch(err => {
-        res.status(400).json({msg: 'Xóa thất bại'})
+        res.status(400).json({msg: 'Xóa thất bại', err: err})
       })
     })
   }
@@ -148,7 +154,7 @@ exports.updateInfo = (req,res) => {
               res.status(400).json({msg: 'Mã thẻ đã tồn tại'})
             }
           }).catch(err => {
-            res.status(400)
+            res.status(400).json(err)
         })
       }
       // if change room
@@ -163,11 +169,11 @@ exports.updateInfo = (req,res) => {
         his.save().then(() => {
           res.status(200).json({msg: 'Cập nhật thành công!'})
         }).catch(err => {
-          res.status(400).json({msg: 'Cập nhật lịch sử phòng không thành công'})
+          res.status(400).json({msg: 'Cập nhật lịch sử phòng không thành công', err: err})
         })
       }
     }).catch(err => {
-      res.status(400).json({msg: 'cập nhật không thành công!'})
+      res.status(400).json({msg: 'cập nhật không thành công!', err: err})
   }).then(()=>{
       Profile.findOneAndUpdate({MSSV: info.MSSV},{ $set: info }).then(result => {
         res.status(200).json({data: result, msg: 'Cập nhật thành công!'})
@@ -180,7 +186,7 @@ exports.getListStudent = async(req, res) => {
   let query = {};
   const params = req.body;
 
-  var populateQuery = [
+  let populateQuery = [
     {path:'idPhong', select:'tenPhong'},
     {path:'truong', select:'tenTruong'},
     {path:'nganhHoc', select:'tenNganh'},
@@ -211,7 +217,7 @@ exports.getListStudent = async(req, res) => {
 
   if(params.lau !== 0)
     await Room.find({lau: params.lau}).select('_id').then(result => {
-    var arr = [];
+    let arr = [];
     result.forEach(acc => {
       arr.push(acc._id)
     });
@@ -291,7 +297,8 @@ exports.getListStudentPaging = async(req, res) => {
         res.status(200).json(result);
       }).catch(err => {
         res.statusCode(400).json({
-          err: 'get info student fail'
+          msg: 'get info student fail',
+          err: err
         })
     })
   }).catch()
@@ -305,9 +312,9 @@ exports.getRoomHistory = async(req, res) => {
     res.status(200).json(result)
 
   }).catch(err => {
-      res.status(400)
+      res.status(400).json(err)
   })
-}
+};
 
 exports.uploadImage = (req, res) => {
   console.log(req.body);
@@ -324,11 +331,10 @@ exports.getListActivitiesByMSSV = (req, res) => {
         .populate({path:'idHD'})
         .then(result => {
           res.status(200).json(result)
-        }).catch(err => {
+        }).catch(() => {
         res.status(400).json({msg: "Lỗi"})
       })
     })
-
 };
 
 exports.getProfile = async (req, res) => {
@@ -344,7 +350,7 @@ exports.getProfile = async (req, res) => {
     .populate(populateQuery)
     .then((result) => {
       res.status(200).json(result)
-    }).catch(err => {
+    }).catch(() => {
       res.status(400).json({msg: 'Có lỗi'})
   })
 };

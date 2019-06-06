@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import {Col, Modal, Row, Table} from 'react-bootstrap'
+import {Col, Modal, Row, Tab, Table, Tabs} from 'react-bootstrap'
 import Button from '../../../components/button/button';
 import Input from "../../../components/input/input";
 import DatePicker from "react-datepicker/es/index";
-import {add_student, mark_old_student, get_list_student, import_info_student_data} from './infoStudentActions';
+import {add_student, mark_old_student, get_list_student, get_element, get_floor_room, import_info_student_data} from './infoStudentActions';
 import {ToastsStore} from "react-toasts";
 import XLSX from "xlsx";
 import Checkbox from "../../../components/checkbox/checkbox";
@@ -266,8 +266,8 @@ export class ImportDataModal extends Component{
 
   downloadTemplate = () => {
     const data = [
-      {stt: "STT", hoTen: "Họ và tên", mssv: "MSSV", ngaySinh: "Ngày sinh"},
-      {stt: "1", hoTen: "Nguyễn Văn A", mssv: "1512519", ngaySinh: "29/10/1997"}
+      {stt: "STT", mssv: "MSSV", hoTen: "Họ và tên", ngaySinh: "Ngày sinh"},
+      {stt: "1", mssv: "1512519", hoTen: "Nguyễn Văn A", ngaySinh: "29/10/1997"}
     ];
     var ws = XLSX.utils.json_to_sheet(data, {skipHeader:true});
 
@@ -294,7 +294,7 @@ export class ImportDataModal extends Component{
         let workbook = XLSX.read(data, {type: 'array'});
 
         let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","hoTen","mssv","ngaySinh"]});
+        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","ngaySinh"]});
 
         resolve(listNewStudent)
       };
@@ -327,13 +327,16 @@ export class ImportDataModal extends Component{
         this.convertData(this.state.fileImport).then(async(resolve) => {
           resolve.shift();
 
+          resolve = resolve.map(record => ({...record, mssv: `${record.mssv}`}));
           import_info_student_data({data: resolve, regisExpiredDate:this.state.regisExpiredDate, expiredDate:this.state.expiredDate})
             .then(result => {
+              console.log('==result impport', result)
               this.setState({
                 justFileServiceResponse: 'Thêm thành công!!'
               });
               this.props.onSave();
             }).catch(err => {
+            console.log('==err impport', err.response)
               this.setState({
                 justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
                 listExpired: err.response.data.list
@@ -428,7 +431,7 @@ export class ImportDataModal extends Component{
               </Table>
               :
               <div>
-                <i className={'noti-text-style'}><u>Lưu ý:</u> file excel(.xlsx) cần có dạng như sau. Tải mẫu &nbsp;
+                <i className={'noti-text-style'}><u>Lưu ý:</u> file excel(.xlsx, .xls) cần có dạng như sau. Tải mẫu &nbsp;
                   <span
                     onClick={() => this.downloadTemplate()}
                     className={'template'}
@@ -453,8 +456,8 @@ export class ImportDataModal extends Component{
                   <tr key={0}>
                     <td className="title-excel">1</td>
                     <td>STT</td>
-                    <td>Họ Tên</td>
                     <td>MSSV</td>
+                    <td>Họ Tên</td>
                     <td>Ngày sinh</td>
                     <td></td>
                   </tr>
@@ -462,8 +465,8 @@ export class ImportDataModal extends Component{
                   <tr key={1}>
                     <td className="title-excel">2</td>
                     <td>1</td>
-                    <td>Nguyễn Văn A</td>
                     <td>1512519</td>
+                    <td>Nguyễn Văn A</td>
                     <td>29/10/1997</td>
                     <td></td>
                   </tr>
@@ -471,8 +474,8 @@ export class ImportDataModal extends Component{
                   <tr key={2}>
                     <td className="title-excel">3</td>
                     <td>2</td>
-                    <td>Nguyễn Văn B</td>
                     <td>1512510</td>
+                    <td>Nguyễn Văn B</td>
                     <td>01/11/1997</td>
                     <td></td>
                   </tr>
@@ -663,6 +666,7 @@ export class ExportDataModal extends Component{
   };
 
   render(){
+    console.log('==export', this.state)
   	const {
       valueExport: {
         name,
@@ -672,6 +676,7 @@ export class ExportDataModal extends Component{
         dayOut,
         folk,
         phone,
+        major,
         relativesPhone,
         gender,
         address,
@@ -819,7 +824,7 @@ export class ExportDataModal extends Component{
               </Col>
               <Col md={6}>
                 <Checkbox
-                  check={phone}
+                  check={major}
                   label={'Ngành học'}
                   name={'major'}
                   isCheck={this.handleCheckValueExport}
@@ -932,6 +937,7 @@ export class ChooseRoom extends Component{
   };
 
   render(){
+    console.log('==data room', this.state.data)
     return(
       <React.Fragment>
         <div>{this.state.label}
