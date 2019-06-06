@@ -13,7 +13,7 @@ var profileSchema = new Schema({
     sdt: String,
     MSSV: String,
     tonGiao: String,
-    maThe: {type: String, unique: true},
+    maThe: {type: String, unique: true, sparse: true},
     nganhHoc: {type: Schema.Types.String, ref: 'NganhHoc'},
     truong: {type: Schema.Types.String, ref: 'Truong'},
     idPhong: {type: Schema.Types.String, ref: 'Phong'},
@@ -24,12 +24,9 @@ var profileSchema = new Schema({
     ngayHetHan: Date,
     danToc: String,
     img:  String,
-    //img:  String,//{ data: Buffer, contentType: String }
-    //expireAt: {type: Schema.Types.Date,default: Date.now(), expireAfterSeconds: 15},
     isActive: Boolean,
     flag: Boolean
 });
 profileSchema.plugin(mongoosePaginate);
-// profileSchema.index('expireAt',{expireAfterSeconds: 15});
 const model = mongoose.model('Profile', profileSchema, 'Profile');
 module.exports = model;
