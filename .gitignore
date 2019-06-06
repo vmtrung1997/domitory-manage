@@ -12,6 +12,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+<<<<<<< HEAD
+# build procduction
+/src/frontend/build
+
+=======
+>>>>>>> 6ac9a8c6312889ac07c520a3e02986a061b83459
 # Editor directories and files
 .idea
 .vscode

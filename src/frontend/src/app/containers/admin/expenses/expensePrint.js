@@ -75,6 +75,7 @@ class Confirm extends Component {
     var data = type === 'table' ? this.state.tableData : this.state.selectedData;
     get_data_print({ type: type, data: data }).then(result => {
       if (result.data.rs === 'success') {
+        console.log(result.data.data);
         var printCpn=this.componentPrint(this.printData(result.data.data));
         this.setState({ printComponent: printCpn })
       } else {
@@ -92,9 +93,9 @@ class Confirm extends Component {
                 <div style={{height:'100vh'}}>
                   {this.printDetailStructure(value)}
                 </div>
-                <div style={{height:'100vh'}}>
+                {/* <div style={{height:'100vh'}}>
                   {this.printTableStructure(value)}
-                </div>
+                </div> */}
               </div>
             </React.Fragment>
           )
@@ -184,7 +185,7 @@ class Confirm extends Component {
       </Row>
       <Row className={'m-b-10'}>
         <Col xs={12}>
-          Phòng: {exp.idPhong.tenPhong} &nbsp;&nbsp; Số người: {exp.idPhong.soNguoi}
+          Phòng: {exp.idPhong.tenPhong} &nbsp;&nbsp; Số người: {data.soNguoi}
         </Col>
       </Row>
       <Row>

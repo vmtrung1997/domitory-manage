@@ -3,7 +3,7 @@ import { Row, Col, Modal, Table } from 'react-bootstrap'
 import Button from '../../../components/button/button'
 import Input from '../../../components/input/input'
 import Optimize from '../../../optimization/optimizationNumber/optimizationNumber'
-import { remove_expense, update_expense, submit_expense } from './expensesAction'
+import { remove_expense, update_expense, submit_expense, getPersonInRoom } from './expensesAction'
 import { ToastsStore } from 'react-toasts';
 import './expenses.css'
 import Checkbox from '../../../components/checkbox/checkbox';
@@ -26,11 +26,13 @@ class Example extends React.Component {
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
       soNuocResetCuoi: 0,
-      roles: []
+      roles: [],
+      soNguoi: 0
     };
   }
   componentDidMount() {
     var { expenseDetail } = this.props;
+    this.getRoles();
     this.setState({ exp: expenseDetail, soDien: expenseDetail.soDien, soNuoc: expenseDetail.soNuoc })
     if (expenseDetail.thayDien) {
       this.setState({ thayDien: true, soDienResetDau: expenseDetail.thayDien.dienCu, soDienResetCuoi: expenseDetail.thayDien.dienMoi })
@@ -38,17 +40,20 @@ class Example extends React.Component {
     if (expenseDetail.thayNuoc) {
       this.setState({ thayNuoc: true, soNuocResetDau: expenseDetail.thayNuoc.nuocCu, soNuocResetCuoi: expenseDetail.thayNuoc.nuocMoi })
     }
+    getPersonInRoom({ id: expenseDetail.idPhong._id }).then(result => {
+      this.setState({ soNguoi: result.data.data })
+    })
   }
   getRoles = () => {
-		let token = JSON.parse(localStorage.getItem('secret'));
-		let decode = jwt_decode(token.access_token)
-		if (decode && decode.user.userEntity.phanQuyen){
-			this.setState({
-				roles: decode.user.userEntity.phanQuyen.quyen
-			})
+    let token = JSON.parse(localStorage.getItem('secret'));
+    let decode = jwt_decode(token.access_token)
+    if (decode && decode.user.userEntity.phanQuyen) {
+      this.setState({
+        roles: decode.user.userEntity.phanQuyen.quyen
+      })
 
-		}
-	}
+    }
+  }
   handleClose() {
     this.setState({ show: false, disabled: true, capNhat: false });
     this.props.show(false)
@@ -162,7 +167,7 @@ class Example extends React.Component {
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <form onSubmit={this.handleUpdate}>
             <Modal.Header closeButton>
-              <Modal.Title>Chi tiết</Modal.Title>
+              <Modal.Title>Chi tiết phòng {exp.idPhong.tenPhong}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Row>
@@ -170,8 +175,8 @@ class Example extends React.Component {
                   Tháng/năm
             <Input disabled={true} value={exp.thang + '/' + exp.nam} />
                 </Col>
-                <Col>Phòng
-            <Input disabled={true} value={exp.idPhong.tenPhong} /></Col>
+                <Col>Số người
+            <Input disabled={true} value={this.state.soNguoi} /></Col>
               </Row>
               <Row>
                 <Col md='12'>
@@ -253,11 +258,11 @@ class Example extends React.Component {
                 <Col md={6} xs={12} className="text-right warning-text"> Thành tiền: {exp.tongTienChu}</Col>
               </Row>
             </Modal.Body>
-            <Modal.Footer>
+
+            {this.state.roles && this.state.roles.includes('CP02') ? <Modal.Footer>
               <Button variant="default" color="default" onClick={this.handleClose}>
                 Đóng
             </Button>
-            {this.state.roles && this.state.roles.includes('CP02') && <div>
               {exp.trangThai === 0 && <Button color="danger" onClick={this.handleDelete}>
                 Xóa
             </Button>}
@@ -269,9 +274,16 @@ class Example extends React.Component {
             </Button>}
               {exp.trangThai === 0 && <Button variant="default" onClick={this.handleSubmit}>
                 Xác nhận thanh toán
-        </Button>}
-            </div>}
-            </Modal.Footer>
+        </Button>
+              }
+            </Modal.Footer> :
+              <Modal.Footer>
+                <Button variant="default" color="default" onClick={this.handleClose}>
+                  Đóng
+        </Button>
+              </Modal.Footer>
+            }
+
           </form>
         </Modal>
       </React.Fragment>
