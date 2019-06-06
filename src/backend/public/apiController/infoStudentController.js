@@ -20,30 +20,39 @@ function addOneStudent(data) {
           isDelete: 0,
         });
         //----save account---------
-        acc.save().catch(() =>{
+        acc.save()
+          .then(acc => {
+            let student = new Profile({
+              idTaiKhoan: acc._id,
+              hoTen: data.hoTen,
+              MSSV: data.mssv,
+              ngaySinh: data.ngaySinh,
+              ngayVaoO: new Date(),
+              ngayHetHan: data.ngayHetHan,
+              hanDangKy: data.hanDangKy,
+              isActive: false,
+              flag: true
+            });
+            //------save profile-------
+            student.save()
+              .then((result) => {
+                resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
+              })
+              .catch(err =>{
+                Account.findOneAndDelete({username: data.mssv}).catch()
+                resolve( {status: 400, msg: 'tạo thông tin cá nhân không thành công, vui lòng thử lại!', data: data, err: err})
+              });
+
+            acc.idProfile = student._id;
+            acc.save().catch(err =>{
+              resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data, err: err})
+            });
+          })
+          .catch(() =>{
           resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
         });
 
-        let student = new Profile({
-          idTaiKhoan: acc._id,
-          hoTen: data.hoTen,
-          MSSV: data.mssv,
-          ngaySinh: data.ngaySinh,
-          ngayVaoO: new Date(),
-          ngayHetHan: data.ngayHetHan,
-          flag: true
-        });
-        //------save profile-------
-        student.save().catch(err =>{
-          resolve( {status: 400, msg: 'tạo thông tin cá nhân không thành công!', data: data, err: err})
-        });
 
-        acc.idProfile = student._id;
-        acc.save().catch(err =>{
-          resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data, err: err})
-        });
-
-        resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
       }
     }).catch(err => {
       resolve( {status: 500, msg: 'truy vấn mssv thẻ err!', data: data, err: err})
@@ -55,7 +64,6 @@ exports.addStudent =async (req, res) => {
   const params = req.body;
   if( !params.mssv && !params.hoTen)
     res.status(400).json({msg: 'Thiếu thông tin'});
-  console.log(params);
   addOneStudent(params).then(resolve => {
     res.status(resolve.status).json({msg: resolve.msg})
   }).catch(reject => {
@@ -65,15 +73,18 @@ exports.addStudent =async (req, res) => {
 };
 
 exports.importFile = async (req, res) => {
-  const { data, expireDay } = req.body;
+  const { data } = req.body;
   let listExpired = [];
   let listSuccess =[];
   let listPromise = [];
   data.forEach(record => {
+    let [ngay, thang, nam] = [0, 0 , 0]
+    if(record.ngaySinh)
+      [ngay, thang, nam] = record.ngaySinh.split("/");
     let student = {
       mssv: record.mssv,
       hoTen: record.hoTen,
-      ngaySinh: record.ngaySinh,
+      ngaySinh: record.ngaySinh ? new Date(`${thang}/${ngay}/${nam}`) : new Date(),
       ngayHetHan: req.body.ngayHetHan,
       hanDangKy: req.body.hanDangKy
     };
