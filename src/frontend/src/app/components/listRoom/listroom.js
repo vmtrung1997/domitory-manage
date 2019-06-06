@@ -18,7 +18,7 @@ export default class ListRoom extends React.Component{
   chooseRoom = (room) => {
 
     this.props.onClick(room);
-  }
+  };
   render(){
     console.log('==data listroom', this.state)
     const { data } = this.state;
@@ -31,31 +31,33 @@ export default class ListRoom extends React.Component{
               title={'Lầu ' + floor.floor}
             >
               <div className={'list-room_box'}>
-              {floor && floor.rooms.forEach(room => {
-                if((room.loaiPhong.loai === 0) || (room.loaiPhong.loai === 1)){
+              {floor && floor.rooms.map(room => {
+                if((room.loaiPhong.loai === 0) || (room.loaiPhong.loai === 1)) {
+                  console.log('==room sv, dv');
                   let isFull = false;
                   let isActive = false;
-                  if((room.soNguoiToiDa - room.soNguoi) === 0)
-                    isFull = true
-                  if(this.props.active && (room._id === this.props.active._id))
-                    isActive = true
-                  return(
+                  if ((room.soNguoiToiDa - room.soNguoi) === 0)
+                    isFull = true;
+                  if (this.props.active && (room._id === this.props.active._id))
+                    isActive = true;
+                  return (
                     <div className={'room-box'}>
-                    <Button
-                      shadow
-                      variant={isActive ? 'default' : 'outline'}
-                      color={room.loaiPhong.loai ? 'success' : 'primary'}
-                      onClick={()=>this.chooseRoom(room)}
-                      disabled={isFull}
-                    >
-                      <i className="fas fa-home"/>
-                      {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
-                    </Button>
+                      <Button
+                        shadow
+                        variant={isActive ? 'default' : 'outline'}
+                        color={room.loaiPhong.loai ? 'success' : 'primary'}
+                        onClick={() => this.chooseRoom(room)}
+                        disabled={isFull}
+                      >
+                        <i className="fas fa-home"/>
+                        {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
+                      </Button>
                     </div>
                   )
-                }
 
+                }
               })}
+
               </div>
             </Tab>
           )

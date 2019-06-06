@@ -30,25 +30,27 @@ export default class TabActivities extends React.Component{
               <tbody>
               {
                 activities && activities.map((acti, index) => {
-                  let present = new Date();
-                  let happening = new Date(acti.idHD.ngayKT) < present;
-                  console.log('==heppen', happening)
-                  let status = '';
-                  if (happening && !acti.isTG)
-                    status = 'Không tham gia'
-                  else if (happening && acti.isTG)
-                    status = 'Đã tham gia'
-                  else if (!happening && !acti.isTG)
-                    status = 'Chưa diễn ra'
-                  return (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{acti.idHD && dateToString(acti.idHD.ngayBD)} - {acti.idHD && dateToString(acti.idHD.ngayKT)}</td>
-                      <td>{acti.idHD && acti.idHD.ten}</td>
-                      <td>{acti.isTG ? acti.idHD.diem : '0'}/{acti.idHD && acti.idHD.diem}</td>
-                      <td>{status}</td>
-                    </tr>
-                  )
+                  if(acti.idHD){
+                    let present = new Date();
+                    let happening = new Date(acti.idHD.ngayKT) < present;
+                    console.log('==heppen', acti)
+                    let status = '';
+                    if (happening && !acti.isTG)
+                      status = 'Không tham gia'
+                    else if (happening && acti.isTG)
+                      status = 'Đã tham gia'
+                    else if (!happening && !acti.isTG)
+                      status = 'Chưa diễn ra'
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{acti.idHD && dateToString(acti.idHD.ngayBD)} - {acti.idHD && dateToString(acti.idHD.ngayKT)}</td>
+                        <td>{acti.idHD && acti.idHD.ten}</td>
+                        <td>{acti.isTG ? acti.idHD.diem : '0'}/{acti.idHD && acti.idHD.diem}</td>
+                        <td>{status}</td>
+                      </tr>
+                    )
+                  }
                 })
               }
               </tbody>

@@ -26,6 +26,7 @@ class InfoStudentDetail extends Component {
     super(props);
     this.state = {
         profile: {
+          isActive: true,
           gioiTinh: 0,
           ngaySinh: new Date(),
           ngayVaoO : new Date(),
@@ -43,7 +44,6 @@ class InfoStudentDetail extends Component {
           moTa: ''
         },
         activity: {},
-      info: {},
       school: {},
       room: {},
       major: {},
@@ -55,7 +55,8 @@ class InfoStudentDetail extends Component {
       custom: false,
       showRoomPopup: false,
       roomData: {},
-      isOld: false
+      isOld: false,
+
     }
   }
 
@@ -157,6 +158,16 @@ class InfoStudentDetail extends Component {
     })
   };
 
+  handleActiveAccount = async() => {
+    await this.setState({
+      profile: {
+        ...this.state.profile,
+        isActive: true
+      }
+    });
+    this.handleSaveChange()
+  };
+
   handleSaveChange = async () => {
     await refreshToken()
     let secret = JSON.parse(localStorage.getItem('secret'));
@@ -168,7 +179,7 @@ class InfoStudentDetail extends Component {
           // img: this.state.profile.img,
           nganhHoc: this.state.profile.nganhHoc && this.state.profile.nganhHoc._id,
           truong: this.state.profile.truong && this.state.profile.truong._id,
-          idPhong: this.state.profile.idPhong && this.state.profile.idPhong._id
+          idPhong: this.state.profile.idPhong && this.state.profile.idPhong._id,
         }
       }, { headers: { 'x-access-token': secret.access_token} }
     ).then(result => {
@@ -279,7 +290,8 @@ class InfoStudentDetail extends Component {
       school,
       major,
       activities,
-      isOld
+      isOld,
+      profile: {isActive}
     } = this.state;
     const { CMND } = profile;
     let imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
@@ -566,9 +578,19 @@ class InfoStudentDetail extends Component {
           </div>
           <Row className={'isc-footer-btn'}>
             {!isOld &&
-              <Button onClick={() => this.handleSaveChange()}>
+              <Button
+                onClick={() => this.handleSaveChange()}
+              >
                 Lưu thay đổi
               </Button>
+            }
+            {!isActive &&
+            <Button
+              onClick={() => this.handleActiveAccount()}
+              color={'danger'}
+            >
+              Xác nhận lưu trú
+            </Button>
             }
           </Row>
         </div>

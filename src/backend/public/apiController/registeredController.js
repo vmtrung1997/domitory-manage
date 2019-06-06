@@ -1,5 +1,6 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 
+const Account = require('./../models/TaiKhoan')
 const Profile = require('./../models/Profile');
 const Register = require('./../models/YeuCauLuuTru');
 const resultActivity = require('./../models/KetQuaHD');
@@ -101,6 +102,31 @@ exports.accept_request = (req, res) => {
 				res.status(500)
 			}
 		})
+		if(accRequest[key] === true){
+			var d = new Date();
+ 			d.setDate(d.getDate() + 30);
+			Register.findOne({_id: key}, async (err, val) =>{
+				if(err){
+					console.log('==update_request:', err)
+				} else {
+					Profile.findOne({_id: val.idProfile}, (err, tmp) =>{
+						if(err) {
+							console.log('==update_request:', err)
+						} else {
+							tmp.isActive = false
+							tmp.ngayHetHan = null
+							tmp.hanDangKy = d
+							tmp.save()
+							Account.updateOne({idProfile: tmp._id}, {isDelete: 0}, (err, val) =>{
+								if(err){
+									console.log('==update_request:', err)
+								}
+							})
+						}
+					})
+				}
+			})
+		}
 	}
 	res.status(200).json({ rs: 'ok'})
 	console.log('==update_request: success')
