@@ -199,6 +199,7 @@ class PersonProfile extends React.Component {
           if (res) {
              res.data.data.map((obj, index) => {
               options.push({ value: obj._id, label: obj.tenTruong });
+              return true;
             });
             this.setState({ truongOptions: options });
           }
@@ -236,6 +237,7 @@ class PersonProfile extends React.Component {
         var options = [{ value: -1, label: "Chọn ngành" }];
         res.data.data.map((obj, index) => {
           options.push({ value: obj.idNganhHoc._id, label: obj.idNganhHoc.tenNganh });
+          return true;
         });
         this.setState({ nganhOptions: options });
       }

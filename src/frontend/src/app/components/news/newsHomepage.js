@@ -133,6 +133,7 @@ class NewsHomepage extends React.Component {
             {this.state.postsAll.length === 0?
                   <div style={{ marginTop: "30px", textAlign: "center" }}>
                         <img
+                          alt=""
                           style={{ marginTop: '14vh',
                             height: '50%',
                             width: '50%' }}
@@ -186,6 +187,7 @@ class NewsHomepage extends React.Component {
                         </div>
                       );
                     }
+                    return(<> </>) 
                   })}
 
                   <div className="row">
@@ -235,6 +237,8 @@ class NewsHomepage extends React.Component {
                           </div>
                         );
                       }
+                      return(<> </>) 
+
                     })}
                   </div>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -289,19 +293,21 @@ class NewsHomepage extends React.Component {
                         </div>
                       );
                     }
+                    return(<> </>) 
+
                   })}
 
                   {/* Single Post Area */}
                   {this.state.postPin.length === 0?
                   <div>Chưa có bài viết nào</div>:
                   this.state.postPin.map((item, index) => {
-                    if (index != 0) {
+                    if (index !== 0) {
                       return (
                         <div className="razo-single-post d-flex mb-30">
                           {/* Post Thumbnail */}
                           <div className="post-thumbnail">
                             <a href="single-blog.html">
-                              <img src="img/post-1.jpg" alt />
+                              <img src="img/post-1.jpg" alt="hinh" />
                             </a>
                           </div>
                           {/* Post Content */}
@@ -331,7 +337,8 @@ class NewsHomepage extends React.Component {
                           </div>
                         </div>
                       );
-                              }
+                    }
+                    return( <> </>)
                   })}
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Link to="/news">

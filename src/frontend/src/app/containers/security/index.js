@@ -111,8 +111,8 @@ class Security extends Component {
 								<Col md={6} className={'col-outer'}>
 									<div className={'img-css'}>
 										{!this.state.notFound ?
-											<img src={mainHis && mainHis.profile.img !== "" ? mainHis.profile.img : defaultStudentImg} /> :
-											<img src={''} />}
+											<img alt="hinh" src={mainHis && mainHis.profile.img !== "" ? mainHis.profile.img : defaultStudentImg} /> :
+											<img alt="hinh" src={''} />}
 									</div>
 								</Col>
 								<Col md={6}>
@@ -144,7 +144,7 @@ class Security extends Component {
 								return (
 									<div className={'item-history'} key={index}>
 										<div className={'item-image'}>
-											<img src={value.profile && value.profile.img !== "" ? value.profile.img : defaultStudentImg} />
+											<img alt="hinh" src={value.profile && value.profile.img !== "" ? value.profile.img : defaultStudentImg} />
 										</div>
 										<div className={'item-text'}>
 											<div>{value.profile.hoTen}</div>

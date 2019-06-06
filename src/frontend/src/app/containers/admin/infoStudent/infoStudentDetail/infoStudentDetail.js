@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Tabs, Tab, Table } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from "react-toasts";
 import axios from "axios";
@@ -15,7 +15,7 @@ import { defaultStudentImg } from '../../../../function/imageFunction'
 import TabActivities from './tabActivities';
 import DatePicker from "react-datepicker/es/index";
 import './../infoStudentFile.css';
-import { getSchools, getMajor } from './../../university/universityAction'
+import { getMajor } from './../../university/universityAction'
 import Loader from '../../../../components/loader/loader';
 import { ChooseRoom } from './../infoStudentModal'
 import { get_info_Student_detail, get_activites_by_MSSV, get_floor_room } from './../infoStudentActions'

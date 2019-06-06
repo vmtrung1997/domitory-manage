@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import {Col, Modal, Row, Tab, Table, Tabs} from 'react-bootstrap'
+import {Col, Modal, Row, Table} from 'react-bootstrap'
 import Button from '../../../components/button/button';
 import Input from "../../../components/input/input";
 import DatePicker from "react-datepicker/es/index";
-import {add_student, mark_old_student, get_list_student, get_element, get_floor_room, import_info_student_data} from './infoStudentActions';
+import {add_student, mark_old_student, get_list_student, import_info_student_data} from './infoStudentActions';
 import {ToastsStore} from "react-toasts";
 import XLSX from "xlsx";
 import Checkbox from "../../../components/checkbox/checkbox";
