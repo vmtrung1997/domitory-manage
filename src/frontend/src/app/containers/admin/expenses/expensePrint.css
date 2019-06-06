@@ -34,7 +34,7 @@
 
 .layout-print {
   font-family: 'Times New Roman', Times, serif;
-  font-size: 23px;
+  font-size: 20px!important;
   padding: 10px 50px;
 }
 
@@ -68,9 +68,6 @@ ul.suggest-text>li {
 .page-break{
   break-before: page;
   min-height: 1px;
-}
-.table-print{
-  font-size: 25px!important;
 }
 .table-print tr td {
   padding: 5px 10px;

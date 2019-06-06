@@ -25,8 +25,7 @@ var profileSchema = new Schema({
     danToc: String,
     img:  String,
     isActive: Boolean,
-    flag: Boolean,
-    hanDangKy: Date,
+    flag: Boolean
 });
 profileSchema.plugin(mongoosePaginate);
 const model = mongoose.model('Profile', profileSchema, 'Profile');

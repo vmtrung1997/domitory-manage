@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { Col, Row } from 'react-bootstrap'
+import { Col, Row, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import ReactDOM from 'react-dom'
 import './index.css'
 import { getHistoryList, inputCard, logout } from './indexAction'
-import { defaultStudentImg } from '../../function/imageFunction'
+import { imageFile, defaultStudentImg } from '../../function/imageFunction'
+import axios from 'axios'
 class Security extends Component {
 	constructor(props) {
 		super(props)
@@ -44,9 +45,11 @@ class Security extends Component {
 
 		getHistoryList().then(result => {
 			if (result.data) {
-				var historyList = result.data.data;
-				console.log(historyList);
-				this.setState({ history: historyList, mainHis: historyList.length>0? historyList[0]:{} });
+				var historyList =result.data.data && result.data.data.map(value => {
+					value.imgFile = imageFile(value.profile.img);
+					return value
+				})
+				this.setState({ history: historyList, mainHis: result.data.data? historyList[0]:{} });
 			}
 		})
 	}
@@ -63,7 +66,18 @@ class Security extends Component {
 		}
 
 	}
-	
+	submitFile = () => {
+		var fileReader = new FileReader();
+		fileReader.readAsArrayBuffer(this.uploadInput.files[0]);
+		var self = this;
+		fileReader.onload = function (e) {
+			var data = e.target.result;
+			var arr = self.fixdata(data);
+			axios.post('/user/test_file_excel', { file: arr }).then(result => {
+				if (result) {}
+			}).catch(err => {})
+		}
+	}
 	onEnterInput = (e) => {
 		if (e.key !== 'Enter')
 			return;
@@ -76,9 +90,13 @@ class Security extends Component {
 			if (result.data.rs === 'success') {
 				var { history } = this.state;
 				var his = result.data.data;
-				history.pop();
+				his.imgFile = imageFile(his.profile.img);
 				history.unshift(his);
+				history.pop();
 				this.setState({ notFound: false, history: history, mainHis: history[0] })
+				// var endTime = new Date();
+				// var diffTime = endTime-startTime;
+				// console.log('second', Math.round(diffTime/1000))
 			} else if (result.data.rs === 'not found') {
 				this.setState({ notFound: true })
 			}
@@ -96,9 +114,8 @@ class Security extends Component {
 		return (
 			<React.Fragment>
 				<div className='header-security'>
-					<Link to="/signin-admin" onClick={() => {
+					<Link to="/signin-admin" onClick={() => {logout(); 
 						document.removeEventListener("keydown",this.onKeyDown)
-						logout(); 
 						}}>
 						<i className="fas fa-sign-out-alt" />
 						<span className={"logout"}>Đăng xuất </span>
@@ -111,14 +128,16 @@ class Security extends Component {
 								<Col md={6} className={'col-outer'}>
 									<div className={'img-css'}>
 										{!this.state.notFound ?
-											<img alt="hinh" src={mainHis && mainHis.profile.img !== "" ? mainHis.profile.img : defaultStudentImg} /> :
-											<img alt="hinh" src={''} />}
+											<img src={mainHis && mainHis.imgFile !== "" ? mainHis.imgFile : defaultStudentImg} /> :
+											<img src={''} />}
 									</div>
 								</Col>
 								<Col md={6}>
 									<Row>
 										<Col md={6}>
 											<input ref='maThe' value={this.state.cardId} onChange={e => this.getInput(e.target)} autoFocus={true} onKeyPress={e => this.onEnterInput(e)} />
+											{/* <input type='file' ref={(ref) => { this.uploadInput = ref;}}/>
+										<Button onClick={this.submitFile}>Submit</Button> */}
 										</Col>
 										<Col md={5}>
 											<div className={'id-back'} onClick={this.hideLichSu}>
@@ -144,7 +163,7 @@ class Security extends Component {
 								return (
 									<div className={'item-history'} key={index}>
 										<div className={'item-image'}>
-											<img alt="hinh" src={value.profile && value.profile.img !== "" ? value.profile.img : defaultStudentImg} />
+											<img src={value.imgFile !== "" ? value.imgFile : defaultStudentImg} />
 										</div>
 										<div className={'item-text'}>
 											<div>{value.profile.hoTen}</div>

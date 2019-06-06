@@ -12,6 +12,7 @@ import RoomType from './roomType'
 import { Link } from 'react-router-dom'
 const PHONG_SV = 0;
 const PHONG_DVU = 1;
+const PHONG_CNANG = 2;
 
 class InfoDormitory extends React.Component{
   constructor(props){
@@ -19,16 +20,18 @@ class InfoDormitory extends React.Component{
     this.state = {
       floorActive: 0,
       roomActive: {
-        soNguoiToiDa: 0,
-        moTa: '',
-        loaiPhong: ''
+        loaiPhong: '',
+        gioiTinh: 0
       },
-      roomTypeAdd: '5ccbef2fe7179a596b1a4ba3',
-      limitPersonAdd: 0,
-      electicalNumAdd: 0,
-      waterNumAdd: 0,
+      roomAdd: {
+        roomTypeAdd: '',
+        limitPersonAdd: 0,
+        electicalNumAdd: 0,
+        waterNumAdd: 0,
+        genderAdd: 0,
+      },
+      genderOptions: [{value: 0, label: 'Nữ'}, {value: 1, label: 'Nam'}],
       roomTypeOptions: [],
-      statusAddRoom: 0,
 
       floorList: [],
       roomList: [],
@@ -55,10 +58,10 @@ class InfoDormitory extends React.Component{
       .then(() => {
       this.getRoom();
     }).catch(() =>{
-    })
+    });
 
     this.getRoomOptions();
-  }
+  };
 
   getFloor = () => {
     return new Promise(async(resolve) => {
@@ -76,7 +79,7 @@ class InfoDormitory extends React.Component{
         this.setState({
           floorList: floorList,
           floorActive: floorList[0].label
-        })
+        });
         resolve()
       }).catch(err => {
 
@@ -103,15 +106,18 @@ class InfoDormitory extends React.Component{
     axios.get(`/manager/infoDormitory/getRoomType`, { headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
     
-      const roomOptions = result.data.map(item => ({value: item._id, label: item.ten}))
+      const roomOptions = result.data.map(item => ({value: item._id, label: item.ten}));
       this.setState({
         roomTypeOptions: roomOptions,
-        //roomTypeAdd: roomOptions[0].value,
+        roomAdd: {
+          ...this.state.roomAdd,
+          roomTypeAdd: roomOptions[0].value,
+        }
       })
     }).catch(err => {
      
     })
-  }
+  };
 
   handleSelectFloor = async(floor) => {
     await this.setState({
@@ -147,12 +153,16 @@ class InfoDormitory extends React.Component{
       case 'addRoom':
         this.setState({
           showAddRoomPopup: false,
-          floorNameAdd: undefined,
-          roomNameAdd: undefined,
-          roomTypeAdd: '5ccbef2fe7179a596b1a4ba3',
-          limitPersonAdd: 0,
-          electicalNumAdd: 0,
-          waterNumAdd: 0,
+          roomAdd: {
+            ...this.state.roomAdd,
+            floorNameAdd: undefined,
+            roomNameAdd: undefined,
+            roomTypeAdd: this.state.roomTypeOptions[0].value,
+            genderAdd: this.state.genderOptions[0].value,
+            limitPersonAdd: 0,
+            electicalNumAdd: 0,
+            waterNumAdd: 0,
+          }
         });
         break;
       default:
@@ -162,7 +172,10 @@ class InfoDormitory extends React.Component{
 
   onChange = (event) => {
     this.setState({
-      [event.name]: event.value
+      roomAdd: {
+        ...this.state.roomAdd,
+        [event.name]: event.value
+      }
     })
   };
 
@@ -176,16 +189,44 @@ class InfoDormitory extends React.Component{
   };
 
   roomTypeUpdateSelected = value => {
-    this.setState({ roomActive: {...this.state.roomActive, loaiPhong: value} })
+    this.setState({ roomActive: {...this.state.roomActive, loaiPhong: { _id: value}} })
+  };
+
+  genderUpdateSelected = value => {
+    this.setState({ roomActive: {...this.state.roomActive, gioiTinh: value} })
   };
 
   roomTypeAddSelected = value => {
-    this.setState({ roomTypeAdd: value })
+    this.setState({
+      roomAdd: {
+        ...this.state.roomAdd,
+        roomTypeAdd: value
+      }
+    });
+  };
+
+  genderAddSelected = value => {
+    this.setState({
+      roomAdd: {
+        ...this.state.roomAdd,
+        genderAdd: value
+      }
+    })
   };
 
   handleSubmitAddRoom = async() => {
-    const { roomNameAdd, limitPersonAdd, descriptionAdd, statusAddRoom, floorNameAdd, roomTypeAdd, electicalNumAdd, waterNumAdd } = this.state;
-    if(!roomNameAdd && !floorNameAdd)
+    const {
+      roomAdd: {
+        roomNameAdd,
+        limitPersonAdd,
+        descriptionAdd,
+        floorNameAdd,
+        roomTypeAdd,
+        electicalNumAdd,
+        waterNumAdd,
+        genderAdd
+      }} = this.state;
+    if(!roomNameAdd || !floorNameAdd)
       this.setState({
         messErrAddRoom: 'Vui lòng nhập đầy đủ thông tin'
       });
@@ -194,19 +235,18 @@ class InfoDormitory extends React.Component{
         tenPhong: roomNameAdd,
         soNguoiToiDa: parseInt(limitPersonAdd),
         moTa: descriptionAdd,
-        trangThai: statusAddRoom,
         lau: parseInt(floorNameAdd),
         loaiPhong: roomTypeAdd,
+        gioiTinh: genderAdd,
         soDien: parseInt(electicalNumAdd),
         soNuoc: parseInt(waterNumAdd),
-      }
+      };
       await refreshToken();
       let secret = JSON.parse(localStorage.getItem('secret'));
       axios.post(`/manager/infoDormitory/addRoom`, params,{ headers: { 'x-access-token': secret.access_token } }
-      ).then(async(result) => {
+      ).then(async() => {
         ToastsStore.success("Thêm phòng thành công!");
         this.handleClosePopup('addRoom');
-        this.handleClosePopup('addFloor');
 
         await this.getData();
         this.setState({
@@ -216,7 +256,6 @@ class InfoDormitory extends React.Component{
         ToastsStore.error( err.response.data.msg);
       })
     }
-
   };
 
   handleShowDetail = async(room) => {
@@ -227,29 +266,26 @@ class InfoDormitory extends React.Component{
     ).then(result => {
       this.setState({
         listPerson: result.data.length === 0 ? undefined : result.data
-      })
+      });
       if(result.data.length === 0)
         this.setState({
           messRoomDetail: 'Phòng trống'
         })
-    }).catch(err => {})
+    }).catch(err => {});
     this.setState({
-      roomActive: {...room, loaiPhong: room.loaiPhong._id},
-      limitPersonDetail: room.soNguoiToiDa,
-      roomNameDetail: room.tenPhong,
-      statusDetail: 0,
-      descriptionDetail: room.moTa,
-      idActive: room._id,
-    })
+      roomActive: {
+        ...room
+      },
+    });
     this.handleShowPopup('room');
-  }
+  };
 
   handleDeleteRoom = async(id) => {
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/infoDormitory/delRoom/` + id
         ,{ headers: { 'x-access-token': secret.access_token } }
-    ).then(result => {
+    ).then(() => {
       ToastsStore.success("Xóa phòng thành công!");
       this.getData();
       this.handleClosePopup('room');
@@ -259,7 +295,7 @@ class InfoDormitory extends React.Component{
   };
 
   handleSubmitUpdateStudent = async() => {
-    const { roomActive: { _id, soNguoiToiDa, moTa, loaiPhong} } = this.state;
+    const { roomActive: { _id, soNguoiToiDa, moTa, loaiPhong, gioiTinh} } = this.state;
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.post(`/manager/infoDormitory/updateRoom/`
@@ -267,7 +303,8 @@ class InfoDormitory extends React.Component{
         id: _id,
         soNguoiToiDa: parseInt(soNguoiToiDa),
         moTa: moTa,
-        loaiPhong: loaiPhong
+        loaiPhong: loaiPhong,
+        gioiTinh: gioiTinh,
       },{ headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
       ToastsStore.success(result.data.msg);
@@ -284,7 +321,7 @@ class InfoDormitory extends React.Component{
   };
 
   renderRoom = (roomList, color) => {
-    const arr = roomList && roomList.map((room, index) => {
+    const roomRender = roomList && roomList.map((room, index) => {
       return(
         <div className={'id-room_item'} key={index}>
           <Button
@@ -298,8 +335,8 @@ class InfoDormitory extends React.Component{
           </Button>
         </div>
       )
-    })
-    return arr
+    });
+    return roomRender
   };
 
   MyTab = ( eventKey, title , roomList, color) =>{
@@ -314,7 +351,7 @@ class InfoDormitory extends React.Component{
         </div>
       </Tab>
     )
-  }
+  };
 
   render(){
     console.log('==render dormitory', this.state)
@@ -324,7 +361,6 @@ class InfoDormitory extends React.Component{
       floorList,
       showRoomPopup,
       showAddRoomPopup,
-      roomNameDetail,
       roomTypeOptions,
       roomActive
     } = this.state;
@@ -339,7 +375,7 @@ class InfoDormitory extends React.Component{
           {/*RoomDetail*/}
           <Modal show={showRoomPopup} onHide={() =>this.handleClosePopup('room')}>
             <Modal.Header closeButton>
-              <Modal.Title>Phòng {roomNameDetail}</Modal.Title>
+              <Modal.Title>Phòng {this.state.roomActive.tenPhong}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Row>
@@ -347,7 +383,11 @@ class InfoDormitory extends React.Component{
                   Số người tối đa:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChangeDetailRoom} name={'soNguoiToiDa'} value={roomActive.soNguoiToiDa} type={'number'}/>
+                  <Input
+                    getValue={this.onChangeDetailRoom}
+                    name={'soNguoiToiDa'}
+                    value={roomActive.soNguoiToiDa}
+                    type={'number'}/>
                 </Col>
 
                 <Col md={4}>
@@ -355,9 +395,20 @@ class InfoDormitory extends React.Component{
                 </Col>
                 <Col md={8}>
                   <Select
-                    value={this.state.roomActive.loaiPhong}
+                    value={this.state.roomActive.loaiPhong._id}
                     options={roomTypeOptions}
                     selected={this.roomTypeUpdateSelected}
+                  />
+                </Col>
+
+                <Col md={4}>
+                  Giới tính:
+                </Col>
+                <Col md={8}>
+                  <Select
+                    value={this.state.roomActive.gioiTinh}
+                    options={this.state.genderOptions}
+                    selected={this.genderUpdateSelected}
                   />
                 </Col>
 
@@ -365,7 +416,10 @@ class InfoDormitory extends React.Component{
                   Mô tả:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChangeDetailRoom} name={'moTa'} value={roomActive.moTa} />
+                  <Input
+                    getValue={this.onChangeDetailRoom}
+                    name={'moTa'}
+                    value={this.state.roomActive.moTa} />
                 </Col>
 
               </Row>
@@ -439,7 +493,7 @@ class InfoDormitory extends React.Component{
                   Số người tối đa<span style={{color:'red'}}>*</span>:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChange} name={'limitPersonAdd'} type={'number'} placeholder={0} />
+                  <Input getValue={this.onChange} name={'limitPersonAdd'} type={'number'} placeholder={'0'} />
                 </Col>
 
                 <Col md={4}>
@@ -449,6 +503,18 @@ class InfoDormitory extends React.Component{
                   <Select
                     options={roomTypeOptions}
                     selected={this.roomTypeAddSelected}
+                    value={this.state.roomTypeAdd}
+                  />
+                </Col>
+
+                <Col md={4}>
+                  Giới tính<span style={{color:'red'}}>*</span>:
+                </Col>
+                <Col md={8}>
+                  <Select
+                    options={this.state.genderOptions}
+                    selected={this.genderAddSelected}
+                    value={this.state.genderAdd}
                   />
                 </Col>
 
@@ -456,14 +522,14 @@ class InfoDormitory extends React.Component{
                   Số điện hiện tại<span style={{color:'red'}}>*</span>:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChange} name={'electicalNumAdd'} type={'number'} placeholder={0}/>
+                  <Input getValue={this.onChange} name={'electicalNumAdd'} type={'number'} placeholder={'0'}/>
                 </Col>
 
                 <Col md={4}>
                   Số nước hiện tại<span style={{color:'red'}}>*</span>:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChange} name={'waterNumAdd'} type={'number'} placeholder={0}/>
+                  <Input getValue={this.onChange} name={'waterNumAdd'} type={'number'} placeholder={'0'}/>
                 </Col>
 
                 <Col md={4}>
@@ -520,31 +586,31 @@ class InfoDormitory extends React.Component{
                     <div className={'id-room'}>
                       <div>
                         {
-                          this.renderRoom(roomList.filter(room => room.loaiPhong.loai === PHONG_SV), 'info')
+                          this.renderRoom(roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_SV), 'info')
                         }
                       </div>
                       <div>
                         {
-                          this.renderRoom(roomList.filter(room => room.loaiPhong.loai === PHONG_DVU), 'primary')
+                          this.renderRoom(roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_DVU), 'primary')
                         }
                       </div>
                       <div>
                         {
-                          this.renderRoom(roomList.filter(room => ((room.loaiPhong.loai !== PHONG_DVU) && (room.loaiPhong.loai !== PHONG_SV))), 'warning')
+                          this.renderRoom(roomList.filter(room => (room.loaiPhong && room.loaiPhong.loai === PHONG_CNANG)), 'warning')
                         }
                       </div>
                     </div>
                   </Tab>
                   {this.MyTab("studentRoom", "Phòng sinh viên",
-                    roomList.filter(room => room.loaiPhong.loai === PHONG_SV),
+                    roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_SV),
                     'info')
                   }
                   {this.MyTab("proRoom", "Phòng dịch vụ",
-                    roomList.filter(room => room.loaiPhong.loai === PHONG_DVU),
+                    roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_DVU),
                     'primary')
                   }
                   {this.MyTab("functionRoom", "Phòng chức năng",
-                    roomList.filter(room => ((room.loaiPhong.loai !== PHONG_DVU) && (room.loaiPhong.loai !== PHONG_SV))),
+                    roomList.filter(room => (room.loaiPhong && room.loaiPhong.loai === PHONG_CNANG)),
                     'warning')
                   }
                 </Tabs>
@@ -567,7 +633,6 @@ class InfoDormitory extends React.Component{
               </div>
             </Row>
           </div>
-
         </div>
       </div>
     )
