@@ -6,6 +6,10 @@ const RoomHistory = require('../models/LichSuPhong');
 const ActivityResults = require('../models/KetQuaHD');
 const md5 = require('md5');
 
+function verifyStudentNumber(studentNumber){
+
+}
+
 function addOneStudent(data) {
   return new Promise( (resolve) => {
     Account.findOne({username: data.mssv})

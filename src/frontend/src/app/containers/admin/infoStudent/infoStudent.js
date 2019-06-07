@@ -552,7 +552,12 @@ class InfoStudent extends Component{
                         >
                           <i className="fas fa-print"/>
                         </Button>
-                      <Button color={'warning'} style={{marginRight: '10px'}} onClick={() => this.onViewDetail(info.MSSV)}>
+                      <Button
+                        title={'Xem chi tiết'}
+                        color={'warning'}
+                        style={{marginRight: '10px'}}
+                        onClick={() => this.onViewDetail(info.MSSV)}
+                      >
                         <i className="fas fa-edit"/>
                       </Button>
                       {!isOld &&
