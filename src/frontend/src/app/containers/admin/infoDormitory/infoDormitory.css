@@ -52,3 +52,12 @@
     width: 100%;
 }
 
+.room-detail {
+    border-top: 1px solid #ddd ;
+}
+
+.room-gender{
+    margin: 15px 0 0;
+    color: #f88b62;
+}
+

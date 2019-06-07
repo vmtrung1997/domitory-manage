@@ -1,7 +1,10 @@
-import {Tab, Tabs} from "react-bootstrap";
+import {Tab, Table, Tabs} from "react-bootstrap";
 import React from "react";
 import Button from "../button/button";
 import './styles.css';
+import {Link} from "react-router-dom";
+import refreshToken from "../../../utils/refresh_token";
+import axios from "axios";
 
 export default class ListRoom extends React.Component{
   constructor(props){
@@ -15,8 +18,21 @@ export default class ListRoom extends React.Component{
     this.setState({ data: nextProps.data })
   }
 
-  chooseRoom = (room) => {
-
+  chooseRoom = async(room) => {
+    await refreshToken();
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.get(`/manager/infoDormitory/getPersonInRoom/` + room._id
+      ,{  headers: { 'x-access-token': secret.access_token } }
+    ).then(result => {
+      this.setState({
+        listPerson: result.data.length === 0 ? undefined : result.data,
+        roomActiveGender: room.gioiTinh ? 'Phòng: Nam' : 'Phòng: Nữ'
+      });
+      if(result.data.length === 0)
+        this.setState({
+          messRoomDetail: 'Phòng trống'
+        })
+    }).catch(err => {});
     this.props.onClick(room);
   };
   render(){
@@ -54,10 +70,40 @@ export default class ListRoom extends React.Component{
                       </Button>
                     </div>
                   )
-
                 }
               })}
 
+              </div>
+              {/*detail of room*/}
+              <div className={'room-detail'}>
+                <p className={'room-gender'}><b>{this.state.roomActiveGender}</b></p>
+                {this.state.listPerson ?
+                  <Table responsive bordered size="sm">
+                    <thead>
+                    <tr style={{textAlign: 'center'}}>
+                      <th>STT</th>
+                      <th>MSSV</th>
+                      <th>Họ tên</th>
+                      <th>Trường</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {this.state.listPerson && this.state.listPerson.map((person, index) => {
+                      return(
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{person.MSSV}</td>
+                          <td><Link to={`/admin/student/detail/${person.MSSV}`}>{person.hoTen}</Link></td>
+                          <td>{person.truong && person.truong.tenTruong}</td>
+                        </tr>
+                      )
+                    })}
+
+                    </tbody>
+                  </Table>
+                  :
+                  <span className={'messDanger'}><b>{this.state.messRoomDetail}</b></span>
+                }
               </div>
             </Tab>
           )

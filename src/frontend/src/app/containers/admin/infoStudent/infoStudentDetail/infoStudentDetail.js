@@ -552,7 +552,7 @@ class InfoStudentDetail extends Component {
 
                       <Row>
                         <Col md={2}>
-                          Mô tả:
+                          Ghi chú:
                         </Col>
                         <Col md={10}>
                           <Input
