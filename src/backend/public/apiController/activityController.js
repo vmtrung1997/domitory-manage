@@ -78,6 +78,9 @@ exports.post_activity = (req, res) => {
 	tmp.ngayBD.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
 	tmp.ngayKT.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
 	
+	tmp.ngayBD = new Date(tmp.ngayBD.getTime() - 7*60*60*1000);
+	tmp.ngayKT = new Date(tmp.ngayKT.getTime() - 7*60*60*1000);
+
 	var act = new Activity(tmp)
 	act.save().then(() => {
 		console.log('==post_activity: success')
