@@ -158,6 +158,9 @@ exports.update_activity = (req, res) => {
 	data.ngayBD = dateFirst
 	data.ngayKT = dateFinal	
 
+	data.ngayBD = new Date(data.ngayBD.getTime() - 7*60*60*1000);
+	data.ngayKT = new Date(data.ngayKT.getTime() - 7*60*60*1000);
+
 	Activity.updateOne({ _id: id }, data, (err, val) => {
 		if(!err){
 			res.json({ rs: 'ok'})
