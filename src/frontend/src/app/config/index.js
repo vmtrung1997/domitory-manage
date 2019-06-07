@@ -10,8 +10,8 @@ axios.interceptors.response.use(function (response) {
       return;
     }
     else if (error.response.status === 401) {
-      window.location = '/401'
-        return
+      window.location = '/'
+      return
     }
   }
   return Promise.reject(error);
