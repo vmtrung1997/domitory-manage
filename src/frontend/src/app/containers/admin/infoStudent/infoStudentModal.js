@@ -78,7 +78,11 @@ export class AddStudentModal extends Component{
 	render(){
 		return(
       <React.Fragment>
-				<Button color={'warning'} onClick={() => this.handlePopup(true)}>
+				<Button
+          title={'Thêm mới'}
+          color={'warning'}
+          onClick={() => this.handlePopup(true)}
+        >
 					<i className="fas fa-plus"/>
 				</Button>
 				<Modal show={this.state.show} onHide={() =>this.handlePopup(false)}>
@@ -207,8 +211,11 @@ export class MarkOldStudentModal extends Component{
   render(){
     return(
       <React.Fragment>
-        <Button color={'danger'}>
-          <i className="fas fa-trash-alt" onClick={() => this.handlePopup(true)}/>
+        <Button
+          title={'Chuyển đổi'}
+          color={'danger'}
+        >
+          <i className="fas fa-sync-alt" onClick={() => this.handlePopup(true)}/>
         </Button>
 
         {/*modal popup delete student*/}
@@ -359,6 +366,7 @@ export class ImportDataModal extends Component{
         <Button
           variant={'rounded'}
           onClick={()=>this.handlePopup(true)}
+          title={'Nạp file'}
         >
           <i className="fas fa-file-import"/>
         </Button>
@@ -695,6 +703,7 @@ export class ExportDataModal extends Component{
         <Button
           variant={'rounded'}
           onClick={()=>this.handlePopup(true)}
+          title={'Xuất file'}
         >
           <i className="fas fa-file-export"/>
         </Button>

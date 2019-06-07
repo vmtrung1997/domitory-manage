@@ -406,13 +406,14 @@ class InfoStudent extends Component{
                 </Col>
                 <Col sm={1} >
                   <Button
+                    title={'Làm mới tìm kiếm'}
                     type={'submit'}
                     size={'md'}
                     color={'default'}
                     fullWidth
                     onClick={() => this.handleReload()}
                   >
-                    <i className="fas fa-sync-alt"/>
+                    <i className="fas fa-redo-alt"/>
                   </Button>
                 </Col>
               </Row>
@@ -538,7 +539,14 @@ class InfoStudent extends Component{
                     <td>{info.truong ? info.truong.tenTruong : 'Chưa xác định'}</td>
                     <td>
                       {info.idPhong ? info.idPhong.tenPhong : '-----'}
-                      <div className='float-right'> <Button color={'info'} variant={'outline'} style={{marginLeft: '15px'}} onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}>
+                      <div className='float-right'>
+                        <Button
+                          title={'Lịch sử phòng'}
+                          color={'info'}
+                          variant={'outline'}
+                          style={{marginLeft: '15px'}}
+                          onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}
+                        >
                         <i className="fas fa-history"/>
                       </Button>
                       </div>
