@@ -337,13 +337,12 @@ export class ImportDataModal extends Component{
           resolve = resolve.map(record => ({...record, mssv: `${record.mssv}`}));
           import_info_student_data({data: resolve, regisExpiredDate:this.state.regisExpiredDate, expiredDate:this.state.expiredDate})
             .then(result => {
-              console.log('==result impport', result)
               this.setState({
                 justFileServiceResponse: 'Thêm thành công!!'
               });
               this.props.onSave();
             }).catch(err => {
-            console.log('==err impport', err.response)
+            // console.log('==err impport', err.response)
               this.setState({
                 justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
                 listExpired: err.response.data.list
@@ -677,7 +676,7 @@ export class ExportDataModal extends Component{
   };
 
   render(){
-    console.log('==export', this.state)
+    // console.log('==export', this.state)
   	const {
       valueExport: {
         name,
@@ -949,7 +948,7 @@ export class ChooseRoom extends Component{
   };
 
   render(){
-    console.log('==data room', this.state.data)
+    // console.log('==data room', this.state.data)
     return(
       <React.Fragment>
         <div>{this.state.label}
