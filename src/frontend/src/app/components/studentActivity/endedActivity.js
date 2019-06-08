@@ -53,7 +53,7 @@ class EndedStudentActivity extends React.Component {
               totalPages: res.data.totalPages
             });
             res.data.data.map(item => {
-              var d = new Date(item.idHD.ngayKT);
+              var d = new Date(item.idHD.ngayKT)  ;
 
               var today = new Date();
 

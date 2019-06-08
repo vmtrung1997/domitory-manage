@@ -34,7 +34,6 @@ class News extends Component {
       selectedItem: undefined,
       type: -1,
       showDelete: false,
-      selectedItem: undefined
     };
   }
 

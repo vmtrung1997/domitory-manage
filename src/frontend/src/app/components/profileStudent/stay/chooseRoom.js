@@ -195,6 +195,9 @@ class ListRoom extends React.Component {
                 </Button>
               );
             }
+            else{
+              return ("")
+            }
           })}
         </div>
         {this.state.selectedRoom.ten === undefined ? (
