@@ -78,7 +78,11 @@ export class AddStudentModal extends Component{
 	render(){
 		return(
       <React.Fragment>
-				<Button color={'warning'} onClick={() => this.handlePopup(true)}>
+				<Button
+          title={'Thêm mới'}
+          color={'warning'}
+          onClick={() => this.handlePopup(true)}
+        >
 					<i className="fas fa-plus"/>
 				</Button>
 				<Modal show={this.state.show} onHide={() =>this.handlePopup(false)}>
@@ -88,21 +92,21 @@ export class AddStudentModal extends Component{
 					<Modal.Body>
 						<Row>
 							<Col md={4}>
-								Họ và Tên:
-							</Col>
-							<Col md={8}>
-								<Input getValue={this.onChangeInput} name={'name'} />
-							</Col>
-						</Row>
-
-						<Row>
-							<Col md={4}>
 								MSSV:
 							</Col>
 							<Col md={8}>
 								<Input getValue={this.onChangeInput} name={'studentNumber'} />
 							</Col>
 						</Row>
+
+            <Row>
+              <Col md={4}>
+                Họ và Tên:
+              </Col>
+              <Col md={8}>
+                <Input getValue={this.onChangeInput} name={'name'} />
+              </Col>
+            </Row>
 
 						<Row>
 							<Col md={4}>
@@ -207,8 +211,11 @@ export class MarkOldStudentModal extends Component{
   render(){
     return(
       <React.Fragment>
-        <Button color={'danger'}>
-          <i className="fas fa-trash-alt" onClick={() => this.handlePopup(true)}/>
+        <Button
+          title={'Chuyển đổi'}
+          color={'danger'}
+        >
+          <i className="fas fa-sync-alt" onClick={() => this.handlePopup(true)}/>
         </Button>
 
         {/*modal popup delete student*/}
@@ -330,13 +337,12 @@ export class ImportDataModal extends Component{
           resolve = resolve.map(record => ({...record, mssv: `${record.mssv}`}));
           import_info_student_data({data: resolve, regisExpiredDate:this.state.regisExpiredDate, expiredDate:this.state.expiredDate})
             .then(result => {
-              console.log('==result impport', result)
               this.setState({
                 justFileServiceResponse: 'Thêm thành công!!'
               });
               this.props.onSave();
             }).catch(err => {
-            console.log('==err impport', err.response)
+            // console.log('==err impport', err.response)
               this.setState({
                 justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
                 listExpired: err.response.data.list
@@ -359,6 +365,7 @@ export class ImportDataModal extends Component{
         <Button
           variant={'rounded'}
           onClick={()=>this.handlePopup(true)}
+          title={'Nạp file'}
         >
           <i className="fas fa-file-import"/>
         </Button>
@@ -583,52 +590,55 @@ export class ExportDataModal extends Component{
         major,
         //activityPoint: false,
         religion,
+        note,
       },
       //note: false
       searchValues,
     } = this.state;
 
-    let header = {}
-    if(name)
-      header.hoTen = "Họ tên"
+    let header = {STT: 'STT'};
+
     if(studentNumber)
-      header.MSSV = "MSSV"
+      header.MSSV = "MSSV";
+    if(name)
+      header.hoTen = "Họ tên";
     if(birthday)
-      header.ngaySinh = "Ngày sinh"
+      header.ngaySinh = "Ngày sinh";
     if(gender)
-      header.gioiTinh = "Giới tính"
+      header.gioiTinh = "Giới tính";
     if(address)
-      header.diaChi = "Địa chỉ"
+      header.diaChi = "Địa chỉ";
     if(email)
-      header.email = "Email"
+      header.email = "Email";
     if(phone)
-      header.sdt = "Số điện thoại"
+      header.sdt = "Số điện thoại";
     if(relativesPhone)
-      header.sdtNguoiThan = "số điện thoại người thân"
+      header.sdtNguoiThan = "số điện thoại người thân";
     if(religion)
-      header.tonGiao = "Tôn giáo"
+      header.tonGiao = "Tôn giáo";
     if(folk)
-      header.danToc = "Dân tộc"
+      header.danToc = "Dân tộc";
     if(dayIn)
-      header.ngayVaoO = "Ngày vào ở"
+      header.ngayVaoO = "Ngày vào ở";
     if(dayOut)
-      header.ngayHetHan = "Ngày hết hạn"
+      header.ngayHetHan = "Ngày hết hạn";
     if(room)
-      header.phong = "Phòng"
+      header.phong = "Phòng";
     if(school)
-      header.truong = "Trường"
+      header.truong = "Trường";
     if(major)
-      header.nganhHoc = "Ngành học"
-    // if(ghiChuEx)
-    //   header.email = "Email"
+      header.nganhHoc = "Ngành học";
+    if(note)
+      header.ghiChu = "Ghi chú";
 
     get_list_student(searchValues).then(result => {
 
-      let data = result.data && result.data.map(record => {
-        let genderString = record.gioiTinh ? "nam" : "nữ"
+      let data = result.data && result.data.map((record, index) => {
+        let genderString = record.gioiTinh ? "nam" : "nữ";
         return({
-          hoTen : name ? record.hoTen : undefined,
+          STT: index + 1,
           MSSV : studentNumber ? record.MSSV : undefined,
+          hoTen : name ? record.hoTen : undefined,
           ngaySinh : birthday && record.ngaySinh ? dateToString(record.ngaySinh) : undefined,
           gioiTinh : gender ? genderString : undefined,
           diaChi : address ? record.diaChi : undefined,
@@ -643,10 +653,10 @@ export class ExportDataModal extends Component{
           phong : room && record.idPhong ? record.idPhong.tenPhong : undefined,
           truong : school && record.truong ? record.truong.tenTruong : undefined,
           nganhHoc : major && record.nganhHoc ? record.nganhHoc.tenNganh : undefined,
-          //ghiChu : note ? record.hoTen : undefined
-        })})
+          ghiChu : note ? record.moTa : undefined
+        })});
 
-      data.unshift(header)
+      data.unshift(header);
 
       var ws = XLSX.utils.json_to_sheet(data, {skipHeader:true});
 
@@ -658,7 +668,7 @@ export class ExportDataModal extends Component{
 
       this.handlePopup(false)
 
-    }).catch(err => {
+    }).catch(() => {
       ToastsStore.error("Có lỗi!");
     })
 
@@ -666,7 +676,7 @@ export class ExportDataModal extends Component{
   };
 
   render(){
-    console.log('==export', this.state)
+    // console.log('==export', this.state)
   	const {
       valueExport: {
         name,
@@ -695,6 +705,7 @@ export class ExportDataModal extends Component{
         <Button
           variant={'rounded'}
           onClick={()=>this.handlePopup(true)}
+          title={'Xuất file'}
         >
           <i className="fas fa-file-export"/>
         </Button>
@@ -708,9 +719,9 @@ export class ExportDataModal extends Component{
             <Row>
               <Col md={6}>
                 <Checkbox
-                  check={name}
-                  label={'Họ và tên'}
-                  name={'name'}
+                  check={studentNumber}
+                  label={'MSSV'}
+                  name={'studentNumber'}
                   isCheck={this.handleCheckValueExport}
                 />
               </Col>
@@ -726,9 +737,9 @@ export class ExportDataModal extends Component{
             <Row>
               <Col md={6}>
                 <Checkbox
-                  check={studentNumber}
-                  label={'MSSV'}
-                  name={'studentNumber'}
+                  check={name}
+                  label={'Họ và tên'}
+                  name={'name'}
                   isCheck={this.handleCheckValueExport}
                 />
               </Col>
@@ -937,7 +948,7 @@ export class ChooseRoom extends Component{
   };
 
   render(){
-    console.log('==data room', this.state.data)
+    // console.log('==data room', this.state.data)
     return(
       <React.Fragment>
         <div>{this.state.label}

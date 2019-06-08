@@ -272,7 +272,7 @@ class InfoStudent extends Component{
 
   handleChooseOption = async (prop) => {
     await this.setState({
-      searchValues: {...this.state.searchValues, isOld: prop}
+      searchValues: {...this.state.searchValues, isOld: prop, pageActive: 1}
       });
     this.getData();
   };
@@ -406,13 +406,14 @@ class InfoStudent extends Component{
                 </Col>
                 <Col sm={1} >
                   <Button
+                    title={'Làm mới tìm kiếm'}
                     type={'submit'}
                     size={'md'}
                     color={'default'}
                     fullWidth
                     onClick={() => this.handleReload()}
                   >
-                    <i className="fas fa-sync-alt"/>
+                    <i className="fas fa-redo-alt"/>
                   </Button>
                 </Col>
               </Row>
@@ -538,7 +539,14 @@ class InfoStudent extends Component{
                     <td>{info.truong ? info.truong.tenTruong : 'Chưa xác định'}</td>
                     <td>
                       {info.idPhong ? info.idPhong.tenPhong : '-----'}
-                      <div className='float-right'> <Button color={'info'} variant={'outline'} style={{marginLeft: '15px'}} onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}>
+                      <div className='float-right'>
+                        <Button
+                          title={'Lịch sử phòng'}
+                          color={'info'}
+                          variant={'outline'}
+                          style={{marginLeft: '15px'}}
+                          onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}
+                        >
                         <i className="fas fa-history"/>
                       </Button>
                       </div>
@@ -552,7 +560,12 @@ class InfoStudent extends Component{
                         >
                           <i className="fas fa-print"/>
                         </Button>
-                      <Button color={'warning'} style={{marginRight: '10px'}} onClick={() => this.onViewDetail(info.MSSV)}>
+                      <Button
+                        title={'Xem chi tiết'}
+                        color={'warning'}
+                        style={{marginRight: '10px'}}
+                        onClick={() => this.onViewDetail(info.MSSV)}
+                      >
                         <i className="fas fa-edit"/>
                       </Button>
                       {!isOld &&
