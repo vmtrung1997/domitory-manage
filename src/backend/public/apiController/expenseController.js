@@ -82,7 +82,6 @@ function getPersonInRoom(id) {
 function TinhTienDien(arr, number) {
 	let total = 0;
 	let temp = number;
-	console.log(arr);
 	for (let i = 0; i < arr.length; i++) {
 		if (temp >= arr[i].giaTriDau && temp <= arr[i].giaTriCuoi) {
 			for (let j = 0; j < i; j++) {
@@ -95,20 +94,19 @@ function TinhTienDien(arr, number) {
 			break;
 		}
 	}
-	console.log('total',total);
 	return total;
 }
 function TinhTienNuoc(arr, number, soNguoi) {
 	let total = 0;
 	let temp = number;
 	for (let i = 0; i < arr.length; i++) {
-		if (i === arr.length - 1) {
-			return total + temp * arr[i].giaTriThuc
-		}
+		// if (i === arr.length - 1) {
+		// 	return total + temp * arr[i].giaTriThuc
+		// }
 		var diff = (arr[i].giaTriCuoi - arr[i].giaTriDau) * soNguoi
 		if (temp > diff) {
 			total = total + diff * arr[i].giaTriThuc;
-			temp = temp - diff
+			temp = temp - diff;
 		} else {
 			return total + temp * arr[i].giaTriThuc
 		}
@@ -319,6 +317,7 @@ exports.update_expense = async (req, res) => {
 
 								// })
 								await getPersonInRoom(exp.idPhong).then(soNguoi => {
+									console.log('update nuoc')
 									if (exp.thayNuoc)
 										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, soNguoi));
 									else
