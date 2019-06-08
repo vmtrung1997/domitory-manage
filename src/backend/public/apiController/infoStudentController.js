@@ -14,8 +14,20 @@ function addOneStudent(data) {
   return new Promise( (resolve) => {
     Account.findOne({username: data.mssv})
     .then( result => {
+      console.log('==find stu ', result)
       if(result){
-        resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data})
+        if(!result.isDelete){
+          resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data});
+        }
+        else {//if student in old student
+          result.isDelete = 0;
+          result.save()
+            .then(() => {
+            resolve( {status: 200, msg: 'Sinh viên đã được tiếp tục ở lại!', data: data})
+          }).catch(
+            resolve({status: 400, msg: 'Chuyển đổi không thành công!', data: data, err: err})
+          )
+        }
       } else {
         let acc = new Account({
           username: data.mssv,
@@ -55,11 +67,10 @@ function addOneStudent(data) {
           .catch(() =>{
           resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
         });
-
-
       }
     }).catch(err => {
-      resolve( {status: 500, msg: 'truy vấn mssv thẻ err!', data: data, err: err})
+      console.log('==truy van err', err)
+      //resolve( {status: 500, msg: 'Truy vấn mssv không được!', data: data, err: err})
     });
   })
 }
