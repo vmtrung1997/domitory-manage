@@ -73,7 +73,6 @@ class InfoActivity extends Component{
 
 		const table = this.props.data.map((row, index) => {
 			var curData = new Date();
-			console.log(new Date("2019-06-19T00:01:00.000Z"))
 			var date = new Date(row.ngayBD);
 			var strDate = date.toLocaleDateString('en-GB')
 			var url = `/admin/activity/detail/${row._id}`
