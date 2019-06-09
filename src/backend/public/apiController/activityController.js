@@ -71,16 +71,6 @@ exports.post_activity = (req, res) => {
     	moTa: req.body.des
 	}
 
-	// Thêm hoạt động
-	var timeFirst = req.body.time.split(':')
-	var timeFinal = req.body.timeEnd.split(':')
-
-	tmp.ngayBD.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
-	tmp.ngayKT.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
-	
-	tmp.ngayBD = new Date(tmp.ngayBD.getTime() - 7*60*60*1000);
-	tmp.ngayKT = new Date(tmp.ngayKT.getTime() - 7*60*60*1000);
-
 	var act = new Activity(tmp)
 	act.save().then(() => {
 		console.log('==post_activity: success')
@@ -148,17 +138,6 @@ exports.update_activity = (req, res) => {
     	diem: req.body.point,
     	moTa: req.body.des
 	}
-
-	//  oạt động
-	var timeFirst = req.body.time.split(':')
-	var timeFinal = req.body.timeEnd.split(':')
-
-	tmp.ngayBD.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
-	tmp.ngayKT.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
-	
-	tmp.ngayBD = new Date(tmp.ngayBD.getTime() - 7*60*60*1000);
-	tmp.ngayKT = new Date(tmp.ngayKT.getTime() - 7*60*60*1000);
-
 
 	Activity.updateOne({ _id: id }, tmp, (err, val) => {
 		if(!err){
