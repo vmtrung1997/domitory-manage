@@ -369,6 +369,7 @@ exports.upcomingActivities = (req, res) => {
         .limit(limit)
         .then(result => {
           if (result.length > 0) {
+            console.log(result);
             res.status(200).json({
               status: "success",
               data: result,
