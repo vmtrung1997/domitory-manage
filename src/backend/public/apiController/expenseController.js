@@ -459,8 +459,6 @@ exports.report_expense = (req, res) => {
 		total.push(0)
 		total.push('')
 	}
-	//console.log('==query: ', query);
-	//console.log('==options: ', options);
 	if (Object.keys(query).length) {
 		ChiPhiPhong.find(query)
 			.sort([['nam', 1], ['thang', 1]])
@@ -484,7 +482,6 @@ exports.report_expense = (req, res) => {
 							total[header.indexOf('Số điện trong tháng')] = item.thayDien.dienMoi > 0 ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu :
 								(item.soDien > item.soDienCu ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu : total[header.indexOf('Số điện trong tháng')])
 							//totalObj.soDien = item.soDien > item.soDienCu ? totalObj.soDien + item.soDien - item.soDienCu : totalObj.soDien
-							console.log('totalDienMoi')
 						}
 						if (options.indexOf('soNuoc') > 0) {
 							arr.push(item.thayNuoc.nuocMoi > 0 ? item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu + item.soNuoc - item.soNuocCu : (item.soNuoc > item.soNuocCu ? item.soNuoc - item.soNuocCu : 0));
