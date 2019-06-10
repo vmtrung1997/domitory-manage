@@ -137,6 +137,7 @@ class NewsHomepage extends React.Component {
                             height: '50%',
                             width: '50%' }}
                           src="/images/notdatafound.png"
+                          alt = "true"
                         ></img>
                       </div> :
             <div className="row">
@@ -186,6 +187,9 @@ class NewsHomepage extends React.Component {
                         </div>
                       );
                     }
+                    else{
+                      return('');
+                    }
                   })}
 
                   <div className="row">
@@ -234,6 +238,9 @@ class NewsHomepage extends React.Component {
                             </div>
                           </div>
                         );
+                      }
+                      else{
+                        return('');
                       }
                     })}
                   </div>
@@ -289,19 +296,22 @@ class NewsHomepage extends React.Component {
                         </div>
                       );
                     }
+                    else{
+                      return ('');
+                    }
                   })}
 
                   {/* Single Post Area */}
                   {this.state.postPin.length === 0?
                   <div>Chưa có bài viết nào</div>:
                   this.state.postPin.map((item, index) => {
-                    if (index != 0) {
+                    if (index !== 0) {
                       return (
                         <div className="razo-single-post d-flex mb-30">
                           {/* Post Thumbnail */}
                           <div className="post-thumbnail">
                             <a href="single-blog.html">
-                              <img src="img/post-1.jpg" alt />
+                              <img src="img/post-1.jpg" alt = "" />
                             </a>
                           </div>
                           {/* Post Content */}
@@ -331,6 +341,9 @@ class NewsHomepage extends React.Component {
                           </div>
                         </div>
                       );
+                              }
+                              else{
+                                return('');
                               }
                   })}
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>

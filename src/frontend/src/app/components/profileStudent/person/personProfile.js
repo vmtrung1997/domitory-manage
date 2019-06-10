@@ -95,7 +95,8 @@ class PersonProfile extends React.Component {
       data.ngaySinh === undefined ||
       data.sdt === undefined ||
       data.sdtNguoiThan === undefined ||
-      data.truong === undefined
+      data.truong === undefined||
+      data.nganhHoc === undefined
     ) {
       window.alert("Vui lòng nhập đầy đủ thông tin");
     } else {
@@ -197,7 +198,7 @@ class PersonProfile extends React.Component {
         .get("/student/get-school")
         .then(res => {
           if (res) {
-             res.data.data.map((obj, index) => {
+             res.data.data.forEach((obj, index) => {
               options.push({ value: obj._id, label: obj.tenTruong });
             });
             this.setState({ truongOptions: options });
@@ -222,7 +223,7 @@ class PersonProfile extends React.Component {
   };
 
   truongSelected = value => {
-    if(value !== -1)
+    if(value !== '-1')
     {
     var truong = this.state.truongOptions.find(obj => obj.value === value);
     this.setState({
@@ -234,7 +235,7 @@ class PersonProfile extends React.Component {
     .then(res => {
       if (res) {
         var options = [{ value: -1, label: "Chọn ngành" }];
-        res.data.data.map((obj, index) => {
+        res.data.data.forEach((obj, index) => {
           options.push({ value: obj.idNganhHoc._id, label: obj.idNganhHoc.tenNganh });
         });
         this.setState({ nganhOptions: options });

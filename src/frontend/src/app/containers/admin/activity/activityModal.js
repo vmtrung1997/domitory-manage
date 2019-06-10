@@ -57,6 +57,13 @@ class ActivityModal extends Component{
     var tmpEnd = new Date(dateEnd.getFullYear(), dateEnd.getMonth(), dateEnd.getDate())
     var tmpCur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate())
 
+    // Hoạt động
+    var timeFirst = this.state.time.split(':')
+    var timeFinal = this.state.timeEnd.split(':')
+
+    this.state.date.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]), 0)
+    this.state.dateEnd.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]), 0)
+
     if(!name || !location || !des || !point) {
       ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
     } else if(parseInt(point) <= 0){
@@ -68,7 +75,6 @@ class ActivityModal extends Component{
     } else {
       await refreshToken()
       var secret = JSON.parse(localStorage.getItem('secret'))
-      console.log(this.state)
       axios({
         method: 'post',
         url: '/manager/activity/post',
@@ -80,9 +86,7 @@ class ActivityModal extends Component{
           name: this.state.name,
           location: this.state.location,
           date: this.state.date.toString(),
-          time: this.state.time,
           dateEnd: this.state.dateEnd.toString(),
-          timeEnd: this.state.timeEnd,
           isRequire: this.state.isRequire,
           point: this.state.point,
           des: this.state.des

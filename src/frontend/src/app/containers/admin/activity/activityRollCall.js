@@ -46,6 +46,8 @@ class ActivityRollCall extends Component{
       .then( rs => { 
         if(rs.data.rs === "ok")
           ToastsStore.success("Điểm danh thành công!")
+        else if (rs.data.rs === "delete")
+          ToastsStore.error("Sinh viên đã bị xoá!");
         else
           ToastsStore.error("Mã thẻ không tồn tại!");
       }).catch(err => {
@@ -62,7 +64,7 @@ class ActivityRollCall extends Component{
           idCard: this.state.idThe
         }
       }).then(res => {
-        if(res.data.student){
+        if(res.data.student && res.data.status !== "delete"){
           if(!this.state.data.some(el => el.MSSV === res.data.student.MSSV)){
             this.setState({ 
               data: this.state.data.concat(res.data.student)
