@@ -4,6 +4,8 @@ const resultActivity = require('./../models/KetQuaHD');
 const Profile = require('./../models/Profile');
 const phong = require('./../models/Phong');
 const writeXlsx = require('../repos/xlsxRepo')
+const Account = require('./../models/TaiKhoan');
+
 
 exports.get_list_activity = (req, res) => {
 	const option = {
@@ -202,25 +204,32 @@ exports.rollcall_activity = async (req, res) => {
 	}
 	
 	if(data.sv){
-		resultActivity.findOne({ idHD: data.hd, idSV: data.sv }, (err,val) => {
-			if(err){
-				console.log('==rollcall_activity:', err)
-				res.status(500)
-				return true
-			}
-			if(!val) {
-				var rs = new resultActivity({
-					idHD: data.hd,
-					idSV: data.sv,
-					isTG: true
+		Account.findOne({idProfile: data.sv}, {isDelete: 0}, (err, acc) => {
+			if(err) { console.log("==background: ", err )}
+			if(acc) {
+				resultActivity.findOne({ idHD: data.hd, idSV: data.sv }, (err,val) => {
+					if(err){
+						console.log('==rollcall_activity:', err)
+						res.status(500)
+						return true
+					}
+					if(!val) {
+						var rs = new resultActivity({
+							idHD: data.hd,
+							idSV: data.sv,
+							isTG: true
+						})
+						rs.save()
+					} else {
+						val.isTG = true
+						val.save()
+					}
+					res.status(200).json({ rs: 'ok'})
+					console.log('==rollcall_activity: success')
 				})
-				rs.save()
 			} else {
-				val.isTG = true
-				val.save()
+				res.status(200).json({ rs: 'delete'})
 			}
-			res.status(200).json({ rs: 'ok'})
-			console.log('==rollcall_activity: success')
 		})
 	}
 };

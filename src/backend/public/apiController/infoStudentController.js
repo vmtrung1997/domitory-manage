@@ -136,7 +136,7 @@ exports.deleteStudent = (req, res) => {
     arrDel.forEach(id => {
       Account.findOneAndUpdate({username: id},{ $set: {isDelete: 1} })
         .then(() => {
-          Profile.findOneAndUpdate({MSSV: id},{ $set: {idPhong: null} })
+          Profile.findOneAndUpdate({MSSV: id},{ $set: {idPhong: null, isActive: false, hanDangKy: null} })
             .then(result => {
               if(result.idPhong){
                 Room.findOne({_id:result.idPhong})
