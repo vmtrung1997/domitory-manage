@@ -483,7 +483,6 @@ exports.updateRoom = (req, res) => {
                   { _id: req.body.id },
                   { idPhong: req.body.idPhong }
                 ).then(rs => {
-                  console.log(rs);
                   if (rs) {
                     res.status(202).json({
                       data: rs
