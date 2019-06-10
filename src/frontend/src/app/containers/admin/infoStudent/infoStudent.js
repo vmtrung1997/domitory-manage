@@ -272,7 +272,7 @@ class InfoStudent extends Component{
 
   handleChooseOption = async (prop) => {
     await this.setState({
-      searchValues: {...this.state.searchValues, isOld: prop}
+      searchValues: {...this.state.searchValues, isOld: prop, pageActive: 1}
       });
     this.getData();
   };

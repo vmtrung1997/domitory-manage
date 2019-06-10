@@ -194,6 +194,7 @@ class ListActivity extends React.Component {
                 <img
                   style={{ height: "150px", width: "150px" }}
                   src="/images/notdatafound.png"
+                  alt = ""
                 />
                 <p>Hiện tại chưa có hoạt động mới nào</p>
                 

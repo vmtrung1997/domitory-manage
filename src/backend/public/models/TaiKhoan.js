@@ -7,7 +7,7 @@ var taiKhoanSchema = new Schema({
     username: {type: String, unique: true},
     password: { type: String , select: false},
     loai: {type: String, enum: ['SA', 'AM', 'SV', 'BV', 'ADCP', 'DD']},
-    isDelete: {type: Number, enum: [0, 1], select: false}
+    isDelete: {type: Number, enum: [0, 1]}
 });
 taiKhoanSchema.virtual('phanQuyen', {
   ref: 'PhanQuyen',
