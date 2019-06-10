@@ -4,6 +4,7 @@ const Truong = require("../models/Truong");
 const ChiPhiPhong = require("../models/ChiPhiPhong");
 const HoatDong = require("../models/HoatDong");
 const KetQuaHD = require("../models/KetQuaHD");
+const Account = require('../models/TaiKhoan');
 const Phong = require("../models/Phong");
 const User = require("../models/TaiKhoan");
 const YeuCauLuuTru = require("../models/YeuCauLuuTru");
@@ -429,10 +430,20 @@ exports.getInfoByIdCard = (req, res) => {
   Profile.findOne({ maThe: idCard })
     .then(result => {
       if (result) {
-        res.status(200).json({
-          status: "success",
-          student: result
-        });
+        Account.findOne({idProfile: result._id, isDelete: 0}, (err, acc) => {
+          if(err){ console.log(err) }
+          if(acc){
+            res.status(200).json({
+              status: "success",
+              student: result
+            });
+          } else {
+            res.json({
+              status: "delete"
+            });
+          }
+        })
+        
       } else {
         res.json({
           status: "fail",

@@ -4,6 +4,8 @@ const resultActivity = require('./../models/KetQuaHD');
 const Profile = require('./../models/Profile');
 const phong = require('./../models/Phong');
 const writeXlsx = require('../repos/xlsxRepo')
+const Account = require('./../models/TaiKhoan');
+
 
 exports.get_list_activity = (req, res) => {
 	const option = {
@@ -71,16 +73,6 @@ exports.post_activity = (req, res) => {
     	moTa: req.body.des
 	}
 
-	// Thêm hoạt động
-	var timeFirst = req.body.time.split(':')
-	var timeFinal = req.body.timeEnd.split(':')
-
-	tmp.ngayBD.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
-	tmp.ngayKT.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
-	
-	tmp.ngayBD = new Date(tmp.ngayBD.getTime() - 7*60*60*1000);
-	tmp.ngayKT = new Date(tmp.ngayKT.getTime() - 7*60*60*1000);
-
 	var act = new Activity(tmp)
 	act.save().then(() => {
 		console.log('==post_activity: success')
@@ -127,7 +119,7 @@ exports.delete_activity = (req, res) => {
 			res.status(500)
 		}
 	});
-	resultActivity.deleteMany({ idHD: id, isTG: false, isDK: false}, err => {
+	resultActivity.deleteMany({ idHD: id }, err => {
 		console.log('==delete_activity_deleteResultActivity: ',err)
 		res.status(500)
 	})
@@ -135,33 +127,21 @@ exports.delete_activity = (req, res) => {
 
 exports.update_activity = (req, res) => {
 	const id = req.query.id
-	var data = {
+
+	var tmp = {
 		ten: req.body.name,
     	diaDiem: req.body.location,
-    	ngayBD: req.body.date,
-    	ngayKT: req.body.dateEnd,
+    	ngayBD: new Date(req.body.date),
+    	ngayKT: new Date(req.body.dateEnd),
     	thang: new Date(req.body.date).getMonth() + 1,
     	nam: new Date(req.body.date).getFullYear(),
     	batBuoc: req.body.isRequire,
+    	soLuong: 0,
     	diem: req.body.point,
     	moTa: req.body.des
 	}
-	var timeFirst = req.body.time.split(':')
-	var timeFinal = req.body.timeEnd.split(':')
 
-	var dateFirst = new Date(data.ngayBD)
-	var dateFinal = new Date(data.ngayKT)
-
-	dateFirst.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]))
-	dateFinal.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]))
-
-	data.ngayBD = dateFirst
-	data.ngayKT = dateFinal	
-
-	data.ngayBD = new Date(data.ngayBD.getTime() - 7*60*60*1000);
-	data.ngayKT = new Date(data.ngayKT.getTime() - 7*60*60*1000);
-
-	Activity.updateOne({ _id: id }, data, (err, val) => {
+	Activity.updateOne({ _id: id }, tmp, (err, val) => {
 		if(!err){
 			res.json({ rs: 'ok'})
 			console.log('==update_activity: success')
@@ -172,24 +152,24 @@ exports.update_activity = (req, res) => {
 		}
 	})
 
-	if(data.batBuoc){
+	if(tmp.batBuoc){
 		
 		var query = {
 			MSSV: {$ne: null},
-			ngayVaoO: { $lte: data.ngayBD},
-			ngayHetHan: {$gte: data.ngayBD}
+			ngayVaoO: { $lte: tmp.ngayBD},
+			ngayHetHan: {$gte: tmp.ngayBD}
 		}
 		Profile.find(query).then( result => {
 			result.map( item => {
 				resultActivity.find({ idHD: id, idSV: item._id}).then( rs => {
 					if(rs.length === 0){
-						var tmp = new resultActivity({
+						var tmpAc = new resultActivity({
 							idHD: id,
 							idSV: item._id,
 							isTG: false,
 							isDK: false
 						})
-						tmp.save()
+						tmpAC.save()
 					}
 				})
 			})
@@ -224,25 +204,32 @@ exports.rollcall_activity = async (req, res) => {
 	}
 	
 	if(data.sv){
-		resultActivity.findOne({ idHD: data.hd, idSV: data.sv }, (err,val) => {
-			if(err){
-				console.log('==rollcall_activity:', err)
-				res.status(500)
-				return true
-			}
-			if(!val) {
-				var rs = new resultActivity({
-					idHD: data.hd,
-					idSV: data.sv,
-					isTG: true
+		Account.findOne({idProfile: data.sv}, {isDelete: 0}, (err, acc) => {
+			if(err) { console.log("==background: ", err )}
+			if(acc) {
+				resultActivity.findOne({ idHD: data.hd, idSV: data.sv }, (err,val) => {
+					if(err){
+						console.log('==rollcall_activity:', err)
+						res.status(500)
+						return true
+					}
+					if(!val) {
+						var rs = new resultActivity({
+							idHD: data.hd,
+							idSV: data.sv,
+							isTG: true
+						})
+						rs.save()
+					} else {
+						val.isTG = true
+						val.save()
+					}
+					res.status(200).json({ rs: 'ok'})
+					console.log('==rollcall_activity: success')
 				})
-				rs.save()
 			} else {
-				val.isTG = true
-				val.save()
+				res.status(200).json({ rs: 'delete'})
 			}
-			res.status(200).json({ rs: 'ok'})
-			console.log('==rollcall_activity: success')
 		})
 	}
 };

@@ -14,6 +14,8 @@ exports.background = () => {
 		else {
 			val.map((item, index) => {
 				item.isActive = false
+				item.idPhong = null
+				item.hanDangKy = null
 				item.save()
 				Account.updateOne({idProfile: item._id}, {isDelete: 1}, (err, res) => {
 					if(err) { console.log("==background: ", err )}
@@ -28,8 +30,9 @@ exports.background = () => {
 			else {
 				val.map((item, index) => {
 					item.isActive = false
+					item.idPhong = null
+					item.hanDangKy = null
 					item.save()
-					console.log(item)
 					Account.updateOne({idProfile: item._id}, {isDelete: 1}, (err, res) => {
 						if(err) { console.log("==background: ", err )}
 					})
