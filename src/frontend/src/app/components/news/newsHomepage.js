@@ -17,7 +17,7 @@ class NewsHomepage extends React.Component {
   loadNews = async date => {
     var _post = [];
 
-    await Axios.post("/news/get-news", { data: date })
+    await Axios.post("/news/get-news", { data: date,skip: 0,limit: 5})
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.forEach((item, index) => {
