@@ -6,72 +6,77 @@ const RoomHistory = require('../models/LichSuPhong');
 const ActivityResults = require('../models/KetQuaHD');
 const md5 = require('md5');
 
-function verifyStudentNumber(studentNumber){
-
+function usernameInvalid(username){
+  const ortherChar = username.replace(/[A-Za-z0-9]/gi, '');
+  return !!ortherChar;
 }
 
 function addOneStudent(data) {
   return new Promise( (resolve) => {
-    Account.findOne({username: data.mssv})
-    .then( result => {
-      console.log('==find stu ', result)
-      if(result){
-        if(!result.isDelete){
-          resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data});
-        }
-        else {//if student in old student
-          result.isDelete = 0;
-          result.save()
-            .then(() => {
-            resolve( {status: 200, msg: 'Sinh viên đã được tiếp tục ở lại!', data: data})
-          }).catch(
-            resolve({status: 400, msg: 'Chuyển đổi không thành công!', data: data, err: err})
-          )
-        }
-      } else {
-        let acc = new Account({
-          username: data.mssv,
-          password: md5(data.mssv),
-          loai: "SV",
-          isDelete: 0,
-        });
-        //----save account---------
-        acc.save()
-          .then(acc => {
-            let student = new Profile({
-              idTaiKhoan: acc._id,
-              hoTen: data.hoTen,
-              MSSV: data.mssv,
-              ngaySinh: data.ngaySinh,
-              ngayVaoO: new Date(),
-              ngayHetHan: data.ngayHetHan,
-              hanDangKy: data.hanDangKy,
-              isActive: false,
-              flag: true
+    if(usernameInvalid(data.mssv))
+      resolve({status: 400, msg: 'MSSV không hợp lệ', data: data});
+    else {
+      Account.findOne({username: data.mssv})
+        .then( result => {
+          console.log('==find stu ', result)
+          if(result){
+            if(!result.isDelete){
+              resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data});
+            }
+            else {//if student in old student
+              result.isDelete = 0;
+              result.save()
+                .then(() => {
+                  resolve( {status: 200, msg: 'Sinh viên đã được tiếp tục ở lại!', data: data})
+                }).catch(
+                resolve({status: 400, msg: 'Chuyển đổi không thành công!', data: data, err: err})
+              )
+            }
+          } else {
+            let acc = new Account({
+              username: data.mssv,
+              password: md5(data.mssv),
+              loai: "SV",
+              isDelete: 0,
             });
-            //------save profile-------
-            student.save()
-              .then((result) => {
-                resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
-              })
-              .catch(err =>{
-                Account.findOneAndDelete({username: data.mssv}).catch()
-                resolve( {status: 400, msg: 'tạo thông tin cá nhân không thành công, vui lòng thử lại!', data: data, err: err})
-              });
+            //----save account---------
+            acc.save()
+              .then(acc => {
+                let student = new Profile({
+                  idTaiKhoan: acc._id,
+                  hoTen: data.hoTen,
+                  MSSV: data.mssv,
+                  ngaySinh: data.ngaySinh,
+                  ngayVaoO: new Date(),
+                  ngayHetHan: data.ngayHetHan,
+                  hanDangKy: data.hanDangKy,
+                  isActive: false,
+                  flag: true
+                });
+                //------save profile-------
+                student.save()
+                  .then((result) => {
+                    resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
+                  })
+                  .catch(err =>{
+                    Account.findOneAndDelete({username: data.mssv}).catch()
+                    resolve( {status: 400, msg: 'tạo thông tin cá nhân không thành công, vui lòng thử lại!', data: data, err: err})
+                  });
 
-            acc.idProfile = student._id;
-            acc.save().catch(err =>{
-              resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data, err: err})
-            });
-          })
-          .catch(() =>{
-          resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
-        });
-      }
-    }).catch(err => {
-      console.log('==truy van err', err)
-      //resolve( {status: 500, msg: 'Truy vấn mssv không được!', data: data, err: err})
-    });
+                acc.idProfile = student._id;
+                acc.save().catch(err =>{
+                  resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data, err: err})
+                });
+              })
+              .catch(() =>{
+                resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
+              });
+          }
+        }).catch(err => {
+        console.log('==truy van err', err)
+        //resolve( {status: 500, msg: 'Truy vấn mssv không được!', data: data, err: err})
+      });
+    }
   })
 }
 
