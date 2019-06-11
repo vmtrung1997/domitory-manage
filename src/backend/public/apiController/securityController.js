@@ -51,8 +51,9 @@ exports.input_card = (req, res) => {
   Profile.findOne({maThe: info}).populate([
   { path:'idTaiKhoan', match:{ isDelete: 0}},
   { path: 'idPhong', select: 'tenPhong'}, 
-  { path: 'truong', select: 'tenTruong'}]).then(profile => {
-      if (profile){
+]).then(profile => {
+      if (profile && profile.idTaiKhoan!=null){
+        console.log(profile)
         if (profile.MSSV)
         var his = new LichSu({
           MSSV: profile.MSSV,
@@ -86,6 +87,7 @@ exports.input_card = (req, res) => {
           })
         })
       } else {
+        console.log('notfound');
         res.json({
           rs: 'not found',
           msg: 'Thẻ đã xóa'

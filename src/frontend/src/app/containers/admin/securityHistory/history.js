@@ -111,7 +111,7 @@ class Security extends Component{
 									return (
 										<div className={'item-history'} key={index}>
 											<div className={'item-image'}>
-												<img alt={value.profile._id} src={value.profile.img !== "" ? value.profile.img : defaultStudentImg}/>
+											{value.profile.img ?<img alt={value.profile._id} src={value.profile.img}/>:<div>Chưa cập nhật ảnh</div>}
 											</div>
 											<div className={'item-history-text'}>
 												<div><Link to={`/admin/student/detail/${value.profile.MSSV}`}>{value.profile.MSSV}</Link></div>

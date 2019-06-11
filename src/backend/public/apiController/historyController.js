@@ -10,18 +10,24 @@ require('../models/TaiKhoan')
 exports.find_history = (req, res) => {
   var {time, options} = req.body
   var fromDate = new Date(time.fromDate);
+  fromDate.setHours(0,0,0,0);
+  fromDate.setDate(fromDate.getDate() + 1);
   var toDate = new Date(time.toDate);
+  toDate.setHours(0,0,0,0);
+  toDate.setDate(toDate.getDate()+1);
   let query = {}
   if (fromDate.getDate() === toDate.getDate() 
   && fromDate.getMonth() === toDate.getMonth() 
   && fromDate.getFullYear() === toDate.getFullYear()){
-    query = {thoiGian: {$gte: fromDate}}
+    var newtoday = new Date(fromDate.setDate(fromDate.getDate()- 1))
+    query = {
+      $and: [{ thoiGian: {$lte: toDate }}, { thoiGian: {$gte: newtoday} }]
+    }
   } else {
     query = {
       $and: [{ thoiGian: {$lte: toDate }}, { thoiGian: {$gte: fromDate} }]
     }
   }
-  console.log(query)
   LichSu.paginate(query,
     {
       populate: {
@@ -35,7 +41,6 @@ exports.find_history = (req, res) => {
       page: options.page,
       limit: options.limit
     }).then(value => {
-      console.log(value)
       res.json({
         rs: 'success',
         data: value

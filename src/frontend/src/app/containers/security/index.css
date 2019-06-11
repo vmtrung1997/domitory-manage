@@ -16,6 +16,8 @@
 }
 .img-css{
   float: right;
+  min-width: 100%;
+  min-height: auto;
 }
 .img-css img{
   height: 90vh;
@@ -57,6 +59,7 @@ box-shadow: 6px 10px 10px -9px rgba(179,179,179,1);
 }
 .item-image{
   max-height: 100px;
+  max-width: 85px;
 }
 .item-image img{
   max-height:100px;

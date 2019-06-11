@@ -78,12 +78,13 @@ class Security extends Component {
 				var his = result.data.data;
 				history.pop();
 				history.unshift(his);
-				this.setState({ notFound: false, history: history, mainHis: history[0] })
+				this.setState({ notFound: false, history: history, mainHis: history[0], cardId: '' })
 			} else if (result.data.rs === 'not found') {
-				this.setState({ notFound: true })
+				console.log(result.data);
+				this.setState({ notFound: true, cardId: ''})
 			}
-		}).then(() => {
-			this.setState({ cardId: '' })
+		}).catch(() => {
+			this.setState({ notFound: true, cardId: '' })
 		})
 	}
 	getInput = (target) => {
@@ -111,7 +112,7 @@ class Security extends Component {
 								<Col md={6} className={'col-outer'}>
 									<div className={'img-css'}>
 										{!this.state.notFound ?
-											<img alt={mainHis.MSSV} src={mainHis.profile && mainHis.profile.img !== "" ? mainHis.profile.img : defaultStudentImg} /> :
+											(mainHis.profile.img?<img alt={mainHis.MSSV} src={mainHis.profile.img} />:<div style={{ margin: '5em 0', textAlign: 'center' }}>Chưa cập nhật ảnh</div>) :
 											<div></div>}
 									</div>
 								</Col>
@@ -133,7 +134,7 @@ class Security extends Component {
 										<Col md={12} className={'info'}>Phòng: <span>{mainHis.profile.idPhong?mainHis.profile.idPhong.tenPhong:'Chưa cập nhật'}</span></Col>
 										<Col md={12} className={'info'}>Giờ vào: <span>{mainTime.toLocaleTimeString() + ' ' + mainTime.toLocaleDateString()}</span></Col>
 									</div>:<div> Nothing</div> :
-										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>NOT FOUND</span></Col>
+										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>Không tìm thấy dữ liệu</span></Col>
 									}
 								</Col>
 							</Row>
@@ -144,7 +145,7 @@ class Security extends Component {
 								return (
 									<div className={'item-history'} key={index}>
 										<div className={'item-image'}>
-											<img alt={value.profile.hoTen} src={value.profile && value.profile.img !== "" ? value.profile.img : defaultStudentImg} />
+										{value.profile && value.profile.img ?<img alt={value.profile.hoTen} src={ value.profile.img} />:<div>Chưa cập nhật ảnh</div>}
 										</div>
 										<div className={'item-text'}>
 											<div>{value.profile.hoTen}</div>
