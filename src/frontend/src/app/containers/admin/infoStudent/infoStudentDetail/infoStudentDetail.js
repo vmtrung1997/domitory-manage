@@ -134,7 +134,7 @@ class InfoStudentDetail extends Component {
           const roomOptions = result.data.map(room => ({ value: room._id, label: room.tenPhong }));
           this.setState({
             roomOptions: roomOptions
-          })
+          });
 
           break;
         case 'school':
@@ -142,7 +142,7 @@ class InfoStudentDetail extends Component {
 
           this.setState({
             schoolOptions: schoolOptions
-          })
+          });
           break;
 
         default:
@@ -169,9 +169,9 @@ class InfoStudentDetail extends Component {
   };
 
   handleSaveChange = async () => {
-    await refreshToken()
+    await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
-    this.setState({loading: true})
+    this.setState({loading: true});
     axios.post(`/manager/infoStudent/update`,
       {
         info: {

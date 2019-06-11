@@ -17,7 +17,7 @@ class NewsHomepage extends React.Component {
   loadNews = async date => {
     var _post = [];
 
-    await Axios.post("/news/get-news", { data: date })
+    await Axios.post("/news/get-news", { data: date,skip: 0,limit: 5})
       .then(rs => {
         if (rs.status === 200) {
           rs.data.data.forEach((item, index) => {
@@ -130,7 +130,7 @@ class NewsHomepage extends React.Component {
         <section className="razo-blog-area section-padding-80-0">
           <div className="container">
             <div ><h2 style = {{fontSize: '36px', marginBottom: '15px',textAlign:'center'}}>TIN TỨC</h2></div>
-            {this.state.postsAll.length === 0?
+            {this.state.postsAll.length === 0 && this.state.postPin.length === 0?
                   <div style={{ marginTop: "30px", textAlign: "center" }}>
                         <img
                           style={{ marginTop: '14vh',

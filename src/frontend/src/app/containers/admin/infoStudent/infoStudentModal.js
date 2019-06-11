@@ -293,6 +293,10 @@ export class ImportDataModal extends Component{
 
   };
 
+  verifyDataImport = (headers) => {
+    return
+  };
+
   convertData = async (file) => {
     return new Promise ( (resolve, reject) => {
       let reader = new FileReader();
@@ -301,7 +305,11 @@ export class ImportDataModal extends Component{
         let workbook = XLSX.read(data, {type: 'array'});
 
         let worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        console.log('==ws', worksheet);
         let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","ngaySinh"]});
+        //let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:1});
+
+        //let jsonObj = XLSX.utils.sheet_to_json(worksheet, );
 
         resolve(listNewStudent)
       };
@@ -332,22 +340,36 @@ export class ImportDataModal extends Component{
           justFileServiceResponse: 'Vui lòng chờ!!'
         });
         this.convertData(this.state.fileImport).then(async(resolve) => {
-          resolve.shift();
+          console.log('==file read', resolve, resolve[0]);
+          const headers = resolve[0];
+          if(!(headers.mssv === 'MSSV') || !(headers.hoTen === 'Họ và tên') || !(headers.ngaySinh === 'Ngày sinh'))
+            this.setState({
+              justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
+            });
+          else{
+            resolve.shift();
+            resolve = resolve.map(record => ({...record, mssv: `${record.mssv}`}));
+            import_info_student_data({data: resolve, regisExpiredDate:this.state.regisExpiredDate, expiredDate:this.state.expiredDate})
+              .then(result => {
+                this.setState({
+                  justFileServiceResponse: 'Thêm thành công!!'
+                });
+                this.props.onSave();
+              }).catch(err => {
+              // console.log('==err impport', err.response)
+                this.setState({
+                  justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
+                  listExpired: err.response.data.list
+                });
+            })
+          }
 
-          resolve = resolve.map(record => ({...record, mssv: `${record.mssv}`}));
-          import_info_student_data({data: resolve, regisExpiredDate:this.state.regisExpiredDate, expiredDate:this.state.expiredDate})
-            .then(result => {
-              this.setState({
-                justFileServiceResponse: 'Thêm thành công!!'
-              });
-              this.props.onSave();
-            }).catch(err => {
-            // console.log('==err impport', err.response)
-              this.setState({
-                justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
-                listExpired: err.response.data.list
-              });
-          })
+
+        }).catch(err => {
+          console.log('==err data', err)
+          this.setState({
+            justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
+          });
         })
       } else {
         this.setState({
