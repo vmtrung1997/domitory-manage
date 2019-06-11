@@ -57,13 +57,16 @@ export const add_student = async(params) => {
   })
 };
 
-export const mark_old_student = async(params) => {
+export const convert_student = async(arr, option, regisExpiredDate, dayOut) => {
   const headers = await get_headers();
-
+  console.log('==arr, option', arr, option);
   return new Promise((resolve, reject) => {
-    axios.post(`/manager/infoStudent/delete`,
+    axios.post(`/manager/infoStudent/convertStudent`,
       {
-        arrDelete: params
+        arrStudent: arr,
+        option: option,
+        regisExpiredDate: regisExpiredDate,
+        dayOut: dayOut
       }, headers
     ).then(result => {
       resolve(result);

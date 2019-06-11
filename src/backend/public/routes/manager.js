@@ -9,8 +9,7 @@ var accountController = require('./../apiController/accountController');
 var historyController = require('../apiController/historyController');
 let repo = require('../repos/phongRepo');
 var universityController = require('../apiController/universityController');
-var studentController = require('../apiController/studentController')
-var registeredController = require('./../apiController/registeredController')
+var registeredController = require('./../apiController/registeredController');
 
 // Expense
 router.get('/expense', expenseController.quan_ly_dien_nuoc);
@@ -77,7 +76,7 @@ router.post('/infoStudent/getAll', infoStudent.getListStudent);
 
 router.post('/infoStudent/add', infoStudent.addStudent);
 
-router.post('/infoStudent/delete', infoStudent.deleteStudent);
+router.post('/infoStudent/convertStudent', infoStudent.convertStudent);
 
 router.post('/infoStudent/update', infoStudent.updateInfo);
 

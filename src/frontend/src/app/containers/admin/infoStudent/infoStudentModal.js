@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import {Col, Modal, Row, Tab, Table, Tabs} from 'react-bootstrap'
+import {Col, Modal, Row, Table} from 'react-bootstrap'
 import Button from '../../../components/button/button';
 import Input from "../../../components/input/input";
 import DatePicker from "react-datepicker/es/index";
-import {add_student, mark_old_student, get_list_student, get_element, get_floor_room, import_info_student_data} from './infoStudentActions';
+import {add_student, convert_student, get_list_student, import_info_student_data} from './infoStudentActions';
 import {ToastsStore} from "react-toasts";
 import XLSX from "xlsx";
 import Checkbox from "../../../components/checkbox/checkbox";
@@ -56,7 +56,7 @@ export class AddStudentModal extends Component{
       return;
     }
 
-    add_student(infoAdded).then(result => {
+    add_student(infoAdded).then(() => {
       ToastsStore.success("Thêm thành công!");
       this.props.onSave();
       this.handlePopup(false);
@@ -73,7 +73,7 @@ export class AddStudentModal extends Component{
         [name]: val
       }
     })
-  }
+  };
 	
 	render(){
 		return(
@@ -127,7 +127,6 @@ export class AddStudentModal extends Component{
 								Hạn đăng ký:
 							</Col>
 							<Col md={8}>
-
 								<DatePicker
 									dateFormat='dd/MM/yyyy'
 									selected={this.state.infoAdded.regisExpiredDate}
@@ -169,13 +168,14 @@ export class AddStudentModal extends Component{
 	}
 }
 
-export class MarkOldStudentModal extends Component{
+export class ConvertStudentModal extends Component{
   constructor(props) {
     super(props);
+    const today = new Date();
     this.state = {
       show: this.props.show,
-			listStudent: this.props.listStudent,
-      function: ()=>{}
+      regisExpiredDate: today,
+      dayOut: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() )
     }
   }
 
@@ -185,19 +185,23 @@ export class MarkOldStudentModal extends Component{
     }
   }
 
-  handlePopup = (state) => {
-    if(state && this.state.listStudent.length === 0)
+  handlePopup = (state) => {  //state = true => open
+    if(!state)
+      this.setState({
+        show: state,
+      });
+    else if(state && this.props.listStudent.length === 0)
     {
       ToastsStore.error("Vui lòng chọn ít nhất 1 người!");
-      return;
+    } else{
+      this.setState({
+        show: state,
+      })
     }
-    this.setState({
-      show: state,
-    })
   };
 
-  handleSubmitMarkOldStudent = () => {
-    mark_old_student(this.state.listStudent).then(result => {
+  handleSubmitConvertStudent = () => {
+    convert_student(this.props.listStudent, this.props.option, this.state.regisExpiredDate, this.state.dayOut).then(result => {
       ToastsStore.success("Thành công!", result.data);
       this.props.function();
       this.props.onSave();
@@ -208,27 +212,69 @@ export class MarkOldStudentModal extends Component{
 
   };
 
+  getValueDate = (name, val) => {
+    this.setState({
+      [name]: val
+    })
+  };
+
   render(){
     return(
       <React.Fragment>
         <Button
           title={'Chuyển đổi'}
           color={'danger'}
+          onClick={() => this.handlePopup(true)}
         >
-          <i className="fas fa-sync-alt" onClick={() => this.handlePopup(true)}/>
+          <i className="fas fa-sync-alt" />
         </Button>
 
         {/*modal popup delete student*/}
         <Modal show={this.state.show} onHide={() =>this.handlePopup(false)}>
           <Modal.Header closeButton>
-            <Modal.Title>Sau khi xóa những sinh viên này sẽ là sinh viên cũ!</Modal.Title>
+            <Modal.Title>
+              {this.props.option
+                ?
+                <div>
+                  <h4>Bạn chắc chắn muốn chuyển những sinh viên này về hiện tại chứ!</h4>
+                  <Row>
+                  <Col md={4}>
+                    <p>Hạn đăng ký:</p>
+                  </Col>
+                  <Col md={8}>
+                  <DatePicker
+                    dateFormat='dd/MM/yyyy'
+                    selected={this.state.regisExpiredDate}
+                    onChange={(val) => this.getValueDate('regisExpiredDate', val)}
+                    className='input-datepicker'
+                  />
+                  </Col>
+                  </Row>
+                  <Row>
+                    <Col md={4}>
+                      <p>Ngày hết hạn:</p>
+                    </Col>
+                    <Col md={8}>
+                      <DatePicker
+                        dateFormat='dd/MM/yyyy'
+                        selected={this.state.dayOut}
+                        onChange={(val) => this.getValueDate('dayOut', val)}
+                        className='input-datepicker'
+                      />
+                    </Col>
+                  </Row>
+                </div>
+                :
+                  <h4>Những sinh viên này sẽ được đưa vào danh sách sinh viên cũ!</h4>
+              }
+            </Modal.Title>
           </Modal.Header>
           {/*<Modal.Body>Bạn có chắc chắn muốn xóa những sinh viên này?</Modal.Body>*/}
           <Modal.Footer>
             <Button variant="outline" onClick={() =>this.handlePopup(false)}>
               Hủy
             </Button>
-            <Button  onClick={() =>this.handleSubmitMarkOldStudent()}>
+            <Button  onClick={() =>this.handleSubmitConvertStudent()}>
               Đồng ý
             </Button>
           </Modal.Footer>
@@ -291,10 +337,6 @@ export class ImportDataModal extends Component{
       fileImport: file
     });
 
-  };
-
-  verifyDataImport = (headers) => {
-    return
   };
 
   convertData = async (file) => {
@@ -477,7 +519,6 @@ export class ImportDataModal extends Component{
                     <td>C</td>
                     <td>D</td>
                     <td>E</td>
-
                   </tr>
                   </thead>
                   <tbody>
