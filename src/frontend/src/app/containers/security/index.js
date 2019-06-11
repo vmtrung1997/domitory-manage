@@ -111,8 +111,8 @@ class Security extends Component {
 								<Col md={6} className={'col-outer'}>
 									<div className={'img-css'}>
 										{!this.state.notFound ?
-											<img src={mainHis && mainHis.profile.img !== "" ? mainHis.profile.img : defaultStudentImg} /> :
-											<img src={''} />}
+											<img alt={mainHis.MSSV} src={mainHis.profile && mainHis.profile.img !== "" ? mainHis.profile.img : defaultStudentImg} /> :
+											<div></div>}
 									</div>
 								</Col>
 								<Col md={6}>
@@ -130,7 +130,7 @@ class Security extends Component {
 									{!this.state.notFound ?mainHis? <div style={{ margin: '5em 0', textAlign: 'center' }}>
 										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>{mainHis.profile.hoTen.toUpperCase()}</span></Col>
 										<Col md={12} className={'info'}>MSSV: <span>{mainHis.MSSV}</span></Col>
-										<Col md={12} className={'info'}>Phòng: <span>{mainHis.profile.idPhong.tenPhong}</span></Col>
+										<Col md={12} className={'info'}>Phòng: <span>{mainHis.profile.idPhong?mainHis.profile.idPhong.tenPhong:'Chưa cập nhật'}</span></Col>
 										<Col md={12} className={'info'}>Giờ vào: <span>{mainTime.toLocaleTimeString() + ' ' + mainTime.toLocaleDateString()}</span></Col>
 									</div>:<div> Nothing</div> :
 										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>NOT FOUND</span></Col>
@@ -144,11 +144,11 @@ class Security extends Component {
 								return (
 									<div className={'item-history'} key={index}>
 										<div className={'item-image'}>
-											<img src={value.profile && value.profile.img !== "" ? value.profile.img : defaultStudentImg} />
+											<img alt={value.profile.hoTen} src={value.profile && value.profile.img !== "" ? value.profile.img : defaultStudentImg} />
 										</div>
 										<div className={'item-text'}>
 											<div>{value.profile.hoTen}</div>
-											<div>{value.profile.idPhong.tenPhong}</div>
+											<div>{value.profile.idPhong?"Phòng: " + value.profile.idPhong.tenPhong:"Phòng: Chưa cập nhật"}</div>
 											<div>{thoiGian.toLocaleTimeString() + ' ' + thoiGian.toLocaleDateString()}</div>
 										</div>
 									</div>

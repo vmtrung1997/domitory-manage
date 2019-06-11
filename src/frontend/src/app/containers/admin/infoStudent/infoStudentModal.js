@@ -301,9 +301,15 @@ export class ImportDataModal extends Component{
         let workbook = XLSX.read(data, {type: 'array'});
 
         let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","ngaySinh"]});
-
-        resolve(listNewStudent)
+        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","ngaySinh"] , raw: false});
+        listNewStudent.forEach(element => {
+          if (element.hasOwnProperty('ngaySinh')){
+            var temp = new Date(element.ngaySinh)
+            console.log(temp)
+          }
+        });
+        console.log(listNewStudent)
+        //resolve(listNewStudent)
       };
       reader.readAsArrayBuffer(file);
 

@@ -138,13 +138,6 @@ exports.deleteStudent = (req, res) => {
         .then(() => {
           Profile.findOneAndUpdate({MSSV: id},{ $set: {idPhong: null} })
             .then(result => {
-              if(result.idPhong){
-                Room.findOne({_id:result.idPhong})
-                  .then(result => {
-                    result.soNguoi = result.soNguoi - 1;
-                    result.save()
-                  }).catch()
-              }
               res.status(200).json({msg: 'Bạn đã xóa thành công'})
             }).catch(err =>
             res.status(400).json({msg: 'Xóa thất bại', err: err})

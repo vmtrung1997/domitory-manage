@@ -1,19 +1,26 @@
 const LichSu = require('../models/LichSu')
-const mongoose = require('mongoose')
 const Profile = require('../models/Profile')
+const TaiKhoan = require('../models/TaiKhoan')
 require('../models/Profile')
 require('../models/Truong')
 require('../models/NganhHoc')
 require('../models/Phong')
 require('../models/TaiKhoan')
 function find_history(){
-  return new Promise((resolve,reject) => {
+  return new Promise(async (resolve,reject) => {
+    // var list = []
+    // await TaiKhoan.find({isDelete: 0}).populate([{path: 'idProfile', select: 'MSSV'}]).then(result => {
+    //     result.forEach(r => {
+    //       list.push(r.idProfile.MSSV);
+    //     });
+    // })
+    // console.log(list);
     LichSu.find().sort({thoiGian: -1}).
     limit(15).
     populate({
       path: 'profile',
       select: 'hoTen idPhong truong nganhHoc img',
-      populate: [{ path: 'idPhong', select: 'tenPhong'}, ]
+      populate: [{ path: 'idPhong', select: 'tenPhong'}]
     }).
     exec((err,result) => {
       if (result){
