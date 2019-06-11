@@ -231,7 +231,7 @@ class BillStudent extends React.Component {
                               )}
                             </td>
 
-                            {this.state.lastBill[0].trangThai === '0' ? (
+                            {this.state.lastBill[0].trangThai === 0 ? (
                               <td className="is-dont-done">Chưa thanh toán</td>
                             ) : (
                               <td className="is-done">Đã thanh toán</td>
