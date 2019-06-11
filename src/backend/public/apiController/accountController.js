@@ -17,6 +17,7 @@ exports.get_List = (req, res) => {
 	}
 	var query = { 
 		isDelete: 0,
+		loai: {$ne: "SV"}
 	}
 	
 	if(req.body.search){ 
@@ -31,9 +32,6 @@ exports.get_List = (req, res) => {
 			break
 		case 'BV':
 			query.loai = 'BV'
-			break
-		case 'SV':
-			query.loai = 'SV'
 			break
 		case 'ADCP':
 			query.loai = 'ADCP'
@@ -136,7 +134,7 @@ exports.update_Account = (req, res) => {
 	const id = req.query.id
 	if(req.body){
 		const rule = req.body.rule
-		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' ||  rule === 'SV' || rule === 'ADCP' || rule === 'DD' ){
+		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' || rule === 'ADCP' || rule === 'DD' ){
 			Account.updateOne({ _id: id }, {loai: rule}, (err, val) => {
 				if(!err){
 					res.json({ rs: 'ok'})

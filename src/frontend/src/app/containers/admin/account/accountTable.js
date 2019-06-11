@@ -80,9 +80,6 @@ class AccountTable extends Component{
 				case 'BV':
 					rule = 'Bảo vệ'
 					break
-				case 'SV':
-					rule = 'Sinh viên'
-					break
 				case 'ADCP':
 					rule = 'Quản lý chi phí'
 					break
