@@ -3,8 +3,6 @@ import { Row, Col, Table, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
 import { withRouter } from 'react-router-dom';
-import XLSX from 'xlsx';
-import DatePicker from "react-datepicker/es/index";
 
 
 import './infoStudent.css';
@@ -18,7 +16,7 @@ import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
 import Print from './infoStudentPrint';
 import { get_element, get_list_student_by_page } from './infoStudentActions'
-import { AddStudentModal, MarkOldStudentModal, ImportDataModal, ExportDataModal } from './infoStudentModal';
+import { AddStudentModal, ConvertStudentModal, ImportDataModal, ExportDataModal } from './infoStudentModal';
 
 class InfoStudent extends Component{
   constructor(props) {
@@ -55,14 +53,11 @@ class InfoStudent extends Component{
         regisExpiredDateAdded: new Date(),
       },
 
-
       phong: [],
       truong: [],
 
       listChecked: [],
       flag: false,
-
-
 
       roomHistory: [],
 
@@ -228,7 +223,7 @@ class InfoStudent extends Component{
     this.getData();
   }
 
-  handleCheckDelete = (props) => {
+  handleCheckBox = (props) => {
     if(props.chk){
       let arrDel = this.state.listChecked;
       arrDel.push(props.value);
@@ -247,7 +242,7 @@ class InfoStudent extends Component{
         listChecked: arrDel
       })
     }
-  }
+  };
 
   handleValueCheck = mssv => {
     const i = this.state.listChecked.indexOf(mssv);
@@ -272,7 +267,8 @@ class InfoStudent extends Component{
 
   handleChooseOption = async (prop) => {
     await this.setState({
-      searchValues: {...this.state.searchValues, isOld: prop, pageActive: 1}
+      searchValues: {...this.state.searchValues, isOld: prop, pageActive: 1},
+      listChecked: []
       });
     this.getData();
   };
@@ -443,12 +439,12 @@ class InfoStudent extends Component{
                     onSave={()=>this.getData()}
                   />
 
-                  <MarkOldStudentModal
+                  <ConvertStudentModal
                     function={()=>this.setState({listChecked:[]})}
                     show={this.state.showDelPopup}
                     listStudent={this.state.listChecked}
                     onSave={()=>this.getData()}
-
+                    option={this.state.searchValues.isOld}
                   />
                 </div>
             </Row>
@@ -569,9 +565,8 @@ class InfoStudent extends Component{
                       >
                         <i className="fas fa-edit"/>
                       </Button>
-                      {!isOld &&
-                        <Checkbox name={info.MSSV} isCheck={this.handleCheckDelete} checkmark={'check-mark-fix'} check={this.handleValueCheck(info.MSSV)}/>
-                      }
+                        <Checkbox name={info.MSSV} isCheck={this.handleCheckBox} checkmark={'check-mark-fix'} check={this.handleValueCheck(info.MSSV)}/>
+
                     </td>
                   </tr>
                 )
