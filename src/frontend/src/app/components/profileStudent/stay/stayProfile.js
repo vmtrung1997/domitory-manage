@@ -195,6 +195,7 @@ class StayProfile extends React.Component {
                           <span className="label-font">
                             Phòng{" "}
                             {this.state.tenPhong.tenPhong === undefined?<ChooseRoom isLoad = {this.getStay}></ChooseRoom>:null}
+                          
                           </span>
 
                           <MyInput
