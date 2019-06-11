@@ -76,7 +76,8 @@ class Security extends Component {
 			if (result.data.rs === 'success') {
 				var { history } = this.state;
 				var his = result.data.data;
-				history.pop();
+				if (history.length > 15)
+					history.pop();
 				history.unshift(his);
 				this.setState({ notFound: false, history: history, mainHis: history[0], cardId: '' })
 			} else if (result.data.rs === 'not found') {
