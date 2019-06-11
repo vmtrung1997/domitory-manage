@@ -77,7 +77,6 @@ class Account extends Component{
 			{value: 'SA', label: 'Trưởng quản lý'},
 			{value: 'AM', label: 'Quản lý'},
 			{value: 'BV', label: 'Bảo vệ'},
-			{value: 'SV', label: 'Sinh viên'},
 			{value: 'ADCP', label: 'Quản lý chi phí'},
 			{value: 'DD', label: 'Điểm danh'},
 		]

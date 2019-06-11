@@ -40,10 +40,6 @@ class AccountDetail extends Component{
 			case 'BV':
 				rule = 'Bảo vệ'
 				break
-			case 'SV':
-				rule = 'Sinh viên'
-				isStudent = true
-				break
 			case 'ADCP':
 				rule = 'Quản lý chi phí'
 				break
@@ -69,13 +65,6 @@ class AccountDetail extends Component{
 		                    <p> Email </p>
 		                    <p> Tài khoản </p>
 		                    <p> Loại tài khoản </p>
-		                    { isStudent ? (
-								<React.Fragment>
-		                    		<p> MSSV </p>
-								</React.Fragment>
-		                    ):(
-								<React.Fragment/>	                    	 
-		                    )}
 		                  </div>
 		                  <div style={{width: '60%'}}>
 		                    <Input value={data.idProfile.hoTen} disabled={true}/>
@@ -83,11 +72,6 @@ class AccountDetail extends Component{
 		                    <Input value={data.idProfile.email} disabled={true}/>
 		                    <Input value={data.username} disabled={true}/>
 		                    <Input value={rule} disabled={true}/>
-		                    { isStudent ? (
-				                <Input value={data.idProfile.MSSV} disabled={true}/>
-		                    ):(
-								<React.Fragment/>	                    	 
-		                    )}
 		                  </div>
 		            		</Modal.Body>
 		            		<Modal.Footer>

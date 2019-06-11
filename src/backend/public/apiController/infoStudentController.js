@@ -132,17 +132,28 @@ exports.importFile = async (req, res) => {
       })
 };
 
-exports.deleteStudent = (req, res) => {
-  const arrDel = req.body.arrDelete;
-  if(arrDel === undefined || arrDel.length === 0) {
+exports.convertStudent = (req, res) => {
+  const arrStudent = req.body.arrStudent;
+  const option= req.body.option;  // option = 0 => student at present
+
+  if(arrStudent === undefined || arrStudent.length === 0) {
     res.status(400).json({msg: 'Không có dữ liệu để xóa'})
   }
+  if(typeof option === 'undefined')
+    res.status(400).json({msg: 'Thiếu option'});
   else {
-    arrDel.forEach(id => {
-      Account.findOneAndUpdate({username: id},{ $set: {isDelete: 1} })
+    arrStudent.forEach(id => {
+      Account.findOneAndUpdate({username: id},{ $set: {isDelete: option ? 0 : 1} })
         .then(() => {
-          Profile.findOneAndUpdate({MSSV: id},{ $set: {idPhong: null, isActive: false, hanDangKy: null} })
-            .then(result => {
+          Profile.findOneAndUpdate(
+            {MSSV: id},
+            { $set: {
+              idPhong: null,
+              isActive: false,
+              hanDangKy: option ? req.body.regisExpiredDate : null,
+              ngayHetHan: option ? req.body.dayOut : new Date()
+            } })
+            .then(() => {
               res.status(200).json({msg: 'Bạn đã xóa thành công'})
             }).catch(err =>
             res.status(400).json({msg: 'Xóa thất bại', err: err})
@@ -152,7 +163,6 @@ exports.deleteStudent = (req, res) => {
       })
     })
   }
-
 };
 
 exports.updateInfo = (req,res) => {
