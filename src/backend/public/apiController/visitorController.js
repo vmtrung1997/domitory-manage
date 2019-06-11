@@ -55,8 +55,6 @@ exports.getNews = (req, res) => {
   var date = req.body.data;
   var skip =  parseInt(req.body.skip);
   var limit = req.body.limit
-
-  console.log(skip,limit);
   try {
     BaiViet.find({ trangThai: 1,ghim: 0})
       .sort({ ngayTao: -1 })

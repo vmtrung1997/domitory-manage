@@ -105,7 +105,7 @@ exports.updateNews = (req, res) => {
   )
     .then(place => {
       console.log("==update-news: success");
-      console.log(place);
+
       res.status(200).json({
         rs: "success"
       });
