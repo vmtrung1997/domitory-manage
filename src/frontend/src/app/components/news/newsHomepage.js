@@ -78,6 +78,7 @@ class NewsHomepage extends React.Component {
     });
 
     this.state.postPin.forEach(async (item, index) => {
+      if(item.stamp){
       var rs = item.stamp + ".jpg";
       await storage
         .ref("news")
@@ -88,6 +89,12 @@ class NewsHomepage extends React.Component {
           tmp[index].url = url;
           this.setState({ postPin: tmp });
         });
+      }
+      else{
+        var tmp = this.state.postPin;
+        tmp[index].url = '/images/logo-hktn.jpg';
+        this.setState({ postPin: tmp });
+      }
     });
 
     return temp;
@@ -262,9 +269,12 @@ class NewsHomepage extends React.Component {
 
                   {/* Post Overlay */}
                   {this.state.postPin.map((item, index) => {
+                
                     if (index === 0) {
                       return (
+                    
                         <div
+                        key = {index}
                           className="featured-post-area small-featured-post bg-img bg-overlay mb-30"
                           style={{ backgroundImage: `url(${item.url})` }}
                         >
@@ -310,9 +320,11 @@ class NewsHomepage extends React.Component {
                         <div className="razo-single-post d-flex mb-30">
                           {/* Post Thumbnail */}
                           <div className="post-thumbnail">
-                            <a href="single-blog.html">
-                              <img src="img/post-1.jpg" alt = "" />
-                            </a>
+                          <a href="#">
+                                <i className="fa fa-clock" aria-hidden="true" />{" "}
+                                &nbsp;
+                                {item ? this.formatDay(item) : null}
+                              </a>
                           </div>
                           {/* Post Content */}
                           <div className="post-content">

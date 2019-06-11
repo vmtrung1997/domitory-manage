@@ -296,7 +296,7 @@ class ChooseRoom extends React.Component {
           onClick={this.handleShow}
           style={{ color: "#29b6b4", cursor: "pointer" }}
         >
-          (Thay đổi)
+          (Xem phòng)
         </span>
 
         <Modal size="lg" show={this.state.show} onHide={this.handleClose}>
@@ -325,13 +325,13 @@ class ChooseRoom extends React.Component {
                   position={ToastsContainerPosition.BOTTOM_CENTER}
                   lightBackground
                   store={ToastsStore}></ToastsContainer>
-            {this.state.room && (
+            {/* {this.state.room && (
               <ConfirmModal
                 hideModal={this.hindModal}
                 id={this.props.userProfile._id}
                 data={this.state.room}
               />
-            )}
+            )} */}
           </Modal.Footer>
         </Modal>
       </>

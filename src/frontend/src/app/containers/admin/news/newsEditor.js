@@ -264,7 +264,7 @@ class EditorConvertToHTML extends Component {
             </Col>
             <Col sm={3}>
               <MySelectOption
-                value={loai}
+                value={this.state.loai}
                 options={this.state.typeOptions}
                 selected={this.kindSelected}
               />
