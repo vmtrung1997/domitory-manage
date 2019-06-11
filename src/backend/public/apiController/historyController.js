@@ -35,6 +35,7 @@ exports.find_history = (req, res) => {
       page: options.page,
       limit: options.limit
     }).then(value => {
+      console.log(value)
       res.json({
         rs: 'success',
         data: value

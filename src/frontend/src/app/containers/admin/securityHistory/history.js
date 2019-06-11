@@ -5,7 +5,8 @@ import DatePicker from '../../../components/datePicker/datePicker'
 import MyPagination from './../../../components/pagination/pagination'
 import Button from '../../../components/button/button';
 import {findHistory} from './historyAction'
-import { imageFile,defaultImage } from '../../../function/imageFunction'
+import { defaultStudentImg } from '../../../function/imageFunction'
+import {Link} from 'react-router-dom'
 import './history.css'
 import Loader from '../../../components/loader/loader';
 class Security extends Component{
@@ -37,13 +38,8 @@ class Security extends Component{
 		}
 		findHistory(parameter).then(result => {
 			if (result.data){
-				var table = result.data.data.docs.map(value => {
-					var profile = value.profile
-					value.imgFile = profile && ('img' in profile)?imageFile(value.profile.img):''
-					return value;
-				})
 				this.setState({
-					table: table,
+					table: result.data.data.docs,
 					page: 1,
 					totalPages: result.data.data.totalPages
 				})
@@ -69,13 +65,8 @@ class Security extends Component{
 		}
 		findHistory(parameter).then(result => {
 			if (result.data){
-				var table = result.data.data.docs.map(value => {
-					var profile = value.profile
-					value.imgFile = profile && ('img' in profile)?imageFile(value.profile.img):''
-					return value;
-				})
 				this.setState({
-					table: table,
+					table: result.data.data.docs,
 					page: page,
 					totalPages: result.data.data.totalPages
 				})
@@ -120,11 +111,12 @@ class Security extends Component{
 									return (
 										<div className={'item-history'} key={index}>
 											<div className={'item-image'}>
-												<img alt={value.profile._id} src={value.imgFile !== "" ? value.imgFile : defaultImage}/>
+												<img alt={value.profile._id} src={value.profile.img !== "" ? value.profile.img : defaultStudentImg}/>
 											</div>
-											<div className={'item-text'}>
+											<div className={'item-history-text'}>
+												<div><Link to={`/admin/student/detail/${value.profile.MSSV}`}>{value.profile.MSSV}</Link></div>
 												<div>{value.profile.hoTen}</div>
-												<div>{value.profile.idPhong.tenPhong}</div>
+												<div>{value.profile.idPhong?value.profile.idPhong.tenPhong:"Chưa cập nhật phòng"}</div>
 												<div>{thoiGian.toLocaleTimeString() + ' ' + thoiGian.toLocaleDateString()}</div>
 											</div>
 										</div>
