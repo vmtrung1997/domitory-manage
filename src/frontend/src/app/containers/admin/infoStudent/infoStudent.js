@@ -297,6 +297,7 @@ class InfoStudent extends Component{
     this.setState({ [key]: value })
   };
   render(){
+    console.log('==render info student', this.state);
     const {
       searchValues: {
         limit,
