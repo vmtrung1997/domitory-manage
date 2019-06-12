@@ -46,9 +46,7 @@ exports.select_expense_table = (req, res) => {
 		searchObj.trangThai = search.status
 
 	if (search.room !== 0 && search.room.value !== 0)
-		searchObj.idPhong = search.room.value
-	// console.log('==searchObj: ', searchObj);
-	// console.log('==options: ', options)
+		searchObj.idPhong = search.room.value;
 	ChiPhiPhong.paginate(searchObj, options).then(value => {
 		res.json({
 			rs: value
@@ -83,15 +81,14 @@ function TinhTienDien(arr, number) {
 	let total = 0;
 	let temp = number;
 	for (let i = 0; i < arr.length; i++) {
-		if (temp >= arr[i].giaTriDau && temp <= arr[i].giaTriCuoi) {
-			for (let j = 0; j < i; j++) {
-				if (j != 0)
-					total = total + (arr[j].giaTriCuoi - arr[j].giaTriDau + 1) * arr[j].giaTriThuc;
-				else
-					total = total + (arr[j].giaTriCuoi - arr[j].giaTriDau) * arr[j].giaTriThuc;
-			}
-			total = total + (number - arr[i].giaTriDau + 1) * arr[i].giaTriThuc;
-			break;
+		var diff = arr[i].giaTriCuoi - arr[i].giaTriDau;
+		console.log('dif', diff)
+		if (temp > diff) {
+			total = total + diff * arr[i].giaTriThuc;
+			temp = temp - diff;
+		} else {
+			console.log('return',total + temp * arr[i].giaTriThuc);
+			return total + temp * arr[i].giaTriThuc;
 		}
 	}
 	return total;
@@ -100,9 +97,6 @@ function TinhTienNuoc(arr, number, soNguoi) {
 	let total = 0;
 	let temp = number;
 	for (let i = 0; i < arr.length; i++) {
-		// if (i === arr.length - 1) {
-		// 	return total + temp * arr[i].giaTriThuc
-		// }
 		var diff = (arr[i].giaTriCuoi - arr[i].giaTriDau) * soNguoi
 		if (temp > diff) {
 			total = total + diff * arr[i].giaTriThuc;
