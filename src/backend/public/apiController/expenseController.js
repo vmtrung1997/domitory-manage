@@ -46,7 +46,9 @@ exports.select_expense_table = (req, res) => {
 		searchObj.trangThai = search.status
 
 	if (search.room !== 0 && search.room.value !== 0)
-		searchObj.idPhong = search.room.value;
+		searchObj.idPhong = search.room.value
+	// console.log('==searchObj: ', searchObj);
+	// console.log('==options: ', options)
 	ChiPhiPhong.paginate(searchObj, options).then(value => {
 		res.json({
 			rs: value
@@ -80,15 +82,18 @@ function getPersonInRoom(id) {
 function TinhTienDien(arr, number) {
 	let total = 0;
 	let temp = number;
+	if (temp <= arr[0].giaTriCuoi)
+		return temp* arr[0].giaTriThuc;
 	for (let i = 0; i < arr.length; i++) {
-		var diff = arr[i].giaTriCuoi - arr[i].giaTriDau;
-		console.log('dif', diff)
-		if (temp > diff) {
-			total = total + diff * arr[i].giaTriThuc;
-			temp = temp - diff;
-		} else {
-			console.log('return',total + temp * arr[i].giaTriThuc);
-			return total + temp * arr[i].giaTriThuc;
+		if (temp >= arr[i].giaTriDau && temp <= arr[i].giaTriCuoi) {
+			for (let j = 0; j < i; j++) {
+				if (j != 0)
+					total = total + (arr[j].giaTriCuoi - arr[j].giaTriDau + 1) * arr[j].giaTriThuc;
+				else
+					total = total + (arr[j].giaTriCuoi - arr[j].giaTriDau) * arr[j].giaTriThuc;
+			}
+			total = total + (number - arr[i].giaTriDau + 1) * arr[i].giaTriThuc;
+			break;
 		}
 	}
 	return total;
