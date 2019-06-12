@@ -152,7 +152,7 @@ exports.update_activity = (req, res) => {
 			result.map( item => {
 				resultActivity.find({ idHD: id, idSV: item._id}).then( rs => {
 					if(rs.length === 0){
-						var tmpAc = new resultActivity({
+						var tmpAC = new resultActivity({
 							idHD: id,
 							idSV: item._id,
 							isTG: false,
