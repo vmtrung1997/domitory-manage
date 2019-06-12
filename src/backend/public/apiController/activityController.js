@@ -95,7 +95,7 @@ exports.post_activity = (req, res) => {
 				var rs = new resultActivity({
 					idHD: act._id,
 					idSV: item._id,
-					isTG: false,
+					isTG: true,
 					isDK: false
 				})
 				rs.save()
@@ -166,7 +166,7 @@ exports.update_activity = (req, res) => {
 						var tmpAc = new resultActivity({
 							idHD: id,
 							idSV: item._id,
-							isTG: false,
+							isTG: true,
 							isDK: false
 						})
 						tmpAC.save()
@@ -273,17 +273,22 @@ exports.export_activity = async (req, res) => {
 							console.log('==export_activity:', err)
 							res.status(500)
 						})
+
 					if(rs){
 						if(isNaN(rs.idHD.diem)){
 							return 0
 						}
-						if(rs.isTG){
-							sumPoint += rs.idHD.diem
-							return rs.idHD.diem
-						}
-						if(rs.idHD.batBuoc && !rs.isTG){
-							sumPoint += -rs.idHD.diem
-							return -rs.idHD.diem
+						if(stu.ngayVaoO > rs.idHD.ngayBD){
+							return 0
+						} else {
+							if(rs.isTG){
+								sumPoint += rs.idHD.diem
+								return rs.idHD.diem
+							}
+							if(rs.idHD.batBuoc && !rs.isTG){
+								sumPoint += -rs.idHD.diem
+								return -rs.idHD.diem
+							}
 						}
 					} else {
 						if(ac.batBuoc){
@@ -293,6 +298,7 @@ exports.export_activity = async (req, res) => {
 							return 0
 						}
 					}
+					
 				})
 				
 				var phong = ''
