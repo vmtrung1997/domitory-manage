@@ -95,8 +95,8 @@ exports.post_activity = (req, res) => {
 				var rs = new resultActivity({
 					idHD: act._id,
 					idSV: item._id,
-					isTG: true,
-					isDK: false
+					isTG: false,
+					isDK: true
 				})
 				rs.save()
 			})
@@ -141,17 +141,6 @@ exports.update_activity = (req, res) => {
     	moTa: req.body.des
 	}
 
-	Activity.updateOne({ _id: id }, tmp, (err, val) => {
-		if(!err){
-			res.json({ rs: 'ok'})
-			console.log('==update_activity: success')
-		}
-		else{
-			console.log('==update_activity:', err)
-			res.status(500)
-		}
-	})
-
 	if(tmp.batBuoc){
 		
 		var query = {
@@ -166,8 +155,8 @@ exports.update_activity = (req, res) => {
 						var tmpAc = new resultActivity({
 							idHD: id,
 							idSV: item._id,
-							isTG: true,
-							isDK: false
+							isTG: false,
+							isDK: true
 						})
 						tmpAC.save()
 					}
@@ -178,11 +167,27 @@ exports.update_activity = (req, res) => {
 			res.status(500)
 		})
 	} else {
-		resultActivity.deleteMany({ idHD: id, isTG: false, isDK: false}, err => {
-			console.log('==update_activity_creatResultActivity: ',err)
-			res.status(500)
+		Activity.findOne({ _id: id, batBuoc: true}, (err, val) => {
+			if(err) { console.log('==update_activity: ', err )}
+			if(val){
+				resultActivity.deleteMany({ idHD: id, isTG: false, isDK: true}, err => {
+					console.log('==update_activity_creatResultActivity: ',err)
+					res.status(500)
+				})
+			}
 		})
 	}
+
+	Activity.updateOne({ _id: id }, tmp, (err, val) => {
+		if(!err){
+			res.json({ rs: 'ok'})
+			console.log('==update_activity: success')
+		}
+		else{
+			console.log('==update_activity:', err)
+			res.status(500)
+		}
+	})
 };
 
 exports.rollcall_activity = async (req, res) => {
