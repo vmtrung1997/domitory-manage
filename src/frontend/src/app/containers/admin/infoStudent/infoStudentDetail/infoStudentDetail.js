@@ -55,7 +55,7 @@ class InfoStudentDetail extends Component {
       custom: false,
       showRoomPopup: false,
       roomData: {},
-      isOld: false,
+      isOld: true,
 
     }
   }
@@ -101,9 +101,9 @@ class InfoStudentDetail extends Component {
             }
           })
 
-        if(profile.idTaiKhoan && profile.idTaiKhoan.isDelete){
+        if(profile.idTaiKhoan && !profile.idTaiKhoan.isDelete){
           this.setState({
-            isOld: true
+            isOld: false
           })
         }
       }).catch(err => {
@@ -584,7 +584,7 @@ class InfoStudentDetail extends Component {
                 Lưu thay đổi
               </Button>
             }
-            {!isActive &&
+            {!isActive && !isOld &&
             <Button
               onClick={() => this.handleActiveAccount()}
               color={'danger'}

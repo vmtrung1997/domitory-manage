@@ -62,8 +62,25 @@ class PersonProfile extends React.Component {
   editProfile = () => {
     this.setState({ readOnly: false });
     this.setState({ isDisable: false });
+    this.getNganhHoc();
   };
 
+  getNganhHoc = () =>{
+    //Lấy danh sách các ngành học
+    axios
+    .post("/student/get-specialized",{id: this.state.truong.value})
+    .then(res => {
+      if (res) {
+        var options = [{ value: -1, label: "Chọn ngành" }];
+        res.data.data.forEach((obj, index) => {
+          options.push({ value: obj.idNganhHoc._id, label: obj.idNganhHoc.tenNganh });
+        });
+        this.setState({ nganhOptions: options });
+      }
+    })
+    .catch(err => {
+    });
+  }
   updateProfile = async () => {
     var data = {
       id: this.props.userProfile._id,
@@ -247,6 +264,7 @@ class PersonProfile extends React.Component {
   };
 
   render() {
+
     if (!this.state.isLoad) {
       var gender = [
         { value: "-1", label: "Chọn giới tính" },

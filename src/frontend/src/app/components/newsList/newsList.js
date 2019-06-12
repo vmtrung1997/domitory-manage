@@ -45,6 +45,7 @@ class NewsList extends React.Component {
     });
 
     this.state.pinnedPosts.forEach(async (item, index) => {
+      if(item.stamp){
       var rs = item.stamp + ".jpg";
       await storage
         .ref("news")
@@ -55,6 +56,12 @@ class NewsList extends React.Component {
           tmp[index].url = url;
           this.setState({ pinnedPosts: tmp });
         });
+      }
+      else{
+        var tmp = this.state.pinnedPosts;
+        tmp[index].url = '/images/logo-hktn.jpg';
+        this.setState({ pinnedPosts: tmp });
+      }
     });
 
     return temp;

@@ -53,3 +53,7 @@
     color: blue;
     cursor: pointer;
 }
+
+.isc-footer-btn button{
+    margin-right: 10px;
+}

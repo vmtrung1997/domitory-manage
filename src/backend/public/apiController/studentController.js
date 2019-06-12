@@ -24,7 +24,6 @@ exports.a = (req, res) => {
 };
 
 exports.getSpecialized = (req, res) => {
-  console.log(req.body.id);
   TruongNganh.find({idTruong: req.body.id}).populate('idNganhHoc').select('idNganhHoc').then(result =>{
     console.log(result);
     res.status(200).json({
@@ -359,7 +358,6 @@ exports.upcomingActivities = (req, res) => {
   KetQuaHD.countDocuments({ idSV: req.body.id }, (err, data) => {
     totalPages = parseInt(data) / limit;
     if (err) {
-      console.log("loi dau");
       // res.status(500).json({
       //   status: "fail"
       // })
@@ -370,14 +368,12 @@ exports.upcomingActivities = (req, res) => {
         .limit(limit)
         .then(result => {
           if (result.length > 0) {
-            console.log(result);
             res.status(200).json({
               status: "success",
               data: result,
               totalPages: totalPages
             });
           } else {
-            console.log("vô đây");
             res.status(204).json({
               status: "fail",
               data: "no data"
@@ -597,8 +593,6 @@ exports.getPoint = (req, res) => {
       };
 
       result.push(temp);
-
-      console.log(result);
       if (result.length === 0) {
         res.status(204).json({
           data: result

@@ -4,7 +4,7 @@ import Button from '../../../components/button/button';
 import Input from "../../../components/input/input";
 import DatePicker from "react-datepicker/es/index";
 import {add_student, convert_student, get_list_student, import_info_student_data} from './infoStudentActions';
-import {ToastsStore} from "react-toasts";
+import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 import XLSX from "xlsx";
 import Checkbox from "../../../components/checkbox/checkbox";
 import Loader from "../../../components/loader/loader";
@@ -202,10 +202,10 @@ export class ConvertStudentModal extends Component{
 
   handleSubmitConvertStudent = () => {
     convert_student(this.props.listStudent, this.props.option, this.state.regisExpiredDate, this.state.dayOut).then(result => {
-      ToastsStore.success("Thành công!", result.data);
+      this.handlePopup(false);
+      ToastsStore.success("Chuyển đổi sinh viên thành công!");
       this.props.function();
       this.props.onSave();
-      this.handlePopup(false);
     }).catch(err => {
       ToastsStore.error("Không thành công!");
     })
@@ -221,6 +221,7 @@ export class ConvertStudentModal extends Component{
   render(){
     return(
       <React.Fragment>
+        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
         <Button
           title={'Chuyển đổi'}
           color={'danger'}
