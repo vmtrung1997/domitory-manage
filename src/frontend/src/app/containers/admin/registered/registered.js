@@ -101,25 +101,12 @@ class Registered extends Component{
 		this.getData()
 	}
 
-	getYear = () => {
-		var year = [{value: 0, label: 'Tất cả'}]
-		if(this.state.last){
-			var date = new Date(this.state.last.date)
-			var curDate = new Date().getFullYear()
-			for(var i = curDate; i >= date.getFullYear() - 1; i--){
-				year.push({value: i, label: `${i} - ${i+1}`})
-			}
-		}
-		return year
-	}
-
 	render(){
 		var accept = [
 			{value: 'all', label: 'Tất cả'},
 			{value: true, label: 'Đồng ý'},
 			{value: false, label: 'Chưa đồng ý'}
 		]
-		var year = this.getYear()
 
 		return(
 			<React.Fragment>
@@ -130,14 +117,6 @@ class Registered extends Component{
         		<div className={'content-body full'}>
 					<div>
 						<Row className={'m-b-10'}>
-							<Col md={5} xs={12}>
-								<span> Năm học </span>
-              					<Select 
-              						options={year} 
-              						value={this.state.yearSelected}
-              						selected={val => this.changeState('yearSelected', val)}
-              					/>	
-              				</Col>
               				<Col md={5} xs={12}>
 								<span> Xác nhận </span>
               					<Select 
