@@ -379,7 +379,7 @@ exports.report_expense = (req, res) => {
 		if (condition.room !== 0) {
 			query.idPhong = condition.room
 		}
-		if (condition.status !== 0) {
+		if (condition.status !== 2) {
 			query.trangThai = condition.status
 		}
 	}
@@ -391,7 +391,7 @@ exports.report_expense = (req, res) => {
 				if (condition.room !== 0) {
 					query.idPhong = condition.room
 				}
-				if (condition.status !== 0) {
+				if (condition.status !== 2) {
 					query.trangThai = condition.status
 				}
 			}
@@ -414,7 +414,7 @@ exports.report_expense = (req, res) => {
 			if (condition.room !== 0) {
 				query.$and.push({ idPhong: condition.room })
 			}
-			if (condition.status !== 0) {
+			if (condition.status !== 2) {
 				query.$and.push({ trangThai: condition.status })
 			}
 
@@ -458,6 +458,7 @@ exports.report_expense = (req, res) => {
 		total.push(0)
 		total.push('')
 	}
+	console.log(query)
 	if (Object.keys(query).length) {
 		ChiPhiPhong.find(query)
 			.sort([['nam', 1], ['thang', 1]])

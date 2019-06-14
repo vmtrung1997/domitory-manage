@@ -6,6 +6,7 @@ const Profile = require("../models/Profile");
 const ReToken = require("../models/refreshToken");
 const auth = require("../repos/authRepo");
 const nodemailer = require("nodemailer");
+const sanitize = require("mongo-sanitize");
 require("../models/PhanQuyen")
 const smtpTransport = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -33,6 +34,7 @@ exports.register = (req, res) => {
         console.log("==register: success");
         res.status(201).json(req.body);
       })
+      
     })
     .catch(err => {
       console.log("==register: ", err);
@@ -41,8 +43,10 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
+  let username = sanitize(req.body.username);
+  let password = sanitize(req.body.password);
   User.findOne(
-    { username: req.body.username, password: req.body.password, isDelete: 0 }
+    { username: username, password: password, isDelete: 0 }
   ).populate({path: "phanQuyen", select: "quyen"}).then(function(result) {
     if (result) {
       var userEntity = result;
