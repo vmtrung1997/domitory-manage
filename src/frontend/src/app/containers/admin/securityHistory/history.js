@@ -5,7 +5,6 @@ import DatePicker from '../../../components/datePicker/datePicker'
 import MyPagination from './../../../components/pagination/pagination'
 import Button from '../../../components/button/button';
 import {findHistory} from './historyAction'
-import { defaultStudentImg } from '../../../function/imageFunction'
 import {Link} from 'react-router-dom'
 import './history.css'
 import Loader from '../../../components/loader/loader';
@@ -16,7 +15,7 @@ class Security extends Component{
 				fromDate: new Date(),
 				toDate: new Date(),
 				page: 1,
-				limit: 10,
+				limit: 12,
 				totalPages: 0,
 				table: [],
 				loading: false
