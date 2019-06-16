@@ -44,6 +44,7 @@ class RegisteredTable extends Component{
 						<td></td>
 						</>
 					}
+					
 					<td className={'text-center'} >
 						<Checkbox 
 							style={{ display: 'flex', justifyContent: 'center' }} 
