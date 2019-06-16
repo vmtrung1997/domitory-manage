@@ -205,6 +205,50 @@ exports.updateInfo = (req,res) => {
   ).catch()
 };
 
+function getActivityPoint(user){
+  let year = new Date().getFullYear();
+  if(new Date().getMonth() < 7)
+    year--;
+  return new Promise((resolve, reject) => {
+    ActivityResults.find({ idSV: user._id })
+      .populate({
+        path: "idHD",
+        match: {
+          ngayBD: {
+            $lte: new Date(year + 1, 7, 31),
+            $gte: new Date(year, 8, 1)
+          },
+        },
+        select: "ten diem batBuoc ngayBD ngayKT"
+      })
+      .then( rs => {
+        let term1 = 0;
+        let term2 = 0;
+        let profile = {...user._doc, point: {term1: term1, term2: term2}};
+        rs.forEach(acti => {
+          if(acti.idHD){
+            const month = new Date(acti.idHD.ngayBD).getMonth();
+            if(acti.idHD.batBuoc || !acti.isTG)
+              if( month > 1 && month < 9 )
+                term2 -= acti.idHD.diem;
+              else
+                term1 -= acti.idHD.diem;
+            if(acti.isTG)
+              if( month > 1 && month < 9 )
+                term2 += acti.idHD.diem;
+              else
+                term1 += acti.idHD.diem;
+          }
+          profile.point = {term1: term1, term2: term2};
+        });
+        resolve(profile)
+      })
+      .catch(err => {
+        reject(err)
+      })
+  })
+}
+
 exports.getListStudent = async(req, res) => {
   let query = {};
   const params = req.body;
@@ -256,9 +300,23 @@ exports.getListStudent = async(req, res) => {
       });
       query.idTaiKhoan = {$in : arr};
       Profile.find(query)
+        .select('_id idTaiKhoan CMND hoTen ngaySinh gioiTinh email diaChi sdt MSSV tonGiao nganhHoc truong idPhong moTa sdtNguoiThan ngayVaoO ngayHetHan danToc')
         .populate(populateQuery)
-        .then(result => {
-          res.status(200).json(result);
+        .then(async(rs) => {
+          let result = [];
+
+          if(params.getPoint){
+              rs.forEach(user => {
+                result.push(getActivityPoint(user))
+              });
+              Promise.all(result).then(result => {
+                res.status(200).json(result);
+              })
+          }
+          else{
+            result = [...rs];
+            res.status(200).json(result);
+          }
         }).catch(err => {
         res.status(400).json(err);
       })
@@ -347,17 +405,60 @@ exports.uploadImage = (req, res) => {
 };
 
 exports.getListActivitiesByMSSV = (req, res) => {
-  const mssv = req.params.mssv;
-  Profile.findOne({MSSV: mssv})
-    .then(result => {
-      ActivityResults.find({idSV: result._id})
-        .populate({path:'idHD'})
-        .then(result => {
-          res.status(200).json(result)
-        }).catch(() => {
-        res.status(400).json({msg: "Lỗi"})
+  const MSSV = req.params.mssv;
+  Profile.findOne({MSSV: MSSV}, (err, val) => {
+    if(err){
+      res.status(400).json(err)
+    }
+    if(val){
+      var year = new Date().getFullYear();
+      if(new Date().getMonth() < 7)
+        year--;
+      ActivityResults.find({ idSV: val._id })
+        .populate({
+          path: "idHD",
+          match: {
+            ngayBD: {
+              $lte: new Date(year + 1, 7, 31),
+              $gte: new Date(year, 8, 1)
+            },
+          },
+          select: "ten diem batBuoc ngayBD ngayKT"
+        })
+        .then( rs => {
+          let result = [];
+          let term1 = 0;
+          let term2 = 0;
+          rs.forEach(record => {
+            if(record.idHD){
+              let acti = {...record._doc};
+              acti.isEnd = new Date() > acti.idHD.ngayKT;
+              result.push(acti);
+              const month = new Date(acti.idHD.ngayBD).getMonth();
+              if(acti.idHD.batBuoc || !acti.isTG)
+                if( month > 1 && month < 9 ){
+                  acti.term = '2';
+                  term2 -= acti.idHD.diem;
+                }
+                else{
+                  acti.term = '1';
+                  term1 -= acti.idHD.diem;
+                }
+
+              if(acti.isTG)
+                if( month > 1 && month < 9 )
+                  term2 += acti.idHD.diem;
+                else
+                  term1 += acti.idHD.diem;
+            }
+          });
+          res.status(200).json({activities: result, point: {term1: term1, term2: term2}})
+        })
+        .catch(err => {
+          res.status(400).json(err);
       })
-    })
+    }
+  })
 };
 
 exports.getProfile = async (req, res) => {

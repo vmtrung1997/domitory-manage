@@ -40,7 +40,7 @@ exports.getPinNews = (req, res) => {
         });
       }
     })
-      .limit(4)
+      .limit(2)
       .sort({ ngayTao: -1 });
   } catch (err) {
     console.log(err);

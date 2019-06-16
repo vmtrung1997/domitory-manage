@@ -35,7 +35,9 @@
 
 .destop-screen-name{
   position: absolute;
-  top: 1vh;
+  display: flex;
+  justify-content: center;
+  align-content: center;
   right: 1vh;
 }
 

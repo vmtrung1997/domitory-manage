@@ -320,10 +320,12 @@ class NewsHomepage extends React.Component {
                         <div className="razo-single-post d-flex mb-30">
                           {/* Post Thumbnail */}
                           <div className="post-thumbnail">
-                          <a href="#">
-                                <i className="fa fa-clock" aria-hidden="true" />{" "}
-                                &nbsp;
-                                {item ? this.formatDay(item) : null}
+                          <a href="#!">
+                          <img
+                                  src={item.url}
+                                  style={{ cursor: "pointer" }}
+                                  alt = "true"
+                                />
                               </a>
                           </div>
                           {/* Post Content */}

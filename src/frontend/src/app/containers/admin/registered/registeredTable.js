@@ -33,7 +33,7 @@ class RegisteredTable extends Component{
 						<td>{row.idProfile.hoTen}</td>
 						<td style={{textAlign: 'center'}}>{row.idProfile.idPhong ? row.idProfile.idPhong.tenPhong : '---' }</td>
 						<td style={{textAlign: 'center'}}>{semester}</td>
-						<td style={{textAlign: 'center'}}>{point[index]}</td>
+						<td style={{textAlign: 'center'}}>{point[row.idProfile._id]}</td>
 						</>
 					:
 						<>
@@ -44,11 +44,16 @@ class RegisteredTable extends Component{
 						<td></td>
 						</>
 					}
+					{ row.isAc ?
+						<td style={{textAlign: "center", color: "#1ab394"}}><i class="fas fa-check"></i></td>
+					:
+						<td></td>
+					}
 					<td className={'text-center'} >
 						<Checkbox 
 							style={{ display: 'flex', justifyContent: 'center' }} 
-							check={this.props.check[row._id]} 
 							name={row._id}
+							check={this.props.check[row._id]} 
 							isCheck={(e) => this.handleCheck(index,e)}
 						/>
 					</td>
@@ -65,7 +70,8 @@ class RegisteredTable extends Component{
 						<th>Phòng</th>
 						<th>Năm học</th>
 						<th>Điểm hoạt động</th>
-						<th>Xác nhận</th>
+						<th>Chấp nhận</th>
+						<th>Chọn</th>
 					</tr>
 				</thead>
 				<tbody>

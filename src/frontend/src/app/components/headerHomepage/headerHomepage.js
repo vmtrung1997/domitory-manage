@@ -123,7 +123,7 @@ class HeaderHomepage extends Component {
     }
     if (!this.state.isLogin) {
       isLogin = (
-        <Button style={{marginTop:'10px'}} onClick={this.Login} className="bt-sign">
+        <Button onClick={this.Login} className="bt-sign">
           Đăng nhập
         </Button>
       );
@@ -204,7 +204,9 @@ class HeaderHomepage extends Component {
             <Link to="/news" className="list-item-menu">
               Tin tức
             </Link>
-            
+            <Link to="/introduce" className="list-item-menu">
+              Giới thiệu
+            </Link>
           </Nav>
 
           <div className="destop-screen-name">{isLogin}</div>

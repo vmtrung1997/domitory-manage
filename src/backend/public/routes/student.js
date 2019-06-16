@@ -35,6 +35,8 @@ router.post('/get-point',studentController.getPoint);
 
 router.post('/request-stay',studentController.requestStay);
 
+router.post('/check-request',studentController.checkRequest);
+
 router.get('/get-floor',studentController.getListFloor);
 
 module.exports = router;

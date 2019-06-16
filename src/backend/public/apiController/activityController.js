@@ -96,7 +96,7 @@ exports.post_activity = (req, res) => {
 					idHD: act._id,
 					idSV: item._id,
 					isTG: false,
-					isDK: false
+					isDK: true
 				})
 				rs.save()
 			})
@@ -141,17 +141,6 @@ exports.update_activity = (req, res) => {
     	moTa: req.body.des
 	}
 
-	Activity.updateOne({ _id: id }, tmp, (err, val) => {
-		if(!err){
-			res.json({ rs: 'ok'})
-			console.log('==update_activity: success')
-		}
-		else{
-			console.log('==update_activity:', err)
-			res.status(500)
-		}
-	})
-
 	if(tmp.batBuoc){
 		
 		var query = {
@@ -163,11 +152,11 @@ exports.update_activity = (req, res) => {
 			result.map( item => {
 				resultActivity.find({ idHD: id, idSV: item._id}).then( rs => {
 					if(rs.length === 0){
-						var tmpAc = new resultActivity({
+						var tmpAC = new resultActivity({
 							idHD: id,
 							idSV: item._id,
 							isTG: false,
-							isDK: false
+							isDK: true
 						})
 						tmpAC.save()
 					}
@@ -178,11 +167,27 @@ exports.update_activity = (req, res) => {
 			res.status(500)
 		})
 	} else {
-		resultActivity.deleteMany({ idHD: id, isTG: false, isDK: false}, err => {
-			console.log('==update_activity_creatResultActivity: ',err)
-			res.status(500)
+		Activity.findOne({ _id: id, batBuoc: true}, (err, val) => {
+			if(err) { console.log('==update_activity: ', err )}
+			if(val){
+				resultActivity.deleteMany({ idHD: id, isTG: false, isDK: true}, err => {
+					console.log('==update_activity_creatResultActivity: ',err)
+					res.status(500)
+				})
+			}
 		})
 	}
+
+	Activity.updateOne({ _id: id }, tmp, (err, val) => {
+		if(!err){
+			res.json({ rs: 'ok'})
+			console.log('==update_activity: success')
+		}
+		else{
+			console.log('==update_activity:', err)
+			res.status(500)
+		}
+	})
 };
 
 exports.rollcall_activity = async (req, res) => {
@@ -273,17 +278,22 @@ exports.export_activity = async (req, res) => {
 							console.log('==export_activity:', err)
 							res.status(500)
 						})
+
 					if(rs){
 						if(isNaN(rs.idHD.diem)){
 							return 0
 						}
-						if(rs.isTG){
-							sumPoint += rs.idHD.diem
-							return rs.idHD.diem
-						}
-						if(rs.idHD.batBuoc && !rs.isTG){
-							sumPoint += -rs.idHD.diem
-							return -rs.idHD.diem
+						if(stu.ngayVaoO > rs.idHD.ngayBD){
+							return 0
+						} else {
+							if(rs.isTG){
+								sumPoint += rs.idHD.diem
+								return rs.idHD.diem
+							}
+							if(rs.idHD.batBuoc && !rs.isTG){
+								sumPoint += -rs.idHD.diem
+								return -rs.idHD.diem
+							}
 						}
 					} else {
 						if(ac.batBuoc){
@@ -293,6 +303,7 @@ exports.export_activity = async (req, res) => {
 							return 0
 						}
 					}
+					
 				})
 				
 				var phong = ''
