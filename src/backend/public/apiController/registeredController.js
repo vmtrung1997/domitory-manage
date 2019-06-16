@@ -7,7 +7,7 @@ const resultActivity = require('./../models/KetQuaHD');
 
 
 exports.get_list_register = async (req, res) => {
-	var arrPoint = []
+	var ObPoint = {}
 	var now = new Date()
 	var lte = 0
 	var gte = 0
@@ -73,7 +73,7 @@ exports.get_list_register = async (req, res) => {
 		 				}
 	 				}
 	 			})
-			    arrPoint.push(point)
+			    ObPoint[sv.idProfile._id] = point
 	    	})
 	      	.catch( err => {
 	      		console.log('==get_register: ',err)
@@ -84,7 +84,7 @@ exports.get_list_register = async (req, res) => {
 		console.log('==get_register: success')
 		res.json({
 			last: last.docs[last.docs.length - 1],
-			point: arrPoint,
+			point: ObPoint,
 			rs: result
 		})
 	}).catch(err => {
@@ -96,34 +96,39 @@ exports.get_list_register = async (req, res) => {
 exports.accept_request = (req, res) => {
 	var accRequest = req.body.check
 	for (var key in accRequest) {
-		Register.updateOne({ _id: key}, {isAc: accRequest[key]}, (err, val) => {
-			if(err){
-				console.log('==update_request:', err)
-				res.status(500)
-			}
-		})
 		if(accRequest[key] === true){
-			var d = new Date();
- 			d.setDate(d.getDate() + 30);
-			Register.findOne({_id: key}, async (err, val) =>{
-				if(err){
-					console.log('==update_request:', err)
-				} else {
-					Profile.findOne({_id: val.idProfile}, (err, tmp) =>{
-						if(err) {
+			Register.findOne({ _id: key}, (err, val) => {
+				val.isAc = !val.isAc
+				val.save()
+
+				if(val.isAc){
+					var d = new Date();
+		 			d.setDate(d.getDate() + 30);
+					Register.findOne({_id: key}, async (err, val) =>{
+						if(err){
 							console.log('==update_request:', err)
 						} else {
-							tmp.isActive = false
-							tmp.ngayHetHan = null
-							tmp.hanDangKy = d
-							tmp.save()
-							Account.updateOne({idProfile: tmp._id}, {isDelete: 0}, (err, val) =>{
-								if(err){
+							Profile.findOne({_id: val.idProfile}, (err, tmp) =>{
+								if(err) {
 									console.log('==update_request:', err)
+								} else {
+									tmp.isActive = false
+									tmp.ngayHetHan = null
+									tmp.hanDangKy = d
+									tmp.save()
+									Account.updateOne({idProfile: tmp._id}, {isDelete: 0}, (err, val) =>{
+										if(err){
+											console.log('==update_request:', err)
+										}
+									})
 								}
 							})
 						}
 					})
+				}
+				if(err){
+					console.log('==update_request:', err)
+					res.status(500)
 				}
 			})
 		}

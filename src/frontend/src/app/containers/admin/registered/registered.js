@@ -49,7 +49,7 @@ class Registered extends Component{
       	.then(res => {
       		var check = {} 
 			res.data.rs.docs.map((row, index) => { 
-				check[row._id]= row.isAc
+				check[row._id]= false
 			})
        	    this.setState({
        	    	last: res.data.last,
