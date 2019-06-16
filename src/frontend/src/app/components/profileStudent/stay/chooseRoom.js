@@ -63,6 +63,7 @@ class ConfirmModal extends React.Component {
   };
 
   render() {
+
     return (
       <>
 
@@ -108,7 +109,8 @@ class ListRoom extends React.Component {
         soNguoiToiDa: undefined,
         tenPhong: undefined,
         listProfile: [],
-        ten: undefined
+        ten: undefined,
+        gioiTinh: undefined
       }
     };
   }
@@ -126,7 +128,8 @@ class ListRoom extends React.Component {
           soNguoiToiDa: room.soNguoiToiDa,
           tenPhong: room.tenPhong,
           listProfile: rs.data.data === undefined ? [] : rs.data.data,
-          ten: room.loaiPhong.ten
+          ten: room.loaiPhong.ten,
+          gioiTinh: room.gioiTinh
         };
       }
       else if(rs.status === 204){
@@ -135,7 +138,8 @@ class ListRoom extends React.Component {
           soNguoiToiDa: room.soNguoiToiDa,
           tenPhong: room.tenPhong,
           listProfile: [],
-          ten: room.loaiPhong.ten
+          ten: room.loaiPhong.ten,
+          gioiTinh: room.gioiTinh,
         };
       }
     });
@@ -168,6 +172,7 @@ class ListRoom extends React.Component {
     })
 
   };
+
   render() {
     return (
       <React.Fragment>
@@ -218,7 +223,8 @@ class ListRoom extends React.Component {
           <div>
             <Card.Title>
               Thông tin phòng: {this.state.selectedRoom.tenPhong} (
-              {this.state.selectedRoom.ten})
+              {this.state.selectedRoom.ten})&nbsp; 
+              {this.state.selectedRoom.gioiTinh === 1? 'Nam':'Nữ'}
             </Card.Title>
             <Table size="sm" striped bordered hover>
               <thead>
