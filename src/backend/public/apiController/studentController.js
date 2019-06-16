@@ -541,7 +541,12 @@ exports.getPoint = (req, res) => {
   var ngayVaoO = new Date(req.body.ngayVaoO);
   //Tìm các hoạt động trong năm nay và năm trước
   var now = new Date();
-  var now = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+  //Nếu hiện tại là t9 thì bắt đầu 1 năm học mới
+  if(now.getMonth() + 1 > 8)
+     now = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+     //Nếu chưa tới tháng 9 thì sẽ tính điểm trong học kỳ trước
+  else now = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+
   if (ngayVaoO === undefined) {
     res.status(204).json({
       data: "no data"
@@ -665,7 +670,6 @@ exports.requestStay = (req, res) => {
 exports.checkRequest = (req,res) =>{
   YeuCauLuuTru.find({idProfile: req.body.id}).sort({date: -1}).limit(1).populate('idProfile').then(rs=>{
     if(rs.length === 0){
-      
         res.status(204);
     }
     else{
