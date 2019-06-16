@@ -14,15 +14,16 @@ import { dateToString } from '../../../function/dateFunction'
 export class AddStudentModal extends Component{
   constructor(props) {
     super(props);
+    const today = new Date();
     this.state = {
       show: this.props.show,
       onSave:()=>{},
       infoAdded: {
         name: '',
         studentNumber: '',
-        birthDay: new Date(),
-        regisExpiredDate: new Date(),
-        expiredDate: new Date(),
+        birthDay: today,
+        regisExpiredDate: today,
+        expiredDate: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() ),
 			},
     }
   }
@@ -173,6 +174,7 @@ export class ConvertStudentModal extends Component{
     super(props);
     const today = new Date();
     this.state = {
+      loading: false,
       show: this.props.show,
       regisExpiredDate: today,
       dayOut: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() )
@@ -201,8 +203,14 @@ export class ConvertStudentModal extends Component{
   };
 
   handleSubmitConvertStudent = () => {
+    this.setState({
+      loading: true
+    });
     convert_student(this.props.listStudent, this.props.option, this.state.regisExpiredDate, this.state.dayOut).then(result => {
       this.handlePopup(false);
+      this.setState({
+        loading: false
+      });
       ToastsStore.success("Chuyển đổi sinh viên thành công!");
       this.props.function();
       this.props.onSave();
@@ -221,6 +229,7 @@ export class ConvertStudentModal extends Component{
   render(){
     return(
       <React.Fragment>
+        <Loader loading={this.state.loading}/>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
         <Button
           title={'Chuyển đổi'}
@@ -289,10 +298,12 @@ export class ConvertStudentModal extends Component{
 export class ImportDataModal extends Component{
   constructor(props) {
     super(props);
+    const today = new Date();
     this.state = {
+      loading: false,
       show: this.props.show,
-      regisExpiredDate: new Date(),
-      expiredDate: new Date(),
+      regisExpiredDate: today,
+      expiredDate: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() ),
       listExpired: undefined,
     }
   }
@@ -348,7 +359,7 @@ export class ImportDataModal extends Component{
         let workbook = XLSX.read(data, {type: 'array'});
 
         let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        console.log('==ws', worksheet);
+        // console.log('==ws', worksheet);
         let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","ngaySinh"]});
         //let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:1});
 
@@ -380,10 +391,10 @@ export class ImportDataModal extends Component{
     } else {
       if(this.validateFile(this.state.fileImport.name)){
         this.setState({
-          justFileServiceResponse: 'Vui lòng chờ!!'
+          loading: true
         });
         this.convertData(this.state.fileImport).then(async(resolve) => {
-          console.log('==file read', resolve, resolve[0]);
+          //console.log('==file read', resolve, resolve[0]);
           const headers = resolve[0];
           if(!(headers.mssv === 'MSSV') || !(headers.hoTen === 'Họ và tên') || !(headers.ngaySinh === 'Ngày sinh'))
             this.setState({
@@ -395,13 +406,14 @@ export class ImportDataModal extends Component{
             import_info_student_data({data: resolve, regisExpiredDate:this.state.regisExpiredDate, expiredDate:this.state.expiredDate})
               .then(result => {
                 this.setState({
-                  justFileServiceResponse: 'Thêm thành công!!'
+                  loading: false
                 });
                 this.props.onSave();
               }).catch(err => {
               // console.log('==err impport', err.response)
                 this.setState({
                   justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
+                  loading: false,
                   listExpired: err.response.data.list
                 });
             })
@@ -409,7 +421,6 @@ export class ImportDataModal extends Component{
 
 
         }).catch(err => {
-          console.log('==err data', err)
           this.setState({
             justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
           });
@@ -420,13 +431,12 @@ export class ImportDataModal extends Component{
         });
       }
     }
-
-
   };
 
   render(){
     return(
       <React.Fragment>
+        <Loader loading={this.state.loading}/>
         <Button
           variant={'rounded'}
           onClick={()=>this.handlePopup(true)}
@@ -633,8 +643,8 @@ export class ExportDataModal extends Component{
     })
   };
 
-  handleExportData = async() => {
-    await this.setState({loading: true});
+  handleExportData = () => {
+    this.setState({loading: true});
 
     const {
       valueExport: {
@@ -652,7 +662,7 @@ export class ExportDataModal extends Component{
         room,
         school,
         major,
-        //activityPoint: false,
+        activityPoint,
         religion,
         note,
       },
@@ -694,9 +704,12 @@ export class ExportDataModal extends Component{
       header.nganhHoc = "Ngành học";
     if(note)
       header.ghiChu = "Ghi chú";
+    if(activityPoint){
+      header.diemHK1 = "Điểm hoạt động kỳ 1";
+      header.diemHK2 = "Điểm hoạt động kỳ 2";
+    }
 
-    get_list_student(searchValues).then(result => {
-
+    get_list_student(searchValues, activityPoint).then(result => {
       let data = result.data && result.data.map((record, index) => {
         let genderString = record.gioiTinh ? "nam" : "nữ";
         return({
@@ -713,7 +726,8 @@ export class ExportDataModal extends Component{
           danToc : folk ? record.danToc : undefined,
           ngayVaoO : dayIn && record.ngayVaoO ? dateToString(record.ngayVaoO) : undefined,
           ngayHetHan : dayOut && record.ngayHetHan ? dateToString(record.ngayHetHan) : undefined,
-          //data.diemHD : diemHDEx ? record.hoTen : undefined,
+          diemHK1 : activityPoint && record.point ? record.point.term1 : undefined,
+          diemHK2 : activityPoint && record.point ? record.point.term2 : undefined,
           phong : room && record.idPhong ? record.idPhong.tenPhong : undefined,
           truong : school && record.truong ? record.truong.tenTruong : undefined,
           nganhHoc : major && record.nganhHoc ? record.nganhHoc.tenNganh : undefined,
@@ -735,8 +749,6 @@ export class ExportDataModal extends Component{
     }).catch(() => {
       ToastsStore.error("Có lỗi!");
     })
-
-
   };
 
   render(){
