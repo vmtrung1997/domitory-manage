@@ -4,23 +4,22 @@ import React from "react";
 
 export default class TabActivities extends React.Component{
   constructor(props){
-    super(props)
+    super(props);
     this.state = {
-      activities: this.props.activities
+      data: this.props.data
     }
   }
 
   render(){
-    console.log('==tab', this.props.activities)
-    const { activities } = this.props;
+    const { data } = this.props;
     return(
-
         <div className={'id-tab_frame'}>
-          {activities ?
+          {data && data.activities.length !== 0 ?
             <Table responsive bordered size="sm" hover>
               <thead>
               <tr>
                 <th>STT</th>
+                <th>Học kỳ</th>
                 <th>Thời gian</th>
                 <th>Tên hoạt động</th>
                 <th>Điểm</th>
@@ -29,25 +28,23 @@ export default class TabActivities extends React.Component{
               </thead>
               <tbody>
               {
-                activities && activities.map((acti, index) => {
-                  if(acti.idHD){
-                    let present = new Date();
-                    let happening = new Date(acti.idHD.ngayKT) < present;
-                    console.log('==heppen', acti)
-                    let status = '';
-                    if (happening && !acti.isTG)
-                      status = 'Không tham gia'
-                    else if (happening && acti.isTG)
-                      status = 'Đã tham gia'
-                    else if (!happening && !acti.isTG)
-                      status = 'Chưa diễn ra'
+                data.activities && data.activities.map((acti, index) => {
+
+                  if(acti){
+                    let status = 'Chưa diễn ra';
+                    if(acti.isEnd)
+                      if(acti.isTG)
+                        status = 'Đã tham gia';
+                      else
+                        status = 'Không tham gia';
                     return (
-                      <tr key={index}>
+                      <tr key={index + 1}>
                         <td>{index + 1}</td>
-                        <td>{acti.idHD && dateToString(acti.idHD.ngayBD)} - {acti.idHD && dateToString(acti.idHD.ngayKT)}</td>
-                        <td>{acti.idHD && acti.idHD.ten}</td>
+                        <td>{acti.term}</td>
+                        <td>{dateToString(acti.idHD.ngayBD)} - {acti.idHD && dateToString(acti.idHD.ngayKT)}</td>
+                        <td>{acti.idHD.ten}</td>
                         <td>{acti.isTG ? acti.idHD.diem : '0'}/{acti.idHD && acti.idHD.diem}</td>
-                        <td>{status}</td>
+                        <td className={'messDanger'}>{status}</td>
                       </tr>
                     )
                   }
@@ -59,20 +56,17 @@ export default class TabActivities extends React.Component{
             <span className={'messDanger'}>Không có hoạt động nào</span>
           }
 
-          {/*<div className={'id-tab-activities_total-frame'}>*/}
-          {/*<Row>*/}
-          {/*<span>Số hoạt động đã tham gia: 3</span>*/}
-          {/*</Row>*/}
-          {/*<Row>*/}
-          {/*<span>Số hoạt động không tham gia: 1</span>*/}
-          {/*</Row>*/}
-          {/*<Row>*/}
-          {/*<span>Số hoạt động chưa tham gia: 1</span>*/}
-          {/*</Row>*/}
-          {/*<Row>*/}
-          {/*<span>Tổng điểm: 30</span>*/}
-          {/*</Row>*/}
-          {/*</div>*/}
+          <div className={'id-tab-activities_total-frame'}>
+          <Row>
+            <span>Điểm học kỳ 1: <span className={'messDanger'}>{data && data.point.term1}</span></span>
+          </Row>
+          <Row>
+            <span>Điểm học kỳ 2: <span className={'messDanger'}>{data && data.point.term2}</span></span>
+          </Row>
+          <Row>
+            <span>Tổng điểm: <span className={'messDanger'}>{data && data.point.term1 + data.point.term2}</span></span>
+          </Row>
+          </div>
         </div>
     )
   }
