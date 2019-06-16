@@ -107,11 +107,10 @@ class StayProfile extends React.Component {
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios
         .post(`/student/get-info`, { id: id })
-        .then(res => {
+        .then(res => { 
           if (res) {
             //Lưu trong redux
             this.props.getUserAction(res.data.data);
-
             //Data mặc định nếu chưa có data trên db
             var tenPhong = {tenPhong: undefined}
             //var ngayHetHan = {ngayHetHan:}
@@ -142,9 +141,13 @@ class StayProfile extends React.Component {
 
       //Định dạng ngày ra
 
-      var dof = new Date(this.state.ngayHetHan);
-      month = dof.getMonth() + 1;
-      var dayOutFormat = dof.getDate() + "/" + month + "/" + dof.getFullYear();
+       var dayOutFormat = 'Chưa xác định'
+      if(this.state.ngayHetHan !== undefined){
+        var dof = new Date(this.state.ngayHetHan);
+        month = dof.getMonth() + 1;
+        dayOutFormat = dof.getDate() + "/" + month + "/" + dof.getFullYear();
+      }
+     
     }
 
     return (
