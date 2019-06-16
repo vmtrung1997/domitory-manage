@@ -60,7 +60,7 @@ const SecurityRoute = ({ component: Component, ...rest }) => {
 class App extends Component {
 	render() {
       	return (
-      		<Router basename="">
+      		<Router basename="http://ktxtranhungdao.tk">
                 <Switch>
                     <AdminRoute path={`/admin`} component={Admin} />
                     <SecurityRoute path={`/security`} component={Security} />
