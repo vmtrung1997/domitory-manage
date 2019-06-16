@@ -661,7 +661,18 @@ exports.requestStay = (req, res) => {
     console.log(e);
   }
 };
-
+//Check request stay
+exports.checkRequest = (req,res) =>{
+  YeuCauLuuTru.find({idProfile: req.body.id}).sort({date: -1}).limit(1).populate('idProfile').then(rs=>{
+    if(rs.length === 0){
+      
+        res.status(204);
+    }
+    else{
+        res.status(200).json({data: rs});
+    }
+  }) 
+}
 
 exports.getListFloor = (req,res) =>{
   Phong.find().distinct('lau').then(rs =>{
