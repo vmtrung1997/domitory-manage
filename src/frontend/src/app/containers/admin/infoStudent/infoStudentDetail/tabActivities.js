@@ -2,8 +2,6 @@ import {Row, Tab, Table} from "react-bootstrap";
 import {dateToString} from "../../../../function/dateFunction";
 import React from "react";
 
-
-
 export default class TabActivities extends React.Component{
   constructor(props){
     super(props);
@@ -12,41 +10,7 @@ export default class TabActivities extends React.Component{
     }
   }
 
-  // componentWillReceiveProps(nextProps){
-  //   if(JSON.stringify(this.state.activities) !== JSON.stringify(nextProps.activities)){
-  //     const listActi = nextProps.activities.map((acti, index) => {
-  //       if(acti.idHD){
-  //         acti.key = index;
-  //         acti.status = this.getStatusActivity(acti);
-  //         const month = new Date(acti.idHD.ngayBD).getMonth();
-  //         console.log('==month', month);
-  //         acti.term = (month > 1 || month < 9) ? '1' : '2';
-  //         return acti
-  //       }
-  //     });
-  //     console.log('==list acti kq', listActi);
-  //     this.setState({
-  //       activities: listActi
-  //     })
-  //   }
-  // }
-
-  // getStatusActivity = (acti) => {
-  //   let today = new Date();
-  //   let happening = new Date(acti.idHD.ngayKT) < today;
-  //   console.log('==heppen', acti)
-  //   let status = '';
-  //   if (happening && !acti.isTG)
-  //     status = KHONG_THAM_GIA;
-  //   else if (happening && acti.isTG)
-  //     status = DA_THAM_GIA;
-  //   else if (!happening && !acti.isTG)
-  //     status = CHUA_DIEN_RA;
-  //   return status;
-  // };
-
   render(){
-    console.log('==tab', this.props.data)
     const { data } = this.props;
     return(
         <div className={'id-tab_frame'}>

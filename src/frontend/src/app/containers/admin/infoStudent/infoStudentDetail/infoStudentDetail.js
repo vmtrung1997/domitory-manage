@@ -113,12 +113,10 @@ class InfoStudentDetail extends Component {
     }).catch(err => {
     })
     get_activites_by_MSSV(this.props.match.params.mssv).then(result => {
-      console.log('==acti ', result);
       this.setState({
         dataActivities: result.data
       })
-    }).catch(err => {
-      console.log('==acti err', err)
+    }).catch(() => {
     })
   };
 
@@ -281,7 +279,6 @@ class InfoStudentDetail extends Component {
     }
   }
   render() {
-    console.log('==state render', this.state);
     let {
       profile,
       genderOptions,

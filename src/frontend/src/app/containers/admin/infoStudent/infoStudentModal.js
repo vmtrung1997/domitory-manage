@@ -359,11 +359,7 @@ export class ImportDataModal extends Component{
         let workbook = XLSX.read(data, {type: 'array'});
 
         let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        // console.log('==ws', worksheet);
         let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","ngaySinh"]});
-        //let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:1});
-
-        //let jsonObj = XLSX.utils.sheet_to_json(worksheet, );
 
         resolve(listNewStudent)
       };
@@ -394,9 +390,10 @@ export class ImportDataModal extends Component{
           loading: true
         });
         this.convertData(this.state.fileImport).then(async(resolve) => {
-          //console.log('==file read', resolve, resolve[0]);
           const headers = resolve[0];
-          if(!(headers.mssv === 'MSSV') || !(headers.hoTen === 'Họ và tên') || !(headers.ngaySinh === 'Ngày sinh'))
+          if(!(headers.mssv.toLowerCase() === 'mssv') ||
+            !((headers.hoTen.toLowerCase() === 'họ và tên') || (headers.hoTen.toLowerCase() === 'họ tên')) ||
+            !(headers.ngaySinh.toLowerCase() === 'ngày sinh'))
             this.setState({
               justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
             });
@@ -404,13 +401,12 @@ export class ImportDataModal extends Component{
             resolve.shift();
             resolve = resolve.map(record => ({...record, mssv: `${record.mssv}`}));
             import_info_student_data({data: resolve, regisExpiredDate:this.state.regisExpiredDate, expiredDate:this.state.expiredDate})
-              .then(result => {
+              .then(() => {
                 this.setState({
                   loading: false
                 });
                 this.props.onSave();
               }).catch(err => {
-              // console.log('==err impport', err.response)
                 this.setState({
                   justFileServiceResponse: 'Những sinh viên sau thêm chưa thành công!!',
                   loading: false,
@@ -420,7 +416,7 @@ export class ImportDataModal extends Component{
           }
 
 
-        }).catch(err => {
+        }).catch(() => {
           this.setState({
             justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
           });
@@ -752,7 +748,6 @@ export class ExportDataModal extends Component{
   };
 
   render(){
-    // console.log('==export', this.state)
   	const {
       valueExport: {
         name,
@@ -1024,7 +1019,6 @@ export class ChooseRoom extends Component{
   };
 
   render(){
-    // console.log('==data room', this.state.data)
     return(
       <React.Fragment>
         <div>{this.state.label}

@@ -59,7 +59,6 @@ export const add_student = async(params) => {
 
 export const convert_student = async(arr, option, regisExpiredDate, dayOut) => {
   const headers = await get_headers();
-  console.log('==arr, option', arr, option);
   return new Promise((resolve, reject) => {
     axios.post(`/manager/infoStudent/convertStudent`,
       {
