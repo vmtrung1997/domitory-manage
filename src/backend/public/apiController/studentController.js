@@ -617,7 +617,7 @@ exports.requestStay = (req, res) => {
       des: req.body.data.des,
       type: req.body.data.type,
       date: req.body.data.date,
-      isAccept: false
+      isAc: false
     };
 
     // Profile.updateOne(

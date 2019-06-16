@@ -47,13 +47,15 @@ class RequestStay extends React.Component {
           ngayVaoO: decode.user.profile.ngayVaoO
         }).then(rs => {
           var point = [];
+          if(rs){
           rs.data.data.forEach(item => {
             if (now.getFullYear() - 1 === item.year)
               point.push({ term: item.year, point: item.point });
           });
-
+        }
           this.setState({ point: point });
         });
+
       }
     }
   };
