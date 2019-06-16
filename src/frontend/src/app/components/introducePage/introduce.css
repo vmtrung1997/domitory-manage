@@ -27,11 +27,6 @@
     font-size: 2.2em;
 }
 
-.intro .intro-content{
-    background: #ffffffeb;
-    position: absolute;
-}
-
 .intro p{
     margin: 0;
 }
@@ -58,3 +53,23 @@ h4 , h1{
     margin: 20px;
 }
 
+@media only screen and (max-width: 489px) {
+    .intro .intro-content{
+        background: #ffffffeb;
+        position: absolute;
+    }
+}
+
+@media only screen and (min-width: 490px) {
+    .intro .intro-content{
+        background: #61cbe814;
+        position: absolute;
+      
+    }
+
+    .intro .intro-content .margin-content{
+        background: #ffffff;
+        margin: 30px;
+        padding: 20px;
+    }
+}
