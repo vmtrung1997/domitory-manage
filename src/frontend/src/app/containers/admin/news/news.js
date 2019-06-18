@@ -151,7 +151,7 @@ class News extends Component {
     return (
       <React.Fragment>
         <ToastsContainer
-          position={ToastsContainerPosition.BOTTOM_CENTER}
+          position={ToastsContainerPosition.TOP_CENTER}
           lightBackground
           store={ToastsStore}
         />

@@ -5,14 +5,12 @@ import './styleHomepage.css'
 const Slideshow = () => {
   return (
     <React.Fragment>
-
-
       <Carousel>
         <Carousel.Item>
           {/* Single Welcome Slide */}
           <div
             className="single-welcome-slide bg-img bg-overlay"
-            style={{ backgroundImage: "url(images/sl1.jpg)" }}
+            style={{ backgroundImage: "url(images/sl1.png)" }}
           >
             {/* Welcome Content */}
             <div className="welcome-content h-100">
@@ -39,7 +37,7 @@ const Slideshow = () => {
           {/* Single Welcome Slide */}
           <div
             className="single-welcome-slide bg-img bg-overlay"
-            style={{ backgroundImage: "url(images/sl2.png)" }}
+            style={{ backgroundImage: "url(images/sl2.jpg)" }}
           >
             {/* Welcome Content */}
             <div className="welcome-content h-100">
