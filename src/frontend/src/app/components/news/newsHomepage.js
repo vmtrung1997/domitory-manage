@@ -1,5 +1,5 @@
 import React from "react";
-import {  Button } from "react-bootstrap";
+import  Button  from "../button/button"
 import { Link } from "react-router-dom";
 import "./newsHomepage.css";
 import Axios from "axios";

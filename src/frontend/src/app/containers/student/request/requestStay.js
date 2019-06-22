@@ -208,7 +208,7 @@ class RequestStay extends React.Component {
         {/* TODO: Kiểm tra nếu đủ điểm sẽ hiện Đăng ký  */}
         <Modal size="lg" show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Đăng ký lưu trú</Modal.Title>
+            <Modal.Title>Đăng ký tiếp tục lưu trú</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
