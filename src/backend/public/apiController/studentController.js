@@ -537,83 +537,127 @@ exports.getProfileByIdPhong = (res, req) => {
 
 //------------- Get điểm rèn luyện
 exports.getPoint = (req, res) => {
-  var result = [];
-  var ngayVaoO = new Date(req.body.ngayVaoO);
-  //Tìm các hoạt động trong năm nay và năm trước
-  var now = new Date();
-  //Nếu hiện tại là t9 thì bắt đầu 1 năm học mới
-  if(now.getMonth() + 1 > 8)
-     now = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-     //Nếu chưa tới tháng 9 thì sẽ tính điểm trong học kỳ trước
-  else now = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+  //Get Hoạt động dựa vào filter từ ngày -> đến ngày
+  var fromDate = req.body.fromDate;
+  var toDate = req.body.toDate;
 
-  if (ngayVaoO === undefined) {
-    res.status(204).json({
-      data: "no data"
-    });
+  var point = 0;
+  console.log(req.body)
+  if(fromDate === undefined || toDate === undefined){
+    console.log('voooo');
+    res.status(204);
   }
-  KetQuaHD.find({ idSV: req.body.id })
-    .populate({
+  KetQuaHD.find({
+    idSV: req.body.id
+  }).populate({
       path: "idHD",
       match: {
-        ngayBD: { $gte: now }
+        ngayBD: {$gt: fromDate}
       },
+      // match: {
+      //   ngayBD: {$and:[ { $gte: fromDate }, {$lte: toDate} ]}
+      // },
       select: "diem batBuoc ten diaDiem ngayBD ngayKT thang nam"
-    })
-    .then(rs => {
-      var nowDate = new Date();
-      var hk1 = 0;
-      var hk2 = 0;
-
-      var point = 0;
-      var i = 0;
-      rs.some(item => {
-        if (
-          //Các hoạt động từ t9 năm trước -> t2 năm sau
-          (item.idHD.ngayKT.getMonth() + 1 > 8 &&
-            item.idHD.ngayKT.getFullYear() === now.getFullYear()) ||
-          (item.idHD.ngayKT.getMonth() + 1 < 3 &&
-            item.idHD.ngayKT < nowDate)
-        ) {
-          if (item.idHD.batBuoc === true && item.isTG === false)
-          hk1 -= item.idHD.diem;
-        if (item.isTG) hk1 += item.idHD.diem;
-        } else if (
-          //Các hoạt động từ t3 -> t7 năm nay
-
-          item.idHD.ngayKT.getMonth() + 1 > 2 &&
-          item.idHD.ngayKT < nowDate &&
-          (item.idHD.ngayKT.getMonth() + 1 < 8 &&
-            item.idHD.ngayKT < nowDate)
-        ) {
-          if (item.idHD.batBuoc === true && item.isTG === false)
-            hk2 -= item.idHD.diem;
-          if (item.isTG) hk2 += item.idHD.diem;
-        }
-      });
-
-      var temp = {
-        hk1: hk1,
-        hk2: hk2
-      };
-
-      result.push(temp);
-      if (result.length === 0) {
-        res.status(204).json({
-          data: result
-        });
-      } else {
-        res.status(200).json({
-          data: result
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({
-        data: "no data"
-      });
+  }).then(rs=>{
+    if(rs.length === 0){
+          res.status(204).json({
+      data: "no data"
     });
-};
+    }
+    else{
+        rs.some(item => {
+          if (item.idHD !== null && item.idHD.batBuoc === true && item.isTG === false)  point-= item.idHD.diem;
+          if (item.idHD !==null && item.isTG) point += item.idHD.diem;
+      });
+
+      var result = {
+        activities: rs,
+        point: point
+      }
+      res.status(200).json({
+        data: result
+    });
+  }
+})
+}
+  
+  // var result = [];
+  // var ngayVaoO = new Date(req.body.ngayVaoO);
+  // //Tìm các hoạt động trong năm nay và năm trước
+  // var now = new Date();
+  // //Nếu hiện tại là t9 thì bắt đầu 1 năm học mới
+  // if(now.getMonth() + 1 > 8)
+  //    now = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  //    //Nếu chưa tới tháng 9 thì sẽ tính điểm trong học kỳ trước
+  // else now = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+
+  // if (ngayVaoO === undefined) {
+  //   res.status(204).json({
+  //     data: "no data"
+  //   });
+  // }
+  // KetQuaHD.find({ idSV: req.body.id })
+  //   .populate({
+  //     path: "idHD",
+  //     match: {
+  //       ngayBD: { $gte: now }
+  //     },
+  //     select: "diem batBuoc ten diaDiem ngayBD ngayKT thang nam"
+  //   })
+  //   .then(rs => {
+  //     var nowDate = new Date();
+  //     var hk1 = 0;
+  //     var hk2 = 0;
+
+  //     var point = 0;
+  //     var i = 0;
+  //     rs.some(item => {
+  //       if (
+  //         //Các hoạt động từ t9 năm trước -> t2 năm sau
+  //         (item.idHD.ngayKT.getMonth() + 1 > 8 &&
+  //           item.idHD.ngayKT.getFullYear() === now.getFullYear()) ||
+  //         (item.idHD.ngayKT.getMonth() + 1 < 3 &&
+  //           item.idHD.ngayKT < nowDate)
+  //       ) {
+  //         if (item.idHD.batBuoc === true && item.isTG === false)
+  //         hk1 -= item.idHD.diem;
+  //       if (item.isTG) hk1 += item.idHD.diem;
+  //       } else if (
+  //         //Các hoạt động từ t3 -> t7 năm nay
+
+  //         item.idHD.ngayKT.getMonth() + 1 > 2 &&
+  //         item.idHD.ngayKT < nowDate &&
+  //         (item.idHD.ngayKT.getMonth() + 1 < 8 &&
+  //           item.idHD.ngayKT < nowDate)
+  //       ) {
+  //         if (item.idHD.batBuoc === true && item.isTG === false)
+  //           hk2 -= item.idHD.diem;
+  //         if (item.isTG) hk2 += item.idHD.diem;
+  //       }
+  //     });
+
+  //     var temp = {
+  //       hk1: hk1,
+  //       hk2: hk2
+  //     };
+
+  //     result.push(temp);
+  //     if (result.length === 0) {
+  //       res.status(204).json({
+  //         data: result
+  //       });
+  //     } else {
+  //       res.status(200).json({
+  //         data: result
+  //       });
+  //     }
+  //   })
+  //   .catch(err => {
+  //     res.status(500).json({
+  //       data: "no data"
+  //     });
+  //   });
+//};
 
 exports.requestStay = (req, res) => {
   try {

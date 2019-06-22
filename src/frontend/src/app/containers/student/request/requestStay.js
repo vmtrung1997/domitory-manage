@@ -116,7 +116,7 @@ class RequestStay extends React.Component {
   }
 
   componentDidMount = async  ()  => {
-    this.getPoint();
+    //this.getPoint();
     this.checkRequest();
   }
 
