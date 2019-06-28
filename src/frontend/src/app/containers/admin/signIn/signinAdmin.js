@@ -35,7 +35,9 @@ class SignInAdmin extends Component{
 	        }).then( res => localStorage.removeItem('secret') )
     	}
 	}
-	
+	componentDidMount = () => {
+		
+	}
 	getValue = (key, val) => {
 		if(key === 'password'){
 			this.setState({ [key]: md5(val) })

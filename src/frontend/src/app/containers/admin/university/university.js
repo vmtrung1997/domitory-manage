@@ -263,7 +263,7 @@ class Security extends Component {
               </div>
 
             </Col>
-            <Col md={{ offset: 1, span: 5 }} xs={12}  >
+            {/* <Col md={{ offset: 1, span: 5 }} xs={12}  >
               <div>
                 <Row>
                   <Col md={10}>
@@ -294,7 +294,7 @@ class Security extends Component {
                   )
                 })}
               </div>
-            </Col>
+            </Col> */}
 
           </Row>
         </div>

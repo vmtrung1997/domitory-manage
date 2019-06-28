@@ -82,7 +82,7 @@ function getPersonInRoom(id) {
 function TinhTienDien(arr, number) {
 	let total = 0;
 	let temp = number;
-	if (temp <= arr[0].giaTriCuoi)
+	if (arr.length>0 && temp <= arr[0].giaTriCuoi)
 		return temp* arr[0].giaTriThuc;
 	for (let i = 0; i < arr.length; i++) {
 		if (temp >= arr[i].giaTriDau && temp <= arr[i].giaTriCuoi) {
@@ -213,7 +213,6 @@ function Calculation(phong, soDienCu, soNuocCu) {
 }
 exports.add_data = (req, res) => {
 	var table = req.body
-	console.log(table);
 	var tableAdd = [];
 	var arrId = table.map(val => { return val.phong.value })
 	ChiPhiHienTai.find({ idPhong: { $in: arrId } }).then(vals => {
@@ -312,11 +311,7 @@ exports.update_expense = async (req, res) => {
 							}
 							if (loaiPhong.nuoc) {
 								var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id })
-								// await Phong.findOne({ _id: exp.idPhong }).select(['_id', 'soNguoi']).then(p => {
-
-								// })
 								await getPersonInRoom(exp.idPhong).then(soNguoi => {
-									console.log('update nuoc')
 									if (exp.thayNuoc)
 										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, soNguoi));
 									else
@@ -361,12 +356,7 @@ exports.update_expense = async (req, res) => {
 		}
 	})
 }
-exports.reports_expense = (req, res) => {
-	var xlsx = writeXlsx.testXlsx();
-	res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	res.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-	res.json({ filename: 'Report.xlsx', file: xlsx });
-}
+
 exports.report_expense = (req, res) => {
 	var condition = req.body;
 	var query = {};
@@ -417,8 +407,6 @@ exports.report_expense = (req, res) => {
 			if (condition.status !== 2) {
 				query.$and.push({ trangThai: condition.status })
 			}
-
-
 		} else {
 			query = {}
 		}
