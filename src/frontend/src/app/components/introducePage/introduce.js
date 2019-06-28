@@ -114,7 +114,8 @@ class Introduce extends React.Component {
           <p>Bên cạnh đó, KTX còn có một số hoạt động xã hội, bảo vệ môi trường như
               Chủ Nhật Xanh, Hiến máu nhân đạo, tuyên truyền...
           </p>
-
+          
+          <br></br>
         </div>
         </div>
       </div>

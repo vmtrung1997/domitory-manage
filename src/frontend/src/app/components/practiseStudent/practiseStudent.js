@@ -1,17 +1,22 @@
 import React from "react";
-import { Table } from "react-bootstrap";
+import { Table, Col, Row } from "react-bootstrap";
 import "./../titleStudent/titleStudent.css";
 import "./../tableStudentTextStyle/tableStudentTextStyle.css";
 import Axios from "axios";
 import { connect } from "react-redux";
 import refreshToken from "./../../../utils/refresh_token";
 import jwt_decode from "jwt-decode";
+import DatePicker from "../../components/datePicker/datePicker";
+import Button from "./../../components/button/button";
 
 class PractiseStudent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      point: []
+      point: 0,
+      fromDate: new Date(),
+      toDate: new Date(),
+      listActivity: []
     };
   }
 
@@ -26,63 +31,138 @@ class PractiseStudent extends React.Component {
         var id = decode.user.profile._id;
         Axios.post("/student/get-point", {
           id: id,
-          ngayVaoO: decode.user.profile.ngayVaoO
+          fromDate: this.state.fromDate,
+          toDate: this.state.toDate
         }).then(rs => {
-          if(rs)   {
-          rs.data.data.forEach(item => {
-            this.setState({ point: {hk1: item.hk1, hk2: item.hk2}});
-          });
-        }
-         
+          if (rs.data.data.activities.length > 0) {
+            this.setState({ listActivity: rs.data.data.activities, point: rs.data.data.point
+             });
+            if (rs.status === 204) {
+              window.alert("Không có dữ liệu");
+            }
+          }
         });
       }
     }
   };
 
   componentDidMount() {
-    this.getPoint();
+    // this.getPoint();
   }
 
   render() {
     return (
       <React.Fragment>
-        <div className = 'padding-menu'>
+        <div className="padding-menu">
           <div>
-          <h1 className="title-header">ĐIỂM HOẠT ĐỘNG</h1>
-        </div>
-        <div className="title-header-line" />
-
-        <div className="time-bill">
-          <div className="text-style">
-            <Table responsive bordered size="sm" hover>
-              <thead className="thread-student">
-                <tr>
-                  <th>Học kỳ</th>
-                  <th>Điểm</th>
-                  {/* <th>Chi tiết</th> */}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                <td>Học kỳ 1</td>
-                  <td>
-                    {this.state.point.hk1}
-                  </td>
-                
-                  {/* <td><Detail></Detail></td> */}
-                </tr>
-                <tr>
-                <td>Học kỳ 2</td>
-                  <td>
-                   {this.state.point.hk2}
-                  </td>
-                
-                  {/* <td><Detail></Detail></td> */}
-                </tr>
-              </tbody>
-            </Table>
+            <h1 className="title-header">ĐIỂM HOẠT ĐỘNG</h1>
           </div>
-        </div>
+          <div className="title-header-line" />
+
+          <div className="time-bill">
+            <Row>
+              <Col>
+                Từ ngày
+                <div>
+                  <DatePicker
+                    startDate={this.state.fromDate}
+                    getValue={date => {
+                      this.setState({ fromDate: date });
+                    }}
+                  />
+                </div>
+              </Col>
+              <Col>
+                Đến ngày
+                <div>
+                  <DatePicker
+                    startDate={this.state.toDate}
+                    getValue={date => {
+                      this.setState({ toDate: date });
+                    }}
+                  />
+                </div>
+              </Col>
+              <Col>
+                &nbsp;
+                <Col>
+                  <Button onClick={this.getPoint}>
+                    <i className="fas fa-search" />
+                  </Button>
+                </Col>
+              </Col>
+            </Row>
+            {this.state.listActivity.length <= 0? (
+                <div>Bạn chưa có hoạt động nào</div>
+              ) : (
+                <div style ={{marginTop: '20px'}}>  
+                  <div><strong>Điểm hoạt động: {this.state.point}</strong></div>
+            <div className="text-style">
+              
+              
+                <Table responsive bordered size="sm" hover>
+                  <thead className="thread-student">
+                    <tr>
+                      <th>Thời gian</th>
+                      <th>Tên hoạt động</th>
+                      <th>Địa điểm</th>
+                      <th>Điểm</th>
+                      <th>Bắt buộc</th>
+                      <th>Tham gia</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.listActivity.map((activity, index) => {
+                      if (activity.idHD !== null) {
+                        var item = activity.idHD;
+                        var d = new Date(item.ngayBD);
+                        var month = d.getMonth() + 1;
+
+                        var formatDay =
+                          d.getDate() +
+                          "/" +
+                          month +
+                          "/" +
+                          d.getFullYear() +
+                          " " +
+                          d.getHours() +
+                          ":" +
+                          d.getMinutes();
+
+                        return (
+                          <tr key={index}>
+                            <td>{formatDay}</td>
+                            <td>{item.ten}</td>
+                            <td>{item.diaDiem}</td>
+                            <td>{item.diem}</td>
+
+                            <td
+                              className={
+                                item.batBuoc === true ? "is-dont-done" : ""
+                              }
+                            >
+                              {item.batBuoc === true ? "Bắt buộc" : ""}
+                            </td>
+                            <td
+                              className={
+                                activity.isTG === false
+                                  ? "is-dont-done"
+                                  : "is-done"
+                              }
+                            >
+                              {activity.isTG === false ? "Vắng" : "Đã tham gia"}
+                            </td>
+                          </tr>
+                        );
+                      }
+                    })}
+                  </tbody>
+                </Table>
+              
+            </div>
+            </div>
+            )}
+          </div>
         </div>
       </React.Fragment>
     );

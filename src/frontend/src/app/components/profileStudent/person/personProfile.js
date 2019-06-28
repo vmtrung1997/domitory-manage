@@ -101,6 +101,20 @@ class PersonProfile extends React.Component {
       flag: false
     };
 
+    //Kiểm tra Email
+    if(data.email.search("@") === -1){
+      window.alert("Vui lòng nhập đúng định dạng email");
+    }
+
+    //KIểm tra sdt
+    if(isNaN(data.sdt) || isNaN(data.sdtNguoiThan)){
+      window.alert("Vui lòng nhập đúng định dạng Số điện thoại");
+    }
+
+    //Kiểm tra CMND
+    if(isNaN(data.CMND)){
+      window.alert("Vui lòng nhập đúng định dạng CMND");
+    }
     //Kiểm tra các giá trị đã nhập
     if (
       data.CMND === undefined ||
@@ -116,6 +130,7 @@ class PersonProfile extends React.Component {
       data.nganhHoc === undefined
     ) {
       window.alert("Vui lòng nhập đầy đủ thông tin");
+  
     } else {
       this.setState({ isDisable: true });
       this.setState({ readOnly: true });
@@ -361,15 +376,16 @@ class PersonProfile extends React.Component {
                 />
                 <Col>
                   <div className="profile-panel-content">
+                  <form>
                     <div>
                       <Row>
                         <Col>
                           <span className="label-font">MSSV</span>
-
                           <MyInput
                             getValue={this.getValue}
                             name="MSSV"
                             disabled
+                            type='text'
                             value={this.state.MSSV}
                             borderRadius="3px"
                           />
@@ -381,6 +397,7 @@ class PersonProfile extends React.Component {
                           </span>
                           <MyInput
                             name="CMND"
+                            type='number'
                             getValue={this.getValue}
                             disabled={this.state.flag? this.state.readOnly:true}
                             value={this.state.CMND?this.state.CMND:""}
@@ -398,6 +415,7 @@ class PersonProfile extends React.Component {
                           <MyInput
                             getValue={this.getValue}
                             name="hoTen"
+                            type = 'text'
                             disabled
                             value={this.state.hoTen}
                             borderRadius="3px"
@@ -410,6 +428,7 @@ class PersonProfile extends React.Component {
                             name="ngaySinh"
                             getValue={this.getValue}
                             disabled
+                            type = 'text'
                             value={birthdayFormat}
                             className="input-picker"
                             borderRadius="3px"
@@ -432,6 +451,7 @@ class PersonProfile extends React.Component {
                             className={
                               this.state.readOnly ? "profile-not-allowed" : ""
                             }
+                            type = 'email'
                             getValue={this.getValue}
                             name="email"
                             disabled={this.state.readOnly}
@@ -448,6 +468,7 @@ class PersonProfile extends React.Component {
                           <span className="label-font"> Dân tộc</span>
                           <MyInput
                             getValue={this.getValue}
+                            type = 'text'
                             name="danToc"
                             disabled={this.state.flag? this.state.readOnly:true}
                             value={this.state.danToc?this.state.danToc:""}
@@ -472,6 +493,7 @@ class PersonProfile extends React.Component {
                         <Col>
                           <span className="label-font">Số điện thoại</span>
                           <MyInput
+                            type = 'number'
                             getValue={this.getValue}
                             name="sdt"
                             disabled={this.state.readOnly}
@@ -499,11 +521,11 @@ class PersonProfile extends React.Component {
                           <span className="label-font">Trường</span>
                           {schoolInput}
                         </Col>
-                        <Col>
+                        {/* <Col>
                           <span className="label-font">Ngành học</span>
 
                           {majorInput}
-                        </Col>
+                        </Col> */}
                       </Row>
                       <Row sm={6}>
                         <Col sm={6}>
@@ -536,7 +558,10 @@ class PersonProfile extends React.Component {
                           </Button>
                         </div>
                         <div className="profile-panel-button">
+
+
                           <Button
+    
                             disabled={this.state.isDisable}
                            
                             onClick={this.updateProfile}
@@ -546,7 +571,10 @@ class PersonProfile extends React.Component {
                         </div>
                       </Row>
                     </div>
+                    </form>
                   </div>
+                
+                    
                 </Col>
               </Row>
             </div>

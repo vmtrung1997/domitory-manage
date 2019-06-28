@@ -93,7 +93,7 @@ class MenuStudent extends React.Component {
                             href="#practise"
                           >
                             <i className="fas fa-star-half-alt sub-list-activity" />{" "}
-                            &nbsp;Điểm rèn luyện
+                            &nbsp;Điểm hoạt động
                           </ListGroup.Item>
                         </div>
                       </Collapse>

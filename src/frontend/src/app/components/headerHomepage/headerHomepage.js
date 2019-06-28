@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import {
-  Button,
- 
   Dropdown,
   Nav,
 
@@ -10,6 +8,7 @@ import {
 
 } from "react-bootstrap";
 
+import Button from '../button/button'
 import { Link, withRouter } from "react-router-dom";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
@@ -123,7 +122,7 @@ class HeaderHomepage extends Component {
     }
     if (!this.state.isLogin) {
       isLogin = (
-        <Button onClick={this.Login} className="bt-sign">
+        <Button style={{height:'35px'}} onClick={this.Login} className="bt-sign">
           Đăng nhập
         </Button>
       );
