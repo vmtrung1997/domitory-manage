@@ -233,6 +233,16 @@ class Example extends React.Component {
                   <Col md={2} xs={12}>
                     Số điện
                   <Input type="number" min={0} value={this.state.soDien} getValue={this.onChange} name={'soDien'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.dien} />
+                    {this.state.resetSoDien &&
+                      <Row className="d-md-none">
+                        <Col>
+                          Chỉ số đầu
+                    <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
+                          Chỉ số cuối
+                    <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
+                        </Col>
+                      </Row>
+                    }
                   </Col>
                   <Col md={1} xs={12}>&nbsp;
                 <Col md='12'>
@@ -242,37 +252,59 @@ class Example extends React.Component {
                   <Col md={2}>
                     Số nước
                   <Input type="number" min={0} value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.nuoc} />
+                    {this.state.resetSoDien &&
+                      <Row className="d-md-none">
+                        <Col>
+                          Chỉ số đầu
+                    <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />
+                                Chỉ số cuối
+                    <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />
+                    </Col>
+                      </Row>
+                    }
                   </Col>
-                  <Col md={1} xs={12}>&nbsp;
-                <Col md='12'>
+                  <Col md={1} xs={12}>
+                    &nbsp;
+                    <Col md='12'>
                       <Button title='Reset số nước' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.nuoc : false} onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button>
                     </Col>
                   </Col>
                   <Col md={1}>
                     &nbsp;
-                <Col md={12}>
+                    <Col md={12}>
                       <Button color={'warning'} type='submit' size={'md'}><i className="fas fa-plus" /></Button>
                     </Col>
                   </Col>
                 </Row>
-                {(this.state.resetSoDien || this.state.resetSoNuoc) && <Row>
-                  <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '5' : !this.state.resetSoDien && this.state.resetSoNuoc ? '8' : '5'} className='text-right'>Chỉ số đầu</Col>
-                  {this.state.resetSoDien && <Col md='2'>
-                    <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
-                  </Col>}
-                  {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
-                  <Col md='2'>{this.state.resetSoNuoc &&
-                    <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />}</Col>
-                </Row>}
-                {(this.state.resetSoDien || this.state.resetSoNuoc) && <Row>
-                  <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '5' : !this.state.resetSoDien && this.state.resetSoNuoc ? '8' : '5'} className='text-right'>Chỉ số cuối</Col>
-                  {this.state.resetSoDien && <Col md='2'>
-                    <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
-                  </Col>}
-                  {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
-                  <Col md='2'>{this.state.resetSoNuoc &&
-                    <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />}</Col>
-                </Row>}
+                {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
+                  <Row>
+                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '5' : !this.state.resetSoDien && this.state.resetSoNuoc ? '8' : '5'} className='text-right'>
+                      Chỉ số đầu
+                    </Col>
+                    {this.state.resetSoDien &&
+                      <Col md='2'>
+                        <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
+                      </Col>}
+                    {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
+                    <Col md='2'>{this.state.resetSoNuoc &&
+                      <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />}
+                    </Col>
+                  </Row>
+                </div>}
+                {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
+                  <Row>
+                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '5' : !this.state.resetSoDien && this.state.resetSoNuoc ? '8' : '5'} className='text-right'>
+                      Chỉ số cuối
+                    </Col>
+                    {this.state.resetSoDien && <Col md='2'>
+                      <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
+                    </Col>}
+                    {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
+                    <Col md='2'>{this.state.resetSoNuoc &&
+                      <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />}
+                    </Col>
+                  </Row>
+                </div>}
                 {Object.keys(this.state.infoRoom).length && <Row className={'m-b-10'}>
                   <Col md={4} xs={12}>
                     Loại: {this.state.infoRoom.loaiPhong.ten}

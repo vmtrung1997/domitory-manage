@@ -19,7 +19,9 @@
 .m-t-60{
     margin-top: 60px;
 }
-
+.p-t-10{
+    padding-top: 10px;
+}
 .float-right{
     float: right;
 }

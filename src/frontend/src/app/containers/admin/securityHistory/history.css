@@ -23,9 +23,8 @@ box-shadow: 6px 10px 10px -9px rgba(179,179,179,1);
 .item-image img{
   max-height:100px;
 }
-.item-text{
-  margin: auto;
-  padding-left: 10px;
+.item-history-text{
+  margin: auto auto auto 8px;
   font-size: 0.8em;
 }
 .table-history{

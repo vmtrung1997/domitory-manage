@@ -6,6 +6,8 @@ const Profile = require("../models/Profile");
 const ReToken = require("../models/refreshToken");
 const auth = require("../repos/authRepo");
 const nodemailer = require("nodemailer");
+const sanitize = require("mongo-sanitize");
+require("../models/PhanQuyen")
 var handlebars = require('handlebars');
 
 const fs = require("fs");
@@ -49,9 +51,11 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
+  let username = sanitize(req.body.username);
+  let password = sanitize(req.body.password);
   User.findOne({
-    username: req.body.username,
-    password: req.body.password,
+    username: username,
+    password: password,
     isDelete: 0
   })
     .populate({ path: "phanQuyen", select: "quyen" })

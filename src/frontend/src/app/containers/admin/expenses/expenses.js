@@ -209,7 +209,7 @@ class Expenses extends Component {
 									<ModalConfig loading={this.handleLoading} />}
 									<ModalExport loading={this.handleLoading} roomList={this.state.rooms} />
 								</div>
-								{this.state.roles && this.state.roles.includes('CP02') &&
+								{this.state.roles && this.state.roles.includes('CP03') &&
 							<div className='button-control'>
 							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)} />
 						</div>}
