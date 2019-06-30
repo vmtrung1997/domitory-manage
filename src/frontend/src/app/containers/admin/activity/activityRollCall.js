@@ -28,56 +28,53 @@ class ActivityRollCall extends Component{
     var dateEnd = new Date(this.props.data.ngayKT)
     var dateCur = new Date()
 
-    if( dateCur > dateStart  && ((dateCur - dateEnd) < 24*3600*1000)){
-      await refreshToken()
-      var secret = JSON.parse(localStorage.getItem('secret'))
-      axios({
-        method: 'post',
-        url: '/manager/activity/rollcall',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-access-token': secret.access_token
-        },
-        data:{
-          idHD: this.props.data._id,
-          idThe: this.state.idThe
+    await refreshToken()
+    var secret = JSON.parse(localStorage.getItem('secret'))
+    axios({
+      method: 'post',
+      url: '/manager/activity/rollcall',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-access-token': secret.access_token
+      },
+      data:{
+        idHD: this.props.data._id,
+        idThe: this.state.idThe
+      }
+    })
+    .then( rs => { 
+      if(rs.data.rs === "ok")
+        ToastsStore.success("Điểm danh thành công!")
+      else if (rs.data.rs === "delete")
+        ToastsStore.error("Sinh viên đã bị xoá!");
+      else
+        ToastsStore.error("Mã thẻ không tồn tại!");
+    }).catch(err => {
+      ToastsStore.error("Điểm danh không thành công!");
+    })
+    axios({
+      method: 'post',
+      url: '/student/get-info-by-idCard',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-access-token': secret.access_token
+      },
+      data:{
+        idCard: this.state.idThe
+      }
+    }).then(res => {
+      if(res.data.student && res.data.status !== "delete"){
+        if(!this.state.data.some(el => el.MSSV === res.data.student.MSSV)){
+          this.setState({ 
+            data: this.state.data.concat(res.data.student)
+          })
         }
-      })
-      .then( rs => { 
-        if(rs.data.rs === "ok")
-          ToastsStore.success("Điểm danh thành công!")
-        else if (rs.data.rs === "delete")
-          ToastsStore.error("Sinh viên đã bị xoá!");
-        else
-          ToastsStore.error("Mã thẻ không tồn tại!");
-      }).catch(err => {
-        ToastsStore.error("Điểm danh không thành công!");
-      })
-      axios({
-        method: 'post',
-        url: '/student/get-info-by-idCard',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-access-token': secret.access_token
-        },
-        data:{
-          idCard: this.state.idThe
-        }
-      }).then(res => {
-        if(res.data.student && res.data.status !== "delete"){
-          if(!this.state.data.some(el => el.MSSV === res.data.student.MSSV)){
-            this.setState({ 
-              data: this.state.data.concat(res.data.student)
-            })
-          }
-        }
-      })
-      .catch( err => {
-        ToastsStore.error("Lổi tìm kiếm sinh viên!");
-      })
-    } else {
-      ToastsStore.error("Thời gian này không cho phép điểm danh!");
-    }
+      }
+    })
+    .catch( err => {
+      ToastsStore.error("Lổi tìm kiếm sinh viên!");
+    })
+    
     this.setState({ idThe: '' })
   }
 

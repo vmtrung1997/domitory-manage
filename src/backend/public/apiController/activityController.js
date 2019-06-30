@@ -240,24 +240,28 @@ exports.rollcall_activity = async (req, res) => {
 };
 
 exports.export_activity = async (req, res) => {
-	if(req.body.year){
-		const year = req.body.year
+	if(req.body.dateBegin && req.body.dateEnd){
+		var begin = new Date(req.body.dateBegin)
+		var end = new Date(req.body.dateEnd)
 		var query = {
 			MSSV: {$ne: null},
-			ngayVaoO: { $lte: new Date(year, 7, 31)},
-			ngayHetHan: {$gte: new Date(year-1, 8, 1)}
+			ngayVaoO: { $lte: end},
+			ngayHetHan: {
+				$gte: begin,
+				$ne: null
+			}
 		}
 		var promiseStu = Profile.find(query).populate('idPhong')
 		var promiseAc = Activity.find({
-				ngayBD: {
-					$gte: new Date(year-1, 8, 1),
-					$lte: new Date(year, 7, 31)
-				}
-			})
+			ngayBD: {
+				$gte: begin,
+				$lte: end
+			}
+		})
 		
 		const [student, activity] = await Promise.all([promiseStu, promiseAc])
 
-		var header = ['', '',`Điểm phong trào ktx Trần Hưng Đạo năm học ${year-1} - ${year}`]
+		var header = ['', '',`Điểm phong trào ktx Trần Hưng Đạo từ ${begin.toLocaleDateString('de-DE')} đến ${end.toLocaleDateString('de-DE')}`]
 
 		var sheet = [header]
 		sheet.push([
@@ -319,6 +323,8 @@ exports.export_activity = async (req, res) => {
 		var xlsx = writeXlsx.save(sheet, opts);
 		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		res.status(200).json({ filename: 'Bao-cao-hoat-dong.xlsx', file: xlsx });
+	} else {
+		res.status(404).json({ err: 'Not found'});
 	}
 	
 };
