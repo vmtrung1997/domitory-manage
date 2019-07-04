@@ -4,7 +4,9 @@ import { withRouter, Link } from 'react-router-dom'
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 import axios from './../../config'
 import jwt_decode from 'jwt-decode'
+import { saveAs } from 'file-saver'
 
+import Loader from './../loader/loader'
 import './infoActivity.css'
 import Confirm from './../confirm/confirm'
 import refreshToken from './../../../utils/refresh_token'
@@ -66,6 +68,35 @@ class InfoActivity extends Component{
 			dataEdit: data
 		})
 	}
+	handleExport =  async (data) => {
+		await refreshToken()
+		this.setState({ loading: true })
+    	var secret = JSON.parse(localStorage.getItem('secret'))
+		axios({
+	      	method: 'post',
+	      	url: '/manager/activity/export_detail_activity',
+	      	headers: { 'x-access-token': secret.access_token },
+	      	data: {
+	        	data: data
+	        }
+	    }).then(res => {
+	    	var byteCharacters = window.atob(res.data.file);
+	        var byteNumbers = new Array(byteCharacters.length);
+	        for (var i = 0; i < byteCharacters.length; i++) {
+	          byteNumbers[i] = byteCharacters.charCodeAt(i);
+	        }
+	        var byteArray = new Uint8Array(byteNumbers);
+	        var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+	        
+	        saveAs(blob, res.data.filename) 
+
+	        this.setState({ loading: false }) 
+        	ToastsStore.success("Xuất file báo cáo hoạt động thành công!");
+	    }).catch(err => {
+	    	this.setState({ loading: false })
+	    	ToastsStore.error("Xuất báo  hoạt động không thành công!");
+	   })
+	}
 	render(){
 		const secret = JSON.parse(localStorage.getItem('secret'))
 		const user = jwt_decode(secret.access_token).user
@@ -93,7 +124,7 @@ class InfoActivity extends Component{
 						<td>  </td>
 					)}
 					<td style={{textAlign: 'center'}}> 
-						<Button title={'Điểm danh'} onClick={(e) => {this.handleRollCall(row)}}>
+						<Button title={'Điểm danh'} color={'success'} onClick={(e) => {this.handleRollCall(row)}}>
 							<i className="fas fa-poll-h"></i>
 						</Button>
 						{curData > date || !isAdmin ? (
@@ -108,6 +139,9 @@ class InfoActivity extends Component{
 							</Button>
 							</>
 						)}
+						<Button title={'Xuất báo cáo'} onClick={() => this.handleExport(row)}  style={{margin: '0 5px'}}>
+            				<i className="fas fa-file-export"/>
+            			</Button>
 					</td>
 				</tr>
 			)
@@ -116,6 +150,7 @@ class InfoActivity extends Component{
 		return(
 			<React.Fragment>
 		        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
+		        <Loader loading={this.state.loading}/>
 				<Confirm 
 					show={this.state.showDelete}
 					title={'Xóa hoạt động'}

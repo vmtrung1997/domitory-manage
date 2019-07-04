@@ -83,6 +83,9 @@ class AccountTable extends Component{
 				case 'ADCP':
 					rule = 'Quản lý chi phí'
 					break
+				case 'GDN':
+					rule = 'Ghi chi phí'
+					break
 				case 'DD':
 					rule = 'Điểm danh'
 					break
