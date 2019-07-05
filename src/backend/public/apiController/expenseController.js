@@ -9,6 +9,7 @@ const LoaiPhong = require('../models/LoaiPhong');
 const ThongSoLoaiPhong = require('../models/ThongSoLoaiPhong');
 const Profile = require('../models/Profile');
 const NumberReader = require('read-vn-number').default
+const logsDb = require('../repos/logsRepo').logs_database;
 exports.quan_ly_dien_nuoc = (req, res, next) => {
 	res.json({
 		msg: 'from quan ly dien nuoc'
@@ -82,8 +83,8 @@ function getPersonInRoom(id) {
 function TinhTienDien(arr, number) {
 	let total = 0;
 	let temp = number;
-	if (arr.length>0 && temp <= arr[0].giaTriCuoi)
-		return temp* arr[0].giaTriThuc;
+	if (arr.length > 0 && temp <= arr[0].giaTriCuoi)
+		return temp * arr[0].giaTriThuc;
 	for (let i = 0; i < arr.length; i++) {
 		if (temp >= arr[i].giaTriDau && temp <= arr[i].giaTriCuoi) {
 			for (let j = 0; j < i; j++) {
@@ -227,6 +228,7 @@ exports.add_data = (req, res) => {
 				if (tableNewAdd.length > 0) {
 					ChiPhiPhong.insertMany(tableNewAdd).then((result) => {
 						if (result.length > 0) {
+							logsDb(req.headers['x-access-token'], 'Thêm chi phí', tableNewAdd)
 							res.json({
 								rs: 'success',
 								data: result,
@@ -267,6 +269,10 @@ exports.confirm = (req, res) => {
 						msg: err
 					})
 				} else {
+					logsDb(req.headers['x-access-token'], 'Xác nhận thanh toán', {
+						soDien: soDien,
+						soNuoc: soNuoc
+					})
 					res.json({
 						rs: 'success',
 						data: doc
@@ -286,6 +292,7 @@ exports.remove_expense = (req, res) => {
 				msg: err
 			})
 		} else {
+			logsDb(req.headers['x-access-token'], 'Xóa chi phí', {data: exp})
 			res.status(201).json({
 				rs: 'success'
 			})
@@ -341,14 +348,21 @@ exports.update_expense = async (req, res) => {
 									if (err)
 										res.json({ rs: 'fail', msg: err })
 									else
+									{
+										logsDb(req.headers['x-access-token'], 'Cập nhật thông số', {idPhong: exp, soDien: soDienMoi, soNuoc: soNuocMoi})
+										logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
 										res.json({
 											rs: 'success'
 										})
+									}
 								})
 							} else
+							{
+								logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
 								res.json({
 									rs: 'success'
 								})
+							}
 						}
 					})
 				}
@@ -626,6 +640,7 @@ exports.update_detail_type_room = (req, res) => {
 								if (table.length > 0) {
 									ThongSoLoaiPhong.insertMany(table).then(result => {
 										if (result.length > 0) {
+										logsDb(req.headers['x-access-token'], 'Cập nhật cài đặt', table)
 											res.json({
 												rs: 'success'
 											})
@@ -659,7 +674,8 @@ exports.update_detail_type_room = (req, res) => {
 						if (table.length > 0) {
 							ThongSoLoaiPhong.insertMany(table).then(result => {
 								if (result.length > 0) {
-									res.json({
+										logsDb(req.headers['x-access-token'], 'Cập nhật cài đặt', table)
+										res.json({
 										rs: 'success'
 									})
 								}
@@ -713,7 +729,10 @@ exports.reset_room = (req, res) => {
 			if (err)
 				res.json({ rs: 'fail' })
 			else
-				res.json({ rs: 'success' })
+				{
+					logsDb(req.headers['x-access-token'], 'Cập nhật số điện nước ban đầu', {idPhong: detail.idPhong, update: roomUpdate})
+					res.json({ rs: 'success' })
+				}
 		})
 	}
 }
