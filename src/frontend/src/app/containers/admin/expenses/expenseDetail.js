@@ -115,9 +115,9 @@ class Example extends React.Component {
     }
     if (expenseDetail.trangThai === 1 && this.state.thayDien && this.state.thayNuoc && !window.confirm(`Cập nhật đồng hồ điện [${expenseDetail.thayDien.dienMoi}] và đồng hồ nước [${expenseDetail.thayNuoc.nuocMoi}]`))
       return;
-    else if (expenseDetail.trangThai === 1 && this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Cập nhật lại đồng hồ điện: [${expenseDetail.thayDien.dienMoi}]`))
+    else if (expenseDetail.trangThai === 1 && this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Cập nhật lại đồng hồ điện: [${expenseDetail.thayDien.dienMoi}] và đồng hồ nước [${expenseDetail.soNuoc}]`))
       return;
-    else if (expenseDetail.trangThai === 1 && this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Cập nhật lại đồng hồ nước: [${expenseDetail.thayNuoc.nuocMoi}]`))
+    else if (expenseDetail.trangThai === 1 && this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Cập nhật lại đồng hồ nước: [${expenseDetail.thayNuoc.nuocMoi}] và đồng hồ điện [${expenseDetail.soDien}]`))
       return;
     self.props.loading(true)
     update_expense(expenseDetail).then(result => {
@@ -136,9 +136,9 @@ class Example extends React.Component {
   handleSubmit = () => {
     if (this.state.thayDien && this.state.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật đồng hồ điện [${this.state.soDienResetCuoi}] và đồng hồ nước [${this.state.soNuocResetCuoi}])`))
       return;
-    else if (this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ điện: [${this.state.soDienResetCuoi}])`))
+    else if (this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ điện: [${this.state.soDienResetCuoi}] và đồng hồ nước [${this.state.soDien}])`))
       return;
-    else if (this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ nước: [${this.state.soNuocResetCuoi}])`))
+    else if (this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ nước: [${this.state.soNuocResetCuoi}] và đồng hồ nước [${this.state.soNuoc}])`))
       return;
     this.props.loading(true)
     var exp = { id: this.props.expenseDetail._id };
@@ -251,11 +251,11 @@ class Example extends React.Component {
                 </Col>
               </Row>
               <Row>
-                <Col md={6} xs={12}>
+                <Col md={4} xs={12}>
                   {this.state.capNhat && <Checkbox check={this.state.thayDien} isCheck={e => this.setState({ thayDien: e.chk })} label={'Thay điện'} />}
                   {this.state.capNhat && <Checkbox check={this.state.thayNuoc} isCheck={e => this.setState({ thayNuoc: e.chk })} label={'Thay nước'} />}
                 </Col>
-                <Col md={6} xs={12} className="text-right warning-text"> Thành tiền: {exp.tongTienChu}</Col>
+                <Col md={8} xs={12} className="text-right warning-text"> Thành tiền: {exp.tongTienChu}</Col>
               </Row>
             </Modal.Body>
 

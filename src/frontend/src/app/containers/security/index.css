@@ -1,21 +1,24 @@
 @import url('https://fonts.googleapis.com/css?family=Podkova');
 .security.title{
-    color: #286090;
-    background: white;
-    padding: 10px 50px;
-    margin: auto -15px;
+  color: #286090;
+  background: white;
+  padding: 10px 50px;
+  margin: auto -15px;
 }
 .content-body-security{
   background-color: #ffffff;
-    border-color: #e7eaec;
-    -webkit-border-image: none;
-    border-image: none;
-    border-style: solid solid none;
-    border-width: 4px 0 0;
-    padding: 14px 15px 7px;
+  border-color: #e7eaec;
+  -webkit-border-image: none;
+  border-image: none;
+  border-style: solid solid none;
+  border-width: 4px 0 0;
+  padding: 14px 15px 7px;
 }
+
 .img-css{
-  float: right;
+  min-width: 100%;
+  min-height: auto;
+  text-align: center;
 }
 .img-css img{
   height: 90vh;
@@ -57,6 +60,7 @@ box-shadow: 6px 10px 10px -9px rgba(179,179,179,1);
 }
 .item-image{
   max-height: 100px;
+  max-width: 85px;
 }
 .item-image img{
   max-height:100px;
@@ -75,7 +79,8 @@ box-shadow: 6px 10px 10px -9px rgba(179,179,179,1);
   border-bottom: 1px solid #dbdbdb !important;
   overflow: hidden;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  padding-bottom: 10px;
 }
 .header-security a{
   cursor: pointer;
@@ -92,4 +97,11 @@ box-shadow: 6px 10px 10px -9px rgba(179,179,179,1);
 .logout{
   text-align: center;
   margin-right: 20px;
+}
+.type-radio-button{
+  margin: 0 10px 0 10px ;
+  display: inline;
+}
+.type-div{
+  width: 50%;
 }

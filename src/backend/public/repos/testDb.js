@@ -134,21 +134,13 @@ function saveDetailRoom(value){
 	})
 }
 exports.import_detail_room = (req, res) => {
-	readFile('./public/bin/hinhanhtostring/ChiSoTungLoaiPhong.csv').then(result => {
-		var arr = result.split('\r\n')
-		var arr_split = arr.map(value => {
-			return value.split(',')
-		})
-		console.log(arr_split);
-		var arr_promise =[]
-		arr_split.forEach(value => {
-			arr_promise.push(saveDetailRoom(value))
-		})
-		Promise.all(arr_promise).then( () => {
-			res.json({
-				rs: 'ok'
+	TaiKhoan.find({isDelete: 1}).select('_id').then(tks => {
+		var arrTk = tks.map(v => {return v._id})
+		TaiKhoan.deleteMany({isDelete: 1}).then(e => {
+			Profile.deleteMany({idTaiKhoan: {$in: arrTk}}).then(f => {
+				res.json({rs: 'success'});
 			})
-		}).catch(err => res.json({rs: 'fail'}))
+		})
 	})
 }
 exports.uploadExcelFile = (req, res) => {

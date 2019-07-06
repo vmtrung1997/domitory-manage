@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import ReactDOM from 'react-dom'
 import './index.css'
 import { getHistoryList, inputCard, logout } from './indexAction'
-import { defaultStudentImg } from '../../function/imageFunction'
+import RadioButton from '../../components/radioButton/radioButton';
 class Security extends Component {
 	constructor(props) {
 		super(props)
@@ -23,30 +23,23 @@ class Security extends Component {
 			file: '',
 			cardId: '',
 			notFound: false,
-			inputFocus: false
+			inputFocus: false,
+			type: 'in-dormitory'
 		}
 	}
 	hideLichSu = () => {
 		this.setState({ isHide: !this.state.isHide })
 
 	}
-	onImportFile = (e) => {
-		this.setState({ file: e.target.files[0] })
-	}
-	fixdata = (data) => {
-		var o = "", l = 0, w = 10240;
-		for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
-		o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
-		return o;
-	}
 	componentDidMount() {
 		document.addEventListener("keydown", this.onKeyDown);
-
-		getHistoryList().then(result => {
+		this.onInitHistoryList(this.state.type);
+	}
+	onInitHistoryList(type){
+		getHistoryList(type).then(result => {
 			if (result.data) {
 				var historyList = result.data.data;
-				console.log(historyList);
-				this.setState({ history: historyList, mainHis: historyList.length>0? historyList[0]:{} });
+				this.setState({ history: historyList, mainHis: historyList.length > 0 ? historyList[0] : {} });
 			}
 		})
 	}
@@ -63,7 +56,7 @@ class Security extends Component {
 		}
 
 	}
-	
+
 	onEnterInput = (e) => {
 		if (e.key !== 'Enter')
 			return;
@@ -71,35 +64,43 @@ class Security extends Component {
 	}
 	onHandleInputCard = () => {
 		//var startTime = new Date()
-		var { cardId } = this.state;
-		inputCard({ info: cardId }).then(result => {
+		var { cardId, type } = this.state;
+		inputCard({ info: cardId, type: type}).then(result => {
 			if (result.data.rs === 'success') {
 				var { history } = this.state;
 				var his = result.data.data;
-				history.pop();
+				if (history.length >= 15)
+					history.pop();
 				history.unshift(his);
-				this.setState({ notFound: false, history: history, mainHis: history[0] })
+				this.setState({ notFound: false, history: history, mainHis: history[0], cardId: '' })
 			} else if (result.data.rs === 'not found') {
-				this.setState({ notFound: true })
+				this.setState({ notFound: true, cardId: '' })
 			}
-		}).then(() => {
-			this.setState({ cardId: '' })
+		}).catch(() => {
+			this.setState({ notFound: true, cardId: '' })
 		})
 	}
 	getInput = (target) => {
 		this.setState({ cardId: target.value })
 	}
-	
+	radioCheck = (e) => {
+		this.setState({type: e.value})
+		this.onInitHistoryList(e.value)
+	}
 	render() {
 		var { mainHis } = this.state
-		var mainTime = mainHis?new Date(mainHis.thoiGian):''
+		var mainTime = mainHis ? new Date(mainHis.thoiGian) : ''
 		return (
 			<React.Fragment>
-				<div className='header-security'>
+				<div className='p-t-10 header-security'>
+				<div className='type-div'>
+						<RadioButton check={this.state.type === 'in-dormitory'} value={'in-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Vào ký túc xá'/>
+						<RadioButton check={this.state.type === 'out-dormitory'} value={'out-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Ra ký túc xá'/>
+				</div>
 					<Link to="/signin-admin" onClick={() => {
-						document.removeEventListener("keydown",this.onKeyDown)
-						logout(); 
-						}}>
+						document.removeEventListener("keydown", this.onKeyDown)
+						logout();
+					}}>
 						<i className="fas fa-sign-out-alt" />
 						<span className={"logout"}>Đăng xuất </span>
 					</Link>
@@ -111,8 +112,8 @@ class Security extends Component {
 								<Col md={6} className={'col-outer'}>
 									<div className={'img-css'}>
 										{!this.state.notFound ?
-											<img src={mainHis && mainHis.profile.img !== "" ? mainHis.profile.img : defaultStudentImg} /> :
-											<img src={''} />}
+											(mainHis.profile && mainHis.profile.img ? <img alt={mainHis.MSSV} src={mainHis.profile.img} /> : <div style={{ margin: '5em 0', textAlign: 'center' }}>Chưa cập nhật ảnh</div>) :
+											<div></div>}
 									</div>
 								</Col>
 								<Col md={6}>
@@ -127,13 +128,13 @@ class Security extends Component {
 											</div>
 										</Col>
 									</Row>
-									{!this.state.notFound ?mainHis? <div style={{ margin: '5em 0', textAlign: 'center' }}>
+									{!this.state.notFound ? mainHis && mainHis.profile ? <div style={{ margin: '5em 0', textAlign: 'center' }}>
 										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>{mainHis.profile.hoTen.toUpperCase()}</span></Col>
 										<Col md={12} className={'info'}>MSSV: <span>{mainHis.MSSV}</span></Col>
-										<Col md={12} className={'info'}>Phòng: <span>{mainHis.profile.idPhong.tenPhong}</span></Col>
+										<Col md={12} className={'info'}>Phòng: <span>{mainHis.profile.idPhong ? mainHis.profile.idPhong.tenPhong : 'Chưa cập nhật'}</span></Col>
 										<Col md={12} className={'info'}>Giờ vào: <span>{mainTime.toLocaleTimeString() + ' ' + mainTime.toLocaleDateString()}</span></Col>
-									</div>:<div> Nothing</div> :
-										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>NOT FOUND</span></Col>
+									</div> : <div>Chưa có dữ liệu</div> :
+										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>Không tìm thấy dữ liệu</span></Col>
 									}
 								</Col>
 							</Row>
@@ -144,11 +145,11 @@ class Security extends Component {
 								return (
 									<div className={'item-history'} key={index}>
 										<div className={'item-image'}>
-											<img src={value.profile && value.profile.img !== "" ? value.profile.img : defaultStudentImg} />
+											{value.profile && value.profile.img ? <img alt={value.profile.hoTen} src={value.profile.img} /> : <div>Chưa cập nhật ảnh</div>}
 										</div>
 										<div className={'item-text'}>
 											<div>{value.profile.hoTen}</div>
-											<div>{value.profile.idPhong.tenPhong}</div>
+											<div>{value.profile.idPhong ? "Phòng: " + value.profile.idPhong.tenPhong : "Phòng: Chưa cập nhật"}</div>
 											<div>{thoiGian.toLocaleTimeString() + ' ' + thoiGian.toLocaleDateString()}</div>
 										</div>
 									</div>

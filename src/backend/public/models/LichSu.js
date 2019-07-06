@@ -6,6 +6,7 @@ var Schema = mongoose.Schema;
 var lichSuSchema = new Schema({
     MSSV: String,
     thoiGian: Date,
+    type: Number, //0: vao, 1: ra
     createAt: { type: Date, expires: 3600*24*30 }
 });
 lichSuSchema.plugin(mongoosePaginate);

@@ -82,7 +82,8 @@ function getPersonInRoom(id) {
 function TinhTienDien(arr, number) {
 	let total = 0;
 	let temp = number;
-	console.log(arr);
+	if (arr.length>0 && temp <= arr[0].giaTriCuoi)
+		return temp* arr[0].giaTriThuc;
 	for (let i = 0; i < arr.length; i++) {
 		if (temp >= arr[i].giaTriDau && temp <= arr[i].giaTriCuoi) {
 			for (let j = 0; j < i; j++) {
@@ -95,20 +96,16 @@ function TinhTienDien(arr, number) {
 			break;
 		}
 	}
-	console.log('total',total);
 	return total;
 }
 function TinhTienNuoc(arr, number, soNguoi) {
 	let total = 0;
 	let temp = number;
 	for (let i = 0; i < arr.length; i++) {
-		if (i === arr.length - 1) {
-			return total + temp * arr[i].giaTriThuc
-		}
 		var diff = (arr[i].giaTriCuoi - arr[i].giaTriDau) * soNguoi
 		if (temp > diff) {
 			total = total + diff * arr[i].giaTriThuc;
-			temp = temp - diff
+			temp = temp - diff;
 		} else {
 			return total + temp * arr[i].giaTriThuc
 		}
@@ -216,7 +213,6 @@ function Calculation(phong, soDienCu, soNuocCu) {
 }
 exports.add_data = (req, res) => {
 	var table = req.body
-	console.log(table);
 	var tableAdd = [];
 	var arrId = table.map(val => { return val.phong.value })
 	ChiPhiHienTai.find({ idPhong: { $in: arrId } }).then(vals => {
@@ -315,9 +311,6 @@ exports.update_expense = async (req, res) => {
 							}
 							if (loaiPhong.nuoc) {
 								var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id })
-								// await Phong.findOne({ _id: exp.idPhong }).select(['_id', 'soNguoi']).then(p => {
-
-								// })
 								await getPersonInRoom(exp.idPhong).then(soNguoi => {
 									if (exp.thayNuoc)
 										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, soNguoi));
@@ -363,12 +356,7 @@ exports.update_expense = async (req, res) => {
 		}
 	})
 }
-exports.reports_expense = (req, res) => {
-	var xlsx = writeXlsx.testXlsx();
-	res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	res.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-	res.json({ filename: 'Report.xlsx', file: xlsx });
-}
+
 exports.report_expense = (req, res) => {
 	var condition = req.body;
 	var query = {};
@@ -381,7 +369,7 @@ exports.report_expense = (req, res) => {
 		if (condition.room !== 0) {
 			query.idPhong = condition.room
 		}
-		if (condition.status !== 0) {
+		if (condition.status !== 2) {
 			query.trangThai = condition.status
 		}
 	}
@@ -393,7 +381,7 @@ exports.report_expense = (req, res) => {
 				if (condition.room !== 0) {
 					query.idPhong = condition.room
 				}
-				if (condition.status !== 0) {
+				if (condition.status !== 2) {
 					query.trangThai = condition.status
 				}
 			}
@@ -416,11 +404,9 @@ exports.report_expense = (req, res) => {
 			if (condition.room !== 0) {
 				query.$and.push({ idPhong: condition.room })
 			}
-			if (condition.status !== 0) {
+			if (condition.status !== 2) {
 				query.$and.push({ trangThai: condition.status })
 			}
-
-
 		} else {
 			query = {}
 		}
@@ -460,8 +446,7 @@ exports.report_expense = (req, res) => {
 		total.push(0)
 		total.push('')
 	}
-	//console.log('==query: ', query);
-	//console.log('==options: ', options);
+	console.log(query)
 	if (Object.keys(query).length) {
 		ChiPhiPhong.find(query)
 			.sort([['nam', 1], ['thang', 1]])
@@ -485,7 +470,6 @@ exports.report_expense = (req, res) => {
 							total[header.indexOf('Số điện trong tháng')] = item.thayDien.dienMoi > 0 ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu :
 								(item.soDien > item.soDienCu ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu : total[header.indexOf('Số điện trong tháng')])
 							//totalObj.soDien = item.soDien > item.soDienCu ? totalObj.soDien + item.soDien - item.soDienCu : totalObj.soDien
-							console.log('totalDienMoi')
 						}
 						if (options.indexOf('soNuoc') > 0) {
 							arr.push(item.thayNuoc.nuocMoi > 0 ? item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu + item.soNuoc - item.soNuocCu : (item.soNuoc > item.soNuocCu ? item.soNuoc - item.soNuocCu : 0));

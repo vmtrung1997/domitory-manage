@@ -10,7 +10,7 @@ import Checkbox from "../../../components/checkbox/checkbox";
 import Loader from "../../../components/loader/loader";
 import ListRoom from '../../../components/listRoom/listroom'
 import { dateToString } from '../../../function/dateFunction'
-
+import SSF from 'ssf'
 export class AddStudentModal extends Component{
   constructor(props) {
     super(props);
@@ -360,7 +360,15 @@ export class ImportDataModal extends Component{
 
         let worksheet = workbook.Sheets[workbook.SheetNames[0]];
         let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","ngaySinh"]});
+        listNewStudent = listNewStudent.map((st) => {
+          if (st.ngaySinh && typeof(st.ngaySinh) == 'number'){
+            let date = SSF.parse_date_code(st.ngaySinh,{date1904:false});
+            st.ngaySinh=`${date.d}/${date.m}/${date.y}`
+          }
+          return st
 
+        })
+        console.log(listNewStudent);
         resolve(listNewStudent)
       };
       reader.readAsArrayBuffer(file);

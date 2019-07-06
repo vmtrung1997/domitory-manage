@@ -78,7 +78,8 @@ class Account extends Component{
 			{value: 'AM', label: 'Quản lý'},
 			{value: 'BV', label: 'Bảo vệ'},
 			{value: 'ADCP', label: 'Quản lý chi phí'},
-			{value: 'DD', label: 'Điểm danh'},
+			{value: 'GDN', label: 'Ghi chi phí'},
+			{value: 'DD', label: 'Điểm danh'}
 		]
 	}
 	

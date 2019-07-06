@@ -35,7 +35,9 @@ class SignInAdmin extends Component{
 	        }).then( res => localStorage.removeItem('secret') )
     	}
 	}
-	
+	componentDidMount = () => {
+		
+	}
 	getValue = (key, val) => {
 		if(key === 'password'){
 			this.setState({ [key]: md5(val) })
@@ -61,6 +63,10 @@ class SignInAdmin extends Component{
 					case 'DD':
 						localStorage.setItem('secret', JSON.stringify(res.data));
 						from = { pathname: "/admin/activity" }
+						break
+					case 'GDN':
+						localStorage.setItem('secret', JSON.stringify(res.data));
+						from = { pathname: "/admin/expense" }
 						break
 					case 'BV':
 						localStorage.setItem('secret', JSON.stringify(res.data));
