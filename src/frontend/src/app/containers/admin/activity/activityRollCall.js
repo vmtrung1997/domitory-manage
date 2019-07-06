@@ -43,36 +43,20 @@ class ActivityRollCall extends Component{
       }
     })
     .then( rs => { 
-      if(rs.data.rs === "ok")
+      if(rs.data.rs === "ok"){
+        if(!this.state.data.some(el => el.MSSV === rs.data.data.MSSV)){
+          this.setState({ 
+            data: this.state.data.concat(rs.data.data)
+          })
+        }
         ToastsStore.success("Điểm danh thành công!")
+      }
       else if (rs.data.rs === "delete")
         ToastsStore.error("Sinh viên đã bị xoá!");
       else
         ToastsStore.error("Mã thẻ không tồn tại!");
     }).catch(err => {
       ToastsStore.error("Điểm danh không thành công!");
-    })
-    axios({
-      method: 'post',
-      url: '/student/get-info-by-idCard',
-      headers: { 
-        'Content-Type': 'application/json',
-        'x-access-token': secret.access_token
-      },
-      data:{
-        idCard: this.state.idThe
-      }
-    }).then(res => {
-      if(res.data.student && res.data.status !== "delete"){
-        if(!this.state.data.some(el => el.MSSV === res.data.student.MSSV)){
-          this.setState({ 
-            data: this.state.data.concat(res.data.student)
-          })
-        }
-      }
-    })
-    .catch( err => {
-      ToastsStore.error("Lổi tìm kiếm sinh viên!");
     })
     
     this.setState({ idThe: '' })
