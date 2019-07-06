@@ -28,7 +28,7 @@ class PersonProfile extends React.Component {
       readOnly: true,
       isDisable: true,
       isLoad: true,
-
+      dangVien: undefined,
       MSSV: undefined,
       CMND: undefined,
       danToc: undefined,
@@ -50,7 +50,9 @@ class PersonProfile extends React.Component {
       truong: undefined,
       nganhOptions: [],
       truongOptions: [],
-      flag: true
+      flag: true,
+      danTocOptions: [],
+      tonGiaoOptions: []
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -62,8 +64,44 @@ class PersonProfile extends React.Component {
   editProfile = () => {
     this.setState({ readOnly: false });
     this.setState({ isDisable: false });
-    this.getNganhHoc();
+    this.getDanToc();
+    this.getTonGiao();
   };
+
+
+  getDanToc = () => {
+     //Lấy danh sách các ngành học
+     axios
+     .get("/student/get-nation")
+     .then(res => {
+       if (res) {
+         var options = [{ value: -1, label: "Chọn dân tộc" }];
+         res.data.data.forEach((obj, index) => {
+           options.push({ value: obj._id, label: obj.tenDanToc });
+         });
+         this.setState({ danTocOptions: options });
+       }
+     })
+     .catch(err => {
+     });
+  }
+
+  getTonGiao = () => {
+    //Lấy danh sách các ngành học
+    axios
+    .get("/student/get-religion")
+    .then(res => {
+      if (res) {
+        var options = [{ value: -1, label: "Chọn tôn giáo" }];
+        res.data.data.forEach((obj, index) => {
+          options.push({ value: obj._id, label: obj.tenTonGiao });
+        });
+        this.setState({ tonGiaoOptions: options });
+      }
+    })
+    .catch(err => {
+    });
+ }
 
   getNganhHoc = () =>{
     //Lấy danh sách các ngành học
@@ -85,10 +123,11 @@ class PersonProfile extends React.Component {
     var data = {
       id: this.props.userProfile._id,
       CMND: this.state.CMND,
-      danToc: this.state.danToc,
-      tonGiao: this.state.tonGiao,
+      danToc: this.state.danToc.value,
+      tonGiao: this.state.tonGiao.value,
       diaChi: this.state.diaChi,
       email: this.state.email,
+      dangVien: this.state.dangVien,
       gioiTinh: this.state.gioiTinh,
       //idPhong: this.state.tenPhong._id,
       nganhHoc: this.state.nganhHoc.value,
@@ -102,7 +141,7 @@ class PersonProfile extends React.Component {
     };
 
     //Kiểm tra Email
-    if(data.email.search("@") === -1){
+    if(data.email === undefined || data.email.search("@") === -1){
       window.alert("Vui lòng nhập đúng định dạng email");
     }
 
@@ -126,8 +165,7 @@ class PersonProfile extends React.Component {
       data.ngaySinh === undefined ||
       data.sdt === undefined ||
       data.sdtNguoiThan === undefined ||
-      data.truong === undefined||
-      data.nganhHoc === undefined
+      data.truong === undefined
     ) {
       window.alert("Vui lòng nhập đầy đủ thông tin");
   
@@ -172,7 +210,7 @@ class PersonProfile extends React.Component {
           if (res) {
             //Lưu trong redux
             this.props.getUserAction(res.data.data);
-
+            
             //Nếu res chưa có data
             var nganhHoc = {
               label: res.data.data.nganhHoc
@@ -190,12 +228,26 @@ class PersonProfile extends React.Component {
               value: res.data.data.truong ? res.data.data.truong._id : undefined
             };
 
+            var tonGiao = {
+              label: res.data.data.tonGiao
+                ? res.data.data.tonGiao.tenTonGiao
+                : undefined,
+              value: res.data.data.tonGiao ? res.data.data.tonGiao._id : undefined
+            };
+
+            var danToc = {
+              label: res.data.data.danToc
+                ? res.data.data.danToc.tenDanToc
+                : undefined,
+              value: res.data.data.danToc ? res.data.data.danToc._id : undefined
+            };
             //Lưu trong state
             this.setState({
               MSSV: res.data.data.MSSV,
               CMND: res.data.data.CMND,
-              danToc: res.data.data.danToc,
-              tonGiao: res.data.data.tonGiao,
+              danToc: danToc,
+              dangVien: res.data.data.dangVien,
+              tonGiao: tonGiao,
               diaChi: res.data.data.diaChi,
               email: res.data.data.email,
               gioiTinh: res.data.data.gioiTinh,
@@ -222,8 +274,6 @@ class PersonProfile extends React.Component {
         .catch(err => {
         });
 
-      
-
       //Lấy danh sách các trường
       var options = [{ value: -1, label: "Chọn trường" }];
       axios
@@ -247,12 +297,38 @@ class PersonProfile extends React.Component {
     this.setState({
       nganhHoc: nganh
     });
-
   };
+
+  dangVienSelected = value =>{
+    this.setState({ dangVien: parseInt(value) });
+  }
 
   genderSelected = value => {
     this.setState({ gioiTinh: value });
   };
+
+  nationSelected = value => {
+    if(value !== '-1')
+    {
+    var danToc = this.state.danTocOptions.find(obj => obj.value === value);
+
+    this.setState({
+      danToc: danToc
+    });
+   
+  };
+}
+
+  religionSelected = value => {
+    if(value !== '-1')
+    {
+    var tonGiao = this.state.tonGiaoOptions.find(obj => obj.value === value);
+    this.setState({
+      tonGiao: tonGiao
+    });
+  };
+}
+
 
   truongSelected = value => {
     if(value !== '-1')
@@ -261,41 +337,50 @@ class PersonProfile extends React.Component {
     this.setState({
       truong: truong
     });
-    //Lấy danh sách các ngành học
-    axios
-    .post("/student/get-specialized",{id:truong.value})
-    .then(res => {
-      if (res) {
-        var options = [{ value: -1, label: "Chọn ngành" }];
-        res.data.data.forEach((obj, index) => {
-          options.push({ value: obj.idNganhHoc._id, label: obj.idNganhHoc.tenNganh });
-        });
-        this.setState({ nganhOptions: options });
-      }
-    })
-    .catch(err => {
-    });
   }
-  };
+}
+    //Lấy danh sách các ngành học
+    // axios
+    // .post("/student/get-specialized",{id:truong.value})
+    // .then(res => {
+    //   if (res) {
+    //     var options = [{ value: -1, label: "Chọn ngành" }];
+    //     res.data.data.forEach((obj, index) => {
+    //       options.push({ value: obj.idNganhHoc._id, label: obj.idNganhHoc.tenNganh });
+    //     });
+    //     this.setState({ nganhOptions: options });
+    //   }
+    // })
+    // .catch(err => {
+    // });
+
+  
 
   render() {
-
     if (!this.state.isLoad) {
       var gender = [
         { value: "-1", label: "Chọn giới tính" },
         { value: "0", label: "Nữ" },
         { value: "1", label: "Nam" }
       ];
+      var dangVienOption = [
+        { value: "0", label: "Không" },
+        { value: "1", label: "Có" }
+      ]
       var majorInput;
       var schoolInput;
       var genderInput;
-
+      var nationInput;
+      var religionInput;
+      var dangVienInput;
       //Định dạng ngày sinh
       var d = new Date(this.state.ngaySinh);
       var month = d.getMonth() + 1;
       var birthdayFormat = d.getDate() + "/" + month + "/" + d.getFullYear();
 
       if (!this.state.readOnly) {
+        
+
         genderInput = (
           <MySelectOption
             name="gioiTinh"
@@ -307,6 +392,38 @@ class PersonProfile extends React.Component {
           />
         );
 
+        dangVienInput = (
+          <MySelectOption
+            name="dangVien"
+            getValue={this.getValue}
+            disabled={this.state.readOnly}
+            value={this.state.dangVien?this.state.dangVien:""}
+            options={dangVienOption}
+            selected={this.dangVienSelected}
+          />
+        );
+
+        nationInput = (
+          <MySelectOption
+            name="danToc"
+            getValue={this.getValue}
+            disabled={this.state.readOnly}
+            value={this.state.danToc?this.state.danToc.value:""}
+            options={this.state.danTocOptions}
+            selected={this.nationSelected}
+          />
+        )
+
+        religionInput = (
+          <MySelectOption
+            name="tonGiao"
+            getValue={this.getValue}
+            disabled={this.state.flag? this.state.readOnly: true}
+            value={this.state.tonGiao?this.state.tonGiao.value:""}
+            options={this.state.tonGiaoOptions}
+            selected={this.religionSelected}
+          />
+        )
         majorInput = (
           <MySelectOption
             name="nganhHoc"
@@ -327,8 +444,18 @@ class PersonProfile extends React.Component {
             options={this.state.truongOptions}
             selected={this.truongSelected}
           />
-        );
+        )
       } else {
+        dangVienInput = (
+          <MyInput
+          getValue={this.getValue}
+          name="dangVien"
+          disabled={this.state.readOnly}
+          value={this.state.dangVien === 1 ? "Có" : "Không"}
+          borderRadius="3px"
+        />
+      );
+
         schoolInput = (
           <MyInput
             getValue={this.getValue}
@@ -338,6 +465,27 @@ class PersonProfile extends React.Component {
             borderRadius="3px"
           />
         );
+
+        nationInput = (
+          <MyInput
+            getValue={this.getValue}
+            name="danToc"
+            disabled={this.state.readOnly}
+            value={this.state.danToc?this.state.danToc.label:""}
+            borderRadius="3px"
+          />
+        );
+
+        religionInput = (
+          <MyInput
+            getValue={this.getValue}
+            name="tonGiao"
+            disabled={this.state.readOnly}
+            value={this.state.tonGiao?this.state.tonGiao.label:""}
+            borderRadius="3px"
+          />
+        );
+
         majorInput = (
           <MyInput
             getValue={this.getValue}
@@ -355,7 +503,7 @@ class PersonProfile extends React.Component {
             value={this.state.gioiTinh === 1 ? "Nam" : "Nữ"}
             borderRadius="3px"
           />
-        );
+        )
       }
     }
 
@@ -466,25 +614,12 @@ class PersonProfile extends React.Component {
                       <Row>
                         <Col>
                           <span className="label-font"> Dân tộc</span>
-                          <MyInput
-                            getValue={this.getValue}
-                            type = 'text'
-                            name="danToc"
-                            disabled={this.state.flag? this.state.readOnly:true}
-                            value={this.state.danToc?this.state.danToc:""}
-                            borderRadius="3px"
-                          />
+                          {nationInput}
                         </Col>
 
                         <Col>
                           <span className="label-font">Tôn giáo</span>
-                          <MyInput
-                            getValue={this.getValue}
-                            name="tonGiao"
-                            disabled={this.state.readOnly}
-                            value={this.state.tonGiao?this.state.tonGiao:""}
-                            borderRadius="3px"
-                          />
+                       {religionInput}
                         </Col>
                       </Row>
                     </div>
@@ -521,11 +656,11 @@ class PersonProfile extends React.Component {
                           <span className="label-font">Trường</span>
                           {schoolInput}
                         </Col>
-                        {/* <Col>
-                          <span className="label-font">Ngành học</span>
+                        <Col>
+                          <span className="label-font">Đảng viên</span>
 
-                          {majorInput}
-                        </Col> */}
+                          {dangVienInput}
+                        </Col>
                       </Row>
                       <Row sm={6}>
                         <Col sm={6}>

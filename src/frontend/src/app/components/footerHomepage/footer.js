@@ -14,15 +14,7 @@ export default class Footer extends React.Component {
           <div><i className="far fa-envelope"></i>&nbsp; stormteamk15hcmus@gmail.com</div>
 
 
-                    <p>
-                      {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-                    This template is made
-                      with <i className="fa fa-heart-o" aria-hidden="true" /> by{" "}
-                      <a href="https://colorlib.com" target="_blank" rel="noopener noreferrer">
-                        Colorlib
-                      </a>
-                      {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-                    </p>
+               
                   </div>
           </div>
         

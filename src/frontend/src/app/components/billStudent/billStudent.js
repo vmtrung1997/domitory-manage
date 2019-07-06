@@ -110,10 +110,30 @@ class BillStudent extends React.Component {
                 }
                 res.data.data.map(item => {
                   if (item) {
-                    bill.push(item);
+                    if(item.thayDien){
+                      
+                      var new_item = item;
+
+                      var soMoi = item.soDien;
+                      var soThayDienmoi = item.thayDien.dienMoi;
+                    
+                      var soDienCu = item.soDienCu;
+                      var soThayDienCu = item.thayDien.dienCu;
+
+                      new_item.soDien = soMoi + soThayDienmoi;
+                      //console.log(a,'=',soMoi,'+',soThayDienmoi);
+                      new_item.soDienCu = soDienCu + soThayDienCu;
+                      //console.log(new_item.soDienCu,'=',soDienCu,'+',soThayDienCu);
+                      bill.push(new_item);
+                    }
+                    else{
+                      bill.push(item);
+                    }
                   }
                   return true;
                 });
+                
+                console.log(bill);
                 this.setState({
                   isLoad: false,
                   bills: bill

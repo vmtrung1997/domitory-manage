@@ -71,7 +71,7 @@ h2,
 h3,
 h4,
 h6 {
-  font-family: "Oswald", sans-serif;
+  font-family: 'Nunito', sans-serif;
   color: #191919;
   line-height: 1.4;
   font-weight: 500; }
@@ -229,7 +229,7 @@ img {
       height: 550px; } }
   @media only screen and (max-width: 767px) {
     .single-welcome-slide {
-      height: 410px; } }
+      height: 100vh; } }
   @media only screen and (min-width: 576px) and (max-width: 767px) {
     .single-welcome-slide {
       height: 460px; } }

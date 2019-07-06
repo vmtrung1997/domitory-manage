@@ -39,4 +39,8 @@ router.post('/check-request',studentController.checkRequest);
 
 router.get('/get-floor',studentController.getListFloor);
 
+router.get('/get-religion',studentController.getListReligion);
+
+router.get('/get-nation',studentController.getListNation);
+
 module.exports = router;
