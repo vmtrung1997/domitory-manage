@@ -191,3 +191,9 @@
   .dropdown-login{
       background-color: #ffffff;
   }
+
+  @media only screen and (max-width: 320px) {
+    .header-title {
+        font-size: 0.87em;
+    }
+}

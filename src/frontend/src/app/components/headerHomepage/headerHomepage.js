@@ -186,9 +186,8 @@ class HeaderHomepage extends Component {
           <Navbar.Brand>
             <Row>
               <Link className="nav-img" to="/">
-                <div>
-                  <img alt="img_header" src="/images/Logo-KHTN.jpg" />
-                </div>
+              
+                  <img alt="img_header" src="/images/Logo-KHTN.jpg" />        
               </Link>
 
               <Link className="header-title" to="/">
