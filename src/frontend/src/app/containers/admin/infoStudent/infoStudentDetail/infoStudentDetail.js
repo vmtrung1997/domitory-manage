@@ -10,12 +10,13 @@ import Title from '../../../../components/title/title';
 import './infoStudentDetail.css';
 import refreshToken from "../../../../../utils/refresh_token";
 import Select from "../../../../components/selectOption/select";
-import SearchSelect from '../../../../components/selectOption/select'
-import { defaultStudentImg } from '../../../../function/imageFunction'
+import SearchSelect from '../../../../components/selectOption/select';
+import { defaultStudentImg } from '../../../../function/imageFunction';
+import { verifyNumberString } from '../../../../function/verifyValue';
 import TabActivities from './tabActivities';
 import DatePicker from "react-datepicker/es/index";
 import './../infoStudentFile.css';
-import { getSchools, getMajor } from './../../university/universityAction'
+import { getMajor } from './../../university/universityAction'
 import Loader from '../../../../components/loader/loader';
 import { ChooseRoom } from './../infoStudentModal'
 import { get_info_Student_detail, get_activites_by_MSSV, get_floor_room } from './../infoStudentActions'
@@ -67,7 +68,6 @@ class InfoStudentDetail extends Component {
   componentDidMount() {
     this.getElement('room');
     this.getElement('school');
-
   }
 
   getData = () => {
@@ -167,29 +167,35 @@ class InfoStudentDetail extends Component {
   };
 
   handleSaveChange = async () => {
-    await refreshToken();
-    let secret = JSON.parse(localStorage.getItem('secret'));
-    this.setState({loading: true});
-    axios.post(`/manager/infoStudent/update`,
-      {
-        info: {
-          ...this.state.profile,
-          // img: this.state.profile.img,
-          nganhHoc: this.state.profile.nganhHoc && this.state.profile.nganhHoc._id,
-          truong: this.state.profile.truong && this.state.profile.truong._id,
-          idPhong: this.state.profile.idPhong && this.state.profile.idPhong._id,
-        }
-      }, { headers: { 'x-access-token': secret.access_token} }
-    ).then(result => {
-      ToastsStore.success("Cập nhật thành công!");
-      this.getData()
-      this.setState({loading: false})
+    const { profile } = this.state;
+    // verify CMND, phone number
+    if(verifyNumberString(profile.CMND) || verifyNumberString(profile.sdt) || verifyNumberString(profile.sdtNguoiThan)){
+      ToastsStore.error("CMND, số điện thoại chỉ được phép chứa số!");
+    } else {
+      await refreshToken();
+      let secret = JSON.parse(localStorage.getItem('secret'));
+      this.setState({loading: true});
+      axios.post(`/manager/infoStudent/update`,
+        {
+          info: {
+            ...this.state.profile,
+            // img: this.state.profile.img,
+            nganhHoc: this.state.profile.nganhHoc && this.state.profile.nganhHoc._id,
+            truong: this.state.profile.truong && this.state.profile.truong._id,
+            idPhong: this.state.profile.idPhong && this.state.profile.idPhong._id,
+          }
+        }, { headers: { 'x-access-token': secret.access_token} }
+      ).then(() => {
+        ToastsStore.success("Cập nhật thành công!");
+        this.getData();
+        this.setState({loading: false})
 
-    }).catch(err => {
-      ToastsStore.error(err.response.data.msg);
-      this.setState({loading: false})
-    })
-  }
+      }).catch(err => {
+        ToastsStore.error(err.response.data.msg);
+        this.setState({loading: false})
+      })
+    }
+  };
 
   handleSelectGender = selectedOption => {
     this.setState({ profile: { ...this.state.profile, gioiTinh: parseInt(selectedOption) } })
@@ -205,7 +211,7 @@ class InfoStudentDetail extends Component {
   }
 
   handleSelectSchool = (selectedOption) => {
-    delete this.state.profile.nganhHoc
+    delete this.state.profile.nganhHoc;
     this.setState({
       profile: {
         ...this.state.profile,
@@ -272,12 +278,12 @@ class InfoStudentDetail extends Component {
             
           }
         })
-      }
+      };
       testImg.onerror = () => {
         alert('Lỗi ảnh')
       }
     }
-  }
+  };
   render() {
     let {
       profile,

@@ -4,7 +4,7 @@ class Introduce extends React.Component {
   render() {
     return (
       <div className="intro">
-        <img src = '/images/388.jpg'></img>
+        <img src = '/images/388.jpg'/>
         <h1>GIỚI THIỆU</h1>
         <div className="intro-content">
           <div className='margin-content'>
