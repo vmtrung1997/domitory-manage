@@ -631,7 +631,7 @@ class PersonProfile extends React.Component {
                               Địa chỉ thường trú
                             </span>
                             <MyInput
-                            required
+                              required
                               getValue={this.getValue}
                               type="text"
                               name="diaChi"
