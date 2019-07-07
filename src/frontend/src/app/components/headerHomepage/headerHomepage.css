@@ -4,7 +4,7 @@
     -webkit-box-shadow: 0px 4px 5px -3px rgba(112,112,112,1);
     -moz-box-shadow: 0px 4px 5px -3px rgba(112,112,112,1);
     box-shadow: 0px 4px 5px -3px rgba(112,112,112,1);
-    padding: 5px 30px;
+    padding: 0 30px;
 }
 .option{
     display: flex;
@@ -15,13 +15,13 @@
 .list-item-menu{
     font-family: 'Nunito', sans-serif;
     font-weight: bold;
-    color: #BCC5CA;
+    color: #5BA3EF;
     padding: 5px 10px;
     border: solid 2px #ffffff00;
     transition: all 0.5s;  
 }
 .list-item-menu:hover{
-    color: black;
+    color: #054a96d4;
 }
 
 .list-item-menu::after {
@@ -154,7 +154,7 @@
     background-color: #171717a3
 }
 .nav-img img{
-    width: 8vh; height: 8vh; margin-right: 10px;   border-radius: 50%
+    width: 8vh; height: 9vh; margin-right: 10px;   border-radius: 50%
   }
   .nav-img {
       display: inline;
@@ -166,20 +166,16 @@
 
   .header-title{
       font-weight: bold;
-      color: #5BA3EF;
+      color: #054a96d4;
       font-size: 0.9em;
-      margin-top: 1px;
-      margin-right: 0.15em;
+      margin: 0 0.15em !important;
       display: flex;
       align-self: center
   }
 
   .navbar-toggle{
       background-color: #ffffff;
-      text-align: right;
-
-      
-      
+      text-align: right;   
   }
 
   .navbar-toggle-btn{
