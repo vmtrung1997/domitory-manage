@@ -18,7 +18,7 @@ import {
 } from "react-toasts";
 import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
-
+import * as CONST from "../../../function/constant"
 
 class PersonProfile extends React.Component {
   constructor(props) {
@@ -357,34 +357,9 @@ class PersonProfile extends React.Component {
         { value: "0", label: "Nữ" },
         { value: "1", label: "Nam" }
       ];
-      var nationOption = [
-        { value: "-1", label: "Chọn dân tộc" },
-        { value: "Chăm", label: "Chăm" },
-        { value: "Dao", label: "Dao" },
-        { value: "Êđê", label: "Êđê" },
-        { value: "Hoa", label: "Hoa" },
-        { value: "Jrai", label: "Jrai" },
-        { value: "Khmer", label: "Khmer" },
-        { value: "K'Ho", label: "K'Ho" },
-        { value: "Mường", label: "Mường" },
-        { value: "Nùng", label: "Nùng" },
-        { value: "Sán Dìu", label: "Sán Dìu" },
-        { value: "Khác", label: "Khác" },
-      ];
-
-      var tonGiaoOption = [
-        { value: "-1", label: "Chọn tôn giáo" },
-          { value: "Phật Giáo", label: "Phật Giáo" },
-          { value: "Công Giáo", label: "Công Giáo" },
-          { value: "Cao Đài", label: "Cao Đài" },
-          { value: "Hồi Giáo", label: "Hồi Giáo" },
-          { value: "Khác", label: "Khác" },
-          { value: "Không", label: "Không" },
-      ]
-      var dangVienOption = [
-        { value: "0", label: "Không" },
-        { value: "1", label: "Có" }
-      ]
+      var nationOption = CONST.danTocArr;
+      var tonGiaoOption = CONST.tonGiaoArr;
+      var dangVienOption = CONST.dangVienArr;
       var majorInput;
       var schoolInput;
       var genderInput;
