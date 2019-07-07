@@ -181,14 +181,13 @@ class HeaderHomepage extends Component {
           sticky="top"
           expand="sm"
           className="HeaderHomepage"
-          style={{ backgroundColor: "#fffffff7" }}
+          style={{ backgroundColor: "#fffffff" }}
         >
           <Navbar.Brand>
             <Row>
               <Link className="nav-img" to="/">
-                <div>
-                  <img alt="img_header" src="/images/Logo-KHTN.jpg" />
-                </div>
+              
+                  <img alt="img_header" src="/images/Logo-KHTN.jpg" />        
               </Link>
 
               <Link className="header-title" to="/">
@@ -229,6 +228,14 @@ class HeaderHomepage extends Component {
               >
                 <Link to="/news" className="list-item-menu">
                   Tin tức
+                </Link>
+              </li>
+              <li
+                onClick={this.showHamburgerMenu}
+                className={this.state.isShowMenu ? "animation-menu" : "mobile"}
+              >
+                <Link to="/introduce" className="list-item-menu">
+                  Giới thiệu
                 </Link>
               </li>
 

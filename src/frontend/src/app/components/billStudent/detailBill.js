@@ -64,7 +64,7 @@ class DetailBill extends React.Component {
                                 </tbody>
                             </Table>
                             <Row>
-                                <span style={{'fontSize': '25px', 'color': '#2680EB', 'paddingTop': '20px', 'paddingBottom': '20px','marginLeft': 'auto','marginRight': '35px' }}>Tổng tiền: { OpimizationNumber.OpitmizeNumber(data.tongTien)}&nbsp;VND</span>
+                                <span style={{'fontSize': '25px', 'color': '#2680EB', 'paddingTop': '20px', 'paddingBottom': '20px','marginLeft': 'auto','marginRight': 'auto' }}>Tổng tiền: { OpimizationNumber.OpitmizeNumber(data.tongTien)}&nbsp;VND</span>
                             </Row>
                             <Row>
                                 <span style={{ 'color': 'red', 'paddingTop': '20px', 'paddingBottom': '20px' }}>*Đơn giá điện nước tính theo giá điện nước hiện hành của chính phủ</span>

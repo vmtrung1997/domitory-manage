@@ -9,12 +9,15 @@ const Phong = require("../models/Phong");
 const User = require("../models/TaiKhoan");
 const YeuCauLuuTru = require("../models/YeuCauLuuTru");
 const TruongNganh = require("../models/TruongNganh");
+const DanToc = require("../models/DanToc");
+const TonGiao = require("../models/TonGiao");
 
 require("../models/Phong");
 require("../models/NganhHoc");
 require("../models/Truong");
 require("../models/HoatDong");
-
+require("../models/DanToc");
+require("../models/TonGiao");
 const moment = require("moment");
 
 exports.a = (req, res) => {
@@ -230,14 +233,15 @@ exports.updateFisrtInfo = (req, res) => {
         //hoTen: req.body.data.hoTen,
         tonGiao: req.body.data.tonGiao,
         //idPhong: req.body.data.idPhong,
-        nganhHoc: req.body.data.nganhHoc,
+        nganhHoc: req.body.data.nganhHoc, 
         // ngayHetHan: req.body.data.ngayHetHan,
         ngaySinh: req.body.data.ngaySinh,
         // ngayVaoO: req.body.data.ngayVaoO,
         sdt: req.body.data.sdt,
         sdtNguoiThan: req.body.data.sdtNguoiThan,
         truong: req.body.data.truong,
-        flag: req.body.data.flag
+        flag: req.body.data.flag,
+        dangVien: req.body.data.dangVien
       }
     },
     function(err, place) {
@@ -396,7 +400,9 @@ exports.getInfo = (req, res) => {
     .populate([
       { path: "truong", select: "tenTruong" },
       { path: "nganhHoc", select: "tenNganh" },
-      { path: "idPhong", select: "tenPhong lau" }
+      { path: "idPhong", select: "tenPhong lau" },
+      {path: "danToc"},
+      {path: "tonGiao"}
     ])
     .then(result => {
       if (result) {
@@ -724,6 +730,32 @@ exports.checkRequest = (req,res) =>{
 
 exports.getListFloor = (req,res) =>{
   Phong.find().distinct('lau').then(rs =>{
+    if(rs.length>0){
+      res.status(200).json({
+        data: rs
+      })
+    }
+    else {
+      res.status(204)
+    }
+  })
+}
+
+exports.getListNation = (req,res) =>{
+  DanToc.find().then(rs =>{
+    if(rs.length>0){
+      res.status(200).json({
+        data: rs
+      })
+    }
+    else {
+      res.status(204)
+    }
+  })
+}
+
+exports.getListReligion = (req,res) =>{
+  TonGiao.find().then(rs =>{
     if(rs.length>0){
       res.status(200).json({
         data: rs
