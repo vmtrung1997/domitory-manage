@@ -196,23 +196,32 @@ exports.rollcall_activity = async (req, res) => {
 		the: req.body.idThe,
 		sv: ''
 	}
-	var SV = await Profile.findOne({ maThe: data.the}, '_id').catch(err => {
+	var SV = await Profile.findOne({ maThe: data.the}, {'_id': 1, 'hoTen': 1, 'MSSV': 1}).catch(err => {
 		console.log('==rollcall_activ:', err)
 		res.status(500)
 		return true
 	})
 	if(!SV){
-		res.status(200).json({rs: 'not found student'})
-		return true
+		var tmp = await Profile.findOne({ MSSV: data.the}, {'_id': 1, 'hoTen': 1, 'MSSV': 1}).catch(err => {
+			console.log('==rollcall_activ:', err)
+			res.status(500)
+			return true
+		})
+		if(tmp)
+			data.sv = tmp
+		else{
+			res.status(200).json({rs: 'not found student'})
+			return true
+		}
 	} else {
-		data.sv = SV._id
+		data.sv = SV
 	}
 	
 	if(data.sv){
-		Account.findOne({idProfile: data.sv}, {isDelete: 0}, (err, acc) => {
+		Account.findOne({idProfile: data.sv._id}, {isDelete: 0}, (err, acc) => {
 			if(err) { console.log("==background: ", err )}
 			if(acc) {
-				resultActivity.findOne({ idHD: data.hd, idSV: data.sv }, (err,val) => {
+				resultActivity.findOne({ idHD: data.hd, idSV: data.sv._id }, (err,val) => {
 					if(err){
 						console.log('==rollcall_activity:', err)
 						res.status(500)
@@ -221,7 +230,7 @@ exports.rollcall_activity = async (req, res) => {
 					if(!val) {
 						var rs = new resultActivity({
 							idHD: data.hd,
-							idSV: data.sv,
+							idSV: data.sv._id,
 							isTG: true
 						})
 						rs.save()
@@ -229,7 +238,7 @@ exports.rollcall_activity = async (req, res) => {
 						val.isTG = true
 						val.save()
 					}
-					res.status(200).json({ rs: 'ok'})
+					res.status(200).json({ rs: 'ok', data: data.sv})
 					console.log('==rollcall_activity: success')
 				})
 			} else {
