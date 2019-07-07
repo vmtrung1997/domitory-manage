@@ -11,6 +11,9 @@ class Input extends Component {
     ref: PropTypes.any
   }
   static defaultProps = {
+
+    pattern: '*',
+    required: false,
     type: 'text',
     width: '100%',
     fontSize: '14px',
@@ -51,6 +54,8 @@ class Input extends Component {
           onFocus={this.props.onFocus}
           min={this.props.min}
           max={this.props.max}
+          pattern={this.props.pattern}
+          required={this.props.required}
         />
       </React.Fragment>
     );

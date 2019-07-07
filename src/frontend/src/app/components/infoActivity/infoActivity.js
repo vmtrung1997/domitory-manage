@@ -112,7 +112,7 @@ class InfoActivity extends Component{
 			return (
 				<tr key={index} >
 					<td>{index + 1}</td>
-					<td style={{maxWidth: '500px'}}>
+					<td style={{maxWidth: '400px'}}>
 						<Link to={url}>{row.ten}</Link>
 					</td>
 					<td>{strTime}</td>
@@ -123,7 +123,7 @@ class InfoActivity extends Component{
 					):(
 						<td>  </td>
 					)}
-					<td style={{textAlign: 'center'}}> 
+					<td style={{textAlign: 'center', maxWidth: '210px'}}> 
 						<Button title={'Điểm danh'} color={'success'} onClick={(e) => {this.handleRollCall(row)}}>
 							<i className="fas fa-poll-h"></i>
 						</Button>
@@ -185,7 +185,7 @@ class InfoActivity extends Component{
 							<th>Ngày</th>
 							<th>Địa điểm</th>
 							<th>Bắt buộc</th>
-							<th>Thao tác</th>
+							<th style={{textAlign: 'center', maxWidth: '210px'}}>Thao tác</th>
 						</tr>
 					</thead>
 					<tbody>

@@ -69,7 +69,9 @@ router.post('/activity/delete', activityController.delete_activity);
 
 router.post('/activity/update', activityController.update_activity);
 
-router.post('/activity/rollcall', activityController.rollcall_activity)
+router.post('/activity/rollcall', activityController.rollcall_activity);
+
+router.post('/activity/import_rollcall', activityController.import_rollcall);
 
 // Info of student
 router.post('/infoStudent/getPaging', infoStudent.getListStudentPaging);

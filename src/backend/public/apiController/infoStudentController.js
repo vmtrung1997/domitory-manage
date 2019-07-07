@@ -18,7 +18,6 @@ function addOneStudent(data) {
     else {
       Account.findOne({username: data.mssv})
         .then( result => {
-          console.log('==find stu ', result)
           if(result){
             if(!result.isDelete){
               resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data});
@@ -149,6 +148,7 @@ exports.convertStudent = (req, res) => {
             {MSSV: id},
             { $set: {
               idPhong: null,
+              maThe: null,
               isActive: false,
               hanDangKy: option ? req.body.regisExpiredDate : null,
               ngayHetHan: option ? req.body.dayOut : new Date()
@@ -398,7 +398,6 @@ exports.getRoomHistory = async(req, res) => {
 };
 
 exports.uploadImage = (req, res) => {
-  console.log(req.body);
   res.json({
     rs: 'success',
   })
