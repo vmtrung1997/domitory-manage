@@ -248,6 +248,48 @@ exports.rollcall_activity = async (req, res) => {
 	}
 };
 
+exports.import_rollcall = async (req, res) => {
+	const idHD = req.body.idHD
+	const arrData = req.body.data
+
+	arrData.map(async item => {
+		var tmp = await Profile.findOne({ MSSV: item.mssv}, {'_id': 1}).catch(err => {
+			console.log('==rollcall_activ:', err)
+			res.status(500)
+			return true
+		})
+
+		if(tmp){
+			Account.findOne({idProfile: tmp._id}, {isDelete: 0}, (err, acc) => {
+				if(err) { console.log("==background: ", err )}
+				if(acc) {
+					resultActivity.findOne({ idHD: idHD, idSV: tmp._id }, (err,val) => {
+						if(err){
+							console.log('==rollcall_activity:', err)
+							res.status(500)
+							return true
+						}
+						if(!val) {
+							var rs = new resultActivity({
+								idHD: idHD,
+								idSV: tmp._id,
+								isTG: true
+							})
+							rs.save()
+						} else {
+							val.isTG = true
+							val.save()
+						}
+						console.log('==rollcall_activity: success')
+					})
+				}
+			})
+		}
+	})
+
+	res.status(200).json({ rs: 'ok' })
+}
+
 exports.export_activity = async (req, res) => {
 	if(req.body.dateBegin && req.body.dateEnd){
 		var begin = new Date(req.body.dateBegin)
@@ -380,3 +422,4 @@ exports.export_detail_activity = async (req,res) => {
 		res.status(404).json({ err: 'Not found'});
 	}
 };
+

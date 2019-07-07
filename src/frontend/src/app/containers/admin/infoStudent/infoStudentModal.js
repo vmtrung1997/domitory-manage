@@ -368,7 +368,6 @@ export class ImportDataModal extends Component{
           return st
 
         })
-        console.log(listNewStudent);
         resolve(listNewStudent)
       };
       reader.readAsArrayBuffer(file);
@@ -422,8 +421,6 @@ export class ImportDataModal extends Component{
                 });
             })
           }
-
-
         }).catch(() => {
           this.setState({
             justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
