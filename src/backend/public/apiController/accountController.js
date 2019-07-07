@@ -23,25 +23,8 @@ exports.get_List = (req, res) => {
 	if(req.body.search){ 
 		query.username = { $regex: '.*' + req.body.search + '.*', $options: 'i' }
 	}
-	switch(req.body.rule){
-		case 'SA':
-			query.loai = 'SA'
-			break
-		case 'AM':
-			query.loai = 'AM'
-			break
-		case 'BV':
-			query.loai = 'BV'
-			break
-		case 'ADCP':
-			query.loai = 'ADCP'
-			break
-		case 'DD':
-			query.loai = 'DD'
-			break
-		default:
-			break
-	}
+
+	req.body.rule ? query.loai = req.body.rule : query
 
 	Account.paginate(query, options)
 	.then( result => {
@@ -134,7 +117,7 @@ exports.update_Account = (req, res) => {
 	const id = req.query.id
 	if(req.body){
 		const rule = req.body.rule
-		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' || rule === 'ADCP' || rule === 'DD' ){
+		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' || rule === 'ADCP' || rule === 'DD' || rule === 'GDN' ){
 			Account.updateOne({ _id: id }, {loai: rule}, (err, val) => {
 				if(!err){
 					res.json({ rs: 'ok'})

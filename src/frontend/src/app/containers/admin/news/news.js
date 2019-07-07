@@ -279,7 +279,7 @@ class News extends Component {
               <Col md={3} className={'page-input'}>
               <label style={{marginRight:'3px'}}>Trang</label>
                 <Input width='50px' textAlign='center' value={this.state.pageActive}/>
-                <label style={{marginLeft:'3px'}}>trong {Math.ceil(this.state.totalPages)}</label>
+                <label style={{marginLeft:'3px'}}>/ {Math.ceil(this.state.totalPages)}</label>
               </Col>
               <Col md={9}>
                 <div className={'is-pagination'}>

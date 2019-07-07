@@ -64,6 +64,10 @@ class SignInAdmin extends Component{
 						localStorage.setItem('secret', JSON.stringify(res.data));
 						from = { pathname: "/admin/activity" }
 						break
+					case 'GDN':
+						localStorage.setItem('secret', JSON.stringify(res.data));
+						from = { pathname: "/admin/expense" }
+						break
 					case 'BV':
 						localStorage.setItem('secret', JSON.stringify(res.data));
 						from = { pathname: "/security" }
