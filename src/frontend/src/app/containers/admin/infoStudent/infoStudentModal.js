@@ -216,6 +216,9 @@ export class ConvertStudentModal extends Component{
       this.props.onSave();
     }).catch(err => {
       ToastsStore.error("Không thành công!");
+      this.setState({
+        loading: false
+      });
     })
 
   };
@@ -423,7 +426,8 @@ export class ImportDataModal extends Component{
           }
         }).catch(() => {
           this.setState({
-            justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
+            justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!',
+            loading: false,
           });
         })
       } else {
@@ -749,6 +753,7 @@ export class ExportDataModal extends Component{
 
     }).catch(() => {
       ToastsStore.error("Có lỗi!");
+      this.setState({loading: false});
     })
   };
 

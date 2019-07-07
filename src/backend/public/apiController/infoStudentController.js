@@ -149,6 +149,7 @@ exports.convertStudent = (req, res) => {
             {MSSV: id},
             { $set: {
               idPhong: null,
+              //maThe: null,
               isActive: false,
               hanDangKy: option ? req.body.regisExpiredDate : null,
               ngayHetHan: option ? req.body.dayOut : new Date()
