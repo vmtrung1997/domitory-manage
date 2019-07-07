@@ -317,7 +317,7 @@ class NewsHomepage extends React.Component {
                   this.state.postPin.map((item, index) => {
                     if (index !== 0) {
                       return (
-                        <div className="razo-single-post d-flex mb-30">
+                        <div className="razo-single-post d-flex mb-30" key={index}>
                           {/* Post Thumbnail */}
                           <div className="post-thumbnail">
                           <a href="#!">
