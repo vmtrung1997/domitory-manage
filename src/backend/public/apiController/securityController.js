@@ -1,4 +1,4 @@
-const LichSu = require('../models/LichSu')
+const LichSu = require('../models/LichSuRaVao')
 const Profile = require('../models/Profile')
 require('../models/Profile')
 require('../models/Truong')

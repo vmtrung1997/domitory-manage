@@ -1,6 +1,4 @@
-const LichSu = require('../models/LichSu')
-const mongoose = require('mongoose')
-const Profile = require('../models/Profile')
+const LichSu = require('../models/LichSuRaVao')
 require('../models/Profile')
 require('../models/Truong')
 require('../models/NganhHoc')

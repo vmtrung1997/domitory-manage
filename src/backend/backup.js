@@ -2,15 +2,15 @@ var fs = require('fs');
 var _ = require('lodash');
 var exec = require('child_process').exec;
 var dbOptions =  {
-    user: '<databaseUsername>',
-    pass: '<databasePassword>',
+    user: 'root',
+    pass: '',
     host: '127.0.0.1',
     port: 27017,
     database: 'ktx',
     autoBackup: true, 
     removeOldBackup: true,
     keepLastDaysBackup: 2,
-    autoBackupPath: '../../../backups/' // i.e. /var/database-backup/
+    autoBackupPath: './public/backups/' // i.e. /var/database-backup/
 };
 
 /* return date object */

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var mongoosePaginate = require('mongoose-paginate-v2');
-require('../models/Profile')
+require('./Profile')
 var Schema = mongoose.Schema;
 
 var lichSuSchema = new Schema({
@@ -18,5 +18,5 @@ lichSuSchema.virtual('profile', {
 });
 lichSuSchema.set('toObject', { virtuals: true });
 lichSuSchema.set('toJSON', { virtuals: true });
-const model = mongoose.model('LichSu', lichSuSchema, 'LichSu');
+const model = mongoose.model('LichSuRaVao', lichSuSchema, 'LichSuRaVao');
 module.exports = model;
