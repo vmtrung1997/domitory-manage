@@ -350,7 +350,7 @@ class PersonProfile extends React.Component {
   
 
   render() {
-    console.log(this.state);
+ 
     if (!this.state.isLoad) {
       var gender = [
         { value: "-1", label: "Chọn giới tính" },
