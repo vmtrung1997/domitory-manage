@@ -46,7 +46,6 @@ function addOneStudent(data) {
                   hoTen: data.hoTen,
                   MSSV: data.mssv,
                   ngaySinh: data.ngaySinh,
-                  ngayVaoO: new Date(),
                   ngayHetHan: data.ngayHetHan,
                   hanDangKy: data.hanDangKy,
                   isActive: false,
