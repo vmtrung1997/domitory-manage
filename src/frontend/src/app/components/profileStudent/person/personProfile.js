@@ -296,7 +296,9 @@ class PersonProfile extends React.Component {
   }
 
   genderSelected = value => {
+    if(value !== '-1'){
     this.setState({ gioiTinh: value });
+    }
   };
 
   nationSelected = (value, nationOption) => {
@@ -348,6 +350,7 @@ class PersonProfile extends React.Component {
   
 
   render() {
+    console.log(this.state);
     if (!this.state.isLoad) {
       var gender = [
         { value: "-1", label: "Chọn giới tính" },
@@ -400,7 +403,7 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="gioiTinh"
             getValue={this.getValue}
-            disabled={this.state.flag? this.state.readOnly: true}
+            disabled={this.state.readOnly}
             value={this.state.gioiTinh?this.state.gioiTinh:""}
             options={gender}
             selected={this.genderSelected}
@@ -454,7 +457,7 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="truong"
             getValue={this.getValue}
-            disabled={this.state.flag?this.state.readOnly:true}
+            disabled={this.state.readOnly}
             value={this.state.truong.value?this.state.truong.value:""}
             options={this.state.truongOptions}
             selected={this.truongSelected}
@@ -515,7 +518,7 @@ class PersonProfile extends React.Component {
             getValue={this.getValue}
             name="gioiTinh"
             disabled={this.state.readOnly}
-            value={this.state.gioiTinh === 1 ? "Nam" : "Nữ"}
+            value={this.state.gioiTinh==='1'?'Nam':'Nữ'}
             borderRadius="3px"
           />
         )
@@ -562,7 +565,7 @@ class PersonProfile extends React.Component {
                             name="CMND"
                             type='number'
                             getValue={this.getValue}
-                            disabled={this.state.flag? this.state.readOnly:true}
+                            disabled={this.state.readOnly}
                             value={this.state.CMND?this.state.CMND:""}
                             className="input-picker"
                             borderRadius="3px"
@@ -683,7 +686,7 @@ class PersonProfile extends React.Component {
                           <MyInput
                             getValue={this.getValue}
                             name="diaChi"
-                            disabled={this.state.flag? this.state.readOnly: true}
+                            disabled={this.state.readOnly}
                             value={this.state.diaChi?this.state.diaChi:""}
                           />
                         </Col>

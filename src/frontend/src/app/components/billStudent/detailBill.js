@@ -66,16 +66,12 @@ class DetailBill extends React.Component {
                     <td>{data.soDien}</td>
                     <td>{OpimizationNumber.OpitmizeNumber(data.tienDien)}</td>
                   </tr>
-                  {/* {data.thayDien && <tr>
+                  {data.thayDien && <tr>
                         <td>Điện (thay mới)</td>
                         <td>{data.thayDien.dienCu}</td>
                         <td>{data.thayDien.dienMoi}</td>
-
-                    <td>
-                        {data.soDienCu}
-                    </td>
                       </tr>
-                    } */}
+                    }
                  
                   <tr>
                     <td>Nước</td>
@@ -84,6 +80,12 @@ class DetailBill extends React.Component {
                     <td>{OpimizationNumber.OpitmizeNumber(data.tienNuoc)}</td>
                   </tr>
                   <tr>
+                  {data.thayNuoc && <tr>
+                        <td>Điện (thay mới)</td>
+                        <td>{data.thayNuoc.nuocCu}</td>
+                        <td>{data.thayNuoc.nuocMoi}</td>
+                      </tr>
+                    }
                     <td>Tiền rác</td>
                     <td />
                     <td />
