@@ -133,7 +133,7 @@ class BillStudent extends React.Component {
                   return true;
                 });
                 
-                console.log(bill);
+            
                 this.setState({
                   isLoad: false,
                   bills: bill

@@ -151,7 +151,7 @@ class RequestStay extends React.Component {
     });
   };
   render() {
-    console.log(this.state.stateRequest)
+
     var formRequest
     if(this.state.stateRequest === 0){
       formRequest = (

@@ -51,7 +51,6 @@ class PersonProfile extends React.Component {
       nganhOptions: [],
       truongOptions: [],
       flag: true,
-      danTocOptions: [],
       tonGiaoOptions: []
     };
     this.handleChange = this.handleChange.bind(this);
@@ -64,8 +63,8 @@ class PersonProfile extends React.Component {
   editProfile = () => {
     this.setState({ readOnly: false });
     this.setState({ isDisable: false });
-    this.getDanToc();
-    this.getTonGiao();
+    // this.getDanToc();
+    // this.getTonGiao();
   };
 
 
@@ -123,8 +122,8 @@ class PersonProfile extends React.Component {
     var data = {
       id: this.props.userProfile._id,
       CMND: this.state.CMND,
-      danToc: this.state.danToc.value,
-      tonGiao: this.state.tonGiao.value,
+      danToc: this.state.danToc,
+      tonGiao: this.state.tonGiao,
       diaChi: this.state.diaChi,
       email: this.state.email,
       dangVien: this.state.dangVien,
@@ -228,19 +227,12 @@ class PersonProfile extends React.Component {
               value: res.data.data.truong ? res.data.data.truong._id : undefined
             };
 
-            var tonGiao = {
-              label: res.data.data.tonGiao
-                ? res.data.data.tonGiao.tenTonGiao
-                : undefined,
-              value: res.data.data.tonGiao ? res.data.data.tonGiao._id : undefined
-            };
-
-            var danToc = {
-              label: res.data.data.danToc
-                ? res.data.data.danToc.tenDanToc
-                : undefined,
-              value: res.data.data.danToc ? res.data.data.danToc._id : undefined
-            };
+            var tonGiao = res.data.data.tonGiao
+                ? res.data.data.tonGiao
+                : undefined;
+            var danToc = res.data.data.danToc
+                ? res.data.data.danToc
+                : undefined;
             //Lưu trong state
             this.setState({
               MSSV: res.data.data.MSSV,
@@ -307,24 +299,23 @@ class PersonProfile extends React.Component {
     this.setState({ gioiTinh: value });
   };
 
-  nationSelected = value => {
+  nationSelected = (value, nationOption) => {
     if(value !== '-1')
     {
-    var danToc = this.state.danTocOptions.find(obj => obj.value === value);
-
+    var danToc = nationOption.find(obj => obj.value === value);
     this.setState({
-      danToc: danToc
+      danToc: danToc.value
     });
    
   };
 }
 
-  religionSelected = value => {
+  religionSelected = (value,religionOption) => {
     if(value !== '-1')
     {
-    var tonGiao = this.state.tonGiaoOptions.find(obj => obj.value === value);
+    var tonGiao = religionOption.find(obj => obj.value === value);
     this.setState({
-      tonGiao: tonGiao
+      tonGiao: tonGiao.value
     });
   };
 }
@@ -363,6 +354,30 @@ class PersonProfile extends React.Component {
         { value: "0", label: "Nữ" },
         { value: "1", label: "Nam" }
       ];
+      var nationOption = [
+        { value: "-1", label: "Chọn dân tộc" },
+        { value: "Chăm", label: "Chăm" },
+        { value: "Dao", label: "Dao" },
+        { value: "Êđê", label: "Êđê" },
+        { value: "Hoa", label: "Hoa" },
+        { value: "Jrai", label: "Jrai" },
+        { value: "Khmer", label: "Khmer" },
+        { value: "K'Ho", label: "K'Ho" },
+        { value: "Mường", label: "Mường" },
+        { value: "Nùng", label: "Nùng" },
+        { value: "Sán Dìu", label: "Sán Dìu" },
+        { value: "Khác", label: "Khác" },
+      ];
+
+      var tonGiaoOption = [
+        { value: "-1", label: "Chọn tôn giáo" },
+          { value: "Phật Giáo", label: "Phật Giáo" },
+          { value: "Công Giáo", label: "Công Giáo" },
+          { value: "Cao Đài", label: "Cao Đài" },
+          { value: "Hồi Giáo", label: "Hồi Giáo" },
+          { value: "Khác", label: "Khác" },
+          { value: "Không", label: "Không" },
+      ]
       var dangVienOption = [
         { value: "0", label: "Không" },
         { value: "1", label: "Có" }
@@ -408,9 +423,9 @@ class PersonProfile extends React.Component {
             name="danToc"
             getValue={this.getValue}
             disabled={this.state.readOnly}
-            value={this.state.danToc?this.state.danToc.value:""}
-            options={this.state.danTocOptions}
-            selected={this.nationSelected}
+            value={this.state.danToc?this.state.danToc:""}
+            options={nationOption}
+            selected={e => this.nationSelected(e, nationOption)}
           />
         )
 
@@ -418,10 +433,10 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="tonGiao"
             getValue={this.getValue}
-            disabled={this.state.flag? this.state.readOnly: true}
-            value={this.state.tonGiao?this.state.tonGiao.value:""}
-            options={this.state.tonGiaoOptions}
-            selected={this.religionSelected}
+            disabled={this.state.readOnly}
+            value={this.state.tonGiao?this.state.tonGiao:""}
+            options={tonGiaoOption}
+            selected={ e => this.religionSelected(e,tonGiaoOption)}
           />
         )
         majorInput = (
@@ -471,7 +486,7 @@ class PersonProfile extends React.Component {
             getValue={this.getValue}
             name="danToc"
             disabled={this.state.readOnly}
-            value={this.state.danToc?this.state.danToc.label:""}
+            value={this.state.danToc?this.state.danToc:""}
             borderRadius="3px"
           />
         );
@@ -481,7 +496,7 @@ class PersonProfile extends React.Component {
             getValue={this.getValue}
             name="tonGiao"
             disabled={this.state.readOnly}
-            value={this.state.tonGiao?this.state.tonGiao.label:""}
+            value={this.state.tonGiao?this.state.tonGiao:""}
             borderRadius="3px"
           />
         );
@@ -491,7 +506,7 @@ class PersonProfile extends React.Component {
             getValue={this.getValue}
             name="nganhHoc"
             disabled={this.state.readOnly}
-            value={this.state.nganhHoc.label?this.state.nganhHoc.label:""}
+            value={this.state.nganhHoc.label?this.state.nganhHoc:""}
             borderRadius="3px"
           />
         );

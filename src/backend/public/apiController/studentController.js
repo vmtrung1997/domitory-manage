@@ -401,8 +401,6 @@ exports.getInfo = (req, res) => {
       { path: "truong", select: "tenTruong" },
       { path: "nganhHoc", select: "tenNganh" },
       { path: "idPhong", select: "tenPhong lau" },
-      {path: "danToc"},
-      {path: "tonGiao"}
     ])
     .then(result => {
       if (result) {
