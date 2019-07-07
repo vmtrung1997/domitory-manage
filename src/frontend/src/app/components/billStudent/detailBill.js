@@ -63,8 +63,8 @@ class DetailBill extends React.Component {
                         {data.soDienCu}
                     </td>
 
-                    <td>{data.soDien}</td>
-                    <td>{OpimizationNumber.OpitmizeNumber(data.tienDien)}</td>
+                    <td >{data.soDien}</td>
+                    <td className='text-center vertical-middle' rowSpan={data.thayDien?'2':'1'}>{OpimizationNumber.OpitmizeNumber(data.tienDien)}</td>
                   </tr>
                   {data.thayDien && <tr>
                         <td>Điện (thay mới)</td>
@@ -77,19 +77,20 @@ class DetailBill extends React.Component {
                     <td>Nước</td>
                     <td>{data.soNuocCu}</td>
                     <td>{data.soNuoc}</td>
-                    <td>{OpimizationNumber.OpitmizeNumber(data.tienNuoc)}</td>
+                    <td className='text-center vertical-middle' rowSpan={data.thayNuoc?'2':'1'}>{OpimizationNumber.OpitmizeNumber(data.tienNuoc)}</td>
                   </tr>
-                  <tr>
+                
                   {data.thayNuoc && <tr>
-                        <td>Điện (thay mới)</td>
+                        <td>Nước (thay mới)</td>
                         <td>{data.thayNuoc.nuocCu}</td>
                         <td>{data.thayNuoc.nuocMoi}</td>
                       </tr>
                     }
+                      <tr>
                     <td>Tiền rác</td>
                     <td />
                     <td />
-                    <td>{OpimizationNumber.OpitmizeNumber(data.tienRac)}</td>
+                    <td className='text-center vertical-middle'>{OpimizationNumber.OpitmizeNumber(data.tienRac)}</td>
                   </tr>
                 </tbody>
               </Table>
