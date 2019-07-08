@@ -22,7 +22,7 @@ export class AddStudentModal extends Component{
         name: '',
         studentNumber: '',
         birthDay: today,
-        regisExpiredDate: today,
+        regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
         expiredDate: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() ),
 			},
     }
@@ -176,7 +176,7 @@ export class ConvertStudentModal extends Component{
     this.state = {
       loading: false,
       show: this.props.show,
-      regisExpiredDate: today,
+      regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
       dayOut: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() )
     }
   }
@@ -305,7 +305,7 @@ export class ImportDataModal extends Component{
     this.state = {
       loading: false,
       show: this.props.show,
-      regisExpiredDate: today,
+      regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
       expiredDate: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() ),
       listExpired: undefined,
     }
