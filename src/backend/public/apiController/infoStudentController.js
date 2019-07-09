@@ -147,18 +147,19 @@ exports.convertStudent = (req, res) => {
             {MSSV: id},
             { $set: {
               idPhong: null,
-              maThe: null,
+              //maThe: '',
               isActive: false,
               hanDangKy: option ? req.body.regisExpiredDate : null,
               ngayHetHan: option ? req.body.dayOut : new Date()
             } })
             .then(() => {
-              res.status(200).json({msg: 'Bạn đã xóa thành công'})
-            }).catch(err =>
-            res.status(400).json({msg: 'Xóa thất bại', err: err})
+              res.status(200).json({msg: 'Bạn đã chuyển thành công'})
+            }).catch(err =>{
+              res.status(400).json({msg: 'Chuyển thất bại 001', err: err})
+          }
           )
         }).catch(err => {
-        res.status(400).json({msg: 'Xóa thất bại', err: err})
+        res.status(400).json({msg: 'Chuyển thất bại 002', err: err})
       })
     })
   }
@@ -185,7 +186,7 @@ exports.updateInfo = (req,res) => {
         const history  = {
           idTaiKhoan: info.idTaiKhoan,
           idPhong: info.idPhong,
-          ngayChuyen: new Date()
+          ngayChuyen: new Date(),
         };
         let his = new RoomHistory(history);
         his.save().then(() => {

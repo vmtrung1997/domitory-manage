@@ -211,11 +211,11 @@ export class ConvertStudentModal extends Component{
       this.setState({
         loading: false
       });
-      ToastsStore.success("Chuyển đổi sinh viên thành công!");
+      ToastsStore.success(result.data.msg);
       this.props.function();
       this.props.onSave();
     }).catch(err => {
-      ToastsStore.error("Không thành công!");
+      ToastsStore.error(err.response.data.msg);
       this.setState({
         loading: false
       });
