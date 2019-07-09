@@ -1021,6 +1021,10 @@ export class ChooseRoom extends Component{
     this.props.onChange(this.state.newRoom)
   };
 
+  handleRemove = () => {
+    this.props.onChange(null)
+  };
+
   handleCancel = () => {
     this.setState({
       newRoom: this.state.oldRoom
@@ -1051,10 +1055,17 @@ export class ChooseRoom extends Component{
 
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="outline" onClick={() =>this.handleCancel(false)}>
+            <Button
+              variant="outline"
+              color={'danger'}
+              onClick={() =>this.handleRemove()}
+            >
+              Xóa khỏi  phòng
+            </Button>
+            <Button variant="outline" onClick={() =>this.handleCancel()}>
               Hủy
             </Button>
-            <Button onClick={() => this.handleSaveRoom(false)}>
+            <Button onClick={() => this.handleSaveRoom()}>
               Lưu
             </Button>
           </Modal.Footer>
