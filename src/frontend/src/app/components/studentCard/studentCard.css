@@ -51,7 +51,6 @@
 	background-size: 200px 150px;
 	background-repeat: no-repeat;
 	background-position: center;
-	padding-left: 15px;
 	z-index: 100;
 }
 .footer-card{
@@ -73,7 +72,7 @@
 }
 .name-card{
 	color: #f56f00;
-	font-size: 15px;
+	font-size: 13px;
 	text-align: center;
 	font-weight: bold;
 	display: block;
@@ -83,10 +82,10 @@
 	font-weight: bold;
 	display: block;
 	color: #dc4906;
-	font-size: 18px;
+	font-size: 15px;
 }
 .info-card{
-	font-size: 14px;
+	font-size: 12px;
 	display: block;
 	color: #2b5a7a;
 	font-weight: bold;

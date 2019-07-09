@@ -211,11 +211,11 @@ export class ConvertStudentModal extends Component{
       this.setState({
         loading: false
       });
-      ToastsStore.success("Chuyển đổi sinh viên thành công!");
+      ToastsStore.success(result.data.msg);
       this.props.function();
       this.props.onSave();
     }).catch(err => {
-      ToastsStore.error("Không thành công!");
+      ToastsStore.error(err.response.data.msg);
       this.setState({
         loading: false
       });
@@ -1021,6 +1021,10 @@ export class ChooseRoom extends Component{
     this.props.onChange(this.state.newRoom)
   };
 
+  handleRemove = () => {
+    this.props.onChange(null)
+  };
+
   handleCancel = () => {
     this.setState({
       newRoom: this.state.oldRoom
@@ -1051,10 +1055,17 @@ export class ChooseRoom extends Component{
 
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="outline" onClick={() =>this.handleCancel(false)}>
+            <Button
+              variant="outline"
+              color={'danger'}
+              onClick={() =>this.handleRemove()}
+            >
+              Xóa khỏi  phòng
+            </Button>
+            <Button variant="outline" onClick={() =>this.handleCancel()}>
               Hủy
             </Button>
-            <Button onClick={() => this.handleSaveRoom(false)}>
+            <Button onClick={() => this.handleSaveRoom()}>
               Lưu
             </Button>
           </Modal.Footer>

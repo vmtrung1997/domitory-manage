@@ -11,7 +11,6 @@ function getRoomDetail(floor){
       options: { sort: { name: -1 } }
     }).exec(async(err, kittens) => {
       if (err){
-        console.log('==err ',err);
         reject(err);
       }
       else {
@@ -117,6 +116,7 @@ exports.updateRoom = (req, res) => {
     .then(result => {
       if (result.soNguoi > params.soNguoiToiDa)
         res.status(409).json({ msg: 'Không thể cập nhật vì số người đang ở lớn hơn số người tối đa bạn muốn cập nhật!' });
+      result.tenPhong = params.tenPhong ? params.tenPhong : result.tenPhong;
       result.soNguoiToiDa = params.soNguoiToiDa ? params.soNguoiToiDa : result.soNguoiToiDa;
       result.moTa = params.moTa ? params.moTa : result.moTa;
       result.loaiPhong = params.loaiPhong ? params.loaiPhong : result.loaiPhong;
@@ -138,7 +138,6 @@ exports.getRoomType = (req, res) => {
 
 exports.addRoomType = (req, res) => {
   var { data } = req.body;
-  console.log(data);
   var roomType = new RoomType({
     loai: data.loai,
     ten: data.ten,
@@ -162,7 +161,6 @@ exports.addRoomType = (req, res) => {
 
 exports.updateRoomType = (req, res) => {
   let { data } = req.body;
-  console.log(data);
   RoomType.findOne({ _id: data._id })
     .then(roomType => {
       if (roomType) {
@@ -253,5 +251,5 @@ exports.getPersonInRoom = (req, res) => {
     .then(result => {
       res.status(200).json(result)
     })
-    .catch(err => console.log('==err getperson in room', err))
+    .catch(err => {})
 };

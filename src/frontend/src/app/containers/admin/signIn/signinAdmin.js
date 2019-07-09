@@ -25,7 +25,7 @@ class SignInAdmin extends Component{
 		}
 	}
 
-	componentWillMount = () => {
+	componentDidMount = () => {
 		const secret = JSON.parse(localStorage.getItem('secret'))
 		if(secret){
 	        axios.get(`/logout`, {
@@ -34,9 +34,6 @@ class SignInAdmin extends Component{
 	            }
 	        }).then( res => localStorage.removeItem('secret') )
     	}
-	}
-	componentDidMount = () => {
-		
 	}
 	getValue = (key, val) => {
 		if(key === 'password'){
@@ -81,12 +78,11 @@ class SignInAdmin extends Component{
 		})
 		.catch( err => {
 			this.setState({
-				isNotify: true
+				isNotify: true,
+        loading: false
 			})
-		}).then( () => {
-			this.setState({ loading: false})
 		})
-	}
+	};
 	
 	render(){
 		return(
