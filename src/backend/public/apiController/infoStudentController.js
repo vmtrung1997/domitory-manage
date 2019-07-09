@@ -267,12 +267,12 @@ exports.getListStudent = async(req, res) => {
   if(params.idPhong && params.idPhong!== -1)
     query.idPhong = params.idPhong;
   else if(params.idPhong === -1)
-    query.idPhong = {"$exists": false};
+    query.idPhong = undefined; //{"$exists": false};
 
   if(params.idTruong && params.idTruong!== -1)
     query.truong = params.idTruong;
   else if(params.idTruong === -1)
-    query.truong = {"$exists": false};
+    query.truong = undefined; //{"$exists": false};
 
   if(params.nam && params.nam !== 0){
     let startTime =  new Date(params.nam, 1, 1);
@@ -335,12 +335,12 @@ exports.getListStudentPaging = async(req, res) => {
   if(params.idPhong && params.idPhong!== -1)
     query.idPhong = params.idPhong;
   else if(params.idPhong === -1)
-    query.idPhong = {"$exists": false};
+    query.idPhong = undefined; //{"$exists": false};
 
   if(params.idTruong && params.idTruong!== -1)
     query.truong = params.idTruong;
   else if(params.idTruong === -1)
-    query.truong = {"$exists": false};
+    query.truong = undefined;//{"$exists": false};
 
   if(params.nam && params.nam !== 0){
     let startTime =  new Date(params.nam, 1, 1);
