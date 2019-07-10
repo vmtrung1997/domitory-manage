@@ -40,7 +40,7 @@ class StudentCard extends Component{
         		<div className='body-card'>
         			<div className={'img-card'} style={{textAlign: 'center'}}>
         				<img src={avt} alt="Smiley face" className={'avt-card'}/>
-        				<span style={{fontWeight: 'bold'}}> { MSSV } </span>
+        				<span style={{fontWeight: 'bold', color: '#dc4906'}}> { MSSV } </span>
         			</div>
         			<div className='body-card-right'>
         				<span className='name-card' > THẺ LƯU TRÚ </span>

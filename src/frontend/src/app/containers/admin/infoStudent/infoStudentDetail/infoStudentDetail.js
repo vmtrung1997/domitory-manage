@@ -587,7 +587,7 @@ class InfoStudentDetail extends Component {
 
           </div>
           <Row className={'isc-footer-btn'}>
-            {isActive && !isOld &&
+            {!isOld &&
               <Button
                 onClick={() => this.handleSaveChange()}
               >
