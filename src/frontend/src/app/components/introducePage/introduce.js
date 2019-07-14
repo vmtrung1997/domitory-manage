@@ -186,7 +186,7 @@ class Introduce extends React.Component {
             </div>
             <div class="service-line left" />
 
-            <div class="service-box-one column">
+            <div  class="service-box-one column">
               <div class="img-box-small">
                 <div class="service-img">
                   <img src="./images/doodle.png" alt="" />

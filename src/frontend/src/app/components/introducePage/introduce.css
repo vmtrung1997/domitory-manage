@@ -171,7 +171,8 @@ body{
 }
 
 .condition-stay .condition-box-content .condition-box-first{
-   
+    display: flex;
+    flex-direction: column;
     justify-content:center;
     position: relative;
     align-items: center;
@@ -193,6 +194,7 @@ body{
     height: 150px;
     width: 150px;
     margin: auto;
+    order: -1;
 }
 
 .condition-first-img img{
@@ -240,7 +242,7 @@ body{
 
 .column{
     display: flex;
-    flex-direction: column;
+    flex-direction: column !important;
     justify-content: center;
     align-items: center;
 }
@@ -255,6 +257,8 @@ body{
 
 .service .service-box .service-box-one {
     position: relative;
+    display: flex;
+    flex-direction: column;
     /* display: flex;
     justify-content: center;
     align-items: center; */
@@ -269,6 +273,7 @@ body{
 
 .service .service-box .service-box-one .img-box-small{
     text-align: center;
+    order: -1;
 }
 
 .service .service-box .service-box-one .img-box-small .service-img{
@@ -429,6 +434,7 @@ body{
     }
     .condition-stay .condition-box-content .condition-box-first{
         display: flex;
+        flex-direction: row;
     }
     .condition-stay .condition-box-content .condition-box-first .condition-first-content{
         font-size: 15px;
@@ -437,16 +443,26 @@ body{
         display: flex;
         width: 75%;
     }
+    .condition-first-img{
+        order: unset;
+    }
+    
 
     .service h1{
         font-size: 25px;
     }
     .service .service-box .service-box-one{
         display: flex;
+        flex-direction: row;
+        align-items: center
     }
     .service .service-box .service-box-one .img-box .service-img{
         height: 300px;
         width: 300px;
+    }
+
+    .service .service-box .service-box-one .img-box-small{
+        order: unset
     }
 
     .service .service-box .service-box-one p{
