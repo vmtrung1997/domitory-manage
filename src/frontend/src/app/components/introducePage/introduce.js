@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./introduce.css";
+import Footer from '../footerHomepage/footer'
 class Introduce extends React.Component {
   render() {
     return (
@@ -220,6 +221,7 @@ class Introduce extends React.Component {
             </div>
           </div>
         </section>
+        <Footer></Footer>
       </div>
     );
   }
