@@ -171,15 +171,15 @@ class InfoStudent extends Component{
   };
 
   getYear = () => {
-    let yearOptions = [{value: 0, label: 'Tất cả'}]
-      var today = new Date().getFullYear()
+    let yearOptions = [{value: 0, label: 'Tất cả'}];
+      var today = new Date().getFullYear();
       for(var i = today; i >= today - 5; i--){
         yearOptions.push({value: i, label: i})
       }
     this.setState({
       yearOptions: yearOptions
     })
-  }
+  };
 
   onChange = (event) => {
     this.setState({
@@ -193,27 +193,27 @@ class InfoStudent extends Component{
       loading: true,
     });
     this.getData();
-  }
+  };
 
   handleSelectRoom = selectedOption => {
     this.setState({
       searchValues: {...this.state.searchValues, roomSelected: selectedOption}
     })
-  }
+  };
   handleSelectSchool = selectedOption => {
     this.setState({
       searchValues: {...this.state.searchValues, schoolSelected: selectedOption}
     })
-  }
+  };
   handleSelectFloor = selectedOption => {
     this.setState({ floorSelected: selectedOption})
-  }
+  };
 
   handleSelected = (name, selectedOption) => {
     this.setState({
       searchValues: {...this.state.searchValues, [name]: selectedOption}
     })
-  }
+  };
 
   clickPage = async (page) => {
     await this.setState({
@@ -221,7 +221,7 @@ class InfoStudent extends Component{
       loading: true
     });
     this.getData();
-  }
+  };
 
   handleCheckBox = (props) => {
     if(props.chk){
@@ -282,18 +282,17 @@ class InfoStudent extends Component{
       let i=1;
       const history = result.data && result.data.map(his => {
         return{key: i++, data: his}
-      })
+      });
       this.setState({
         roomHistory: history
       })
     }).catch()
-  }
+  };
 
   changeState = (key, value) => {
     this.setState({ [key]: value })
   };
   render(){
-    console.log('==render info student', this.state);
     const {
       searchValues: {
         limit,

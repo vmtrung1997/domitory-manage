@@ -18,7 +18,6 @@ function addOneStudent(data) {
     else {
       Account.findOne({username: data.mssv})
         .then( result => {
-          console.log('==find stu ', result)
           if(result){
             if(!result.isDelete){
               resolve( {status: 409, msg: 'Mã số sinh viên đã tồn tại!', data: data});
@@ -47,7 +46,6 @@ function addOneStudent(data) {
                   hoTen: data.hoTen,
                   MSSV: data.mssv,
                   ngaySinh: data.ngaySinh,
-                  ngayVaoO: new Date(),
                   ngayHetHan: data.ngayHetHan,
                   hanDangKy: data.hanDangKy,
                   isActive: false,
@@ -149,17 +147,19 @@ exports.convertStudent = (req, res) => {
             {MSSV: id},
             { $set: {
               idPhong: null,
+              //maThe: '',
               isActive: false,
               hanDangKy: option ? req.body.regisExpiredDate : null,
               ngayHetHan: option ? req.body.dayOut : new Date()
             } })
             .then(() => {
-              res.status(200).json({msg: 'Bạn đã xóa thành công'})
-            }).catch(err =>
-            res.status(400).json({msg: 'Xóa thất bại', err: err})
+              res.status(200).json({msg: 'Bạn đã chuyển thành công'})
+            }).catch(err =>{
+              res.status(400).json({msg: 'Chuyển thất bại 001', err: err})
+          }
           )
         }).catch(err => {
-        res.status(400).json({msg: 'Xóa thất bại', err: err})
+        res.status(400).json({msg: 'Chuyển thất bại 002', err: err})
       })
     })
   }
@@ -186,7 +186,7 @@ exports.updateInfo = (req,res) => {
         const history  = {
           idTaiKhoan: info.idTaiKhoan,
           idPhong: info.idPhong,
-          ngayChuyen: new Date()
+          ngayChuyen: new Date(),
         };
         let his = new RoomHistory(history);
         his.save().then(() => {
@@ -267,12 +267,12 @@ exports.getListStudent = async(req, res) => {
   if(params.idPhong && params.idPhong!== -1)
     query.idPhong = params.idPhong;
   else if(params.idPhong === -1)
-    query.idPhong = {"$exists": false};
+    query.idPhong = undefined; //{"$exists": false};
 
   if(params.idTruong && params.idTruong!== -1)
     query.truong = params.idTruong;
   else if(params.idTruong === -1)
-    query.truong = {"$exists": false};
+    query.truong = undefined; //{"$exists": false};
 
   if(params.nam && params.nam !== 0){
     let startTime =  new Date(params.nam, 1, 1);
@@ -335,12 +335,12 @@ exports.getListStudentPaging = async(req, res) => {
   if(params.idPhong && params.idPhong!== -1)
     query.idPhong = params.idPhong;
   else if(params.idPhong === -1)
-    query.idPhong = {"$exists": false};
+    query.idPhong = undefined; //{"$exists": false};
 
   if(params.idTruong && params.idTruong!== -1)
     query.truong = params.idTruong;
   else if(params.idTruong === -1)
-    query.truong = {"$exists": false};
+    query.truong = undefined;//{"$exists": false};
 
   if(params.nam && params.nam !== 0){
     let startTime =  new Date(params.nam, 1, 1);
@@ -398,7 +398,6 @@ exports.getRoomHistory = async(req, res) => {
 };
 
 exports.uploadImage = (req, res) => {
-  console.log(req.body);
   res.json({
     rs: 'success',
   })

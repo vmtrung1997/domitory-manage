@@ -22,7 +22,7 @@ export class AddStudentModal extends Component{
         name: '',
         studentNumber: '',
         birthDay: today,
-        regisExpiredDate: today,
+        regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
         expiredDate: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() ),
 			},
     }
@@ -176,7 +176,7 @@ export class ConvertStudentModal extends Component{
     this.state = {
       loading: false,
       show: this.props.show,
-      regisExpiredDate: today,
+      regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
       dayOut: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() )
     }
   }
@@ -211,11 +211,14 @@ export class ConvertStudentModal extends Component{
       this.setState({
         loading: false
       });
-      ToastsStore.success("Chuyển đổi sinh viên thành công!");
+      ToastsStore.success(result.data.msg);
       this.props.function();
       this.props.onSave();
     }).catch(err => {
-      ToastsStore.error("Không thành công!");
+      ToastsStore.error(err.response.data.msg);
+      this.setState({
+        loading: false
+      });
     })
 
   };
@@ -302,7 +305,7 @@ export class ImportDataModal extends Component{
     this.state = {
       loading: false,
       show: this.props.show,
-      regisExpiredDate: today,
+      regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
       expiredDate: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() ),
       listExpired: undefined,
     }
@@ -423,7 +426,8 @@ export class ImportDataModal extends Component{
           }
         }).catch(() => {
           this.setState({
-            justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
+            justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!',
+            loading: false,
           });
         })
       } else {
@@ -749,6 +753,7 @@ export class ExportDataModal extends Component{
 
     }).catch(() => {
       ToastsStore.error("Có lỗi!");
+      this.setState({loading: false});
     })
   };
 
@@ -1016,6 +1021,10 @@ export class ChooseRoom extends Component{
     this.props.onChange(this.state.newRoom)
   };
 
+  handleRemove = () => {
+    this.props.onChange(null)
+  };
+
   handleCancel = () => {
     this.setState({
       newRoom: this.state.oldRoom
@@ -1046,10 +1055,17 @@ export class ChooseRoom extends Component{
 
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="outline" onClick={() =>this.handleCancel(false)}>
+            <Button
+              variant="outline"
+              color={'danger'}
+              onClick={() =>this.handleRemove()}
+            >
+              Xóa khỏi  phòng
+            </Button>
+            <Button variant="outline" onClick={() =>this.handleCancel()}>
               Hủy
             </Button>
-            <Button onClick={() => this.handleSaveRoom(false)}>
+            <Button onClick={() => this.handleSaveRoom()}>
               Lưu
             </Button>
           </Modal.Footer>

@@ -146,7 +146,7 @@ exports.resetPassword = async (req, res) => {
        
           let mailOptions = {
             from: ' "KTX Trần Hưng Đạo" <ktx135btranhungdao@gmail.com>',
-            to: "tainguyen197.ntt@gmail.com",
+            to: result.email,
             subject: "Mật khẩu của bạn đã được thay đổi",
             html:  htmlToSend
           };

@@ -20,6 +20,7 @@ class InfoDormitory extends React.Component{
     this.state = {
       floorActive: 0,
       roomActive: {
+        tenPhongMoi: '',
         loaiPhong: '',
         gioiTinh: 0
       },
@@ -274,7 +275,8 @@ class InfoDormitory extends React.Component{
     }).catch(err => {});
     this.setState({
       roomActive: {
-        ...room
+        ...room,
+        tenPhongMoi: room.tenPhong
       },
     });
     this.handleShowPopup('room');
@@ -295,12 +297,13 @@ class InfoDormitory extends React.Component{
   };
 
   handleSubmitUpdateStudent = async() => {
-    const { roomActive: { _id, soNguoiToiDa, moTa, loaiPhong, gioiTinh} } = this.state;
+    const { roomActive: { _id, tenPhongMoi, soNguoiToiDa, moTa, loaiPhong, gioiTinh} } = this.state;
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.post(`/manager/infoDormitory/updateRoom/`
       ,{
         id: _id,
+        tenPhong: tenPhongMoi ? tenPhongMoi : undefined,
         soNguoiToiDa: parseInt(soNguoiToiDa),
         moTa: moTa,
         loaiPhong: loaiPhong,
@@ -354,7 +357,6 @@ class InfoDormitory extends React.Component{
   };
 
   render(){
-    console.log('==render dormitory', this.state)
     const {
       floorActive,
       roomList,
@@ -379,6 +381,17 @@ class InfoDormitory extends React.Component{
             </Modal.Header>
             <Modal.Body>
               <Row>
+                <Col md={4}>
+                  Tên phòng:
+                </Col>
+                <Col md={8}>
+                  <Input
+                    getValue={this.onChangeDetailRoom}
+                    name={'tenPhongMoi'}
+                    value={roomActive.tenPhongMoi}
+                   />
+                </Col>
+
                 <Col md={4}>
                   Số người tối đa:
                 </Col>

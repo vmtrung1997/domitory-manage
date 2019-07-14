@@ -11,8 +11,6 @@ class Input extends Component {
     ref: PropTypes.any
   }
   static defaultProps = {
-
-    pattern: '*',
     required: false,
     type: 'text',
     width: '100%',
