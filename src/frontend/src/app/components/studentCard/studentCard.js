@@ -33,27 +33,34 @@ class StudentCard extends Component{
         		<div className='header-card color-card'>
         			<img src={logo} alt="Smiley face" className={'logo-card'}/>
         			<div className='header-card-title'>
-        				<span style={{fontSize: '14px', display:'block'}}> TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN </span>
-        				<span style={{fontSize: '11px'}}> PHÒNG CÔNG TÁC SINH VIÊN </span>
+        				<span> TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN </span>
+        				<span> PHÒNG CÔNG TÁC SINH VIÊN </span>
         			</div>
         		</div>
         		<div className='body-card'>
         			<div className={'img-card'} style={{textAlign: 'center'}}>
         				<img src={avt} alt="Smiley face" className={'avt-card'}/>
-        				<span style={{fontWeight: 'bold', color: '#dc4906'}}> { MSSV } </span>
+        				<span className='lb-MSSV'> { MSSV } </span>
         			</div>
         			<div className='body-card-right'>
         				<span className='name-card' > THẺ LƯU TRÚ </span>
         				<span className='name-person' > { hoTen } </span>
-								<span className='info-card'> Ngày sinh: <span className="info-content">{ strDate }</span></span>
-								<span className='info-card'> Khoa: <span className="info-content">{major} </span></span>
-								<span className='info-card'> Trường: <span className="info-content">{school} </span></span>
-								<span className='info-card'> Phòng: <span className="info-content">{room} </span></span>
+    					<div style={{float: 'left'}}>
+							<span className='info-card'> Ngày sinh: </span>
+							<span className='info-card'> Khoa: </span>
+							<span className='info-card'> Trường: </span>
+							<span className='info-card'> Phòng: </span>
+						</div>
+						<div>
+							<span className="info-content">{ strDate }</span>
+							<span className="info-content">{major} </span>
+							<span className="info-content">{school} </span>
+							<span className="info-content">{room} </span>
+						</div>
         			</div>
         		</div>
         		<div className='footer-card color-card'>
-        			<span style={{background: 'rgb(211, 116, 72)', marginRight:'4px'}}>{semester}</span>
-        			<span>  KÍ TÚC XÁ 135B - TRẦN HƯNG ĐẠO, Q1, TP. HỒ CHÍ MINH</span>
+        			<span> {semester} KÍ TÚC XÁ 135B - TRẦN HƯNG ĐẠO, Q1, TP. HỒ CHÍ MINH</span>
         		</div>
         	</div>
 		)

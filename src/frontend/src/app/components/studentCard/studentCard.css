@@ -28,10 +28,19 @@
 	color: white !important;
 	text-align: center;
 }
+.header-card-title span{
+	font-size: 14px;
+	display: block;
+}
 .avt-card{
 	height: 124px !important;
 	width: 93px !important;
 }
+.lb-MSSV{
+	font-weight: bold;
+	color: #dc4906;
+}
+
 .body-card{
 	display: flex;
 	padding: 5px 15px;
@@ -84,19 +93,66 @@
 	color: #dc4906;
 	font-size: 15px;
 }
+.body-content{
+	display: flex;
+}
 .info-card{
 	font-size: 12px;
 	display: block;
 	color: #2b5a7a;
 	font-weight: bold;
 }
-
 .info-content{
-	color: #040461;
+	display: block;
+	text-align: center;
 }
+
 @media print {
   .card {
     margin: 100px auto;
+    min-height: 315px;
+	width: 530px;
+	height: 315px;
+	max-width: 530px;
+	max-height: 315px;
+  }
+  .logo-card{
+	height: 50px;
+	width: 50px;
+	margin: 0 10px;
+  }
+  .header-card{
+	height: 70px;
+  }
+  .header-card-title span{
+	font-size: 18px
+  }
+  .avt-card{
+	height: 160px !important;
+	width: 120px !important;
+	margin-bottom: 5px;
+  }
+  .body-card{
+	padding: 11px 25px
+  }
+  .lb-MSSV{
+  	margin: 5px;
+	font-size: 20px;
+	padding: 2px 5px;
+	background: white;
+  }
+  .footer-card{
+  	height: 30px;
+	font-size: 13px;
+  }
+  .name-card{
+	font-size: 25px
+  }
+  .name-person{
+  	font-size: 25px
+  }
+  .info-card{
+	font-size: 16px;
   }
 }
 
