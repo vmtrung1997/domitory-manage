@@ -327,7 +327,7 @@ class InfoDormitory extends React.Component{
     const roomRender = roomList && roomList.map((room, index) => {
       console.log(room)
       if(room.loaiPhong){
-        if(room.loaiPhong.loai === 0){
+        if(room.loaiPhong.loai === 0 || room.loaiPhong.loai === 1){
             return(
               <div className={'id-room_item'} key={index}>
                 <Button
