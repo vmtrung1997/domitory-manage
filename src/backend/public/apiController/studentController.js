@@ -546,9 +546,8 @@ exports.getPoint = (req, res) => {
   var toDate = req.body.toDate;
 
   var point = 0;
-  console.log(req.body)
+
   if(fromDate === undefined || toDate === undefined){
-    console.log('voooo');
     res.status(204);
   }
   KetQuaHD.find({
@@ -556,7 +555,7 @@ exports.getPoint = (req, res) => {
   }).populate({
       path: "idHD",
       match: {
-        ngayBD: {$gt: fromDate}
+        ngayBD: {$gte: fromDate, $lte: toDate},
       },
       // match: {
       //   ngayBD: {$and:[ { $gte: fromDate }, {$lte: toDate} ]}

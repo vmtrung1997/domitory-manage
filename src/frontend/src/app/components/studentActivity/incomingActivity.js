@@ -142,10 +142,12 @@ class IncomingStudentActivity extends React.Component {
 
 
   clickPage = e => {
+    if(e <= this.state.totalPages){
     this.setState({
       pageActive: e
     });
     this.getActivities();
+    }
   };
   refresh = () => {
    
@@ -201,6 +203,7 @@ class IncomingStudentActivity extends React.Component {
                         </thead>
                         <tbody>
                           {this.state.incomingActivities.map(
+                            
                             (activity, index) => {
                               var item = activity.idHD;
                               var d = new Date(item.ngayBD);
@@ -234,7 +237,7 @@ class IncomingStudentActivity extends React.Component {
                                     {item.batBuoc === true ? "Bắt buộc" : ""}
                                   </td>
                                   <td>
-                                    {" "}
+                                    {!activity.isTG &&
                                     <input
                                       checked={activity.check}
                                       onChange={e =>
@@ -244,7 +247,7 @@ class IncomingStudentActivity extends React.Component {
                                         )
                                       }
                                       type="checkbox"
-                                    />
+                                    />}
                                   </td>
                                 </tr>
                               );
