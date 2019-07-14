@@ -40,15 +40,6 @@ class Example extends React.Component {
   handleClose() {
     this.setState({
       show: false,
-      room: 0,
-      soDien: 0,
-      soNuoc: 0,
-      resetSoDien: false,
-      resetSoNuoc: false,
-      soDienResetDau: 0,
-      soDienResetCuoi: 0,
-      soNuocResetDau: 0,
-      soNuocResetCuoi: 0
     });
   }
   handleReset() {
@@ -290,7 +281,7 @@ class Example extends React.Component {
                 </Row>
                 {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
                   <Row>
-                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '2' : !this.state.resetSoDien && this.state.resetSoNuoc ? '5' : '2'} className='text-right'>
+                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '2' : !this.state.resetSoDien && this.state.resetSoNuoc ? '6' : '2'} className='text-right'>
                       Chỉ số đầu
                     </Col>
                     {this.state.resetSoDien &&
@@ -300,20 +291,6 @@ class Example extends React.Component {
                     {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
                     <Col md='2'>{this.state.resetSoNuoc &&
                       <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />}
-                    </Col>
-                  </Row>
-                </div>}
-                {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
-                  <Row>
-                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '2' : !this.state.resetSoDien && this.state.resetSoNuoc ? '5' : '2'} className='text-right'>
-                      Chỉ số cuối
-                    </Col>
-                    {this.state.resetSoDien && <Col md='2'>
-                      <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
-                    </Col>}
-                    {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
-                    <Col md='2'>{this.state.resetSoNuoc &&
-                      <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />}
                     </Col>
                   </Row>
                 </div>}
@@ -356,7 +333,7 @@ class Example extends React.Component {
               Đóng
             </Button>
             <Button variant="default" color="danger" onClick={this.handleReset}>
-              Xóa bảng
+              Xóa dữ liệu tạm
             </Button>
             <Button variant="default" onClick={this.handleSubmit}>
               Xác nhận

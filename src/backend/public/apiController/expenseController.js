@@ -150,6 +150,71 @@ function toMoneyString(string) {
 function ceilMoney(number) {
 	return Math.ceil(number / 500) * 500;
 }
+
+function CalculationTest(phong, soDienCu, soNuocCu) {
+	return new Promise(async (resolve, reject) => {
+		var row = {
+			idPhong: phong.phong.value,
+			thang: phong.thang,
+			nam: phong.nam,
+			soDien: phong.soDien,
+			soNuoc: phong.soNuoc,
+			soDienCu: soDienCu,
+			soNuocCu: soNuocCu,
+			tienDien: 0,
+			tienNuoc: 0,
+			tongTien: 0,
+			tienRac: 0,
+			tongTienChu: '',
+			trangThai: 0,
+		}
+		var phongReset = await ChiPhiPhong.findOne({ phong: phong.phong.value, thang: phong.thang, nam: phong.nam });
+		var loaiPhong = await LoaiPhong.findOne({ _id: phong.phong.loaiPhong });
+		var arrThongSo = await ThongSoLoaiPhong.find({ idLoaiPhong: loaiPhong._id }).sort({ id: 1 });
+		var arrDien, arrNuoc;
+		if (arrThongSo.length > 0) {
+			arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0) || [];
+			arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1) || [];
+		}
+		if (loaiPhong) {
+			row.tienRac = loaiPhong.tienRac;
+			if (phongReset) {
+				if (phongReset.thayDien){
+					row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu + phongReset.thayDien.dienCu));
+				}
+				if (phongReset.thayNuoc){
+					row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, songuoi));
+				}
+			}
+			else {
+				if (loaiPhong.dien || loaiPhong.nuoc) {
+					if (arrDien.length > 0) {
+						row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu));
+					}
+					phong.isResetDien ?
+						row.thayDien = { dienCu: phong.soDienResetDau }:
+						row.thayDien = null;
+					
+					var songuoi = await getPersonInRoom(phong.phong.value);
+
+					if (arrNuoc.length > 0) {
+						row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, songuoi));
+					}
+					phong.isResetNuoc ?
+						row.thayNuoc = { nuocCu: phong.soNuocResetDau }:
+						row.thayNuoc = null;
+					
+					console.log(row)
+					row.tongTien = ceilMoney(row.tienDien + row.tienNuoc + row.tienRac)
+					row.tongTienChu = toMoneyString(NumberReader.read(row.tongTien));
+				}
+				resolve(row)
+			}
+		}
+		else reject({ status: false })
+
+	})
+}
 function Calculation(phong, soDienCu, soNuocCu) {
 	return new Promise((resolve, reject) => {
 		var row = {
@@ -292,7 +357,7 @@ exports.remove_expense = (req, res) => {
 				msg: err
 			})
 		} else {
-			logsDb(req.headers['x-access-token'], 'Xóa chi phí', {data: exp})
+			logsDb(req.headers['x-access-token'], 'Xóa chi phí', { data: exp })
 			res.status(201).json({
 				rs: 'success'
 			})
@@ -301,6 +366,7 @@ exports.remove_expense = (req, res) => {
 }
 exports.update_expense = async (req, res) => {
 	var exp = req.body;
+	console.log(exp);
 	var id = new ObjectId(exp._id);
 	Phong.findOne({ _id: exp.idPhong }).then(value => {
 		if (value) {
@@ -347,17 +413,15 @@ exports.update_expense = async (req, res) => {
 								}, err => {
 									if (err)
 										res.json({ rs: 'fail', msg: err })
-									else
-									{
-										logsDb(req.headers['x-access-token'], 'Cập nhật thông số', {idPhong: exp, soDien: soDienMoi, soNuoc: soNuocMoi})
+									else {
+										logsDb(req.headers['x-access-token'], 'Cập nhật thông số', { idPhong: exp, soDien: soDienMoi, soNuoc: soNuocMoi })
 										logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
 										res.json({
 											rs: 'success'
 										})
 									}
 								})
-							} else
-							{
+							} else {
 								logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
 								res.json({
 									rs: 'success'
@@ -640,7 +704,7 @@ exports.update_detail_type_room = (req, res) => {
 								if (table.length > 0) {
 									ThongSoLoaiPhong.insertMany(table).then(result => {
 										if (result.length > 0) {
-										logsDb(req.headers['x-access-token'], 'Cập nhật cài đặt', table)
+											logsDb(req.headers['x-access-token'], 'Cập nhật cài đặt', table)
 											res.json({
 												rs: 'success'
 											})
@@ -674,8 +738,8 @@ exports.update_detail_type_room = (req, res) => {
 						if (table.length > 0) {
 							ThongSoLoaiPhong.insertMany(table).then(result => {
 								if (result.length > 0) {
-										logsDb(req.headers['x-access-token'], 'Cập nhật cài đặt', table)
-										res.json({
+									logsDb(req.headers['x-access-token'], 'Cập nhật cài đặt', table)
+									res.json({
 										rs: 'success'
 									})
 								}
@@ -728,11 +792,10 @@ exports.reset_room = (req, res) => {
 		}, (err) => {
 			if (err)
 				res.json({ rs: 'fail' })
-			else
-				{
-					logsDb(req.headers['x-access-token'], 'Cập nhật số điện nước ban đầu', {idPhong: detail.idPhong, update: roomUpdate})
-					res.json({ rs: 'success' })
-				}
+			else {
+				logsDb(req.headers['x-access-token'], 'Cập nhật số điện nước ban đầu', { idPhong: detail.idPhong, update: roomUpdate })
+				res.json({ rs: 'success' })
+			}
 		})
 	}
 }
