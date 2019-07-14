@@ -67,8 +67,12 @@ export default class ListRoom extends React.Component{
                           color={room.loaiPhong.loai ? 'success' : 'primary'}
                           onClick={() => this.chooseRoom(room)}
                           disabled={isFull}
+                          style={{fontSize: '20px', margin: '5px 0', minWidth: '138px'}}
                         >
-                          <i className="fas fa-home"/>
+                          { room.gioiTinh === 0 ? 
+                            <i style={{fontSize: '25px', margin: '0 5px'}} className="fas fa-female"/>
+                          :
+                            <i style={{fontSize: '25px', margin: '0 5px'}} className="fas fa-male"/>}
                           {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
                         </Button>
                       </div>
