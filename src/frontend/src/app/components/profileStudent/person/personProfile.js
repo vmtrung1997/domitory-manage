@@ -19,6 +19,37 @@ import {
 import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
 
+var gender = [{ value: 0, label: "Nữ" }, { value: 1, label: "Nam" }];
+var nationOption = [
+  { value: "Kinh", label: "Kinh" },
+  { value: "Chăm", label: "Chăm" },
+  { value: "Dao", label: "Dao" },
+  { value: "Êđê", label: "Êđê" },
+  { value: "Hoa", label: "Hoa" },
+  { value: "Jrai", label: "Jrai" },
+  { value: "Khmer", label: "Khmer" },
+
+  { value: "K'Ho", label: "K'Ho" },
+  { value: "Mường", label: "Mường" },
+  { value: "Nùng", label: "Nùng" },
+  { value: "Sán Dìu", label: "Sán Dìu" },
+
+  { value: "Khác", label: "Khác" }
+];
+
+var tonGiaoOption = [
+  { value: "Phật Giáo", label: "Phật Giáo" },
+  { value: "Công Giáo", label: "Công Giáo" },
+  { value: "Cao Đài", label: "Cao Đài" },
+  { value: "Hồi Giáo", label: "Hồi Giáo" },
+  { value: "Khác", label: "Khác" },
+  { value: "Không", label: "Không" }
+];
+var dangVienOption = [
+  { value: "0", label: "Không" },
+  { value: "1", label: "Có" }
+];
+
 class PersonProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -62,6 +93,8 @@ class PersonProfile extends React.Component {
   editProfile = () => {
     this.setState({ readOnly: false });
     this.setState({ isDisable: false });
+    this.getNganhHoc(this.state.truongOptions[0].value);
+
     // this.getDanToc();
     // this.getTonGiao();
   };
@@ -72,7 +105,7 @@ class PersonProfile extends React.Component {
       .get("/student/get-nation")
       .then(res => {
         if (res) {
-          var options = [{ value: -1, label: "Chọn dân tộc" }];
+          var options = [];
           res.data.data.forEach((obj, index) => {
             options.push({ value: obj._id, label: obj.tenDanToc });
           });
@@ -88,7 +121,7 @@ class PersonProfile extends React.Component {
       .get("/student/get-religion")
       .then(res => {
         if (res) {
-          var options = [{ value: -1, label: "Chọn tôn giáo" }];
+          var options = [];
           res.data.data.forEach((obj, index) => {
             options.push({ value: obj._id, label: obj.tenTonGiao });
           });
@@ -98,13 +131,13 @@ class PersonProfile extends React.Component {
       .catch(err => {});
   };
 
-  getNganhHoc = () => {
+  getNganhHoc = value => {
     //Lấy danh sách các ngành học
     axios
-      .post("/student/get-specialized", { id: this.state.truong.value })
+      .post("/student/get-specialized", { id: value })
       .then(res => {
         if (res) {
-          var options = [{ value: -1, label: "Chọn ngành" }];
+          var options = [];
           res.data.data.forEach((obj, index) => {
             options.push({
               value: obj.idNganhHoc._id,
@@ -112,11 +145,13 @@ class PersonProfile extends React.Component {
             });
           });
           this.setState({ nganhOptions: options });
+          this.setState({ nganhHoc: options[0] });
         }
       })
       .catch(err => {});
   };
-  updateProfile = async (event) => {
+  updateProfile = async event => {
+    var error = false;
     event.preventDefault();
     var data = {
       id: this.props.userProfile._id,
@@ -128,19 +163,60 @@ class PersonProfile extends React.Component {
       dangVien: this.state.dangVien,
       gioiTinh: this.state.gioiTinh,
       //idPhong: this.state.tenPhong._id,
-      nganhHoc: this.state.nganhHoc.value,
+      nganhHoc: this.state.nganhHoc ? this.state.nganhHoc.value : undefined,
       //ngayHetHan: this.state.ngayHetHan,
       ngaySinh: this.state.ngaySinh,
       //ngayVaoO: this.state.ngayVaoO,
       sdt: this.state.sdt,
       sdtNguoiThan: this.state.sdtNguoiThan,
-      truong: this.state.truong.value,
+      truong: this.state.truong ? this.state.truong.value : undefined,
       flag: false
     };
 
-  
+    if (data.danToc === undefined) {
+      data.danToc = nationOption[0].value;
+      this.setState({ danToc: nationOption[0].value });
+    }
+    if (data.tonGiao === undefined) {
+      data.tonGiao = tonGiaoOption[0].value;
+      this.setState({ tonGiao: tonGiaoOption[0].value });
+    }
+    if (data.gioiTinh === undefined) {
+      data.gioiTinh = gender[0].value;
+      this.setState({ gioiTinh: gender[0].value });
+    }
+    if (data.truong === undefined) {
+      if (this.state.truongOptions[0] === undefined) {
+        window.alert(
+          "Hiện tại vẫn chưa có trường nào trong danh sách, vui lòng đợi BQL thêm trường."
+        );
+        error = true;
+      } else {
+        data.truong = this.state.truongOptions[0].value;
+        this.setState({ truong: this.state.truongOptions[0] });
+      }
+    }
+    if (data.dangVien === undefined) {
+      data.dangVien = dangVienOption[0].value;
+      this.setState({ dangVien: dangVienOption[0].value });
+    }
+    if (data.nganhHoc === undefined) {
+      if (this.state.nganhOptions[0] === undefined) {
+        window.alert(
+          "Hiện tại vẫn chưa có ngành nào của trường bạn chọn trong danh sách, vui lòng đợi BQL thêm ngành."
+        );
+        error = true;
+      } else {
+        data.nganhHoc = this.state.nganhOptions[0].value;
+        this.setState({ nganhHoc: this.state.nganhOptions[0] });
+      }
+    }
+    console.log(data);
+    //   else if ()
+    if (!error) {
       this.setState({ isDisable: true });
       this.setState({ readOnly: true });
+
       await refreshToken();
 
       var secret = localStorage.getItem("secret");
@@ -153,6 +229,7 @@ class PersonProfile extends React.Component {
           ToastsStore.error("Cập nhật thất bại");
         }
       });
+    }
   };
 
   handleChange(date) {
@@ -235,7 +312,7 @@ class PersonProfile extends React.Component {
         .catch(err => {});
 
       //Lấy danh sách các trường
-      var options = [{ value: -1, label: "Chọn trường" }];
+      var options = [];
       axios
         .get("/student/get-school")
         .then(res => {
@@ -295,6 +372,7 @@ class PersonProfile extends React.Component {
         truong: truong
       });
     }
+    this.getNganhHoc(value);
   };
   //Lấy danh sách các ngành học
   // axios
@@ -313,42 +391,6 @@ class PersonProfile extends React.Component {
 
   render() {
     if (!this.state.isLoad) {
-      var gender = [
-        { value: -1, label: "Chọn giới tính" },
-        { value: 0, label: "Nữ" },
-        { value: 1, label: "Nam" }
-      ];
-      var nationOption = [
-        { value: "-1", label: "Chọn dân tộc" },
-        { value: "Chăm", label: "Chăm" },
-        { value: "Dao", label: "Dao" },
-        { value: "Êđê", label: "Êđê" },
-        { value: "Hoa", label: "Hoa" },
-        { value: "Jrai", label: "Jrai" },
-        { value: "Khmer", label: "Khmer" },
-        { value: "Kinh", label: "Kinh" },
-        { value: "K'Ho", label: "K'Ho" },
-        { value: "Mường", label: "Mường" },
-        { value: "Nùng", label: "Nùng" },
-        { value: "Sán Dìu", label: "Sán Dìu" },
-       
-        
-        { value: "Khác", label: "Khác" }
-      ];
-
-      var tonGiaoOption = [
-        { value: "-1", label: "Chọn tôn giáo" },
-        { value: "Phật Giáo", label: "Phật Giáo" },
-        { value: "Công Giáo", label: "Công Giáo" },
-        { value: "Cao Đài", label: "Cao Đài" },
-        { value: "Hồi Giáo", label: "Hồi Giáo" },
-        { value: "Khác", label: "Khác" },
-        { value: "Không", label: "Không" }
-      ];
-      var dangVienOption = [
-        { value: "0", label: "Không" },
-        { value: "1", label: "Có" }
-      ];
       var majorInput;
       var schoolInput;
       var genderInput;
@@ -408,8 +450,8 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="nganhHoc"
             getValue={this.getValue}
-            disabled={this.state.flag ? this.state.readOnly : true}
-            value={this.state.nganhHoc.value ? this.state.nganhHoc.value : ""}
+            disabled={this.state.readOnly}
+            value={this.state.nganhHoc ? this.state.nganhHoc.value : ""}
             options={this.state.nganhOptions}
             selected={this.nganhSelected}
           />
@@ -420,7 +462,7 @@ class PersonProfile extends React.Component {
             name="truong"
             getValue={this.getValue}
             disabled={this.state.readOnly}
-            value={this.state.truong.value ? this.state.truong.value : ""}
+            value={this.state.truong ? this.state.truong.value : ""}
             options={this.state.truongOptions}
             selected={this.truongSelected}
           />
@@ -471,7 +513,7 @@ class PersonProfile extends React.Component {
             getValue={this.getValue}
             name="nganhHoc"
             disabled={this.state.readOnly}
-            value={this.state.nganhHoc.label ? this.state.nganhHoc : ""}
+            value={this.state.nganhHoc ? this.state.nganhHoc.label : ""}
             borderRadius="3px"
           />
         );
@@ -504,17 +546,15 @@ class PersonProfile extends React.Component {
                 />
                 <Col>
                   <div className="profile-panel-content">
-                    <form onSubmit={e=>this.updateProfile(e)}>
+                    <form onSubmit={e => this.updateProfile(e)}>
                       <div>
                         <Row>
                           <Col>
                             <span className="label-font">MSSV</span>
                             <MyInput
-                           
                               getValue={this.getValue}
                               name="MSSV"
                               disabled
-                            
                               type="text"
                               value={this.state.MSSV}
                               borderRadius="3px"
@@ -548,7 +588,6 @@ class PersonProfile extends React.Component {
                               name="hoTen"
                               type="text"
                               disabled
-                            
                               value={this.state.hoTen}
                               borderRadius="3px"
                             />
@@ -612,7 +651,7 @@ class PersonProfile extends React.Component {
                           <Col>
                             <span className="label-font">Số điện thoại</span>
                             <MyInput
-                            required
+                              required
                               type="text"
                               pattern="\d*"
                               getValue={this.getValue}
@@ -625,8 +664,8 @@ class PersonProfile extends React.Component {
                           <Col>
                             <span className="label-font">SDT người thân</span>
                             <MyInput
-                            required
-                             pattern="\d*"
+                              required
+                              pattern="\d*"
                               getValue={this.getValue}
                               name="sdtNguoiThan"
                               disabled={this.state.readOnly}
@@ -647,24 +686,29 @@ class PersonProfile extends React.Component {
                             {schoolInput}
                           </Col>
                           <Col>
-                            <span className="label-font">Đảng viên</span>
+                            <span className="label-font">Ngành</span>
 
-                            {dangVienInput}
+                            {majorInput}
                           </Col>
                         </Row>
-                        <Row sm={6}>
+                        <Row>
                           <Col sm={6}>
                             <span className="label-font">
                               Địa chỉ thường trú
                             </span>
                             <MyInput
-                            required
+                              required
                               getValue={this.getValue}
                               type="text"
                               name="diaChi"
                               disabled={this.state.readOnly}
                               value={this.state.diaChi ? this.state.diaChi : ""}
                             />
+                          </Col>
+                          <Col sm={6}>
+                            <span className="label-font">Đảng viên</span>
+
+                            {dangVienInput}
                           </Col>
                           <Col />
                         </Row>
@@ -688,7 +732,7 @@ class PersonProfile extends React.Component {
                           </div>
                           <div className="profile-panel-button">
                             <Button
-                            type='submit'
+                              type="submit"
                               disabled={this.state.isDisable}
                               //onClick={this.updateProfile}
                             >

@@ -34,13 +34,18 @@ class PractiseStudent extends React.Component {
           fromDate: this.state.fromDate,
           toDate: this.state.toDate
         }).then(rs => {
-          if (rs.data.data.activities.length > 0) {
-            this.setState({ listActivity: rs.data.data.activities, point: rs.data.data.point
-             });
-            if (rs.status === 204) {
-              window.alert("Không có dữ liệu");
+          if (rs.status === 200) {
+            if (rs.data.data.activities.length > 0) {
+              this.setState({
+                listActivity: rs.data.data.activities,
+                point: rs.data.data.point
+              });
             }
           }
+          //   if (rs.status === 204) {
+          //     window.alert("Không có dữ liệu");
+          //   }
+          // }
         });
       }
     }
@@ -92,75 +97,76 @@ class PractiseStudent extends React.Component {
                 </Col>
               </Col>
             </Row>
-            {this.state.listActivity.length <= 0? (
-                <div>Bạn chưa có hoạt động nào</div>
-              ) : (
-                <div style ={{marginTop: '20px'}}>  
-                  <div><strong>Điểm hoạt động: {this.state.point}</strong></div>
-            <div className="text-style">
-              
-              
-                <Table responsive bordered size="sm" hover>
-                  <thead className="thread-student">
-                    <tr>
-                      <th>Thời gian</th>
-                      <th>Tên hoạt động</th>
-                      <th>Địa điểm</th>
-                      <th>Điểm</th>
-                      <th>Bắt buộc</th>
-                      <th>Tham gia</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.state.listActivity.map((activity, index) => {
-                      if (activity.idHD !== null) {
-                        var item = activity.idHD;
-                        var d = new Date(item.ngayBD);
-                        var month = d.getMonth() + 1;
+            {this.state.listActivity.length <= 0 ? (
+              <div>Bạn chưa có hoạt động nào</div>
+            ) : (
+              <div style={{ marginTop: "20px" }}>
+                <div>
+                  <strong>Điểm hoạt động: {this.state.point}</strong>
+                </div>
+                <div className="text-style">
+                  <Table responsive bordered size="sm" hover>
+                    <thead className="thread-student">
+                      <tr>
+                        <th>Thời gian</th>
+                        <th>Tên hoạt động</th>
+                        <th>Địa điểm</th>
+                        <th>Điểm</th>
+                        <th>Bắt buộc</th>
+                        <th>Tham gia</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.listActivity.map((activity, index) => {
+                        if (activity.idHD !== null) {
+                          var item = activity.idHD;
+                          var d = new Date(item.ngayBD);
+                          var month = d.getMonth() + 1;
 
-                        var formatDay =
-                          d.getDate() +
-                          "/" +
-                          month +
-                          "/" +
-                          d.getFullYear() +
-                          " " +
-                          d.getHours() +
-                          ":" +
-                          d.getMinutes();
+                          var formatDay =
+                            d.getDate() +
+                            "/" +
+                            month +
+                            "/" +
+                            d.getFullYear() +
+                            " " +
+                            d.getHours() +
+                            ":" +
+                            d.getMinutes();
 
-                        return (
-                          <tr key={index}>
-                            <td>{formatDay}</td>
-                            <td>{item.ten}</td>
-                            <td>{item.diaDiem}</td>
-                            <td>{item.diem}</td>
+                          return (
+                            <tr key={index}>
+                              <td>{formatDay}</td>
+                              <td>{item.ten}</td>
+                              <td>{item.diaDiem}</td>
+                              <td>{item.diem}</td>
 
-                            <td
-                              className={
-                                item.batBuoc === true ? "is-dont-done" : ""
-                              }
-                            >
-                              {item.batBuoc === true ? "Bắt buộc" : ""}
-                            </td>
-                            <td
-                              className={
-                                activity.isTG === false
-                                  ? "is-dont-done"
-                                  : "is-done"
-                              }
-                            >
-                              {activity.isTG === false ? "Vắng" : "Đã tham gia"}
-                            </td>
-                          </tr>
-                        );
-                      }
-                    })}
-                  </tbody>
-                </Table>
-              
-            </div>
-            </div>
+                              <td
+                                className={
+                                  item.batBuoc === true ? "is-dont-done" : ""
+                                }
+                              >
+                                {item.batBuoc === true ? "Bắt buộc" : ""}
+                              </td>
+                              <td
+                                className={
+                                  activity.isTG === false
+                                    ? "is-dont-done"
+                                    : "is-done"
+                                }
+                              >
+                                {activity.isTG === false
+                                  ? "Vắng"
+                                  : "Đã tham gia"}
+                              </td>
+                            </tr>
+                          );
+                        }
+                      })}
+                    </tbody>
+                  </Table>
+                </div>
+              </div>
             )}
           </div>
         </div>

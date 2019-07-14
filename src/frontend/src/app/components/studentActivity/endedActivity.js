@@ -76,10 +76,12 @@ class EndedStudentActivity extends React.Component {
   };
 
   clickPage = e => {
+    if(e <= this.state.totalPages){
     this.setState({
       pageActive: e
     });
     this.getActivities();
+  }
   };
 
   refresh = () => {
