@@ -40,7 +40,6 @@ class Example extends React.Component {
   handleClose() {
     this.setState({
       show: false,
-      table: [],
       room: 0,
       soDien: 0,
       soNuoc: 0,
@@ -52,7 +51,20 @@ class Example extends React.Component {
       soNuocResetCuoi: 0
     });
   }
-
+  handleReset() {
+    this.setState({
+      table: [],
+      room: 0,
+      soDien: 0,
+      soNuoc: 0,
+      resetSoDien: false,
+      resetSoNuoc: false,
+      soDienResetDau: 0,
+      soDienResetCuoi: 0,
+      soNuocResetDau: 0,
+      soNuocResetCuoi: 0
+    })
+  }
   handleShow() {
     this.setState({ show: true });
     var self = this;
@@ -207,8 +219,8 @@ class Example extends React.Component {
         <Button color={'warning'} onClick={this.handleShow}>
           <i className="fas fa-plus" />
         </Button>
-        <Modal show={this.state.show} onHide={this.handleClose}
-          dialogClassName="modal-90w">
+        <Modal show={this.state.show} onHide={this.handleClose} size="lg"> 
+        {/* dialogClassName="modal-90w" */}
           <Modal.Header closeButton>
             <Modal.Title>
               Thêm chi phí
@@ -218,7 +230,149 @@ class Example extends React.Component {
             <div className={'p-10'}>
               <form onSubmit={e => this.addRow(e)}>
                 <Row>
+                  <Col md={3} xs={12}> 
+                    Tháng
+                  <Select options={this.state.monthOptions} value={this.state.month} selected={this.monthSelected} />
+                  </Col>
+                  <Col md={1} xs={12}></Col>
+                  <Col md={3} xs={12}>
+                    Năm
+                  <Select options={this.state.yearOptions} value={this.state.year} selected={this.yearSelected} />
+                  </Col>
+                  <Col md={1} xs={12}></Col>
+                  <Col md={3} xs={12}>
+                    Phòng
+                  <Select options={this.state.rooms} value={this.state.idRoom} selected={this.selected} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={3} xs={12}>
+                    Số điện
+                  <Input type="number" min={0} value={this.state.soDien} getValue={this.onChange} name={'soDien'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.dien} />
+                    {this.state.resetSoDien &&
+                      <Row className="d-md-none">
+                        <Col>
+                          Chỉ số đầu
+                    <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
+                          Chỉ số cuối
+                    <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
+                        </Col>
+                      </Row>
+                    }
+                  </Col>
+                  <Col md={1} xs={12}>&nbsp;
+                      <Button title='Reset số điện' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.dien : false} onClick={() => { this.setState({ resetSoDien: !this.state.resetSoDien }) }}><i className="fas fa-retweet"></i></Button>
+                  </Col>
+                  <Col md={3}>
+                    Số nước
+                  <Input type="number" min={0} value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.nuoc} />
+                    {this.state.resetSoDien &&
+                      <Row className="d-md-none">
+                        <Col>
+                          Chỉ số đầu
+                    <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />
+                          Chỉ số cuối
+                    <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />
+                        </Col>
+                      </Row>
+                    }
+                  </Col>
                   <Col md={1} xs={12}>
+                    &nbsp;
+                      <Button title='Reset số nước' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.nuoc : false} onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button>
+                  </Col>
+                  <Col md={1}>
+                    &nbsp;
+                    <Col md={12}>
+                      <Button color={'warning'} type='submit' size={'md'}><i className="fas fa-plus" /></Button>
+                    </Col>
+                  </Col>
+                </Row>
+                {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
+                  <Row>
+                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '2' : !this.state.resetSoDien && this.state.resetSoNuoc ? '5' : '2'} className='text-right'>
+                      Chỉ số đầu
+                    </Col>
+                    {this.state.resetSoDien &&
+                      <Col md='2'>
+                        <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
+                      </Col>}
+                    {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
+                    <Col md='2'>{this.state.resetSoNuoc &&
+                      <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />}
+                    </Col>
+                  </Row>
+                </div>}
+                {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
+                  <Row>
+                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '2' : !this.state.resetSoDien && this.state.resetSoNuoc ? '5' : '2'} className='text-right'>
+                      Chỉ số cuối
+                    </Col>
+                    {this.state.resetSoDien && <Col md='2'>
+                      <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
+                    </Col>}
+                    {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
+                    <Col md='2'>{this.state.resetSoNuoc &&
+                      <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />}
+                    </Col>
+                  </Row>
+                </div>}
+                {Object.keys(this.state.infoRoom).length && <Row className={'m-b-10'}>
+                  <Col md={4} xs={12}>
+                    Loại: {this.state.infoRoom.loaiPhong.ten}
+                  </Col>
+                  <Col md={4} xs={12}>
+                    Số điện hiện tại: {this.state.infoRoom.chiPhi.soDien}
+                  </Col>
+                  <Col md={4} xs={12}>
+                    Số nước hiện tại: {this.state.infoRoom.chiPhi.soNuoc}
+                  </Col>
+                </Row>}
+              </form>
+              <Row>
+                <Col>
+                  <div className={'maxHeight'}>
+                    <Table striped hover responsive size="lg">
+                      <thead>
+                        <tr>
+                          <th>Tháng/Năm</th>
+                          <th>Phòng</th>
+                          <th>Điện tiêu thụ</th>
+                          <th>Nước tiêu thụ</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {table}
+                      </tbody>
+                    </Table>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="default" color="default" onClick={this.handleClose}>
+              Đóng
+            </Button>
+            <Button variant="default" color="danger" onClick={this.handleReset}>
+              Xóa bảng
+            </Button>
+            <Button variant="default" onClick={this.handleSubmit}>
+              Xác nhận
+              </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
+  }
+}
+
+export default Example;
+
+{/* <form onSubmit={e => this.addRow(e)}>
+                <Row>
+                  <Col md={1} xs={12}> 
                     Tháng
                   <Select options={this.state.monthOptions} value={this.state.month} selected={this.monthSelected} />
                   </Col>
@@ -230,6 +384,8 @@ class Example extends React.Component {
                     Phòng
                   <Select options={this.state.rooms} value={this.state.idRoom} selected={this.selected} />
                   </Col>
+                </Row>
+                <Row>
                   <Col md={2} xs={12}>
                     Số điện
                   <Input type="number" min={0} value={this.state.soDien} getValue={this.onChange} name={'soDien'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.dien} />
@@ -257,9 +413,9 @@ class Example extends React.Component {
                         <Col>
                           Chỉ số đầu
                     <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />
-                                Chỉ số cuối
+                          Chỉ số cuối
                     <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />
-                    </Col>
+                        </Col>
                       </Row>
                     }
                   </Col>
@@ -316,41 +472,4 @@ class Example extends React.Component {
                     Số nước hiện tại: {this.state.infoRoom.chiPhi.soNuoc}
                   </Col>
                 </Row>}
-              </form>
-              <Row>
-                <Col>
-                  <div className={'maxHeight'}>
-                    <Table striped hover responsive size="lg">
-                      <thead>
-                        <tr>
-                          <th>Tháng/Năm</th>
-                          <th>Phòng</th>
-                          <th>Điện tiêu thụ</th>
-                          <th>Nước tiêu thụ</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {table}
-                      </tbody>
-                    </Table>
-                  </div>
-                </Col>
-              </Row>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="default" color="default" onClick={this.handleClose}>
-              Đóng
-            </Button>
-            <Button variant="default" onClick={this.handleSubmit}>
-              Xác nhận
-              </Button>
-          </Modal.Footer>
-        </Modal>
-      </>
-    );
-  }
-}
-
-export default Example;
+              </form> */}

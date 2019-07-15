@@ -8,6 +8,8 @@ import {findHistory} from './historyAction'
 import {Link} from 'react-router-dom'
 import './history.css'
 import Loader from '../../../components/loader/loader';
+import RadioButton from '../../../components/radioButton/radioButton';
+import Select from '../../../components/selectOption/select';
 class Security extends Component{
 	constructor(props) {
 			super(props);
@@ -18,7 +20,8 @@ class Security extends Component{
 				limit: 12,
 				totalPages: 0,
 				table: [],
-				loading: false
+				loading: false,
+				type: 'in-dormitory'
 			}
 	}
 	componentDidMount(){
@@ -53,6 +56,7 @@ class Security extends Component{
 		var {state} = this;
 		this.setState({loading: true})
 		var parameter = {
+			type: this.state.type,
 			time: {
 				fromDate: state.fromDate,
 				toDate: state.toDate
@@ -75,7 +79,14 @@ class Security extends Component{
 			this.setState({loading: false})
 		})
 	}
+	typeSelected = e => {
+		this.setState({type: e});
+	}
 	render(){
+		let options = [
+			{value: 'in-dormitory', label: 'Vào ký túc xá'},
+			{value: 'out-dormitory', label: 'Ra ký túc xá'}
+		]
 		return(
       <React.Fragment>
 				<Loader loading={this.state.loading}/>
@@ -100,7 +111,11 @@ class Security extends Component{
 							/>
 						</div>
 						</Col>
+						<Col>&nbsp;<Col>
+						<Select options={options} value={this.state.type} selected={this.typeSelected} />
+						</Col></Col>
 						<Col>&nbsp;<Col><Button onClick={e => this.onHandleSubmit(1)}><i className="fas fa-search" /></Button></Col></Col>
+
 					</Row>
 					<div style={{display: 'flex', justifyContent: 'center'}}>
 						{this.state.table.length>0 && <div className={'table-history'}>
