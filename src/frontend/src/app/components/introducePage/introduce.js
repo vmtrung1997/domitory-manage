@@ -147,11 +147,11 @@ class Introduce extends React.Component {
                 <br />
                 Giá gửi xe:{" "}
                 <strong>
-                  Xe gắn máy: 60.000đ/tháng, Xe đạp: 40.000đ/tháng
+                  Xe gắn máy: 65.000đ/tháng, Xe đạp: 45.000đ/tháng
                 </strong>
                 <br />
                 Thời gian đóng tiền:{" "}
-                <strong>từ ngày 25 đến 30 của tháng</strong>
+                <strong>từ ngày 27 đến 30 của tháng</strong>
                 <br />
                 Sinh viên có thắc mắc, phản ánh về nhà xe, thái độ của nhân viên
                 phục vụ, vui lòng liên hệ ông Phan Văn Thành để giải quyết
