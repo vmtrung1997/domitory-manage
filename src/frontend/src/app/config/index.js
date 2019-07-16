@@ -1,5 +1,5 @@
 import axios from 'axios'
-axios.defaults.baseURL =  'http://35.247.132.2:4001/api' //'http://localhost:4000/api' //  
+axios.defaults.baseURL =  'http://localhost:4000/api' //  'http://35.247.132.2:4001/api' //
 axios.interceptors.response.use(function (response) {
   return response;
 }, function(error) {
@@ -12,7 +12,7 @@ axios.interceptors.response.use(function (response) {
     else if (error.response.status === 401) {
       localStorage.removeItem('secret')
       window.location = '/'
-      return
+      return;
     }
   }
   return Promise.reject(error);

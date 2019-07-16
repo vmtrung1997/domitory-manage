@@ -100,8 +100,8 @@ function TinhTienDien(arr, number) {
 	return total;
 }
 function TinhTienNuoc(arr, number, soNguoi) {
-	let total = 0;
-	let temp = number;
+	var total = 0;
+	var temp = number;
 	for (let i = 0; i < arr.length; i++) {
 		var diff = (arr[i].giaTriCuoi - arr[i].giaTriDau) * soNguoi
 		if (temp > diff) {
@@ -111,6 +111,7 @@ function TinhTienNuoc(arr, number, soNguoi) {
 			return total + temp * arr[i].giaTriThuc
 		}
 	}
+	return total;
 }
 exports.find_expense = (req, res) => {
 	var exp = req.body;
