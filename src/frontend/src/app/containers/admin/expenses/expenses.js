@@ -228,7 +228,6 @@ class Expenses extends Component {
 								onKeyPress={(e) => { if (e.key === 'Enter') this.handleOnChangePage() }}
 							/>
 						</ExpenseTable>
-
 					</div>
 				</div>
 			</React.Fragment>

@@ -196,6 +196,7 @@ class ListRoom extends React.Component {
                   disabled = {item.soNguoiToiDa -item.soNguoi ===0 ? true:false}
                   // disabled
                 >
+                  {item.gioiTinh === 0?<i className="fas fa-venus"></i>:<i className="fas fa-mars"></i>} &nbsp;
                   {item.tenPhong} ({item.soNguoi}/{item.soNguoiToiDa})
                 </Button>
               );

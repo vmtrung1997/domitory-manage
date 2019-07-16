@@ -16,7 +16,7 @@ import {
 } from "react-toasts";
 import Loader from "./../loader/loader";
 import refreshToken from "./../../../utils/refresh_token";
-import Button from '../button/button'
+import Button from "../button/button";
 
 class ListActivity extends React.Component {
   constructor(props) {
@@ -66,12 +66,12 @@ class ListActivity extends React.Component {
         user: id
       };
 
-      info.activity.forEach(item=>{
+      info.activity.forEach(item => {
         //this.props.registerActivity(item._id);
         //this.props.addMyActivity(item);
-      })
+      });
 
-    //Truyền danh sách đăng ký mới sang Hoạt động của tôi
+      //Truyền danh sách đăng ký mới sang Hoạt động của tôi
       // this.props.listActivity(data);
 
       // this.props.listActivity(data);
@@ -118,7 +118,7 @@ class ListActivity extends React.Component {
     var secret = localStorage.getItem("secret");
     const decode = jwt_decode(secret);
     secret = JSON.parse(secret);
-    if(decode.user.profile){
+    if (decode.user.profile) {
       var id = decode.user.profile._id;
       axios.defaults.headers["x-access-token"] = secret.access_token;
       //Lấy thông tin hoạt động
@@ -129,9 +129,10 @@ class ListActivity extends React.Component {
           options: options
         })
         .then(res => {
+          console.log(res.data);
           if (this.state.totalPages === 1) {
             this.setState({
-              totalPages: res.data.totalPages
+              totalPages: Math.ceil(res.data.totalPages)
             });
           }
           res.data.data.map(item => {
@@ -148,16 +149,17 @@ class ListActivity extends React.Component {
             activities: activity,
             isLoad: false
           });
-      
         });
     }
   };
 
   clickPage = e => {
-    this.setState({
-      pageActive: e
-    });
-    this.getActivity();
+    if (e <= this.state.totalPages) {
+      this.setState({
+        pageActive: e
+      });
+      this.getActivity();
+    }
   };
   refresh = () => {
     this.getActivity();
@@ -165,138 +167,138 @@ class ListActivity extends React.Component {
   componentDidMount() {
     this.getActivity();
     this.props.setClick(this.refresh);
-
   }
 
   render() {
     return (
       <React.Fragment>
-        <div className='padding-menu'>
-    
-        <ToastsContainer
-          position={ToastsContainerPosition.BOTTOM_CENTER}
-          lightBackground
-          store={ToastsStore}
-        />
-        <div >
-          <h1 className="title-header">HOẠT ĐỘNG SẮP DIỄN RA</h1>
-        </div>
-        <div className="title-header-line" />
-
-        {this.state.isLoad ? (
-          <div className="loading-student">
-            <Loader loading={this.state.isLoad}/>
-          </div>
-        ) : (
+        <div className="padding-menu">
+          <ToastsContainer
+            position={ToastsContainerPosition.BOTTOM_CENTER}
+            lightBackground
+            store={ToastsStore}
+          />
           <div>
-            {this.state.activities.length === 0 ? (
-              <div style={{ marginTop: "30px",textAlign:'center' }}>
-                <img
-                  style={{ height: "150px", width: "150px" }}
-                  src="/images/notdatafound.png"
-                  alt = ""
-                />
-                <p>Hiện tại chưa có hoạt động mới nào</p>
-                
-                {/* <Button style={{ marginLeft: '20px' }} onClick={this.refresh}>Làm mới <i className="fas fa-spinner"></i></Button> */}
-              </div>
-            ) : (
-              <div>
-                <div className="time-bill">
-                  <div className="text-style">
-                    <Table responsive bordered size="sm" hover>
-                      <thead className="thread-student">
-                        <tr>
-                          <th>Thời gian bắt đầu</th>
-                          <th>Thời gian kết thúc</th>
-                          <th>Tên hoạt động</th>
+            <h1 className="title-header">HOẠT ĐỘNG SẮP DIỄN RA</h1>
+          </div>
+          <div className="title-header-line" />
 
-                          <th>Điểm</th>
-                          <th>Địa điểm</th>
-                          <th>Trạng thái</th>
-                          <th>Đăng ký</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.activities.map((item, index) => {
-                          var d = new Date(item.ngayBD);
-                          var month = d.getMonth() + 1;
+          {this.state.isLoad ? (
+            <div className="loading-student">
+              <Loader loading={this.state.isLoad} />
+            </div>
+          ) : (
+            <div>
+              {this.state.activities.length === 0 ? (
+                <div style={{ marginTop: "30px", textAlign: "center" }}>
+                  <img
+                    style={{ height: "150px", width: "150px" }}
+                    src="/images/notdatafound.png"
+                    alt=""
+                  />
+                  <p>Hiện tại chưa có hoạt động mới nào</p>
 
-                          this.listOption[index] = false; //default Option
-                          var formatDayBD =
-                            d.getDate() +
-                            "/" +
-                            month +
-                            "/" +
-                            d.getFullYear() +
-                            " " +
-                            d.getHours() +
-                            ":" +
-                            d.getMinutes();
+                  {/* <Button style={{ marginLeft: '20px' }} onClick={this.refresh}>Làm mới <i className="fas fa-spinner"></i></Button> */}
+                </div>
+              ) : (
+                <div>
+                  <div className="time-bill">
+                    <div className="text-style">
+                      <Table responsive bordered size="sm" hover>
+                        <thead className="thread-student">
+                          <tr>
+                            <th>Thời gian bắt đầu</th>
+                            <th>Thời gian kết thúc</th>
+                            <th>Tên hoạt động</th>
 
-                          var dkt = new Date(item.ngayKT);
-                          var monthkt = d.getMonth() + 1;
-                          var formatDayKT =
-                            dkt.getDate() +
-                            "/" +
-                            monthkt +
-                            "/" +
-                            dkt.getFullYear() +
-                            " " +
-                            dkt.getHours() +
-                            ":" +
-                            dkt.getMinutes();
-                          return (
-                            <tr key={index}>
-                              <td>{formatDayBD}</td>
-                              <td>{formatDayKT}</td>
-                              <td style={{ maxWidth: "500px" }}>{item.ten}</td>
+                            <th>Điểm</th>
+                            <th>Địa điểm</th>
+                            <th>Trạng thái</th>
+                            <th>Đăng ký</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {this.state.activities.map((item, index) => {
+                            var d = new Date(item.ngayBD);
+                            var month = d.getMonth() + 1;
 
-                              <td>{item.diem}</td>
-                              <td>{item.diaDiem}</td>
-                              <td
-                                className={
-                                  item.batBuoc === true ? "is-dont-done" : ""
-                                }
-                              >
-                                {item.batBuoc === true ? "Bắt buộc" : ""}
-                              </td>
-                              <td>
-                                {" "}
-                                <input
-                                  checked={item.check}
-                                  onChange={e =>
-                                    this.selectRegister(item, index)
+                            this.listOption[index] = false; //default Option
+                            var formatDayBD =
+                              d.getDate() +
+                              "/" +
+                              month +
+                              "/" +
+                              d.getFullYear() +
+                              " " +
+                              d.getHours() +
+                              ":" +
+                              d.getMinutes();
+
+                            var dkt = new Date(item.ngayKT);
+                            var monthkt = d.getMonth() + 1;
+                            var formatDayKT =
+                              dkt.getDate() +
+                              "/" +
+                              monthkt +
+                              "/" +
+                              dkt.getFullYear() +
+                              " " +
+                              dkt.getHours() +
+                              ":" +
+                              dkt.getMinutes();
+                            return (
+                              <tr key={index}>
+                                <td>{formatDayBD}</td>
+                                <td>{formatDayKT}</td>
+                                <td style={{ maxWidth: "500px" }}>
+                                  {item.ten}
+                                </td>
+
+                                <td>{item.diem}</td>
+                                <td>{item.diaDiem}</td>
+                                <td
+                                  className={
+                                    item.batBuoc === true ? "is-dont-done" : ""
                                   }
-                                  type="checkbox"
-                                />
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </Table>
+                                >
+                                  {item.batBuoc === true ? "Bắt buộc" : ""}
+                                </td>
+                                <td>
+                                  {" "}
+                                  <input
+                                    checked={item.check}
+                                    onChange={e =>
+                                      this.selectRegister(item, index)
+                                    }
+                                    type="checkbox"
+                                  />
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </div>
+
+                  <div className="pagination-position">
+                    <MyPagination
+                      page={this.state.pageActive}
+                      totalPages={this.state.totalPages}
+                      clickPage={this.clickPage}
+                    />
+                  </div>
+                  {/* <div><span style={{ 'color': 'red' }}>* Các hoạt động Bắt buộc yêu cầu sinh viên phải đăng ký</span></div> */}
+                  <div className="register-activity">
+                    {/* <Button style={{ marginRight: '20px' }} onClick={this.refresh}>Làm mới <i className="fas fa-spinner"></i></Button> */}
+                    <Button color="success" onClick={this.register}>
+                      Đăng ký
+                    </Button>
                   </div>
                 </div>
-
-                <div className="pagination-position">
-                  <MyPagination
-                    page={this.state.pageActive}
-                    totalPages={this.state.totalPages}
-                    clickPage={this.clickPage}
-                  />
-                </div>
-                {/* <div><span style={{ 'color': 'red' }}>* Các hoạt động Bắt buộc yêu cầu sinh viên phải đăng ký</span></div> */}
-                <div className="register-activity">
-                  {/* <Button style={{ marginRight: '20px' }} onClick={this.refresh}>Làm mới <i className="fas fa-spinner"></i></Button> */}
-                  <Button color="success" onClick={this.register}>
-                    Đăng ký
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
         </div>
       </React.Fragment>
     );
@@ -311,9 +313,7 @@ var mapStateToProps = state => {
 };
 
 var mapDispatchToProps = dispatch => {
-  return {
-
-  };
+  return {};
 };
 
 export default connect(

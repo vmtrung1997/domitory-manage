@@ -21,6 +21,29 @@ import Loader from '../../../../components/loader/loader';
 import { ChooseRoom } from './../infoStudentModal'
 import { get_info_Student_detail, get_activites_by_MSSV, get_floor_room } from './../infoStudentActions'
 
+var nationOption = [
+  { value: "Kinh", label: "Kinh" },
+  { value: "Chăm", label: "Chăm" },
+  { value: "Dao", label: "Dao" },
+  { value: "Êđê", label: "Êđê" },
+  { value: "Hoa", label: "Hoa" },
+  { value: "Jrai", label: "Jrai" },
+  { value: "Khmer", label: "Khmer" },
+  { value: "K'Ho", label: "K'Ho" },
+  { value: "Mường", label: "Mường" },
+  { value: "Nùng", label: "Nùng" },
+  { value: "Sán Dìu", label: "Sán Dìu" },
+  { value: "Khác", label: "Khác" }
+];
+
+var tonGiaoOption = [
+  { value: "Phật Giáo", label: "Phật Giáo" },
+  { value: "Công Giáo", label: "Công Giáo" },
+  { value: "Cao Đài", label: "Cao Đài" },
+  { value: "Hồi Giáo", label: "Hồi Giáo" },
+  { value: "Khác", label: "Khác" },
+  { value: "Không", label: "Không" }
+];
 
 class InfoStudentDetail extends Component {
   constructor(props) {
@@ -313,6 +336,8 @@ class InfoStudentDetail extends Component {
     const { CMND } = profile;
     let imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
     let gender = this.state.profile && this.state.profile.gioiTinh ? this.state.profile.gioiTinh: 0;
+    let danToc = profile.danToc ? profile.danToc : 'Kinh'
+    let tonGiao = profile.tonGiao ? profile.tonGiao : 'Không'
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -413,11 +438,11 @@ class InfoStudentDetail extends Component {
                           Tôn giáo:
                         </Col>
                         <Col md={4}>
-                          <Input
+                          <Select
                             disabled={isOld}
-                            value={profile.tonGiao ? profile.tonGiao : ''}
-                            getValue={this.onChange}
-                            name={'tonGiao'} />
+                            value={tonGiao}
+                            selected={e => this.onChange({name: 'tonGiao', value: e})}
+                            options={tonGiaoOption} />
                         </Col>
                       </Row>
 
@@ -449,11 +474,11 @@ class InfoStudentDetail extends Component {
                           Dân tộc:
                         </Col>
                         <Col md={4}>
-                          <Input
+                          <Select
                             disabled={isOld}
-                            value={profile.danToc ? profile.danToc : ''}
-                            getValue={this.onChange}
-                            name={'danToc'} />
+                            value={danToc}
+                            selected={e => this.onChange({name: 'danToc', value: e})}
+                            options={nationOption} />
                         </Col>
                         <Col md={2}>
                           Sđt người thân:

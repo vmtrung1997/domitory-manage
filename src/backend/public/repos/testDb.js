@@ -6,6 +6,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var ThongSoLoaiPhong = require('../models/ThongSoLoaiPhong')
 var fs = require('fs')
 var XLSX = require('xlsx')
+const md5 = require('md5')
 require('../models/Profile')
 require('../models/TaiKhoan')
 function updateProfile(object) {
@@ -133,12 +134,25 @@ function saveDetailRoom(value){
 		phong.save().then(()=>resolve({rs: 'ok'})).catch(err => reject(err))
 	})
 }
+function check (acc) {
+	return new Promise((resolve) => {
+		TaiKhoan.findOne({username: acc.username, password: md5(acc.username)}).then(account=> {
+			if (account){
+				resolve({username: acc.username, rs: true})
+			} else {
+				resolve({username: acc.username, rs: false})
+			}
+		})
+	})
+}
 exports.import_detail_room = (req, res) => {
-	TaiKhoan.find({isDelete: 1}).select('_id').then(tks => {
-		var arrTk = tks.map(v => {return v._id})
-		TaiKhoan.deleteMany({isDelete: 1}).then(e => {
-			Profile.deleteMany({idTaiKhoan: {$in: arrTk}}).then(f => {
-				res.json({rs: 'success'});
+	TaiKhoan.find().then(tks => {
+		console.log(tks.length);
+		var arr = []
+		tks.forEach(value => { arr.push(check(value))})
+		Promise.all(arr).then(v => {
+			res.json({
+				rs: v
 			})
 		})
 	})

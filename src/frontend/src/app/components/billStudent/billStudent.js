@@ -154,10 +154,12 @@ class BillStudent extends React.Component {
   };
 
   clickPage = e => {
+    if(this.state.totalPages >= e){
     this.setState({
       pageActive: e
     });
     this.getBill();
+  }
   };
 
   showDetail = data => {

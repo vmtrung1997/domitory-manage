@@ -1,0 +1,84 @@
+
+*	Thời gian: 09:18:41 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Thêm chi phí
+*	Dữ liệu:
+*	      {"idPhong":"5cf62c76acf0d9528d164b9e","thang":7,"nam":2019,"soDien":10,"soNuoc":3750,"soDienCu":10,"soNuocCu":3741,"tienDien":0,"tienNuoc":0,"tongTien":50000,"tienRac":50000,"tongTienChu":"Năm mươi nghìn","trangThai":0,"thayDien":null,"thayNuoc":null}
+
+*	Thời gian: 09:19:07 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Thêm chi phí
+*	Dữ liệu:
+*	      {"idPhong":"5cfb02990c2eff6d392cc6e0","thang":7,"nam":2019,"soDien":10,"soNuoc":10,"soDienCu":0,"soNuocCu":0,"tienDien":12340,"tienNuoc":0,"tongTien":62500,"tienRac":50000,"tongTienChu":"Sáu mươi hai nghìn năm trăm","trangThai":0,"thayDien":null,"thayNuoc":null}
+
+*	Thời gian: 09:22:38 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Thêm chi phí
+*	Dữ liệu:
+*	      {"idPhong":"5cf62c76acf0d9528d164b9e","thang":8,"nam":2019,"soDien":20,"soNuoc":3750,"soDienCu":10,"soNuocCu":3741,"tienDien":33318,"tienNuoc":0,"tongTien":83500,"tienRac":50000,"tongTienChu":"Tám mươi ba nghìn năm trăm","trangThai":0,"thayDien":{"dienCu":0,"dienMoi":17},"thayNuoc":null}
+
+*	Thời gian: 09:23:03 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Xác nhận thanh toán
+*	Data: 
+*	      {"soDien":10,"soNuoc":3750}
+
+*	Thời gian: 09:26:07 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Xác nhận thanh toán
+*	Data: 
+*	      {"soDien":10,"soNuoc":10}
+
+*	Thời gian: 14:20:42 2019-7-11
+*	Người dùng: admin
+*	Nội dung: Thêm chi phí
+*	Dữ liệu:
+*	      {"idPhong":"5cf62c76acf0d9528d164b9e","thang":7,"nam":2019,"soDien":20,"soNuoc":3750,"soDienCu":10,"soNuocCu":3741,"tienDien":12340,"tienNuoc":0,"tongTien":12500,"tienRac":0,"tongTienChu":"Mười hai nghìn năm trăm","trangThai":0,"thayDien":null,"thayNuoc":null}
+
+*	Thời gian: 14:20:48 2019-7-11
+*	Người dùng: admin
+*	Nội dung: Xác nhận thanh toán
+*	Data: 
+*	      {"soDien":20,"soNuoc":3750}
+
+*	Thời gian: 15:04:08 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Thêm chi phí
+*	Dữ liệu:
+*	      {"idPhong":"5cf62c76acf0d9528d164b9e","thang":7,"nam":2019,"soDien":50,"soNuoc":3760,"soDienCu":20,"soNuocCu":3750,"tienDien":60911,"tienNuoc":104640,"tongTien":166000,"tienRac":0,"tongTienChu":"Một trăm sáu mươi sáu nghìn","trangThai":0,"thayDien":null,"thayNuoc":null}
+
+*	Thời gian: 15:04:21 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Xác nhận thanh toán
+*	Data: 
+*	      {"soDien":50,"soNuoc":3760}
+
+*	Thời gian: 15:06:57 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Thêm chi phí
+*	Dữ liệu:
+*	      {"idPhong":"5cf62c76acf0d9528d164b9e","thang":7,"nam":2019,"soDien":70,"soNuoc":3770,"soDienCu":50,"soNuocCu":3760,"tienDien":40608,"tienNuoc":104640,"tongTien":145500,"tienRac":0,"tongTienChu":"Một trăm bốn mươi lăm nghìn năm trăm","trangThai":0,"thayDien":null,"thayNuoc":null}
+
+*	Thời gian: 15:07:05 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Xác nhận thanh toán
+*	Data: 
+*	      {"soDien":70,"soNuoc":3770}
+
+*	Thời gian: 15:08:52 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Thêm chi phí
+*	Dữ liệu:
+*	      {"idPhong":"5cf62c76acf0d9528d164b9e","thang":7,"nam":2019,"soDien":80,"soNuoc":3775,"soDienCu":70,"soNuocCu":3770,"tienDien":20304,"tienNuoc":37680,"tongTien":58000,"tienRac":0,"tongTienChu":"Năm mươi tám nghìn","trangThai":0,"thayDien":null,"thayNuoc":null}
+
+*	Thời gian: 15:09:10 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Xác nhận thanh toán
+*	Data: 
+*	      {"soDien":80,"soNuoc":3775}
+
+*	Thời gian: 15:09:35 2019-7-11
+*	Người dùng: ketoan
+*	Nội dung: Cập nhật số điện nước ban đầu
+*	Data: 
+*	      {"idPhong":"5cf62c76acf0d9528d164b9e","update":{"soDien":"90"}}

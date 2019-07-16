@@ -325,19 +325,40 @@ class InfoDormitory extends React.Component{
 
   renderRoom = (roomList, color) => {
     const roomRender = roomList && roomList.map((room, index) => {
-      return(
-        <div className={'id-room_item'} key={index}>
-          <Button
-            shadow
-            variant={(room.soNguoiToiDa-room.soNguoi) ? 'outline' : 'default'}
-            color={color}
-            onClick={()=>this.handleShowDetail(room)}
-          >
-            <i className="fas fa-home"/>
-            {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
-          </Button>
-        </div>
-      )
+      console.log(room)
+      if(room.loaiPhong){
+        if(room.loaiPhong.loai === 0 || room.loaiPhong.loai === 1){
+            return(
+              <div className={'id-room_item'} key={index}>
+                <Button
+                  shadow
+                  variant={(room.soNguoiToiDa-room.soNguoi) ? 'outline' : 'default'}
+                  color={color}
+                  onClick={()=>this.handleShowDetail(room)}
+                  style={{fontSize: '20px'}}
+                >
+                  { room.gioiTinh === 0 ? <i style={{fontSize: '25px'}} className="fas fa-female"/>:<i style={{fontSize: '25px'}} className="fas fa-male"/>}
+                  {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
+                </Button>
+              </div>
+            )
+        } else {
+            return(
+              <div className={'id-room_item'} key={index}>
+                <Button
+                  shadow
+                  variant={(room.soNguoiToiDa-room.soNguoi) ? 'outline' : 'default'}
+                  color={color}
+                  onClick={()=>this.handleShowDetail(room)}
+                  style={{fontSize: '20px'}}
+                >
+                  <i className="fas fa-home"/>
+                  {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
+                </Button>
+              </div>
+            )
+        }
+      }
     });
     return roomRender
   };
@@ -584,6 +605,7 @@ class InfoDormitory extends React.Component{
                           diminsion
                           actived={(floorActive === floor.label)}
                           onClick={()=>this.handleSelectFloor(floor.label)}
+                          style={{fontSize: '20px'}}
                         >
                           Lầu {floor.label}
                         </Button>
