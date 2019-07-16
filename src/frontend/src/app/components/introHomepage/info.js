@@ -37,7 +37,7 @@ class InfoHomePage extends React.Component {
                     đặc biệt là xe buýt.
                     <br />
                     <br />
-                    KTX là một khuôn viên khép kín bên trong khu nhà gồm 3 tầng,
+                    KTX là một khuôn viên khép kín bên trong khu nhà gồm 7 tầng,
                     có thể phục vụ hơn 800 chỗ ở cùng nhiều hạng mục tiện ích
                     cho sinh viên. Hiện tại KTX 135B Trần Hưng Đạo do Trung tâm
                     Hỗ trợ sinh viên quản lý.

@@ -45,18 +45,10 @@ class StudentCard extends Component{
         			<div className='body-card-right'>
         				<span className='name-card' > THẺ LƯU TRÚ </span>
         				<span className='name-person' > { hoTen } </span>
-    					<div style={{float: 'left'}}>
-							<span className='info-card'> Ngày sinh: </span>
-							<span className='info-card'> Khoa: </span>
-							<span className='info-card'> Trường: </span>
-							<span className='info-card'> Phòng: </span>
-						</div>
-						<div>
-							<span className="info-content">{ strDate }</span>
-							<span className="info-content">{major} </span>
-							<span className="info-content">{school} </span>
-							<span className="info-content">{room} </span>
-						</div>
+    					<span className='info-card'> Ngày sinh: <span className="info-content">{strDate}</span></span>
+						<span className='info-card'> Khoa: <span className="info-content">{major} </span></span>
+						<span className='info-card'> Trường: <span className="info-content">{school} </span></span>
+						<span className='info-card'> Phòng: <span className="info-content">{room} </span></span>
         			</div>
         		</div>
         		<div className='footer-card color-card'>
