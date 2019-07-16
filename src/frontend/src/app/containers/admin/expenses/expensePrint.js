@@ -32,6 +32,7 @@ class Confirm extends Component {
       fromDay: new Date(),
       toDay: new Date(),
       lastDay: new Date(),
+      selectType: '',
       admin: 'Phan Văn Thành'
     }
   }
@@ -71,7 +72,7 @@ class Confirm extends Component {
     })
   }
   getDataPrint = (type) => {
-    this.setState({printComponent: (<div>Đang tải dữ liệu</div>)})
+    this.setState({selectType: type, printComponent: (<div>Đang tải dữ liệu</div>)})
     var data = type === 'table' ? this.state.tableData : this.state.selectedData;
     get_data_print({ type: type, data: data }).then(result => {
       if (result.data.rs === 'success') {
@@ -304,8 +305,11 @@ class Confirm extends Component {
           </Modal.Header>
           <Modal.Body>
           <Row className='m-b-10'>
+            <Col md={12}>
+            Thời gian chỉnh sửa
+            </Col>
 						<Col>
-						Ngày bắt đầu
+						Từ:
 						<div>
 							<DatePicker 
 								startDate={this.state.fromDay}
@@ -314,7 +318,7 @@ class Confirm extends Component {
 						</div>
 						</Col>
 						<Col>
-						Ngày kết thúc
+						Đến:
 						<div>
 							<DatePicker
 								startDate={this.state.toDay}
@@ -325,7 +329,7 @@ class Confirm extends Component {
 					</Row>
           <Row>
           <Col>
-          Hạn cuối
+          Đóng tiền trước ngày:
 						<div>
 							<DatePicker
 								startDate={this.state.lastDay}
@@ -340,11 +344,15 @@ class Confirm extends Component {
           </Row>
             <Row className='m-b-10'>
               <Col>
-              <RadioButton name='print-button' label={'In toàn bảng'} isRadioChk={() => this.getDataPrint('table')} />
+              <RadioButton name='print-button'
+              check={this.state.selectType == 'table'} name={'type'}
+                value={'table'}
+               label={'In toàn bảng'} isRadioChk={() => this.getDataPrint('table')} />
                 {/* <label className={'print-button'} htmlFor={'ktx-print'} onClick={() => this.getDataPrint('table')}>In toàn bảng</label> */}
               </Col>
               <Col>
-              <RadioButton name='print-button' label={'In đã chọn'} isRadioChk={() => this.getDataPrint('select')} />
+              <RadioButton name='print-button' check={this.state.selectType == 'select'} name={'type'} value={'select'} 
+              label={'In đã chọn'} isRadioChk={() => this.getDataPrint('select')} />
                 {/* <label className={'print-button'} htmlFor={'ktx-print'} onClick={() => this.getDataPrint('select')}>In đã chọn</label> */}
               </Col>
             </Row>

@@ -30,7 +30,6 @@ exports.logs_database = async (accessToken, title, data) => {
     } else {
       fstring = buf + dataFile(date, user, title, data)
     }
-    console.log(fstring);
     fs.writeFile(`./public/logs/${filedate}`, fstring, (err) => {
       if (err) console.log(err);
       return;
