@@ -16,7 +16,7 @@ import { verifyNumberString } from '../../../../function/verifyValue';
 import TabActivities from './tabActivities';
 import DatePicker from "react-datepicker/es/index";
 import './../infoStudentFile.css';
-//import { getMajor } from './../../university/universityAction'
+import { getMajor } from './../../university/universityAction'
 import Loader from '../../../../components/loader/loader';
 import { ChooseRoom } from './../infoStudentModal'
 import { get_info_Student_detail, get_activites_by_MSSV, get_floor_room } from './../infoStudentActions'
@@ -47,11 +47,11 @@ class InfoStudentDetail extends Component {
         activity: {},
       school: {},
       room: {},
-      //major: {},
+      major: {},
       genderOptions: [{value: 0, label: 'nữ'}, {value: 1, label: 'nam'}],
       roomOptions: [],
       schoolOptions: [],
-      //majorOptions: [],
+      majorOptions: [],
       loading: false,
       custom: false,
       showRoomPopup: false,
@@ -77,7 +77,7 @@ class InfoStudentDetail extends Component {
       .then(result => {
         let profile = result.data;
 
-        let school = {};
+        let school = {}, major = {};
         //let major = {};
         let isOld = true;
         if(profile.truong){
@@ -85,7 +85,14 @@ class InfoStudentDetail extends Component {
             value: profile.truong._id,
             label: profile.truong.tenTruong
           }
-          //this.getMajorOptions(profile.truong._id);
+          this.getMajorOptions(profile.truong._id);
+        }
+        if(profile.nganhHoc !== undefined){
+          major = {
+              value: profile.nganhHoc._id,
+              label: profile.nganhHoc.tenNganh
+            };
+          this.getMajorOptions(profile.truong._id);
         }
         // if(profile.nganhHoc !== undefined)
         //   major = {
@@ -105,7 +112,7 @@ class InfoStudentDetail extends Component {
           },
           isOld: isOld,
           school: school,
-          //major: major
+          major: major,
           loading: false,
         });
       }).catch(err => {
@@ -113,11 +120,11 @@ class InfoStudentDetail extends Component {
         this.setState({
           loading: false
         })
+      });
+      get_floor_room().then(result => {
+        this.setState({roomData: result.data})
+      }).catch(err => {
     });
-    get_floor_room().then(result => {
-      this.setState({roomData: result.data})
-    }).catch(err => {
-    })
     get_activites_by_MSSV(this.props.match.params.mssv).then(result => {
       this.setState({
         dataActivities: result.data
@@ -231,19 +238,19 @@ class InfoStudentDetail extends Component {
       //major: {}
     });
 
-    //this.getMajorOptions(selectedOption.value);
+    this.getMajorOptions(selectedOption.value);
   };
 
-  // getMajorOptions = (idSchool) => {
-  //   getMajor({id: idSchool}).then(result =>{
-  //     if (result.data.rs === 'success') {
-  //       let majorList = result.data.data.map(major => ({ value: major.idNganhHoc._id, label: major.idNganhHoc.tenNganh }))
-  //       this.setState({
-  //         majorOptions: majorList,
-  //       })
-  //     }
-  //   })
-  // };
+  getMajorOptions = (idSchool) => {
+    getMajor({id: idSchool}).then(result =>{
+      if (result.data.rs === 'success') {
+        let majorList = result.data.data.map(major => ({ value: major.idNganhHoc._id, label: major.idNganhHoc.tenNganh }))
+        this.setState({
+          majorOptions: majorList,
+        })
+      }
+    })
+  };
 
   chooseRoom = selectedOption => {
     this.setState({
@@ -253,18 +260,18 @@ class InfoStudentDetail extends Component {
     }})
   }
 
-  // handleSelectMajor = selectedOption => {
-  //   this.setState({
-  //     profile: {
-  //       ...this.state.profile,
-  //       nganhHoc: {
-  //         tenNganh: selectedOption.label,
-  //         _id: selectedOption.value
-  //       }
-  //     },
-  //     major: selectedOption
-  //   })
-  // };
+  handleSelectMajor = selectedOption => {
+    this.setState({
+      profile: {
+        ...this.state.profile,
+        nganhHoc: {
+          tenNganh: selectedOption.label,
+          _id: selectedOption.value
+        }
+      },
+      major: selectedOption
+    })
+  };
 
   onUpload = () => {
     var fileReader = new FileReader();
@@ -296,9 +303,9 @@ class InfoStudentDetail extends Component {
       profile,
       genderOptions,
       schoolOptions,
-      //majorOptions,
+      majorOptions,
       school,
-      //major,
+      major,
       dataActivities,
       isOld,
       profile: {isActive}
@@ -545,20 +552,20 @@ class InfoStudentDetail extends Component {
                         </Col>
                       </Row>
 
-                      {/*<Row>*/}
-                        {/*<Col md={2}>*/}
-                          {/*Ngành học:*/}
-                        {/*</Col>*/}
-                        {/*<Col md={10}>*/}
-                          {/*<SearchSelect*/}
-                            {/*disabled={isOld}*/}
-                            {/*isSearchable={true}*/}
-                            {/*placeholder={''}*/}
-                            {/*value={major}*/}
-                            {/*onChange={this.handleSelectMajor}*/}
-                            {/*options={majorOptions} />*/}
-                        {/*</Col>*/}
-                      {/*</Row>*/}
+                      <Row>
+                        <Col md={2}>
+                          Ngành học:
+                        </Col>
+                        <Col md={10}>
+                          <SearchSelect
+                            disabled={isOld}
+                            isSearchable={true}
+                            placeholder={''}
+                            value={major}
+                            onChange={this.handleSelectMajor}
+                            options={majorOptions} />
+                        </Col>
+                      </Row>
 
                       <Row>
                         <Col md={2}>
