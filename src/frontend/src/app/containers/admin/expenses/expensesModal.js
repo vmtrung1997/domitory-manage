@@ -184,7 +184,7 @@ class Example extends React.Component {
           self.handleClose();
         } else {
           ToastsStore.success("Thêm chi phí thành công");
-          self.handleClose();
+          self.handleReset();
           self.props.retriveSearch(true);
         }
       }
