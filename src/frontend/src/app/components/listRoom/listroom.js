@@ -51,20 +51,30 @@ export default class ListRoom extends React.Component{
                 title={'Lầu ' + floor.floor}
               >
                 <div className={'list-room_box'}>
-                {floor && floor.rooms.map(room => {
-                  if((room.loaiPhong.loai === 0) || (room.loaiPhong.loai === 1)) {
+                {floor && floor.rooms.map((room, index) => {
+                    let color;
                     let isFull = false;
                     let isActive = false;
                     if ((room.soNguoiToiDa - room.soNguoi) === 0)
                       isFull = true;
                     if (this.props.active && (room._id === this.props.active._id))
                       isActive = true;
+                    switch(room.loaiPhong.loai){
+                      case 0:
+                        color = 'success';
+                        break;
+                      case 1:
+                        color = 'primary';
+                        break;
+                      case 2:
+                        color = 'warning'
+                    }
                     return (
-                      <div className={'room-box'}>
+                      <div className={'room-box'} key={index}>
                         <Button
                           shadow
                           variant={isActive ? 'default' : 'outline'}
-                          color={room.loaiPhong.loai ? 'success' : 'primary'}
+                          color={color}
                           onClick={() => this.chooseRoom(room)}
                           disabled={isFull}
                           style={{fontSize: '20px', margin: '5px 0', minWidth: '138px'}}
@@ -77,7 +87,6 @@ export default class ListRoom extends React.Component{
                         </Button>
                       </div>
                     )
-                  }
                 })}
 
                 </div>
