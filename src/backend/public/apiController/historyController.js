@@ -1,6 +1,4 @@
-const LichSu = require('../models/LichSu')
-const mongoose = require('mongoose')
-const Profile = require('../models/Profile')
+const LichSu = require('../models/LichSuRaVao')
 require('../models/Profile')
 require('../models/Truong')
 require('../models/NganhHoc')
@@ -8,7 +6,7 @@ require('../models/Phong')
 require('../models/TaiKhoan')
 
 exports.find_history = (req, res) => {
-  var {time, options} = req.body
+  var {time, options, type} = req.body
   var fromDate = new Date(time.fromDate);
   fromDate.setHours(0,0,0,0);
   fromDate.setDate(fromDate.getDate() + 1);
@@ -28,6 +26,8 @@ exports.find_history = (req, res) => {
       $and: [{ thoiGian: {$lte: toDate }}, { thoiGian: {$gte: fromDate} }]
     }
   }
+  query.type = type === 'in-dormitory'?0:1;
+  console.log(query);
   LichSu.paginate(query,
     {
       populate: {

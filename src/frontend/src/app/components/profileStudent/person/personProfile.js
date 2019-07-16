@@ -18,6 +18,7 @@ import {
 } from "react-toasts";
 import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
+import * as CONST from "../../../function/constant"
 
 var gender = [{ value: 0, label: "Nữ" }, { value: 1, label: "Nam" }];
 var nationOption = [
@@ -391,6 +392,14 @@ class PersonProfile extends React.Component {
 
   render() {
     if (!this.state.isLoad) {
+      var gender = [
+        { value: -1, label: "Chọn giới tính" },
+        { value: 0, label: "Nữ" },
+        { value: 1, label: "Nam" }
+      ];
+      var nationOption = CONST.danTocArr;
+      var tonGiaoOption = CONST.tonGiaoArr;
+      var dangVienOption = CONST.dangVienArr;
       var majorInput;
       var schoolInput;
       var genderInput;
