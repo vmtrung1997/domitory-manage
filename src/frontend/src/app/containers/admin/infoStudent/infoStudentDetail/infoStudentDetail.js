@@ -83,11 +83,8 @@ class InfoStudentDetail extends Component {
     }
   }
 
-  componentWillMount(){
-    this.getData()
-  }
-
   componentDidMount() {
+    this.getData()
     this.getElement('room');
     this.getElement('school');
   }
@@ -117,11 +114,6 @@ class InfoStudentDetail extends Component {
             };
           this.getMajorOptions(profile.truong._id);
         }
-        // if(profile.nganhHoc !== undefined)
-        //   major = {
-        //     value: profile.nganhHoc._id,
-        //     label: profile.nganhHoc.tenNganh
-        //   };
         if(profile.idTaiKhoan && !profile.idTaiKhoan.isDelete){
           isOld = false;
         }
@@ -258,7 +250,7 @@ class InfoStudentDetail extends Component {
         }
       },
       school: selectedOption,
-      //major: {}
+      major: {}
     });
 
     this.getMajorOptions(selectedOption.value);
