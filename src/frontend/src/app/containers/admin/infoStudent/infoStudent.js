@@ -187,7 +187,8 @@ class InfoStudent extends Component{
     })
   };
 
-  handleSearch = () => {
+  handleSearch = (e) => {
+    e.preventDefault();
     this.setState({
       searchValues: {...this.state.searchValues, pageActive: 1},
       loading: true,
@@ -314,7 +315,7 @@ class InfoStudent extends Component{
         <div className={'content-body'}>
 
           <div className={'is-header'}>
-
+            <form onSubmit={e => this.handleSearch(e)}>
               <Row>
               <Col md={1}>
                 MSSV
@@ -392,9 +393,9 @@ class InfoStudent extends Component{
               <Row style={{display: 'flex', justifyContent: 'center', margin: '15px 0'}}>
                 <Col sm={3} className={'btn-search'}>
                   <Button
+                    type={'submit'}
                     size={'md'}
                     fullWidth
-                    onClick={() => this.handleSearch()}
                   >
                     <i className="fas fa-search"/>
                     Tìm kiếm
@@ -413,6 +414,7 @@ class InfoStudent extends Component{
                   </Button>
                 </Col>
               </Row>
+            </form>
             <Row className={'group-btn'}>
                 <div className={'is-manipulation'}>
                   <ImportDataModal
@@ -448,7 +450,6 @@ class InfoStudent extends Component{
                 </div>
             </Row>
           </div>
-
           <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
           {/*end modal*/}
 

@@ -1060,7 +1060,7 @@ export class ChooseRoom extends Component{
               color={'danger'}
               onClick={() =>this.handleRemove()}
             >
-              Xóa khỏi  phòng
+              Xóa khỏi phòng
             </Button>
             <Button variant="outline" onClick={() =>this.handleCancel()}>
               Hủy
