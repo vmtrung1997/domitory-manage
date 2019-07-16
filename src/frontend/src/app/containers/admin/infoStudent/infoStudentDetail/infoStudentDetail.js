@@ -104,15 +104,15 @@ class InfoStudentDetail extends Component {
           school = {
             value: profile.truong._id,
             label: profile.truong.tenTruong
-          }
-          this.getMajorOptions(profile.truong._id);
+          };
+          this.getMajorOptions(profile.truong._id)
         }
-        if(profile.nganhHoc !== undefined){
+        if(profile.nganhHoc){
           major = {
               value: profile.nganhHoc._id,
               label: profile.nganhHoc.tenNganh
             };
-          this.getMajorOptions(profile.truong._id);
+
         }
         if(profile.idTaiKhoan && !profile.idTaiKhoan.isDelete){
           isOld = false;
@@ -130,6 +130,7 @@ class InfoStudentDetail extends Component {
           major: major,
           loading: false,
         });
+
       }).catch(err => {
       ToastsStore.error("Có lỗi! Vui lòng thử lại!");
         this.setState({
@@ -209,7 +210,7 @@ class InfoStudentDetail extends Component {
           info: {
             ...this.state.profile,
             // img: this.state.profile.img,
-            nganhHoc: this.state.profile.nganhHoc && this.state.profile.nganhHoc._id,
+            nganhHoc: this.state.profile.nganhHoc && this.state.profile.nganhHoc._id ? this.state.profile.nganhHoc._id : null,
             truong: this.state.profile.truong && this.state.profile.truong._id,
             idPhong: this.state.profile.idPhong && this.state.profile.idPhong._id,
           }
@@ -247,6 +248,7 @@ class InfoStudentDetail extends Component {
         truong: {
           tenTruong: selectedOption.label,
           _id: selectedOption.value,
+          nganhHoc: {}
         }
       },
       school: selectedOption,

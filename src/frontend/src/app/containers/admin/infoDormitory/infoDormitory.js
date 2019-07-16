@@ -325,7 +325,6 @@ class InfoDormitory extends React.Component{
 
   renderRoom = (roomList, color) => {
     const roomRender = roomList && roomList.map((room, index) => {
-      console.log(room)
       if(room.loaiPhong){
         if(room.loaiPhong.loai === 0 || room.loaiPhong.loai === 1){
             return(
@@ -621,7 +620,7 @@ class InfoDormitory extends React.Component{
                     <div className={'id-room'}>
                       <div>
                         {
-                          this.renderRoom(roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_SV), 'info')
+                          this.renderRoom(roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_SV), 'success')
                         }
                       </div>
                       <div>
