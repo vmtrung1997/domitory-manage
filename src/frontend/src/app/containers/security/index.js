@@ -62,6 +62,10 @@ class Security extends Component {
 			return;
 		else this.onHandleInputCard()
 	}
+	alert = () => {
+		this.player.src = "./ErrorBeep.mp3";
+    this.player.play()
+	 }
 	onHandleInputCard = () => {
 		//var startTime = new Date()
 		var { cardId, type } = this.state;
@@ -75,9 +79,11 @@ class Security extends Component {
 				this.setState({ notFound: false, history: history, mainHis: history[0], cardId: '' })
 			} else if (result.data.rs === 'not found') {
 				this.setState({ notFound: true, cardId: '' })
+				this.alert();
 			}
 		}).catch(() => {
-			this.setState({ notFound: true, cardId: '' })
+			this.setState({ notFound: true, cardId: '' });
+			this.alert();
 		})
 	}
 	getInput = (target) => {
@@ -93,6 +99,7 @@ class Security extends Component {
 		return (
 			<React.Fragment>
 				<div className='p-t-10 header-security'>
+				<audio ref={ref => this.player = ref} />
 				<div className='type-div'>
 						<RadioButton check={this.state.type === 'in-dormitory'} value={'in-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Vào ký túc xá'/>
 						<RadioButton check={this.state.type === 'out-dormitory'} value={'out-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Ra ký túc xá'/>
