@@ -13,7 +13,7 @@ var profileSchema = new Schema({
     sdt: String,
     MSSV: String,
     tonGiao: {type: Schema.Types.String,ref: 'TonGiao'},
-    maThe: {type: String, unique: true, sparse: true},
+    maThe: String,
     nganhHoc: {type: Schema.Types.String, ref: 'NganhHoc'},
     truong: {type: Schema.Types.String, ref: 'Truong'},
     idPhong: {type: Schema.Types.String, ref: 'Phong'},

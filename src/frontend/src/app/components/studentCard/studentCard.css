@@ -103,9 +103,7 @@
 	font-weight: bold;
 }
 .info-content{
-	display: block;
-	text-align: center;
-	font-size: 12px;
+	color: #040461
 }
 
 @media print {

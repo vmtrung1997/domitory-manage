@@ -1,0 +1,55 @@
+
+*	Thời gian: 21:53:29 2019-6-30
+*	Người dùng: ketoan
+*	Nội dung: Thêm chi phí
+*	Dữ liệu:
+*	      {"idPhong":"5cfb02990c2eff6d392cc6e0","thang":8,"nam":2019,"soDien":10,"soNuoc":10,"soDienCu":0,"soNuocCu":0,"tienDien":12340,"tienNuoc":0,"tongTien":62500,"tienRac":50000,"tongTienChu":"Sáu mươi hai nghìn năm trăm","trangThai":0,"thayDien":null,"thayNuoc":null}
+*	      {"idPhong":"5d007eaa77932279dd7f4be1","thang":8,"nam":2019,"soDien":324387,"soNuoc":5238,"soDienCu":16740,"soNuocCu":4539,"tienDien":0,"tienNuoc":0,"tongTien":50000,"tienRac":50000,"tongTienChu":"Năm mươi nghìn","trangThai":0,"thayDien":null,"thayNuoc":null}
+*	Thời gian: 21:54:19 2019-6-30
+*	Người dùng: ketoan
+*	Nội dung: Thêm chi phí
+*	Dữ liệu:
+*	      {"idPhong":"5d01b8da77932279dd7f4f3b","thang":8,"nam":2019,"soDien":10,"soNuoc":10,"soDienCu":0,"soNuocCu":0,"tienDien":12340,"tienNuoc":0,"tongTien":62500,"tienRac":50000,"tongTienChu":"Sáu mươi hai nghìn năm trăm","trangThai":0,"thayDien":null,"thayNuoc":null}
+*	Thời gian: 22:02:51 2019-6-30
+*	Người dùng: ketoan
+*	Nội dung: Xóa chi phí
+*	Data: 
+*	      {"id":"5d18cd1bd04a9c3f7cf84677"}
+
+*	Thời gian: 22:14:46 2019-6-30
+*	Người dùng: ketoan
+*	Nội dung: Cập nhật cài đặt
+*	Dữ liệu:
+*	      {"id":1,"idLoaiPhong":"5cf54722a7c2c7baf02acf90","loaiChiPhi":0,"giaTriCuoi":50,"giaTriDau":0,"giaTriThuc":2030.38,"donVi":"KWh","moTa":"Từ 0KWh - 50KWh"}
+*	      {"id":2,"idLoaiPhong":"5cf54722a7c2c7baf02acf90","loaiChiPhi":0,"giaTriCuoi":100,"giaTriDau":51,"giaTriThuc":2098.14,"donVi":"KWh","moTa":"Từ 51KWh - 100KWh"}
+*	      {"id":3,"idLoaiPhong":"5cf54722a7c2c7baf02acf90","loaiChiPhi":0,"giaTriCuoi":200,"giaTriDau":101,"giaTriThuc":2436.94,"donVi":"KWh","moTa":"Từ 101KWh - 200KWh"}
+*	      {"id":4,"idLoaiPhong":"5cf54722a7c2c7baf02acf90","loaiChiPhi":0,"giaTriCuoi":300,"giaTriDau":201,"giaTriThuc":3068.56,"donVi":"KWh","moTa":"Từ 201KWh - 300KWh"}
+*	      {"id":5,"idLoaiPhong":"5cf54722a7c2c7baf02acf90","loaiChiPhi":0,"giaTriCuoi":400,"giaTriDau":301,"giaTriThuc":3429.14,"donVi":"KWh","moTa":"Từ 301KWh - 400KWh"}
+*	      {"id":6,"idLoaiPhong":"5cf54722a7c2c7baf02acf90","loaiChiPhi":0,"giaTriCuoi":10000,"giaTriDau":401,"giaTriThuc":3541.67,"donVi":"KWh","moTa":"Từ 401KWh Trở Lên"}
+*	      {"id":1,"idLoaiPhong":"5cf54722a7c2c7baf02acf90","loaiChiPhi":1,"giaTriCuoi":4,"giaTriDau":0,"giaTriThuc":6360,"donVi":"m^3","moTa":"Định mức 4 m^3/người/tháng"}
+*	      {"id":2,"idLoaiPhong":"5cf54722a7c2c7baf02acf90","loaiChiPhi":1,"giaTriCuoi":6,"giaTriDau":4,"giaTriThuc":12240,"donVi":"m^3","moTa":"Định mức 4m^3 đến 6m^3/người/ tháng"}
+*	      {"id":3,"idLoaiPhong":"5cf54722a7c2c7baf02acf90","loaiChiPhi":1,"giaTriCuoi":100,"giaTriDau":6,"giaTriThuc":13680,"donVi":"m^3","moTa":"Định mức từ 6m^3/người/ tháng trở lên"}
+
+*	Thời gian: 22:15:16 2019-6-30
+*	Người dùng: ketoan
+*	Nội dung: Cập nhật số điện nước ban đầu
+*	Data: 
+*	      {"idPhong":{"idPhong":"5cf62c76acf0d9528d164b9e","dienCheck":true,"dienMoi":"11","nuocCheck":false,"nuocMoi":0},"update":{"soDien":"11"}}
+
+*	Thời gian: 22:33:59 2019-6-30
+*	Người dùng: ketoan
+*	Nội dung: Cập nhật cài đặt
+*	Dữ liệu:
+*	      {"id":1,"idLoaiPhong":"5cf54722a7c2c7baf02acf91","loaiChiPhi":0,"giaTriCuoi":50,"giaTriDau":0,"giaTriThuc":1234,"donVi":"kWh","moTa":"Từ 0 đến 50 kWh"}
+
+*	Thời gian: 22:34:59 2019-6-30
+*	Người dùng: ketoan
+*	Nội dung: Cập nhật số điện nước ban đầu
+*	Data: 
+*	      {"idPhong":{"idPhong":"5cf62c76acf0d9528d164b9e","dienCheck":true,"dienMoi":0,"nuocCheck":true,"nuocMoi":0},"update":{"soDien":0,"soNuoc":0}}
+
+*	Thời gian: 22:36:02 2019-6-30
+*	Người dùng: ketoan
+*	Nội dung: Cập nhật số điện nước ban đầu
+*	Data: 
+*	      {"idPhong":"5cf62c76acf0d9528d164b9e","update":{"soDien":"10","soNuoc":"3741"}}

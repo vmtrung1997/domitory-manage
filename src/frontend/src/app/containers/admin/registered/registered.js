@@ -112,7 +112,7 @@ class Registered extends Component{
 			<React.Fragment>
         		<ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
 				<Loader loading={this.state.loading}/>
-				<Title> Hoạt động sinh viên </Title>
+				<Title> Xác nhận lưu trú </Title>
 
         		<div className={'content-body full'}>
 					<div>

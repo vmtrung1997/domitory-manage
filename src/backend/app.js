@@ -7,8 +7,8 @@ var express = require('express'),
 var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
 var { background } = require('./background')
-
-mongoose.connect('mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao', 
+//mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao
+mongoose.connect('mongodb://127.0.0.1:27017/ktx1', 
 { 
   useNewUrlParser: true,
   autoReconnect:true,
@@ -49,6 +49,8 @@ app.use((req, res, next) => {
 })
 
 setInterval(background, 1000*3600*24);
+
+setInterval(require('./backup').dbAutoBackUp, 1000*3600*24);
 
 app.use((err, req, res, next) => {
   res.status(500)
