@@ -105,16 +105,17 @@
 .info-content{
 	display: block;
 	text-align: center;
+	font-size: 12px;
 }
 
 @media print {
   .card {
     margin: 100px auto;
     min-height: 315px;
-	width: 530px;
-	height: 315px;
-	max-width: 530px;
-	max-height: 315px;
+	width: 478px;
+	height: 310px;
+	max-width: 478px;
+	max-height: 310px;
   }
   .logo-card{
 	height: 50px;
@@ -151,9 +152,10 @@
   .name-person{
   	font-size: 25px
   }
-  .info-card{
+  .info-card .info-content{
 	font-size: 16px;
   }
+  
 }
 
 

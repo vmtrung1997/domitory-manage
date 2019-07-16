@@ -52,10 +52,10 @@ class StudentCard extends Component{
 							<span className='info-card'> Phòng: </span>
 						</div>
 						<div>
-							<span className="info-content">{ strDate }</span>
-							<span className="info-content">{major} </span>
-							<span className="info-content">{school} </span>
-							<span className="info-content">{room} </span>
+							<span className="info-content">{strDate || '---'}</span>
+							<span className="info-content">{major || '---'} </span>
+							<span className="info-content">{school || '---'} </span>
+							<span className="info-content">{room || '---'} </span>
 						</div>
         			</div>
         		</div>
