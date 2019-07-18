@@ -10,7 +10,7 @@ var historyController = require('../apiController/historyController');
 let repo = require('../repos/phongRepo');
 var universityController = require('../apiController/universityController');
 var registeredController = require('./../apiController/registeredController');
-
+var databaseLogController = require('./../apiController/databaseLogController')
 // Expense
 router.get('/expense', expenseController.quan_ly_dien_nuoc);
 
@@ -159,5 +159,8 @@ router.post('/university/removeMajor',universityController.removeMajor);
 router.post('/register/getListRegister', registeredController.get_list_register);
 
 router.post('/register/acceptRequest', registeredController.accept_request);
+
+//Database log
+router.post('/logDb/get_log', databaseLogController.getLog);
 
 module.exports = router;

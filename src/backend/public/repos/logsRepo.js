@@ -12,7 +12,7 @@ function dataFile(datetime, user, title, data) {
       stringFile = stringFile + `\n*\t      ${JSON.stringify(v)}`;
     })
   } else
-    stringFile = stringFile + `\n*\tData: \n*\t      ${JSON.stringify(data)}`
+    stringFile = stringFile + `\n*\tDữ liệu: \n*\t      ${JSON.stringify(data)}`
   stringFile = stringFile + `\n`
   return stringFile
 }

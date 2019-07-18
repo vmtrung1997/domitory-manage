@@ -12,7 +12,11 @@ function find_history(type){
     populate({
       path: 'profile',
       select: 'hoTen idPhong truong nganhHoc img',
-      populate: [{ path: 'idPhong', select: 'tenPhong'}]
+      populate: [
+        { path: 'idPhong', select: 'tenPhong'}, 
+        {path: 'truong', select: 'tenTruong'},
+        {path: 'nganhHoc', select: 'tenNganh'}
+        ]
     }).
     exec((err,result) => {
       if (result){
@@ -44,7 +48,9 @@ exports.input_card = (req, res) => {
   var {info, type} = req.body;
   Profile.findOne({maThe: info}).populate([
   { path:'idTaiKhoan', match:{ isDelete: 0}},
-  { path: 'idPhong', select: 'tenPhong'}, 
+  { path: 'idPhong', select: 'tenPhong'},
+  {path: 'truong', select: 'tenTruong'},
+  {path: 'nganhHoc', select: 'tenNganh'}
 ]).then(profile => {
       if (profile && profile.idTaiKhoan!=null){
         console.log(profile)

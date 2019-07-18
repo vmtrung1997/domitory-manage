@@ -2,6 +2,7 @@ const Truong = require('../models/Truong')
 const Nganh = require('../models/NganhHoc')
 const TruongNganh = require('../models/TruongNganh')
 const Profile =require('../models/Profile')
+const TaiKhoan = require('../models/TaiKhoan')
 
 exports.getSchoolList = (req, res) => {
   Truong.find().sort('tenTruong').then(value => {
@@ -86,13 +87,27 @@ exports.removeSchool = (req, res) => {
   })
 }
 
-exports.getMajor = (req, res) => {
+exports.getMajor = async (req, res) => {
   var id = req.body.id;
-  TruongNganh.find({idTruong: id}).populate('idNganhHoc').then(value => {
-    res.json({
-      rs: 'success',
-      data: value
+  const taiKhoan = await TaiKhoan.find({isDelete: 0,loai:"SV"}).select('_id');
+  const arrTaiKhoan = taiKhoan.map(v => v._id);
+  TruongNganh.find({idTruong: id}).populate('idNganhHoc').then(majorList => {
+    const data = majorList.map(major => {
+      return new Promise(async resolve => {
+          Profile.countDocuments({idTaiKhoan: {$in: arrTaiKhoan}, nganhHoc: major.idNganhHoc._id}).then(count => {
+            var mj = JSON.parse(JSON.stringify(major));
+            mj.count = count
+            resolve(mj)
+          })
+        })
     })
+    Promise.all(data).then(result => {
+      res.json({
+        rs: 'success',
+        data: result
+      })
+    })
+    
   }).catch(err => res.json({rs: 'fail'}))
 }
 
