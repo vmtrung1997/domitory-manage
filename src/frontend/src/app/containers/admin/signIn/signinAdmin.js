@@ -55,7 +55,7 @@ class SignInAdmin extends Component{
 					case 'AM':
 					case 'ADCP':
 						localStorage.setItem('secret', JSON.stringify(res.data));
-						from = { pathname: "/admin/student" }
+						from = { pathname: "/admin/expense" }
 						break
 					case 'DD':
 						localStorage.setItem('secret', JSON.stringify(res.data));

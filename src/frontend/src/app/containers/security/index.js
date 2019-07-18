@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import { getHistoryList, inputCard, logout } from './indexAction'
 import RadioButton from '../../components/radioButton/radioButton';
+
 class Security extends Component {
 	constructor(props) {
 		super(props)
@@ -24,7 +25,8 @@ class Security extends Component {
 			cardId: '',
 			notFound: false,
 			inputFocus: false,
-			type: 'in-dormitory'
+			type: 'in-dormitory',
+			isMusicPlaying: false
 		}
 	}
 	hideLichSu = () => {
@@ -35,7 +37,7 @@ class Security extends Component {
 		document.addEventListener("keydown", this.onKeyDown);
 		this.onInitHistoryList(this.state.type);
 	}
-	onInitHistoryList(type){
+	onInitHistoryList(type) {
 		getHistoryList(type).then(result => {
 			if (result.data) {
 				var historyList = result.data.data;
@@ -54,7 +56,6 @@ class Security extends Component {
 			let input = this.state.cardId + String.fromCharCode(event.keyCode);
 			this.setState({ cardId: input })
 		}
-
 	}
 
 	onEnterInput = (e) => {
@@ -63,13 +64,11 @@ class Security extends Component {
 		else this.onHandleInputCard()
 	}
 	alert = () => {
-		this.player.src = "./ErrorBeep.mp3";
-    this.player.play()
-	 }
+		this.rap.play();
+	}
 	onHandleInputCard = () => {
-		//var startTime = new Date()
 		var { cardId, type } = this.state;
-		inputCard({ info: cardId, type: type}).then(result => {
+		inputCard({ info: cardId, type: type }).then(result => {
 			if (result.data.rs === 'success') {
 				var { history } = this.state;
 				var his = result.data.data;
@@ -90,7 +89,7 @@ class Security extends Component {
 		this.setState({ cardId: target.value })
 	}
 	radioCheck = (e) => {
-		this.setState({type: e.value})
+		this.setState({ type: e.value })
 		this.onInitHistoryList(e.value)
 	}
 	render() {
@@ -99,11 +98,16 @@ class Security extends Component {
 		return (
 			<React.Fragment>
 				<div className='p-t-10 header-security'>
-				<audio ref={ref => this.player = ref} />
-				<div className='type-div'>
-						<RadioButton check={this.state.type === 'in-dormitory'} value={'in-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Vào ký túc xá'/>
-						<RadioButton check={this.state.type === 'out-dormitory'} value={'out-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Ra ký túc xá'/>
-				</div>
+				<audio 
+				src="sound/error_beep.mp3"
+				ref={(element) => { this.rap = element; }}
+				controls
+				style={{display:'none'}}
+				/>
+					<div className='type-div'>
+						<RadioButton check={this.state.type === 'in-dormitory'} value={'in-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Vào ký túc xá' />
+						<RadioButton check={this.state.type === 'out-dormitory'} value={'out-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Ra ký túc xá' />
+					</div>
 					<Link to="/signin-admin" onClick={() => {
 						document.removeEventListener("keydown", this.onKeyDown)
 						logout();
@@ -139,6 +143,8 @@ class Security extends Component {
 										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>{mainHis.profile.hoTen.toUpperCase()}</span></Col>
 										<Col md={12} className={'info'}>MSSV: <span>{mainHis.MSSV}</span></Col>
 										<Col md={12} className={'info'}>Phòng: <span>{mainHis.profile.idPhong ? mainHis.profile.idPhong.tenPhong : 'Chưa cập nhật'}</span></Col>
+										<Col md={12} className={'info'}>Trường: <span>{mainHis.profile.truong ? mainHis.profile.truong.tenTruong : 'Chưa cập nhật'}</span></Col>
+										<Col md={12} className={'info'}>Ngành: <span>{mainHis.profile.nganhHoc ? mainHis.profile.nganhHoc.tenNganh : 'Chưa cập nhật'}</span></Col>
 										<Col md={12} className={'info'}>Giờ vào: <span>{mainTime.toLocaleTimeString() + ' ' + mainTime.toLocaleDateString()}</span></Col>
 									</div> : <div>Chưa có dữ liệu</div> :
 										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>Không tìm thấy dữ liệu</span></Col>

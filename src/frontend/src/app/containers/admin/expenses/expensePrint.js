@@ -60,7 +60,14 @@ class Confirm extends Component {
   }
 
   handleClose = () => {
-    this.setState({ show: false })
+    this.setState({ show: false, 
+      printComponent: (<div></div>),
+      fromDay: new Date(),
+      toDay: new Date(),
+      lastDay: new Date(),
+      selectType: '',
+      admin: 'Phan Văn Thành'
+    })
   }
   handleShow = () => {
     this.setState({
@@ -91,7 +98,7 @@ class Confirm extends Component {
           return (
             <React.Fragment>
               <div key={index}>
-                <div style={{height:'100vh'}}>
+                <div style={{height:'50vh'}}>
                   {this.printDetailStructure(value)}
                 </div>
                 {/* <div style={{height:'100vh'}}>
@@ -277,7 +284,7 @@ class Confirm extends Component {
     </div>)
   }
   afterPrint = () => {
-    this.setState({ show: false, printComponent: (<div></div>) })
+    this.handleClose();
   }
   componentPrint = (component) => {
     return (

@@ -133,11 +133,11 @@ class Example extends React.Component {
             return;
           }
         }
-        if (resetSoDien && parseInt(soDienResetCuoi) <= parseInt(soDienResetDau)) {
+        if (resetSoDien && parseInt(soDienResetCuoi) < parseInt(soDienResetDau)) {
           ToastsStore.error(`Số điện reset cuối phải lớn hơn số điện reset đầu`);
           return;
         }
-        if (resetSoNuoc && parseInt(soNuocResetCuoi) <= parseInt(soNuocResetDau)) {
+        if (resetSoNuoc && parseInt(soNuocResetCuoi) < parseInt(soNuocResetDau)) {
           ToastsStore.error(`Số nước reset cuối phải lớn hơn số nước reset đầu`);
           return;
         }
@@ -184,11 +184,13 @@ class Example extends React.Component {
           self.handleClose();
         } else {
           ToastsStore.success("Thêm chi phí thành công");
+          this.setState({ show: false })
           self.handleReset();
           self.props.retriveSearch(true);
         }
       }
     }).catch(err => {
+      this.setState({ show: false })
       ToastsStore.error("Thêm chi phí thất bại");
       self.handleClose();
     })
@@ -219,8 +221,8 @@ class Example extends React.Component {
         <Button color={'warning'} onClick={this.handleShow}>
           <i className="fas fa-plus" />
         </Button>
-        <Modal show={this.state.show} onHide={this.handleClose} size="lg"> 
-        {/* dialogClassName="modal-90w" */}
+        <Modal show={this.state.show} onHide={this.handleClose} size="lg">
+          {/* dialogClassName="modal-90w" */}
           <Modal.Header closeButton>
             <Modal.Title>
               Thêm chi phí
@@ -230,7 +232,7 @@ class Example extends React.Component {
             <div className={'p-10'}>
               <form onSubmit={e => this.addRow(e)}>
                 <Row>
-                  <Col md={3} xs={12}> 
+                  <Col md={3} xs={12}>
                     Tháng
                   <Select options={this.state.monthOptions} value={this.state.month} selected={this.monthSelected} />
                   </Col>
@@ -319,13 +321,13 @@ class Example extends React.Component {
                 </div>}
                 {Object.keys(this.state.infoRoom).length && <Row className={'m-b-10'}>
                   <Col md={4} xs={12}>
-                    Loại: {this.state.infoRoom.loaiPhong.ten}
-                  </Col>
-                  <Col md={4} xs={12}>
                     Số điện hiện tại: {this.state.infoRoom.chiPhi.soDien}
                   </Col>
                   <Col md={4} xs={12}>
                     Số nước hiện tại: {this.state.infoRoom.chiPhi.soNuoc}
+                  </Col>
+                  <Col md={4} xs={12}>
+                    Loại: {this.state.infoRoom.loaiPhong.ten}
                   </Col>
                 </Row>}
               </form>
