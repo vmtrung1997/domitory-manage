@@ -109,11 +109,11 @@
 @media print {
   .card {
     margin: 100px auto;
-    min-height: 315px;
+    min-height: 305px;
 	width: 478px;
-	height: 310px;
+	height: 305px;
 	max-width: 478px;
-	max-height: 310px;
+	max-height: 305px;
   }
   .logo-card{
 	height: 50px;
