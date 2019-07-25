@@ -16,7 +16,7 @@ router.get('/expense', expenseController.quan_ly_dien_nuoc);
 
 router.post('/expense/get_expense_table', expenseController.select_expense_table);
 
-router.get('/expense/get_expense_data', expenseController.get_data);
+router.post('/expense/get_room_option', expenseController.get_room_option);
 
 router.post('/expense/add_expense', expenseController.add_data)
 

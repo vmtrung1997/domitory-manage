@@ -15,12 +15,28 @@ exports.quan_ly_dien_nuoc = (req, res, next) => {
 		msg: 'from quan ly dien nuoc'
 	})
 };
-exports.get_data = (req, res) => {
+exports.get_room_option = (req, res) => {
 	phongRepo.get_room().then(result => {
-		res.json({
-			status: 'success',
-			result: result
+		ChiPhiPhong.find({thang: req.body.month, nam: req.body.year}).then(cpPhongs => {
+			if (cpPhongs.length>0){
+				var rs = [];
+				result.forEach(phong => {
+					let find = cpPhongs.find(item => item.idPhong === phong._id.toString());
+					if (!find)
+						rs.push(phong);
+				})
+				res.json({
+					status: 'success',
+					result: rs
+				})
+			}
+			else 
+			res.json({
+				status: 'success',
+				result: result
+			})
 		})
+		
 	})
 }
 exports.get_year = (req, res) => {
@@ -43,7 +59,7 @@ exports.select_expense_table = (req, res) => {
 	if (search.year !== 0) {
 		searchObj.nam = search.year
 	}
-	if (search.status !== 2)
+	if (search.status !== -1)
 		searchObj.trangThai = search.status
 
 	if (search.room !== 0 && search.room.value !== 0)
@@ -54,7 +70,12 @@ exports.select_expense_table = (req, res) => {
 		res.json({
 			rs: value
 		})
-	}).catch(err => { console.log(err) })
+	}).catch(err => {
+		res.json({
+			mes: 'fail',
+			rs: []
+		})
+	})
 };
 function update_data(item, cb) {
 	var id = new ObjectId(item._id);
@@ -69,17 +90,23 @@ function update_data(item, cb) {
 		})
 	}, 100)
 }
+
 function getPersonInRoom(id) {
 	return new Promise((resolve) => {
-		Profile.countDocuments({ idPhong: id }, function (err, count) {
-			if (err)
-				resolve(-1);
+		Phong.findOne({ _id: id }).populate('loaiPhong').then(value => {
+			if (value.loaiPhong.loai === 2)
+				resolve(value.soNguoiToiDa)
 			else
-				resolve(count);
-		})
+				Profile.countDocuments({ idPhong: id }, function (err, count) {
+					if (err)
+						resolve(-1);
+					else
+						resolve(count);
+				})
+		});
 	})
-
 }
+
 function TinhTienDien(arr, number) {
 	let total = 0;
 	let temp = number;
@@ -180,10 +207,10 @@ function CalculationTest(phong, soDienCu, soNuocCu) {
 		if (loaiPhong) {
 			row.tienRac = loaiPhong.tienRac;
 			if (phongReset) {
-				if (phongReset.thayDien){
+				if (phongReset.thayDien) {
 					row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu + phongReset.thayDien.dienCu));
 				}
-				if (phongReset.thayNuoc){
+				if (phongReset.thayNuoc) {
 					row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, songuoi));
 				}
 			}
@@ -193,18 +220,18 @@ function CalculationTest(phong, soDienCu, soNuocCu) {
 						row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu));
 					}
 					phong.isResetDien ?
-						row.thayDien = { dienCu: phong.soDienResetDau }:
+						row.thayDien = { dienCu: phong.soDienResetDau } :
 						row.thayDien = null;
-					
+
 					var songuoi = await getPersonInRoom(phong.phong.value);
 
 					if (arrNuoc.length > 0) {
 						row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, songuoi));
 					}
 					phong.isResetNuoc ?
-						row.thayNuoc = { nuocCu: phong.soNuocResetDau }:
+						row.thayNuoc = { nuocCu: phong.soNuocResetDau } :
 						row.thayNuoc = null;
-					
+
 					console.log(row)
 					row.tongTien = ceilMoney(row.tienDien + row.tienNuoc + row.tienRac)
 					row.tongTienChu = toMoneyString(NumberReader.read(row.tongTien));
@@ -231,14 +258,13 @@ function Calculation(phong, soDienCu, soNuocCu) {
 			tongTien: 0,
 			tienRac: 0,
 			tongTienChu: '',
-			trangThai: 0,
+			trangThai: phong.trangThai,
 		}
 		LoaiPhong.findOne({ _id: phong.phong.loaiPhong }).then(loaiPhong => {
 			if (loaiPhong) {
 				row.tienRac = loaiPhong.tienRac;
 				if (loaiPhong.dien || loaiPhong.nuoc) {
 					ThongSoLoaiPhong.find({ idLoaiPhong: loaiPhong._id }).sort({ id: 1 }).then(async arrThongSo => {
-						if (arrThongSo.length > 0) {
 							var arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0) || [];
 							var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1) || [];
 							if (phong.isResetDien) {
@@ -269,7 +295,6 @@ function Calculation(phong, soDienCu, soNuocCu) {
 							row.tongTien = ceilMoney(row.tienDien + row.tienNuoc + row.tienRac)
 							row.tongTienChu = toMoneyString(NumberReader.read(row.tongTien));
 							resolve(row);
-						}
 					})
 				} else {
 					resolve(row);
@@ -381,7 +406,10 @@ exports.update_expense = async (req, res) => {
 								if (exp.thayDien)
 									exp.tienDien = Math.round(TinhTienDien(arrDien, exp.soDien - exp.soDienCu + exp.thayDien.dienMoi - exp.thayDien.dienCu));
 								else
+								{
+									exp.thayDien = null;
 									exp.tienDien = Math.round(TinhTienDien(arrDien, exp.soDien - exp.soDienCu));
+								}
 							}
 							if (loaiPhong.nuoc) {
 								var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id })
@@ -389,13 +417,18 @@ exports.update_expense = async (req, res) => {
 									if (exp.thayNuoc)
 										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, soNguoi));
 									else
-										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, soNguoi));
+										{
+											exp.thayNuoc = null;
+											exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, soNguoi));
+										}
 								})
 							}
 						})
 					}
 					exp.tongTien = ceilMoney(exp.tienRac + exp.tienDien + exp.tienNuoc);
 					exp.tongTienChu = toMoneyString(NumberReader.read(exp.tongTien));
+					exp.trangThai = exp.trangThai === 2? 0: exp.trangThai;
+					console.log(exp);
 					ChiPhiPhong.updateOne({ _id: id }, exp, async (err) => {
 						if (err) {
 							res.json({
@@ -448,7 +481,7 @@ exports.report_expense = (req, res) => {
 		if (condition.room !== 0) {
 			query.idPhong = condition.room
 		}
-		if (condition.status !== 2) {
+		if (condition.status !== -1) {
 			query.trangThai = condition.status
 		}
 	}
@@ -460,7 +493,7 @@ exports.report_expense = (req, res) => {
 				if (condition.room !== 0) {
 					query.idPhong = condition.room
 				}
-				if (condition.status !== 2) {
+				if (condition.status !== -1) {
 					query.trangThai = condition.status
 				}
 			}
@@ -483,7 +516,7 @@ exports.report_expense = (req, res) => {
 			if (condition.room !== 0) {
 				query.$and.push({ idPhong: condition.room })
 			}
-			if (condition.status !== 2) {
+			if (condition.status !== -1) {
 				query.$and.push({ trangThai: condition.status })
 			}
 		} else {
@@ -573,7 +606,7 @@ exports.report_expense = (req, res) => {
 						array.push(arr)
 					}
 					if (options.indexOf('tongTien') > 0) {
-						total[header.indexOf('Tổng tiền chữ')] = toMoneyString(NumberReader.read(Math.round(total[header.indexOf('Tổng tiền')] / 1000) * 1000))
+						total[header.indexOf('Tổng tiền chữ')] = toMoneyString(NumberReader.read(total[header.indexOf('Tổng tiền')]))
 					}
 
 					array.push(total);
@@ -813,7 +846,7 @@ exports.get_data_print = (req, res) => {
 			searchObj.thang = data.month;
 		if (data.year !== 0)
 			searchObj.nam = data.year;
-		if (data.status !== 2)
+		if (data.status !== -1)
 			searchObj.trangThai = data.status
 		if (data.room !== 0 && data.room.value !== 0)
 			searchObj.idPhong = data.room.value

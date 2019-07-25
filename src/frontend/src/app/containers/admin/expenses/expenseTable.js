@@ -54,6 +54,16 @@ export default class ExpenseTable extends React.Component {
 		});
 		this.props.sendTable(table)
 	}
+	getStatus = (row) => {
+		switch(row.trangThai){
+			case 0:
+			return <i style={{ color: '#dc3545' }} title={"Chưa thanh toán"} className="fas fa-times "></i>
+			case 1:
+			return <i style={{ color: '#28a745' }} title={"Đã thanh toán"} className="fas fa-check success"></i>
+			case 2:
+			return <i style={{ color: '#ffc107' }} title={"Thiếu dữ liệu"} className="fas fa-exclamation-triangle"></i>
+		}
+	}
 	render() {
 		return (
 			<React.Fragment>
@@ -88,9 +98,8 @@ export default class ExpenseTable extends React.Component {
 											<td className={'text-right'}>{row.thayNuoc ? row.soNuoc - row.soNuocCu + row.thayNuoc.nuocMoi - row.thayNuoc.nuocCu : (row.soNuoc > 0 ? row.soNuoc - row.soNuocCu : row.soNuoc)}</td>
 											<td className={'text-right'}>{Optimize.OpitmizeNumber(row.tienRac)}</td>
 											<td className={'text-right'}>{Optimize.OpitmizeNumber(row.tongTien)}</td>
-											<td className={'text-center'}>{row.trangThai === 1 ?
-												<i style={{ color: '#28a745' }} className="fas fa-check success"></i> :
-												<i style={{ color: '#dc3545' }} className="fas fa-times"></i>}</td>
+											<td className={'text-center'}>{this.getStatus(row)}
+											</td>
 											<td className={'text-center'} >
 												<Checkbox style={{ display: 'inline-block' }} name={row._id} checkmark={'checkmark-expense'} check={row.check} isCheck={(e) => this.handleRowCheck(index, e)} />
 											</td>

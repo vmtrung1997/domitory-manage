@@ -7,6 +7,7 @@ import { getData, add_expense, find_expense, info_room } from '../expenses/expen
 import { get_month } from './expenseRepo'
 import { ToastsStore } from 'react-toasts';
 import './expenses.css'
+import Checkbox from '../../../components/checkbox/checkbox';
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -32,11 +33,10 @@ class Example extends React.Component {
       soNuocResetDau: 0,
       soNuocResetCuoi: 0,
       idRoom: 0,
+      trangThai: 0,
     };
   }
-  componentDidMount() {
 
-  }
   handleClose() {
     this.setState({
       show: false,
@@ -48,7 +48,8 @@ class Example extends React.Component {
       soDienResetDau: 0,
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
-      soNuocResetCuoi: 0
+      soNuocResetCuoi: 0,
+      trangThai: 0,
     });
   }
   handleReset() {
@@ -62,28 +63,41 @@ class Example extends React.Component {
       soDienResetDau: 0,
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
-      soNuocResetCuoi: 0
+      soNuocResetCuoi: 0,
+      trangThai: 0
     })
   }
-  handleShow() {
-    this.setState({ show: true });
-    var self = this;
-    getData().then(result => {
-      if (result.data) {
-        let monthOptions = get_month();
-        monthOptions.shift();
-        let yearNow = new Date().getFullYear() - 1;
-        let yearOptions = [...Array(3)].map((_, i) => { return { value: i + yearNow, label: i + yearNow } })
-        var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong, loaiPhong: room.loaiPhong }))
-        self.setState({
-          rooms: roomOptions,
-          monthOptions: monthOptions,
-          yearOptions: yearOptions,
-        });
-        this.selected(roomOptions[0].value);
-      }
-    }).catch(err => {
+  
+  getRoomOption = () => {
+    return new Promise(resolve => {
+      getData({month: this.state.month, year: this.state.year}).then(result => {
+        if (result.data){
+          var roomOptions = []
+          result.data.result.forEach((room) => {
+            let find = this.state.table.find(item => item.phong.value === room._id)
+            if (!find){
+              roomOptions.push(room)
+            }
+          })
+          roomOptions = roomOptions.map(room => ({ value: room._id, label: room.tenPhong, loaiPhong: room.loaiPhong }))
+          resolve(roomOptions);
+        }
+      }).catch(() => { resolve([])})
     })
+  }
+  handleShow = async () => {
+    this.setState({ show: true });
+    let monthOptions = get_month();
+    monthOptions.shift();
+    let yearNow = new Date().getFullYear() - 1;
+    let yearOptions = [...Array(3)].map((_, i) => { return { value: i + yearNow, label: i + yearNow } })
+    var roomOptions = await this.getRoomOption();
+    this.setState({
+      rooms: roomOptions,
+      monthOptions: monthOptions,
+      yearOptions: yearOptions,
+    });
+    this.selected(roomOptions[0].value);
   }
   selected = (value) => {
     var room = this.state.rooms.find(obj => obj.value === value)
@@ -102,7 +116,11 @@ class Example extends React.Component {
   onChange = (target) => {
     this.setState({ [target.name]: target.value })
   }
-  setDienNuoc = (table) => {
+  setDienNuoc = async (table, room) => {
+    var roomOptions = this.state.rooms.filter(item => item.value !== room.value);
+    if (roomOptions.length> 0){
+      this.selected(roomOptions[0].value)
+    }
     this.setState({
       table: table,
       soDien: 0,
@@ -112,7 +130,9 @@ class Example extends React.Component {
       soDienResetDau: 0,
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
-      soNuocResetCuoi: 0
+      soNuocResetCuoi: 0,
+      trangThai: 0,
+      rooms: roomOptions
     });
   }
   addRow = (event) => {
@@ -120,7 +140,7 @@ class Example extends React.Component {
     var { table, month, year, soDien, soNuoc, room, infoRoom,
       resetSoDien, resetSoNuoc,
       soDienResetDau, soDienResetCuoi,
-      soNuocResetDau, soNuocResetCuoi } = this.state;
+      soNuocResetDau, soNuocResetCuoi, trangThai } = this.state;
     find_expense({ thang: parseInt(month), nam: parseInt(year), phong: room }).then(result => {
       if (result.data.rs === 'accept') {
         if (infoRoom.loaiPhong.dien || infoRoom.loaiPhong.nuoc) {
@@ -150,7 +170,8 @@ class Example extends React.Component {
           soDienCu: infoRoom.loaiPhong.dien ? infoRoom.chiPhi.soDien : 0,
           soNuocCu: infoRoom.loaiPhong.nuoc ? infoRoom.chiPhi.soNuoc : 0,
           isResetDien: resetSoDien,
-          isResetNuoc: resetSoNuoc
+          isResetNuoc: resetSoNuoc,
+          trangThai: trangThai
         }
         if (resetSoDien) {
           row.soDienResetDau = soDienResetDau ? parseInt(soDienResetDau) : 0;
@@ -161,7 +182,7 @@ class Example extends React.Component {
           row.soNuocResetCuoi = soNuocResetCuoi ? parseInt(soNuocResetCuoi) : 0;
         }
         table.push(row);
-        this.setDienNuoc(table);
+        this.setDienNuoc(table, room);
       } else {
         ToastsStore.error(`Dữ liệu [${month}/${year} phòng ${room.label}] đã tồn tại`);
       }
@@ -190,15 +211,21 @@ class Example extends React.Component {
         }
       }
     }).catch(err => {
+      self.props.loading(false)
       this.setState({ show: false })
       ToastsStore.error("Thêm chi phí thất bại");
       self.handleClose();
     })
   }
   onDeleteRow = (index) => {
-    var table = this.state.table
+    var {table, rooms} = this.state
+    var room = table.find((_, _index) => index === _index);
+    rooms.push(room);
     table.splice(index, 1);
-    this.setState({ table: table });
+    this.setState({ table: table, rooms: rooms });
+  }
+  handleCheckTrangThai = e => {
+    this.setState({trangThai: e.chk?2:0})
   }
   render() {
     var table = this.state.table && this.state.table.length > 0 ? this.state.table.map((row, index) => {
@@ -283,12 +310,15 @@ class Example extends React.Component {
                     &nbsp;
                       <Button title='Reset số nước' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.nuoc : false} onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button>
                   </Col>
+                  <Col md={3} xs={12}>
+                  &nbsp;
+                  <Checkbox label={'Thiếu dữ liệu'}  check={this.state.trangThai === 2} isCheck={(e) => this.handleCheckTrangThai(e)} />
+                  </Col>
                   <Col md={1}>
                     &nbsp;
-                    <Col md={12}>
                       <Button color={'warning'} type='submit' size={'md'}><i className="fas fa-plus" /></Button>
-                    </Col>
                   </Col>
+                  
                 </Row>
                 {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
                   <Row>

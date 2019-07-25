@@ -30,7 +30,7 @@ class Expenses extends Component {
 			roomSelected: 0,
 			monthSelected: 0,
 			yearSelected: 0,
-			statusSelected: 2,
+			statusSelected: -1,
 			monthOptions: [],
 			yearOptions: [],
 			statusOptions: [],

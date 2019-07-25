@@ -103,6 +103,8 @@ class Example extends React.Component {
       expenseDetail.thayDien = {}
       expenseDetail.thayDien.dienCu = parseInt(this.state.soDienResetDau);
       expenseDetail.thayDien.dienMoi = parseInt(this.state.soDienResetCuoi);
+    } else {
+      expenseDetail.thayDien = false;
     }
     if (this.state.thayNuoc) {
       if (parseInt(this.state.soNuocResetDau) > parseInt(this.state.soNuocResetCuoi)) {
@@ -112,6 +114,8 @@ class Example extends React.Component {
       expenseDetail.thayNuoc = {}
       expenseDetail.thayNuoc.nuocCu = parseInt(this.state.soNuocResetDau);
       expenseDetail.thayNuoc.nuocMoi = parseInt(this.state.soNuocResetCuoi);
+    } else {
+      expenseDetail.thayNuoc = false;
     }
     if (expenseDetail.trangThai === 1 && this.state.thayDien && this.state.thayNuoc && !window.confirm(`Cập nhật đồng hồ điện [${expenseDetail.thayDien.dienMoi}] và đồng hồ nước [${expenseDetail.thayNuoc.nuocMoi}]`))
       return;
