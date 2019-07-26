@@ -23,7 +23,7 @@ var profileSchema = new Schema({
     nam: Number,
     ngayHetHan: Date,
     danToc: {type: Schema.Types.String,ref: 'DanToc'},
-    dangVien:  {type: Number, enum: [0,1]}, //1 có 0 không,
+    dangVien:  Boolean, //1 có 0 không,
     doanVien: Boolean,
     img:  String,
     isActive: Boolean,

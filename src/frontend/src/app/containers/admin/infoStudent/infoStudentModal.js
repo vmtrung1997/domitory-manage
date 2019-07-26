@@ -405,7 +405,8 @@ export class ImportDataModal extends Component{
             !((headers.hoTen.toLowerCase() === 'họ và tên') || (headers.hoTen.toLowerCase() === 'họ tên')) ||
             !(headers.ngaySinh.toLowerCase() === 'ngày sinh'))
             this.setState({
-              justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
+              justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!',
+              loading: false,
             });
           else{
             resolve.shift();
@@ -424,11 +425,6 @@ export class ImportDataModal extends Component{
                 });
             })
           }
-        }).catch(() => {
-          this.setState({
-            justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!',
-            loading: false,
-          });
         })
       } else {
         this.setState({
