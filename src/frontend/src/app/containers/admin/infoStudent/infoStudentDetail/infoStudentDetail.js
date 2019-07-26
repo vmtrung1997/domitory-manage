@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Tabs, Tab, Table } from 'react-bootstrap';
+import { Row, Col, Tabs, Tab } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from "react-toasts";
 import axios from "axios";
@@ -20,8 +20,9 @@ import { getMajor } from './../../university/universityAction'
 import Loader from '../../../../components/loader/loader';
 import { ChooseRoom } from './../infoStudentModal'
 import { get_info_Student_detail, get_activites_by_MSSV, get_floor_room } from './../infoStudentActions'
+import Checkbox from "../../../../components/checkbox/checkbox";
 
-var nationOption = [
+const nationOption = [
   { value: "Kinh", label: "Kinh" },
   { value: "Chăm", label: "Chăm" },
   { value: "Dao", label: "Dao" },
@@ -36,7 +37,7 @@ var nationOption = [
   { value: "Khác", label: "Khác" }
 ];
 
-var tonGiaoOption = [
+const tonGiaoOption = [
   { value: "Phật Giáo", label: "Phật Giáo" },
   { value: "Công Giáo", label: "Công Giáo" },
   { value: "Cao Đài", label: "Cao Đài" },
@@ -62,6 +63,8 @@ class InfoStudentDetail extends Component {
           email: '',
           sdt: '',
           sdtNguoiThan: '',
+          doanVien: false,
+          dangVien: false,
           danToc: '',
           maThe: '',
           diaChi: '',
@@ -84,7 +87,7 @@ class InfoStudentDetail extends Component {
   }
 
   componentDidMount() {
-    this.getData()
+    this.getData();
     this.getElement('room');
     this.getElement('school');
   }
@@ -131,7 +134,7 @@ class InfoStudentDetail extends Component {
           loading: false,
         });
 
-      }).catch(err => {
+      }).catch(() => {
       ToastsStore.error("Có lỗi! Vui lòng thử lại!");
         this.setState({
           loading: false
@@ -238,7 +241,7 @@ class InfoStudentDetail extends Component {
         [name]: val
       }
     })
-  }
+  };
 
   handleSelectSchool = (selectedOption) => {
     delete this.state.profile.nganhHoc;
@@ -261,7 +264,7 @@ class InfoStudentDetail extends Component {
   getMajorOptions = (idSchool) => {
     getMajor({id: idSchool}).then(result =>{
       if (result.data.rs === 'success') {
-        let majorList = result.data.data.map(major => ({ value: major.idNganhHoc._id, label: major.idNganhHoc.tenNganh }))
+        let majorList = result.data.data.map(major => ({ value: major.idNganhHoc._id, label: major.idNganhHoc.tenNganh }));
         this.setState({
           majorOptions: majorList,
         })
@@ -275,7 +278,7 @@ class InfoStudentDetail extends Component {
         ...this.state.profile,
         idPhong: selectedOption
     }})
-  }
+  };
 
   handleSelectMajor = selectedOption => {
     this.setState({
@@ -315,6 +318,16 @@ class InfoStudentDetail extends Component {
       }
     }
   };
+
+  handleCheckBox = (props) => {
+      this.setState({
+        profile:{
+          ...this.state.profile,
+          [props.value]: props.chk,
+        }
+      });
+  };
+
   render() {
     let {
       profile,
@@ -327,11 +340,11 @@ class InfoStudentDetail extends Component {
       isOld,
       profile: {isActive}
     } = this.state;
-    const { CMND } = profile;
+    const { CMND, doanVien, dangVien, } = profile;
     let imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
     let gender = this.state.profile && this.state.profile.gioiTinh ? this.state.profile.gioiTinh: 0;
-    let danToc = profile.danToc ? profile.danToc : 'Kinh'
-    let tonGiao = profile.tonGiao ? profile.tonGiao : 'Không'
+    let danToc = profile.danToc ? profile.danToc : 'Kinh';
+    let tonGiao = profile.tonGiao ? profile.tonGiao : 'Không';
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -452,14 +465,14 @@ class InfoStudentDetail extends Component {
                             name={'email'} />
                         </Col>
                         <Col md={2}>
-                          Số điện thoại:
+                          Đảng viên:
                         </Col>
                         <Col md={4}>
-                          <Input
-                            disabled={isOld}
-                            value={profile.sdt ? profile.sdt : ''}
-                            getValue={this.onChange}
-                            name={'sdt'} />
+                          <Checkbox
+                            name={'dangVien'}
+                            isCheck={this.handleCheckBox}
+                            checkmark={'check-mark-fix'}
+                            check={dangVien ? dangVien : false}/>
                         </Col>
                       </Row>
 
@@ -473,6 +486,29 @@ class InfoStudentDetail extends Component {
                             value={danToc}
                             selected={e => this.onChange({name: 'danToc', value: e})}
                             options={nationOption} />
+                        </Col>
+                        <Col md={2}>
+                          Đoàn viên:
+                        </Col>
+                        <Col md={4}>
+                          <Checkbox
+                            name={'doanVien'}
+                            isCheck={this.handleCheckBox}
+                            checkmark={'check-mark-fix'}
+                            check={doanVien ? doanVien : false}/>
+                        </Col>
+                      </Row>
+
+                      <Row>
+                        <Col md={2}>
+                          Số điện thoại:
+                        </Col>
+                        <Col md={4}>
+                          <Input
+                            disabled={isOld}
+                            value={profile.sdt ? profile.sdt : ''}
+                            getValue={this.onChange}
+                            name={'sdt'} />
                         </Col>
                         <Col md={2}>
                           Sđt người thân:
