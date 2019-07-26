@@ -110,7 +110,7 @@ class InfoStudent extends Component{
       pathname: '/admin/student/detail/'+ mssv,
       //state: { info: info }
     });
-  }
+  };
 
   componentDidMount(){
     this.getData();
@@ -275,7 +275,7 @@ class InfoStudent extends Component{
   };
 
   handleRoomHistory = async(id) => {
-    this.handlePopup('history', true)
+    this.handlePopup('history', true);
     await refreshToken();
     var secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getRoomHistory/` + id, { headers: {'x-access-token': secret.access_token} }
@@ -553,7 +553,7 @@ class InfoStudent extends Component{
                           title={'In thẻ'}
                           color={'success'}
                           style={{marginRight: '10px'}}
-                          onClick={ e => {this.changeState('showPrint', true); this.changeState('dataPrint', info) }}
+                          onClick={ () => {this.changeState('showPrint', true); this.changeState('dataPrint', info) }}
                         >
                           <i className="fas fa-print"/>
                         </Button>
@@ -565,8 +565,11 @@ class InfoStudent extends Component{
                       >
                         <i className="fas fa-edit"/>
                       </Button>
-                        <Checkbox name={info.MSSV} isCheck={this.handleCheckBox} checkmark={'check-mark-fix'} check={this.handleValueCheck(info.MSSV)}/>
-
+                        <Checkbox
+                          name={info.MSSV}
+                          isCheck={this.handleCheckBox}
+                          checkmark={'check-mark-fix'}
+                          check={this.handleValueCheck(info.MSSV)}/>
                     </td>
                   </tr>
                 )
