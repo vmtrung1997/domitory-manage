@@ -1,5 +1,4 @@
 export const tonGiaoArr = [
-  { value: "-1", label: "Chọn tôn giáo" },
   { value: "Phật Giáo", label: "Phật Giáo" },
   { value: "Công Giáo", label: "Công Giáo" },
   { value: "Cao Đài", label: "Cao Đài" },
@@ -14,7 +13,6 @@ export const dangVienArr = [
 ]
 
 export const danTocArr = [
-  { value: "-1", label: "Chọn dân tộc" },
   { value: "Kinh", label: "Kinh" },
   { value: "Chăm", label: "Chăm" },
   { value: "Dao", label: "Dao" },

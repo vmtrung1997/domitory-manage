@@ -94,8 +94,13 @@ class PersonProfile extends React.Component {
   editProfile = () => {
     this.setState({ readOnly: false });
     this.setState({ isDisable: false });
-    this.getNganhHoc(this.state.truongOptions[0].value);
+    // console.log(this.state);
+    this.getNganhHoc(this.state.truong.value);
 
+    // this.setState({
+    //   nganhHoc:nganh
+    // })
+    //Chỉnh lại ngành của sinh viên
     // this.getDanToc();
     // this.getTonGiao();
   };
@@ -146,7 +151,7 @@ class PersonProfile extends React.Component {
             });
           });
           this.setState({ nganhOptions: options });
-          this.setState({ nganhHoc: options[0] });
+          // this.setState({ nganhHoc: options[0] });
         }
       })
       .catch(err => {});
@@ -212,7 +217,6 @@ class PersonProfile extends React.Component {
         this.setState({ nganhHoc: this.state.nganhOptions[0] });
       }
     }
-    console.log(data);
     //   else if ()
     if (!error) {
       this.setState({ isDisable: true });
@@ -393,7 +397,6 @@ class PersonProfile extends React.Component {
   render() {
     if (!this.state.isLoad) {
       var gender = [
-        { value: -1, label: "Chọn giới tính" },
         { value: 0, label: "Nữ" },
         { value: 1, label: "Nam" }
       ];
