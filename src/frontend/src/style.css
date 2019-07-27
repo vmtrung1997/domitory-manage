@@ -25,6 +25,9 @@
 .float-right{
     float: right;
 }
+.block{
+    display: block;
+}
 .flex{
     display: flex;
 }
@@ -140,4 +143,8 @@ input:disabled {
 
 .danger-color{
     color: #ed5565;
+}
+
+.warning-color{
+    color: #f8ac59;
 }

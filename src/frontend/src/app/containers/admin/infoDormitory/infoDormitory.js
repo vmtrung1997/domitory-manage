@@ -57,12 +57,6 @@ class InfoDormitory extends React.Component{
   }
 
   getData = async() => {
-    // this.getFloor()
-    //   .then(() => {
-    //   this.getRoom();
-    // }).catch(() =>{
-    // });
-
     this.getInfoFloor();
     this.getRoomOptions();
     this.getInfoManageDormitory();
@@ -73,7 +67,7 @@ class InfoDormitory extends React.Component{
       .then(result => {
         this.setState({
           infoFloor: result.data,
-          floorActive: result.data[0].floor,
+          floorActive: result.data[0].floor.name,
           roomList: result.data[0].rooms
         })
       })
@@ -81,43 +75,6 @@ class InfoDormitory extends React.Component{
 
       })
   };
-
-  // getFloor = () => {
-  //   return new Promise(async(resolve) => {
-  //     await refreshToken();
-  //     let secret = JSON.parse(localStorage.getItem('secret'));
-  //
-  //     axios.get(`/manager/getElement/floor`,  {
-  //       headers: { 'x-access-token': secret.access_token }
-  //     }).then(result => {
-  //       let i = 0;
-  //       let floorList = result.data.sort();
-  //       floorList = floorList.map(floor => {
-  //         return {key: i++, label: floor}
-  //       });
-  //       this.setState({
-  //         floorList: floorList,
-  //         floorActive: floorList[0].label
-  //       });
-  //       resolve()
-  //     }).catch(err => {
-  //
-  //     });
-  //   })
-  //
-  // };
-  //
-  // getRoom = async() => {
-  //   await refreshToken();
-  //   let secret = JSON.parse(localStorage.getItem('secret'));
-  //   axios.get(`/manager/infoDormitory/getRoom/` + this.state.floorActive, { headers: { 'x-access-token': secret.access_token } }
-  //   ).then(result => {
-  //     this.setState({
-  //       roomList: result.data
-  //     })
-  //   }).catch((err) => {
-  //   })
-  // };
 
   getRoomOptions = async() => {
     await refreshToken();
@@ -146,7 +103,6 @@ class InfoDormitory extends React.Component{
       this.setState({
         infoDormitory: result.data
       });
-      console.log('result', result)
     }).catch(err => {
 
     })
@@ -154,10 +110,9 @@ class InfoDormitory extends React.Component{
 
   handleSelectFloor = async(index) => {
     await this.setState({
-      floorActive: this.state.infoFloor[index].floor,
+      floorActive: this.state.infoFloor[index].floor.name,
       roomList: this.state.infoFloor[index].rooms
     });
-    //this.getRoom();
   };
 
   handleShowPopup = (type) => {
@@ -290,7 +245,7 @@ class InfoDormitory extends React.Component{
       ToastsStore.success("Thêm phòng thành công!");
       this.handleClosePopup('addRoom');
 
-      await this.getData();
+      await this.getInfoFloor();
       this.setState({
         floorActive: parseInt(floorNameAdd)
       })
@@ -417,11 +372,9 @@ class InfoDormitory extends React.Component{
   };
 
   render(){
-    console.log('=render', this.state)
     const {
       floorActive,
       roomList,
-      floorList,
       showRoomPopup,
       showAddRoomPopup,
       roomTypeOptions,
@@ -645,11 +598,12 @@ class InfoDormitory extends React.Component{
                           color={'success'}
                           variant={'outline'}
                           diminsion
-                          actived={(floorActive === item.floor)}
+                          actived={(floorActive === item.floor.name)}
                           onClick={()=>this.handleSelectFloor(i)}
                           style={{fontSize: '20px'}}
                         >
-                          Lầu {item.floor}
+                          Lầu {item.floor.name}
+                          <span className={'block warning-color'}>{item.floor.personStaying}/{item.floor.capacity}</span>
                         </Button>
                       </div>
                     )
@@ -728,7 +682,9 @@ class InfoDormitory extends React.Component{
                 </Button>
               </div>
               <div className={'id-add'}>
-                <RoomType />
+                <RoomType
+                  onSave={()=>{this.getRoomOptions()}}
+                />
               </div>
             </Row>
           </div>
