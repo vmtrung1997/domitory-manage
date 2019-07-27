@@ -260,36 +260,43 @@ class InfoDormitory extends React.Component{
         waterNumAdd,
         genderAdd
       }} = this.state;
-    if(!roomNameAdd || !floorNameAdd)
+    if(parseInt(floorNameAdd) < 0){
+      this.setState({
+        messErrAddRoom: 'Tên lầu vui lòng không có số âm'
+      });
+      return;
+    }
+
+    if(!roomNameAdd || !floorNameAdd){
       this.setState({
         messErrAddRoom: 'Vui lòng nhập đầy đủ thông tin'
       });
-    else{
-      const params = {
-        tenPhong: roomNameAdd,
-        soNguoiToiDa: parseInt(limitPersonAdd),
-        moTa: descriptionAdd,
-        lau: parseInt(floorNameAdd),
-        loaiPhong: roomTypeAdd,
-        gioiTinh: genderAdd,
-        soDien: parseInt(electicalNumAdd),
-        soNuoc: parseInt(waterNumAdd),
-      };
-      await refreshToken();
-      let secret = JSON.parse(localStorage.getItem('secret'));
-      axios.post(`/manager/infoDormitory/addRoom`, params,{ headers: { 'x-access-token': secret.access_token } }
-      ).then(async() => {
-        ToastsStore.success("Thêm phòng thành công!");
-        this.handleClosePopup('addRoom');
-
-        await this.getData();
-        this.setState({
-          floorActive: parseInt(floorNameAdd)
-        })
-      }).catch(err => {
-        ToastsStore.error( err.response.data.msg);
-      })
+      return;
     }
+    const params = {
+      tenPhong: roomNameAdd,
+      soNguoiToiDa: parseInt(limitPersonAdd),
+      moTa: descriptionAdd,
+      lau: parseInt(floorNameAdd),
+      loaiPhong: roomTypeAdd,
+      gioiTinh: genderAdd,
+      soDien: parseInt(electicalNumAdd),
+      soNuoc: parseInt(waterNumAdd),
+    };
+    await refreshToken();
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.post(`/manager/infoDormitory/addRoom`, params,{ headers: { 'x-access-token': secret.access_token } }
+    ).then(async() => {
+      ToastsStore.success("Thêm phòng thành công!");
+      this.handleClosePopup('addRoom');
+
+      await this.getData();
+      this.setState({
+        floorActive: parseInt(floorNameAdd)
+      })
+    }).catch(err => {
+      ToastsStore.error( err.response.data.msg);
+    })
   };
 
   handleShowDetail = async(room) => {
@@ -549,7 +556,7 @@ class InfoDormitory extends React.Component{
                   Lầu<span style={{color:'red'}}>*</span>:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChange} name={'floorNameAdd'} />
+                  <Input getValue={this.onChange} name={'floorNameAdd'} type={'number'} min={0}/>
                 </Col>
                 <Col md={4}>
                   Tên phòng<span style={{color:'red'}}>*</span>:
@@ -572,7 +579,7 @@ class InfoDormitory extends React.Component{
                   <Select
                     options={roomTypeOptions}
                     selected={this.roomTypeAddSelected}
-                    value={this.state.roomTypeAdd}
+                    value={this.state.roomAdd.roomTypeAdd}
                   />
                 </Col>
 
@@ -583,7 +590,7 @@ class InfoDormitory extends React.Component{
                   <Select
                     options={this.state.genderOptions}
                     selected={this.genderAddSelected}
-                    value={this.state.genderAdd}
+                    value={this.state.roomAdd.genderAdd}
                   />
                 </Col>
 
@@ -724,8 +731,6 @@ class InfoDormitory extends React.Component{
                 <RoomType />
               </div>
             </Row>
-
-
           </div>
         </div>
       </div>
