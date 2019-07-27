@@ -97,3 +97,19 @@ input:disabled {
     color: red;
     font-weight: bold;
 }
+.info-student-tab-btn{
+    margin-right: 2px;
+    color: #778899 !important;
+}
+
+.info-student-tab-btn:hover{
+    background-color: #778899;
+    border-color: #778899;
+    color: white !important;
+}
+
+.info-student-tab-btn.actived{
+    background-color: #778899;
+    border-color: #778899;
+    color: white !important;
+}
