@@ -10,6 +10,7 @@ import Select from "../../../components/selectOption/select"
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 import RoomType from './roomType'
 import {Link} from 'react-router-dom'
+import {get_floor_room} from "../infoStudent/infoStudentActions";
 
 const PHONG_SV = 0;
 const PHONG_DVU = 1;
@@ -35,7 +36,7 @@ class InfoDormitory extends React.Component{
       genderOptions: [{value: 0, label: 'Nữ'}, {value: 1, label: 'Nam'}],
       roomTypeOptions: [],
 
-      floorList: [],
+      infoFloor: [],
       roomList: [],
 
       showRoomPopup: false,
@@ -56,50 +57,23 @@ class InfoDormitory extends React.Component{
   }
 
   getData = async() => {
-    this.getFloor()
-      .then(() => {
-      this.getRoom();
-    }).catch(() =>{
-    });
-
+    this.getInfoFloor();
     this.getRoomOptions();
+    this.getInfoManageDormitory();
   };
 
-  getFloor = () => {
-    return new Promise(async(resolve) => {
-      await refreshToken();
-      let secret = JSON.parse(localStorage.getItem('secret'));
-
-      axios.get(`/manager/getElement/floor`,  {
-        headers: { 'x-access-token': secret.access_token }
-      }).then(result => {
-        let i = 0;
-        let floorList = result.data.sort();
-        floorList = floorList.map(floor => {
-          return {key: i++, label: floor}
-        });
+  getInfoFloor = () => {
+    get_floor_room()
+      .then(result => {
         this.setState({
-          floorList: floorList,
-          floorActive: floorList[0].label
-        });
-        resolve()
-      }).catch(err => {
-
-      });
-    })
-
-  };
-
-  getRoom = async() => {
-    await refreshToken();
-    let secret = JSON.parse(localStorage.getItem('secret'));
-    axios.get(`/manager/infoDormitory/getRoom/` + this.state.floorActive, { headers: { 'x-access-token': secret.access_token } }
-    ).then(result => {
-      this.setState({
-        roomList: result.data
+          infoFloor: result.data,
+          floorActive: result.data[0].floor.name,
+          roomList: result.data[0].rooms
+        })
       })
-    }).catch((err) => {
-    })
+      .catch(err => {
+
+      })
   };
 
   getRoomOptions = async() => {
@@ -107,7 +81,7 @@ class InfoDormitory extends React.Component{
     let secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/infoDormitory/getRoomType`, { headers: { 'x-access-token': secret.access_token } }
     ).then(result => {
-
+    
       const roomOptions = result.data.map(item => ({value: item._id, label: item.ten}));
       this.setState({
         roomTypeOptions: roomOptions,
@@ -121,11 +95,24 @@ class InfoDormitory extends React.Component{
     })
   };
 
-  handleSelectFloor = async(floor) => {
+  getInfoManageDormitory = async() => {
+    await refreshToken();
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.get(`/manager/infoDormitory/getInfoManageDormitory`, { headers: { 'x-access-token': secret.access_token } }
+    ).then(result => {
+      this.setState({
+        infoDormitory: result.data
+      });
+    }).catch(err => {
+
+    })
+  };
+
+  handleSelectFloor = async(index) => {
     await this.setState({
-      floorActive: floor
+      floorActive: this.state.infoFloor[index].floor.name,
+      roomList: this.state.infoFloor[index].rooms
     });
-    this.getRoom();
   };
 
   handleShowPopup = (type) => {
@@ -258,7 +245,7 @@ class InfoDormitory extends React.Component{
       ToastsStore.success("Thêm phòng thành công!");
       this.handleClosePopup('addRoom');
 
-      await this.getData();
+      await this.getInfoFloor();
       this.setState({
         floorActive: parseInt(floorNameAdd)
       })
@@ -388,12 +375,14 @@ class InfoDormitory extends React.Component{
     const {
       floorActive,
       roomList,
-      floorList,
       showRoomPopup,
       showAddRoomPopup,
       roomTypeOptions,
-      roomActive
+      roomActive,
+      infoDormitory,
+      infoFloor
     } = this.state;
+
     return(
       <div>
         <Title>
@@ -602,18 +591,19 @@ class InfoDormitory extends React.Component{
               <Col md={2}>
                 <div className={'id-floor'}>
 
-                  {floorList.map(floor => {
+                  {infoFloor && infoFloor.map((item, i) => {
                     return(
-                      <div className={'id-floor_item'} key={floor.key}>
+                      <div className={'id-floor_item'} key={i}>
                         <Button
                           color={'success'}
                           variant={'outline'}
                           diminsion
-                          actived={(floorActive === floor.label)}
-                          onClick={()=>this.handleSelectFloor(floor.label)}
+                          actived={(floorActive === item.floor.name)}
+                          onClick={()=>this.handleSelectFloor(i)}
                           style={{fontSize: '20px'}}
                         >
-                          Lầu {floor.label}
+                          Lầu {item.floor.name}
+                          <span className={'block warning-color'}>{item.floor.personStaying}/{item.floor.capacity}</span>
                         </Button>
                       </div>
                     )
@@ -622,6 +612,28 @@ class InfoDormitory extends React.Component{
 
               </Col>
               <Col md={10}>
+                <Row style={{padding: '15px', display: 'flex', justifyContent: 'space-between'}}>
+                  <div className={'flex'}>
+                    <div className={'note-room-color-item flex-middle'}>
+                      <span className={'note-room-color bg-success-color'}/>
+                      <span>Phòng sinh viên</span>
+                    </div>
+                    <div className={'note-room-color-item flex-middle'}>
+                      <span className={'note-room-color bg-primary-color'}/>
+                      <span>Phòng dịch vụ</span>
+                    </div>
+                    <div className={'note-room-color-item flex-middle'}>
+                      <span className={'note-room-color bg-warning-color'}/>
+                      <span>Phòng chức năng</span>
+                    </div>
+                  </div>
+                  <div className={'people-in-dormitory bold'}>
+                    Số người:
+                    <span className={'danger-color'}>{infoDormitory && infoDormitory.peopleStaying}</span>
+                    /
+                    <span className={'success-color'}>{infoDormitory && infoDormitory.capacity}</span>
+                  </div>
+                </Row>
                 <Tabs defaultActiveKey="all" id="uncontrolled-tab-example">
                   <Tab eventKey="all" title="Tất cả">
                     <div className={'id-room'}>
@@ -644,7 +656,7 @@ class InfoDormitory extends React.Component{
                   </Tab>
                   {this.MyTab("studentRoom", "Phòng sinh viên",
                     roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_SV),
-                    'info')
+                    'success')
                   }
                   {this.MyTab("proRoom", "Phòng dịch vụ",
                     roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_DVU),
@@ -670,7 +682,9 @@ class InfoDormitory extends React.Component{
                 </Button>
               </div>
               <div className={'id-add'}>
-                <RoomType />
+                <RoomType
+                  onSave={()=>{this.getRoomOptions()}}
+                />
               </div>
             </Row>
           </div>

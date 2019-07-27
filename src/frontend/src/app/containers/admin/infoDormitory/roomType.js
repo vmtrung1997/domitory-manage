@@ -8,19 +8,19 @@ import Input from '../../../components/input/input';
 import {addRoomType, updateRoomType, removeRoomType} from './roomTypeAction'
 import {ToastsStore} from "react-toasts";
 
-class Confirm extends Component {
+class RoomType extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       show: false,
-      table: []
+      table: [],
     }
   }
   handleClose = () => {
     this.setState({ show: false, table: [] })
-  }
+  };
   onShow = () => {
-    this.setState({ show: true })
+    this.setState({ show: true });
     getRoomTypes().then(result => {
       if (result.data) {
         this.setState({
@@ -36,16 +36,16 @@ class Confirm extends Component {
         })
       }
     })
-  }
+  };
   setCheck = (index, e, type) => {
     var { table } = this.state;
     table = table.map((v, i) => {
       if (i === index)
-        v[type] = e.chk
+        v[type] = e.chk;
       return v;
-    })
+    });
     this.setState({ table: table })
-  }
+  };
   addRow = () => {
     var {table} = this.state;
     table.push({
@@ -60,11 +60,11 @@ class Confirm extends Component {
       tienRacUpdate: 0,
       update: true,
       isNew: true
-    })
+    });
     this.setState({
       table: table
     })
-  }
+  };
   updateRow = (index) => {
     var { table } = this.state;
     table = table.map((v, i) => {
@@ -72,21 +72,21 @@ class Confirm extends Component {
         v.dienUpdate= v.dien;
         v.tenUpdate=v.ten;
         v.nuocUpdate=v.nuoc;
-        v.tienRacUpdate= v.tienRac
+        v.tienRacUpdate= v.tienRac;
         v.update=false
       }
       if (index === i){
         v.update = true
       }
       return v;
-    })
+    });
     this.setState({ table: table })
-  }
+  };
   onChange = (i, e, type) => {
     var {table} = this.state;
     table[i][type] = e.value;
     this.setState({table: table})
-  }
+  };
   onSubmit = (e) => {
     e.preventDefault();
     var data = this.state.table.find(v => v.update===true);
@@ -96,14 +96,15 @@ class Confirm extends Component {
       nuoc: data.nuocUpdate,
       ten: data.tenUpdate,
       tienRac: data.tienRacUpdate
-    }
+    };
     if (data.isNew){
       addRoomType({data: dataObject}).then(result => {
         if (result.data.rs === 'success'){
+          this.props.onSave();
           ToastsStore.success('Thêm loại phòng thành công');
           let table = this.state.table.map(v => {
             if (v.isNew){
-              v._id = result.data.data._id
+              v._id = result.data.data._id;
               v.isNew = false;
               v.dien = v.dienUpdate;
               v.nuoc = v.nuocUpdate;
@@ -112,13 +113,14 @@ class Confirm extends Component {
               v.update = false
             }
             return v;
-          })
+          });
           this.setState({table: table})
+
         } else 
           ToastsStore.error('Có lỗi xảy ra')
       }).catch(err => {})
     } else {
-      dataObject._id = data._id
+      dataObject._id = data._id;
       updateRoomType({data: dataObject}).then(result => {
         if (result.data.rs === 'success'){
           ToastsStore.success('Cập nhật thành công');
@@ -131,18 +133,18 @@ class Confirm extends Component {
               v.update = false
             }
             return v;
-          })
+          });
           this.setState({table: table})
         } else 
           ToastsStore.error('Có lỗi xảy ra')
       })
     }
-  }
+  };
   onRemoveRow = (index) => {
-    var {table} = this.state
+    var {table} = this.state;
     var row = table[index];
     if (row.isNew){
-      table.splice(index,1)
+      table.splice(index,1);
       this.setState({table: table});
     } else {
       if (!window.confirm(`Xóa loại phòng [${row.tenUpdate}]`))
@@ -150,14 +152,15 @@ class Confirm extends Component {
       removeRoomType({data: {_id: row._id}}).then(result => {
         if (result.data.rs === 'success'){
           ToastsStore.success('Xóa loại phòng thành công');
+          this.props.onSave();
           table.splice(index,1);
           this.setState({table: table});
         } else {
           ToastsStore.error(result.data.msg)
         }
-      }).catch(err => ToastsStore.error('Có lỗi xảy ra'))
+      }).catch(() => ToastsStore.error('Có lỗi xảy ra'))
     }
-  }
+  };
   render() {
     return (
       <React.Fragment>
@@ -196,13 +199,13 @@ class Confirm extends Component {
                           <td className={row.isNew?'text-info':''}>{!row.update?row.ten:
                           <Input value={this.state.table[index].tenUpdate} getValue={(e) => this.onChange(index, e, 'tenUpdate')} />}</td>
                           <td className='text-center'>{!row.update ? (row.dien ?
-                            (<i style={{ color: '#28a745' }} className="fas fa-check success"></i>) :
-                            (<i style={{ color: '#dc3545' }} className="fas fa-times"></i>)) :
+                            (<i style={{ color: '#28a745' }} className="fas fa-check success"/>) :
+                            (<i style={{ color: '#dc3545' }} className="fas fa-times"/>)) :
                             <Checkbox className='display-inline' check={row.dienUpdate} checkmark={'check-mark-fix'} name={`${index}`} isCheck={(e) => { this.setCheck(index, e, 'dienUpdate') }} />
                           }</td>
                           <td className='text-center'>{!row.update ? (row.nuoc ?
-                            (<i style={{ color: '#28a745' }} className="fas fa-check success"></i>) :
-                            (<i style={{ color: '#dc3545' }} className="fas fa-times"></i>)) :
+                            (<i style={{ color: '#28a745' }} className="fas fa-check success"/>) :
+                            (<i style={{ color: '#dc3545' }} className="fas fa-times"/>)) :
                             <Checkbox className='display-inline' check={row.nuocUpdate} checkmark={'check-mark-fix'} name={`${index}`} isCheck={(e) => { this.setCheck(index, e, 'nuocUpdate') }} />
                           }</td>
                           <td>{!row.update?row.tienRac: 
@@ -210,10 +213,10 @@ class Confirm extends Component {
                           </td>
                           <td>
                             {!row.update?
-                            <Button color='warning' title={'Chỉnh sửa'} onClick={() => this.updateRow(index)}><i className="fas fa-edit"></i></Button>:''}
+                            <Button color='warning' title={'Chỉnh sửa'} onClick={() => this.updateRow(index)}><i className="fas fa-edit"/></Button>:''}
                             {row.update?
-                            <Button title={'Lưu'} type='submit'><i className="fas fa-save"></i></Button>:''} &nbsp;
-                            {(row.loai !== 0 && row.loai !== 1) &&  <Button color='danger' title={'Xóa'} onClick={() => this.onRemoveRow(index)}><i className="fas fa-trash-alt"></i></Button>}
+                            <Button title={'Lưu'} type='submit'><i className="fas fa-save"/></Button>:''} &nbsp;
+                            {(row.loai !== 0 && row.loai !== 1) &&  <Button color='danger' title={'Xóa'} onClick={() => this.onRemoveRow(index)}><i className="fas fa-trash-alt"/></Button>}
                           </td>
                         </tr>
                       )
@@ -235,4 +238,4 @@ class Confirm extends Component {
   }
 }
 
-export default Confirm
+export default RoomType

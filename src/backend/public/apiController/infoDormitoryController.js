@@ -3,31 +3,6 @@ const RoomType = require('../models/LoaiPhong');
 const RoomParams = require('../models/ChiSoHienTai');
 const Profile = require('../models/Profile');
 
-
-function getRoomDetail(floor){
-  return new Promise((resolve, reject) => {
-    Room.find({ lau: floor }).populate({
-      path: 'loaiPhong',
-      options: { sort: { name: -1 } }
-    }).exec(async(err, kittens) => {
-      if (err){
-        reject(err);
-      }
-      else {
-        let listPromise = [];
-        kittens.forEach(async(room) => {
-          listPromise.push(getPersonInRoom(room._doc))
-        });
-        Promise.all(listPromise).then(result => {
-          resolve(result)
-        }).catch(err => {
-          reject(err);
-        })
-      }
-    })
-  })
-}
-
 function getPersonInRoom(room){
   return new Promise((resolve) => {
     Profile.countDocuments({idPhong: room._id},function (err, count){
@@ -219,6 +194,30 @@ exports.removeRoomType = (req, res) => {
   })
 };
 
+function getRoomDetail(floor){
+  return new Promise((resolve, reject) => {
+    Room.find({ lau: floor }).populate({
+      path: 'loaiPhong',
+      options: { sort: { name: -1 } }
+    }).exec(async(err, kittens) => {
+      if (err){
+        reject(err);
+      }
+      else {
+        let listPromise = [];
+        kittens.forEach(async(room) => {
+          listPromise.push(getPersonInRoom(room._doc))
+        });
+        Promise.all(listPromise).then(result => {
+          resolve(result)
+        }).catch(err => {
+          reject(err);
+        })
+      }
+    })
+  })
+}
+
 exports.getFloorRoom = async (req, res) => {
   await Room.distinct('lau')
     .then(async(result) => {
@@ -226,11 +225,27 @@ exports.getFloorRoom = async (req, res) => {
     let i = 0;
     let listPromise = [];
     let data = [];
+
     await result.forEach(async(floor) => {
       listPromise.push(getRoomDetail(floor));
     });
       await Promise.all(listPromise).then(result=> {
-        data = result.map(rooms => ({key: i++, floor: rooms[0].lau, rooms: rooms}));
+        data = result.map(rooms => {
+          let capacityFloor = 0, personStaying = 0;
+          rooms.forEach(room => {
+            capacityFloor += room.soNguoiToiDa;
+            personStaying += room.soNguoi;
+          });
+          return{
+            key: i++,
+            floor: {
+              name: rooms[0].lau,
+              capacity: capacityFloor,
+              personStaying: personStaying,
+            },
+            rooms: rooms
+          }
+        });
 
         res.status(200).json(data)
       }).catch()
@@ -252,4 +267,26 @@ exports.getPersonInRoom = (req, res) => {
       res.status(200).json(result)
     })
     .catch(err => {})
+};
+
+//return person in dormimtory
+exports.getInfoManageDormitory = async(req, res) => {
+  let resultResponse = {};
+  await Profile.find({idPhong: {"$ne": null}}).count()
+    .then(result => {
+      resultResponse.peopleStaying = result;
+    }).catch(err => {
+      res.status(400).json({msg: 'Có lỗi', err: err})
+  });
+  await Room.find()
+    .then(result => {
+      let capacity = 0;
+      result.forEach(room => {
+        capacity += room.soNguoiToiDa
+      });
+      resultResponse.capacity = capacity;
+    }).catch(err => {
+    res.status(400).json({msg: 'Có lỗi', err: err})
+  });
+  res.status(200).json(resultResponse)
 };

@@ -141,6 +141,7 @@ class InfoStudentDetail extends Component {
         })
       });
       get_floor_room().then(result => {
+        console.log('=hi',result)
         this.setState({roomData: result.data})
       }).catch(err => {
     });
