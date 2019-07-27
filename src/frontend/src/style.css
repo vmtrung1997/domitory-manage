@@ -28,6 +28,10 @@
 .flex{
     display: flex;
 }
+.flex-middle{
+    display: flex;
+    align-items: center;
+}
 .content-body{
     margin-top: 30px;
     background-color: #ffffff;
@@ -114,6 +118,10 @@ input:disabled {
     color: white !important;
 }
 
+.bold{
+    font-weight: bold;
+}
+
 .bg-success-color{
     background-color: #1c84c6;
 }
@@ -124,4 +132,12 @@ input:disabled {
 
 .bg-warning-color{
     background-color: #f8ac59;
+}
+
+.success-color{
+    color: #1c84c6;
+}
+
+.danger-color{
+    color: #ed5565;
 }

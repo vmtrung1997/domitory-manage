@@ -253,3 +253,25 @@ exports.getPersonInRoom = (req, res) => {
     })
     .catch(err => {})
 };
+
+//return person in dormimtory
+exports.getInfoManageDormitory = async(req, res) => {
+  let resultResponse = {};
+  await Profile.find({idPhong: {"$ne": null}}).count()
+    .then(result => {
+      resultResponse.peopleStaying = result;
+    }).catch(err => {
+      res.status(400).json({msg: 'Có lỗi', err: err})
+  });
+  await Room.find()
+    .then(result => {
+      let capacity = 0;
+      result.forEach(room => {
+        capacity += room.soNguoiToiDa
+      });
+      resultResponse.capacity = capacity;
+    }).catch(err => {
+    res.status(400).json({msg: 'Có lỗi', err: err})
+  });
+  res.status(200).json(resultResponse)
+};
