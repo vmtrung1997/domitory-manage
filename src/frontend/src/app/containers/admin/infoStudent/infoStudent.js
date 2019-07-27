@@ -27,6 +27,7 @@ class InfoStudent extends Component{
       loading: true,
       totalpages: 1,
       infoList: [],
+      checkedAll: false,
 
       searchValues: {
         name: '',
@@ -265,20 +266,38 @@ class InfoStudent extends Component{
     switch (prop) {
       case PRESENT:
         await this.setState({
-          searchValues: {...this.state.searchValues, isOld: 0, isActive: true, pageActive: 1},
-          listChecked: []
+          searchValues: {
+            ...this.state.searchValues,
+            isOld: 0, isActive: true,
+            pageActive: 1,
+
+          },
+          listChecked: [],
+          checkedAll:false
         });
         break;
       case OLD:
         await this.setState({
-          searchValues: {...this.state.searchValues, isOld: 1, isActive: false, pageActive: 1},
-          listChecked: []
+          searchValues: {
+            ...this.state.searchValues,
+            isOld: 1,
+            isActive: false,
+            pageActive: 1,
+          },
+          listChecked: [],
+          checkedAll:false
         });
         break;
       case PROCESSING:
         await this.setState({
-          searchValues: {...this.state.searchValues, isOld: 0, isActive: false, pageActive: 1},
-          listChecked: []
+          searchValues: {
+            ...this.state.searchValues,
+            isOld: 0,
+            isActive: false,
+            pageActive: 1,
+          },
+          listChecked: [],
+          checkedAll:false
         });
         break;
     }
@@ -304,6 +323,19 @@ class InfoStudent extends Component{
   changeState = (key, value) => {
     this.setState({ [key]: value })
   };
+
+  handleCheckAll = (prop) => {
+    const arr = [];
+    prop.chk && this.state.infoList.forEach(student => {
+      arr.push(student.MSSV);
+    });
+
+    this.setState({
+      checkedAll: prop.chk,
+      listChecked: arr
+    });
+  };
+
   render(){
     const {
       searchValues: {
@@ -453,7 +485,7 @@ class InfoStudent extends Component{
                   />
 
                   <ConvertStudentModal
-                    function={()=>this.setState({listChecked:[]})}
+                    function={()=>this.setState({listChecked:[], checkedAll: false})}
                     show={this.state.showDelPopup}
                     listStudent={this.state.listChecked}
                     onSave={()=>this.getData()}
@@ -546,7 +578,20 @@ class InfoStudent extends Component{
                 <th>Họ và Tên</th>
                 <th>Trường</th>
                 <th>Phòng</th>
-                <th>Thao tác</th>
+                <th>
+                  Thao tác
+                  <span style={{display: 'inline-block', marginLeft: '20px'}}>
+                    {(isActive || isOld) ?
+                    <Checkbox
+                      name={'checkedAll'}
+                      isCheck={this.handleCheckAll}
+                      checkmark={'check-mark-fix'}
+                      check={this.state.checkedAll}
+                    />
+                      : ''
+                    }
+                  </span>
+                </th>
               </tr>
               </thead>
               <tbody>
@@ -590,11 +635,14 @@ class InfoStudent extends Component{
                       >
                         <i className="fas fa-edit"/>
                       </Button>
+                      {(isActive || isOld) ?
                         <Checkbox
                           name={info.MSSV}
                           isCheck={this.handleCheckBox}
                           checkmark={'check-mark-fix'}
-                          check={this.handleValueCheck(info.MSSV)}/>
+                          check={this.handleValueCheck(info.MSSV)}
+                        /> : ''
+                      }
                     </td>
                   </tr>
                 )
