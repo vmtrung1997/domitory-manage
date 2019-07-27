@@ -12,6 +12,12 @@ export const dangVienArr = [
   { value: "1", label: "Có" }
 ]
 
+export const doanVienArr = [
+  { value: "0", label: "Không" },
+  { value: "1", label: "Có" }
+]
+
+
 export const danTocArr = [
   { value: "Kinh", label: "Kinh" },
   { value: "Chăm", label: "Chăm" },

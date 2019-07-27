@@ -241,7 +241,9 @@ exports.updateFisrtInfo = (req, res) => {
         sdtNguoiThan: req.body.data.sdtNguoiThan,
         truong: req.body.data.truong,
         flag: req.body.data.flag,
-        dangVien: req.body.data.dangVien
+        dangVien: req.body.data.dangVien,
+        doanVien: req.body.data.doanVien,
+
       }
     },
     function(err, place) {

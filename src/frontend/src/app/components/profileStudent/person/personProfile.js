@@ -18,39 +18,9 @@ import {
 } from "react-toasts";
 import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
-import * as CONST from "../../../function/constant"
+import * as CONST from "../../../function/constant";
 
 var gender = [{ value: 0, label: "Nữ" }, { value: 1, label: "Nam" }];
-var nationOption = [
-  { value: "Kinh", label: "Kinh" },
-  { value: "Chăm", label: "Chăm" },
-  { value: "Dao", label: "Dao" },
-  { value: "Êđê", label: "Êđê" },
-  { value: "Hoa", label: "Hoa" },
-  { value: "Jrai", label: "Jrai" },
-  { value: "Khmer", label: "Khmer" },
-
-  { value: "K'Ho", label: "K'Ho" },
-  { value: "Mường", label: "Mường" },
-  { value: "Nùng", label: "Nùng" },
-  { value: "Sán Dìu", label: "Sán Dìu" },
-
-  { value: "Khác", label: "Khác" }
-];
-
-var tonGiaoOption = [
-  { value: "Phật Giáo", label: "Phật Giáo" },
-  { value: "Công Giáo", label: "Công Giáo" },
-  { value: "Cao Đài", label: "Cao Đài" },
-  { value: "Hồi Giáo", label: "Hồi Giáo" },
-  { value: "Khác", label: "Khác" },
-  { value: "Không", label: "Không" }
-];
-var dangVienOption = [
-  { value: "0", label: "Không" },
-  { value: "1", label: "Có" }
-];
-
 class PersonProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -60,6 +30,7 @@ class PersonProfile extends React.Component {
       isDisable: true,
       isLoad: true,
       dangVien: undefined,
+      doanVien: undefined,
       MSSV: undefined,
       CMND: undefined,
       danToc: undefined,
@@ -167,6 +138,7 @@ class PersonProfile extends React.Component {
       diaChi: this.state.diaChi,
       email: this.state.email,
       dangVien: this.state.dangVien,
+      doanVien: this.state.doanVien,
       gioiTinh: this.state.gioiTinh,
       //idPhong: this.state.tenPhong._id,
       nganhHoc: this.state.nganhHoc ? this.state.nganhHoc.value : undefined,
@@ -180,12 +152,12 @@ class PersonProfile extends React.Component {
     };
 
     if (data.danToc === undefined) {
-      data.danToc = nationOption[0].value;
-      this.setState({ danToc: nationOption[0].value });
+      data.danToc = CONST.danTocArr[0].value;
+      this.setState({ danToc: CONST.danTocArr[0].value });
     }
     if (data.tonGiao === undefined) {
-      data.tonGiao = tonGiaoOption[0].value;
-      this.setState({ tonGiao: tonGiaoOption[0].value });
+      data.tonGiao = CONST.tonGiaoArr[0].value;
+      this.setState({ tonGiao: CONST.tonGiaoArr[0].value });
     }
     if (data.gioiTinh === undefined) {
       data.gioiTinh = gender[0].value;
@@ -203,8 +175,12 @@ class PersonProfile extends React.Component {
       }
     }
     if (data.dangVien === undefined) {
-      data.dangVien = dangVienOption[0].value;
-      this.setState({ dangVien: dangVienOption[0].value });
+      data.dangVien = CONST.dangVienArr[0].value;
+      this.setState({ dangVien: CONST.dangVienArr[0].value });
+    }
+    if (data.doanVien === undefined) {
+      data.doanVien = CONST.doanVienArr[0].value;
+      this.setState({ dangVien: CONST.doanVienArr[0].value });
     }
     if (data.nganhHoc === undefined) {
       if (this.state.nganhOptions[0] === undefined) {
@@ -344,6 +320,10 @@ class PersonProfile extends React.Component {
     this.setState({ dangVien: parseInt(value) });
   };
 
+  doanVienSelected = value => {
+    this.setState({ dangVien: parseInt(value) });
+  };
+
   genderSelected = value => {
     var intValue = parseInt(value);
     // console.log(intValue)
@@ -396,19 +376,19 @@ class PersonProfile extends React.Component {
 
   render() {
     if (!this.state.isLoad) {
-      var gender = [
-        { value: 0, label: "Nữ" },
-        { value: 1, label: "Nam" }
-      ];
+      var gender = [{ value: 0, label: "Nữ" }, { value: 1, label: "Nam" }];
       var nationOption = CONST.danTocArr;
       var tonGiaoOption = CONST.tonGiaoArr;
       var dangVienOption = CONST.dangVienArr;
+      var doanVienOption = CONST.doanVienArr;
       var majorInput;
       var schoolInput;
       var genderInput;
       var nationInput;
       var religionInput;
       var dangVienInput;
+      var doanVienInput;
+
       //Định dạng ngày sinh
       var d = new Date(this.state.ngaySinh);
       var month = d.getMonth() + 1;
@@ -434,6 +414,17 @@ class PersonProfile extends React.Component {
             value={this.state.dangVien ? this.state.dangVien : ""}
             options={dangVienOption}
             selected={this.dangVienSelected}
+          />
+        );
+
+        doanVienInput = (
+          <MySelectOption
+            name="doanVien"
+            getValue={this.getValue}
+            disabled={this.state.readOnly}
+            value={this.state.doanVien ? this.state.doanVien : ""}
+            options={doanVienOption}
+            selected={this.doanVienSelected}
           />
         );
 
@@ -489,7 +480,15 @@ class PersonProfile extends React.Component {
             borderRadius="3px"
           />
         );
-
+        doanVienInput = (
+          <MyInput
+            getValue={this.getValue}
+            name="doanVien"
+            disabled={this.state.readOnly}
+            value={this.state.doanVien === 1 ? "Có" : "Không"}
+            borderRadius="3px"
+          />
+        );
         schoolInput = (
           <MyInput
             getValue={this.getValue}
@@ -717,9 +716,12 @@ class PersonProfile extends React.Component {
                               value={this.state.diaChi ? this.state.diaChi : ""}
                             />
                           </Col>
-                          <Col sm={6}>
+                          <Col sm={3}>
+                            <span className="label-font">Đoàn viên</span>
+                            {doanVienInput}
+                          </Col>
+                          <Col sm={3}>
                             <span className="label-font">Đảng viên</span>
-
                             {dangVienInput}
                           </Col>
                           <Col />
