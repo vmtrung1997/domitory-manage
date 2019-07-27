@@ -114,7 +114,7 @@ export const get_list_student_by_page = async(params) => {
 export const get_list_student = async(searchValues, activityPoint) => {
   const headers = await get_headers();
 
-  const { studentNumber, name, roomSelected, schoolSelected, yearSelected, floorSelected, isOld } = searchValues;
+  const { studentNumber, name, roomSelected, schoolSelected, yearSelected, floorSelected, isOld, isActive } = searchValues;
   let idPhong = roomSelected.value;
   let idTruong = schoolSelected.value;
 
@@ -133,6 +133,7 @@ export const get_list_student = async(searchValues, activityPoint) => {
         idPhong: idPhong,
         idTruong: idTruong,
         isOld: isOld,
+        isActive: isActive,
         lau: floorSelected.value,
         nam: yearSelected.value,
         getPoint: activityPoint,

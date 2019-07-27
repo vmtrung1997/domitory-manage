@@ -259,6 +259,7 @@ exports.getListStudent = async(req, res) => {
     {path:'nganhHoc', select:'tenNganh'},
   ];
 
+    query.isActive = params.isActive;
   if(params.hoTen)
     query.hoTen = { $regex: '.*' + params.hoTen + '.*', $options: 'i' };
   if(params.mssv)
