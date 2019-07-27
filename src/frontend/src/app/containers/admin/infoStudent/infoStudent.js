@@ -18,6 +18,8 @@ import Print from './infoStudentPrint';
 import { get_element, get_list_student_by_page } from './infoStudentActions'
 import { AddStudentModal, ConvertStudentModal, ImportDataModal, ExportDataModal } from './infoStudentModal';
 
+const PRESENT = 0, OLD = 1, PROCESSING = 2;
+
 class InfoStudent extends Component{
   constructor(props) {
     super(props);
@@ -32,6 +34,7 @@ class InfoStudent extends Component{
         pageActive: 1,
         limit: 10,
         isOld: 0,
+        isActive: true,
         roomSelected: {value: 0, label: "Tất cả"},
         schoolSelected: {value: 0, label: "Tất cả"},
         floorSelected: {value: 0, label: "Tất cả"},
@@ -201,14 +204,6 @@ class InfoStudent extends Component{
       searchValues: {...this.state.searchValues, roomSelected: selectedOption}
     })
   };
-  handleSelectSchool = selectedOption => {
-    this.setState({
-      searchValues: {...this.state.searchValues, schoolSelected: selectedOption}
-    })
-  };
-  handleSelectFloor = selectedOption => {
-    this.setState({ floorSelected: selectedOption})
-  };
 
   handleSelected = (name, selectedOption) => {
     this.setState({
@@ -267,10 +262,26 @@ class InfoStudent extends Component{
   };
 
   handleChooseOption = async (prop) => {
-    await this.setState({
-      searchValues: {...this.state.searchValues, isOld: prop, pageActive: 1},
-      listChecked: []
-      });
+    switch (prop) {
+      case PRESENT:
+        await this.setState({
+          searchValues: {...this.state.searchValues, isOld: 0, isActive: true, pageActive: 1},
+          listChecked: []
+        });
+        break;
+      case OLD:
+        await this.setState({
+          searchValues: {...this.state.searchValues, isOld: 1, isActive: false, pageActive: 1},
+          listChecked: []
+        });
+        break;
+      case PROCESSING:
+        await this.setState({
+          searchValues: {...this.state.searchValues, isOld: 0, isActive: false, pageActive: 1},
+          listChecked: []
+        });
+        break;
+    }
     this.getData();
   };
 
@@ -298,7 +309,8 @@ class InfoStudent extends Component{
       searchValues: {
         limit,
         pageActive,
-        isOld
+        isOld,
+        isActive
       },
       infoList,
       floorOptions,
@@ -497,18 +509,31 @@ class InfoStudent extends Component{
             <Row className={'is-btn-option'}>
               <Col>
                 <Button
-                  variant={isOld ? 'outline' :  'default'}
+                  classCustom={'info-student-tab-btn'}
+                  actived={!!(!isOld && isActive)}
+                  variant={'outline'}
                   color={'default'}
-                  onClick={() => this.handleChooseOption(0)}
+                  onClick={() => this.handleChooseOption(PRESENT)}
                 >
-                  Hiện tại
+                  Sinh viên hiện tại
                 </Button>
                 <Button
+                  classCustom={'info-student-tab-btn'}
                   color={'default'}
-                  variant={isOld ? 'default' : 'outline'}
-                  onClick={() => this.handleChooseOption(1)}
+                  actived={!!(isOld && !isActive)}
+                  variant={'outline'}
+                  onClick={() => this.handleChooseOption(OLD)}
                 >
                   Sinh viên cũ
+                </Button>
+                <Button
+                  classCustom={'info-student-tab-btn'}
+                  actived={!!(!isOld && !isActive)}
+                  color={'default'}
+                  variant={'outline'}
+                  onClick={() => this.handleChooseOption(PROCESSING)}
+                >
+                  Đang chờ xử lý
                 </Button>
               </Col>
             </Row>

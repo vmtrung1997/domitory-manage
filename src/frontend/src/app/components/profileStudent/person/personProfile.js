@@ -137,8 +137,8 @@ class PersonProfile extends React.Component {
       tonGiao: this.state.tonGiao,
       diaChi: this.state.diaChi,
       email: this.state.email,
-      dangVien: this.state.dangVien,
-      doanVien: this.state.doanVien,
+      dangVien: Boolean(this.state.dangVien),
+      doanVien: Boolean( this.state.doanVien),
       gioiTinh: this.state.gioiTinh,
       //idPhong: this.state.tenPhong._id,
       nganhHoc: this.state.nganhHoc ? this.state.nganhHoc.value : undefined,
@@ -151,6 +151,7 @@ class PersonProfile extends React.Component {
       flag: false
     };
 
+  
     if (data.danToc === undefined) {
       data.danToc = CONST.danTocArr[0].value;
       this.setState({ danToc: CONST.danTocArr[0].value });
@@ -180,7 +181,7 @@ class PersonProfile extends React.Component {
     }
     if (data.doanVien === undefined) {
       data.doanVien = CONST.doanVienArr[0].value;
-      this.setState({ dangVien: CONST.doanVienArr[0].value });
+      this.setState({ doanVien: CONST.doanVienArr[0].value });
     }
     if (data.nganhHoc === undefined) {
       if (this.state.nganhOptions[0] === undefined) {
@@ -197,7 +198,6 @@ class PersonProfile extends React.Component {
     if (!error) {
       this.setState({ isDisable: true });
       this.setState({ readOnly: true });
-
       await refreshToken();
 
       var secret = localStorage.getItem("secret");
@@ -266,6 +266,8 @@ class PersonProfile extends React.Component {
               CMND: res.data.data.CMND,
               danToc: danToc,
               dangVien: res.data.data.dangVien,
+              doanVien: res.data.data.doanVien,
+
               tonGiao: tonGiao,
               diaChi: res.data.data.diaChi,
               email: res.data.data.email,
@@ -317,11 +319,17 @@ class PersonProfile extends React.Component {
   };
 
   dangVienSelected = value => {
-    this.setState({ dangVien: parseInt(value) });
+    if(value === 'true')
+      this.setState({ dangVien: true });
+      else this.setState({ dangVien: false });
+      
   };
 
   doanVienSelected = value => {
-    this.setState({ dangVien: parseInt(value) });
+    if(value === 'true')
+    this.setState({ doanVien: true });
+    else this.setState({ doanVien: false });
+
   };
 
   genderSelected = value => {
@@ -375,6 +383,7 @@ class PersonProfile extends React.Component {
   // });
 
   render() {
+
     if (!this.state.isLoad) {
       var gender = [{ value: 0, label: "Nữ" }, { value: 1, label: "Nam" }];
       var nationOption = CONST.danTocArr;
@@ -476,7 +485,7 @@ class PersonProfile extends React.Component {
             getValue={this.getValue}
             name="dangVien"
             disabled={this.state.readOnly}
-            value={this.state.dangVien === 1 ? "Có" : "Không"}
+            value={this.state.dangVien === true ? "Có" : "Không"}
             borderRadius="3px"
           />
         );
@@ -485,7 +494,7 @@ class PersonProfile extends React.Component {
             getValue={this.getValue}
             name="doanVien"
             disabled={this.state.readOnly}
-            value={this.state.doanVien === 1 ? "Có" : "Không"}
+            value={this.state.doanVien === true ? "Có" : "Không"}
             borderRadius="3px"
           />
         );

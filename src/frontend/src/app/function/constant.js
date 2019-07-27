@@ -8,13 +8,13 @@ export const tonGiaoArr = [
 ]
 
 export const dangVienArr = [
-  { value: "0", label: "Không" },
-  { value: "1", label: "Có" }
+  { value: false, label: "Không" },
+  { value: true, label: "Có" }
 ]
 
 export const doanVienArr = [
-  { value: "0", label: "Không" },
-  { value: "1", label: "Có" }
+  { value: false, label: "Không" },
+  { value: true, label: "Có" }
 ]
 
 
