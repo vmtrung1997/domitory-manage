@@ -113,3 +113,15 @@ input:disabled {
     border-color: #778899;
     color: white !important;
 }
+
+.bg-success-color{
+    background-color: #1c84c6;
+}
+
+.bg-primary-color{
+    background-color: #1ab394;
+}
+
+.bg-warning-color{
+    background-color: #f8ac59;
+}

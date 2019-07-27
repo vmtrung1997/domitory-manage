@@ -2,14 +2,15 @@ import React from 'react';
 import './infoDormitory.css';
 import Title from "../../../components/title/title";
 import Button from "../../../components/button/button";
-import {Col, Modal, Row, Tabs, Tab, Table} from 'react-bootstrap';
+import {Col, Modal, Row, Tab, Table, Tabs} from 'react-bootstrap';
 import refreshToken from './../../../../utils/refresh_token'
 import axios from "axios";
 import Input from "../../../components/input/input";
 import Select from "../../../components/selectOption/select"
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 import RoomType from './roomType'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
+
 const PHONG_SV = 0;
 const PHONG_DVU = 1;
 const PHONG_CNANG = 2;
@@ -324,42 +325,42 @@ class InfoDormitory extends React.Component{
   };
 
   renderRoom = (roomList, color) => {
-    const roomRender = roomList && roomList.map((room, index) => {
-      if(room.loaiPhong){
-        if(room.loaiPhong.loai === 0 || room.loaiPhong.loai === 1){
-            return(
-              <div className={'id-room_item'} key={index}>
-                <Button
-                  shadow
-                  variant={(room.soNguoiToiDa-room.soNguoi) ? 'outline' : 'default'}
-                  color={color}
-                  onClick={()=>this.handleShowDetail(room)}
-                  style={{fontSize: '20px'}}
-                >
-                  { room.gioiTinh === 0 ? <i style={{fontSize: '25px'}} className="fas fa-female"/>:<i style={{fontSize: '25px'}} className="fas fa-male"/>}
-                  {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
-                </Button>
-              </div>
-            )
+    return roomList && roomList.map((room, index) => {
+      if (room.loaiPhong) {
+        if (room.loaiPhong.loai === 0 || room.loaiPhong.loai === 1) {
+          return (
+            <div className={'id-room_item'} key={index}>
+              <Button
+                shadow
+                variant={(room.soNguoiToiDa - room.soNguoi) ? 'outline' : 'default'}
+                color={color}
+                onClick={() => this.handleShowDetail(room)}
+                style={{fontSize: '20px'}}
+              >
+                {room.gioiTinh === 0 ? <i style={{fontSize: '25px'}} className="fas fa-female"/> :
+                  <i style={{fontSize: '25px'}} className="fas fa-male"/>}
+                {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
+              </Button>
+            </div>
+          )
         } else {
-            return(
-              <div className={'id-room_item'} key={index}>
-                <Button
-                  shadow
-                  variant={(room.soNguoiToiDa-room.soNguoi) ? 'outline' : 'default'}
-                  color={color}
-                  onClick={()=>this.handleShowDetail(room)}
-                  style={{fontSize: '20px'}}
-                >
-                  <i className="fas fa-home"/>
-                  {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
-                </Button>
-              </div>
-            )
+          return (
+            <div className={'id-room_item'} key={index}>
+              <Button
+                shadow
+                variant={(room.soNguoiToiDa - room.soNguoi) ? 'outline' : 'default'}
+                color={color}
+                onClick={() => this.handleShowDetail(room)}
+                style={{fontSize: '20px'}}
+              >
+                <i className="fas fa-home"/>
+                {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
+              </Button>
+            </div>
+          )
         }
       }
-    });
-    return roomRender
+    })
   };
 
   MyTab = ( eventKey, title , roomList, color) =>{
@@ -393,6 +394,8 @@ class InfoDormitory extends React.Component{
           Thông tin ký túc xá
         </Title>
         <div className={'content-body'}>
+
+
 
           {/*RoomDetail*/}
           <Modal show={showRoomPopup} onHide={() =>this.handleClosePopup('room')}>
@@ -615,6 +618,20 @@ class InfoDormitory extends React.Component{
 
               </Col>
               <Col md={10}>
+                <Row style={{padding: '15px'}}>
+                  <div className={'note-room-color-item'}>
+                    <span className={'note-room-color bg-success-color'}/>
+                    <span>Phòng sinh viên</span>
+                  </div>
+                  <div className={'note-room-color-item'}>
+                    <span className={'note-room-color bg-primary-color'}/>
+                    <span>Phòng dịch vụ</span>
+                  </div>
+                  <div className={'note-room-color-item'}>
+                    <span className={'note-room-color bg-warning-color'}/>
+                    <span>Phòng chức năng</span>
+                  </div>
+                </Row>
                 <Tabs defaultActiveKey="all" id="uncontrolled-tab-example">
                   <Tab eventKey="all" title="Tất cả">
                     <div className={'id-room'}>
@@ -637,7 +654,7 @@ class InfoDormitory extends React.Component{
                   </Tab>
                   {this.MyTab("studentRoom", "Phòng sinh viên",
                     roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_SV),
-                    'info')
+                    'success')
                   }
                   {this.MyTab("proRoom", "Phòng dịch vụ",
                     roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_DVU),
@@ -666,6 +683,8 @@ class InfoDormitory extends React.Component{
                 <RoomType />
               </div>
             </Row>
+
+
           </div>
         </div>
       </div>

@@ -711,6 +711,7 @@ export class ExportDataModal extends Component{
     }
 
     get_list_student(searchValues, activityPoint).then(result => {
+
       let data = result.data && result.data.map((record, index) => {
         let genderString = record.gioiTinh ? "nam" : "nữ";
         return({
