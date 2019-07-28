@@ -52,7 +52,8 @@ class Example extends React.Component {
       trangThai: 0,
     });
   }
-  handleReset() {
+  handleReset = async () => {
+    let roomOptions = await this.getRoomOption();
     this.setState({
       table: [],
       room: 0,
@@ -64,13 +65,18 @@ class Example extends React.Component {
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
       soNuocResetCuoi: 0,
+      rooms: roomOptions,
       trangThai: 0
-    })
+    });
   }
   
-  getRoomOption = () => {
+  getRoomOption = (month, year) => {
+    if (month == null)
+      month = this.state.month
+    if (year == null)
+      year = this.state.year
     return new Promise(resolve => {
-      getData({month: this.state.month, year: this.state.year}).then(result => {
+      getData({month: month, year: year}).then(result => {
         if (result.data){
           var roomOptions = []
           result.data.result.forEach((room) => {
@@ -99,7 +105,7 @@ class Example extends React.Component {
     });
     this.selected(roomOptions[0].value);
   }
-  selected = (value) => {
+  selected =  (value) => {
     var room = this.state.rooms.find(obj => obj.value === value)
     info_room({ idPhong: value }).then(result => {
       if (result.data) {
@@ -107,16 +113,18 @@ class Example extends React.Component {
       }
     })
   }
-  monthSelected = value => {
-    this.setState({ month: value })
+  monthSelected = async value => {
+    let roomOptions = await this.getRoomOption(value);
+    this.setState({ month: value,rooms : roomOptions })
   }
-  yearSelected = value => {
-    this.setState({ year: value });
+  yearSelected = async value => {
+    let roomOptions = await this.getRoomOption(null, value);
+    this.setState({ year: value, rooms : roomOptions });
   }
   onChange = (target) => {
     this.setState({ [target.name]: target.value })
   }
-  setDienNuoc = async (table, room) => {
+  setDienNuoc = (table, room) => {
     var roomOptions = this.state.rooms.filter(item => item.value !== room.value);
     if (roomOptions.length> 0){
       this.selected(roomOptions[0].value)
