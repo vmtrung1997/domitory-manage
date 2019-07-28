@@ -1,5 +1,4 @@
 export const tonGiaoArr = [
-  { value: "-1", label: "Chọn tôn giáo" },
   { value: "Phật Giáo", label: "Phật Giáo" },
   { value: "Công Giáo", label: "Công Giáo" },
   { value: "Cao Đài", label: "Cao Đài" },
@@ -9,12 +8,17 @@ export const tonGiaoArr = [
 ]
 
 export const dangVienArr = [
-  { value: "0", label: "Không" },
-  { value: "1", label: "Có" }
+  { value: false, label: "Không" },
+  { value: true, label: "Có" }
 ]
 
+export const doanVienArr = [
+  { value: false, label: "Không" },
+  { value: true, label: "Có" }
+]
+
+
 export const danTocArr = [
-  { value: "-1", label: "Chọn dân tộc" },
   { value: "Kinh", label: "Kinh" },
   { value: "Chăm", label: "Chăm" },
   { value: "Dao", label: "Dao" },

@@ -115,6 +115,8 @@ router.get('/infoDormitory/getPersonInRoom/:idPhong', infoDormitory.getPersonInR
 
 router.get('/getRoomWithFloor', infoDormitory.getFloorRoom);
 
+router.get('/infoDormitory/getInfoManageDormitory', infoDormitory.getInfoManageDormitory);
+
 //News
 router.post('/news/add',newsController.addNews);
 

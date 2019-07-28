@@ -129,7 +129,6 @@ class ListActivity extends React.Component {
           options: options
         })
         .then(res => {
-          console.log(res.data);
           if (this.state.totalPages === 1) {
             this.setState({
               totalPages: Math.ceil(res.data.totalPages)

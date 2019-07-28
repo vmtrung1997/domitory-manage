@@ -23,7 +23,7 @@ export class AddStudentModal extends Component{
         studentNumber: '',
         birthDay: today,
         regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
-        expiredDate: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() ),
+        expiredDate: new Date(today.getFullYear()+1, 6, 31 ),
 			},
     }
   }
@@ -177,7 +177,7 @@ export class ConvertStudentModal extends Component{
       loading: false,
       show: this.props.show,
       regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
-      dayOut: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() )
+      dayOut: new Date(today.getFullYear()+1, 6, 31 )
     }
   }
 
@@ -306,7 +306,7 @@ export class ImportDataModal extends Component{
       loading: false,
       show: this.props.show,
       regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
-      expiredDate: new Date(today.getFullYear()+1, today.getMonth(), today.getDate() ),
+      expiredDate: new Date(today.getFullYear()+1, 6, 31 ),
       listExpired: undefined,
     }
   }
@@ -355,7 +355,7 @@ export class ImportDataModal extends Component{
   };
 
   convertData = async (file) => {
-    return new Promise ( (resolve, reject) => {
+    return new Promise ( (resolve) => {
       let reader = new FileReader();
       reader.onload =  function (e) {
         let data = new Uint8Array(e.target.result);
@@ -364,13 +364,13 @@ export class ImportDataModal extends Component{
         let worksheet = workbook.Sheets[workbook.SheetNames[0]];
         let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","ngaySinh"]});
         listNewStudent = listNewStudent.map((st) => {
-          if (st.ngaySinh && typeof(st.ngaySinh) == 'number'){
+          if (st.ngaySinh && typeof(st.ngaySinh) === 'number'){
             let date = SSF.parse_date_code(st.ngaySinh,{date1904:false});
             st.ngaySinh=`${date.d}/${date.m}/${date.y}`
           }
           return st
 
-        })
+        });
         resolve(listNewStudent)
       };
       reader.readAsArrayBuffer(file);
@@ -405,7 +405,8 @@ export class ImportDataModal extends Component{
             !((headers.hoTen.toLowerCase() === 'họ và tên') || (headers.hoTen.toLowerCase() === 'họ tên')) ||
             !(headers.ngaySinh.toLowerCase() === 'ngày sinh'))
             this.setState({
-              justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
+              justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!',
+              loading: false,
             });
           else{
             resolve.shift();
@@ -424,11 +425,6 @@ export class ImportDataModal extends Component{
                 });
             })
           }
-        }).catch(() => {
-          this.setState({
-            justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!',
-            loading: false,
-          });
         })
       } else {
         this.setState({
@@ -715,6 +711,7 @@ export class ExportDataModal extends Component{
     }
 
     get_list_student(searchValues, activityPoint).then(result => {
+
       let data = result.data && result.data.map((record, index) => {
         let genderString = record.gioiTinh ? "nam" : "nữ";
         return({
@@ -1028,7 +1025,7 @@ export class ChooseRoom extends Component{
   handleCancel = () => {
     this.setState({
       newRoom: this.state.oldRoom
-    })
+    });
     this.handlePopup(false)
   };
 

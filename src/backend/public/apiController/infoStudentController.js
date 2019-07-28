@@ -53,11 +53,11 @@ function addOneStudent(data) {
                 });
                 //------save profile-------
                 student.save()
-                  .then((result) => {
+                  .then(() => {
                     resolve( {status: 200, msg: 'Thêm sinh viên thành công!', data: data})
                   })
                   .catch(err =>{
-                    Account.findOneAndDelete({username: data.mssv}).catch()
+                    Account.findOneAndDelete({username: data.mssv}).catch();
                     resolve( {status: 400, msg: 'tạo thông tin cá nhân không thành công, vui lòng thử lại!', data: data, err: err})
                   });
 
@@ -96,7 +96,7 @@ exports.importFile = async (req, res) => {
   let listSuccess =[];
   let listPromise = [];
   data.forEach(record => {
-    let [ngay, thang, nam] = [0, 0 , 0]
+    let [ngay, thang, nam] = [0, 0 , 0];
     if(record.ngaySinh)
       [ngay, thang, nam] = record.ngaySinh.split("/");
     let student = {
@@ -259,6 +259,7 @@ exports.getListStudent = async(req, res) => {
     {path:'nganhHoc', select:'tenNganh'},
   ];
 
+    query.isActive = params.isActive;
   if(params.hoTen)
     query.hoTen = { $regex: '.*' + params.hoTen + '.*', $options: 'i' };
   if(params.mssv)
@@ -327,6 +328,12 @@ exports.getListStudent = async(req, res) => {
 exports.getListStudentPaging = async(req, res) => {
   let query = {};
   const params = req.body;
+
+  if(!params.options)
+    res.status(400).json({'msg': 'missing options'});
+
+  query.isActive = params.isActive;
+
   if(params.hoTen)
     query.hoTen = { $regex: '.*' + params.hoTen + '.*', $options: 'i' };
   if(params.mssv)
@@ -349,9 +356,6 @@ exports.getListStudentPaging = async(req, res) => {
     endTime.setHours(0,0,0,0);
     query.ngayVaoO = {$gte: startTime, $lt: endTime}
   }
-
-  if(!params.options)
-    res.status(400).json({'msg': 'missing options'});
 
   let options = params.options;
   options.populate = ['idTaiKhoan','idPhong', 'truong', 'nganhHoc'];

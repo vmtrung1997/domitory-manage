@@ -25,8 +25,15 @@
 .float-right{
     float: right;
 }
+.block{
+    display: block;
+}
 .flex{
     display: flex;
+}
+.flex-middle{
+    display: flex;
+    align-items: center;
 }
 .content-body{
     margin-top: 30px;
@@ -96,4 +103,48 @@ input:disabled {
 .messDanger{
     color: red;
     font-weight: bold;
+}
+.info-student-tab-btn{
+    margin-right: 2px;
+    color: #778899 !important;
+}
+
+.info-student-tab-btn:hover{
+    background-color: #778899;
+    border-color: #778899;
+    color: white !important;
+}
+
+.info-student-tab-btn.actived{
+    background-color: #778899;
+    border-color: #778899;
+    color: white !important;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+.bg-success-color{
+    background-color: #1c84c6;
+}
+
+.bg-primary-color{
+    background-color: #1ab394;
+}
+
+.bg-warning-color{
+    background-color: #f8ac59;
+}
+
+.success-color{
+    color: #1c84c6;
+}
+
+.danger-color{
+    color: #ed5565;
+}
+
+.warning-color{
+    color: #f8ac59;
 }

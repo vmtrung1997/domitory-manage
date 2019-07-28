@@ -2,14 +2,16 @@ import React from 'react';
 import './infoDormitory.css';
 import Title from "../../../components/title/title";
 import Button from "../../../components/button/button";
-import {Col, Modal, Row, Tabs, Tab, Table} from 'react-bootstrap';
+import {Col, Modal, Row, Tab, Table, Tabs} from 'react-bootstrap';
 import refreshToken from './../../../../utils/refresh_token'
 import axios from "axios";
 import Input from "../../../components/input/input";
 import Select from "../../../components/selectOption/select"
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 import RoomType from './roomType'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
+import {get_floor_room} from "../infoStudent/infoStudentActions";
+
 const PHONG_SV = 0;
 const PHONG_DVU = 1;
 const PHONG_CNANG = 2;
@@ -34,7 +36,7 @@ class InfoDormitory extends React.Component{
       genderOptions: [{value: 0, label: 'Nữ'}, {value: 1, label: 'Nam'}],
       roomTypeOptions: [],
 
-      floorList: [],
+      infoFloor: [],
       roomList: [],
 
       showRoomPopup: false,
@@ -55,50 +57,23 @@ class InfoDormitory extends React.Component{
   }
 
   getData = async() => {
-    this.getFloor()
-      .then(() => {
-      this.getRoom();
-    }).catch(() =>{
-    });
-
+    this.getInfoFloor();
     this.getRoomOptions();
+    this.getInfoManageDormitory();
   };
 
-  getFloor = () => {
-    return new Promise(async(resolve) => {
-      await refreshToken();
-      let secret = JSON.parse(localStorage.getItem('secret'));
-
-      axios.get(`/manager/getElement/floor`,  {
-        headers: { 'x-access-token': secret.access_token }
-      }).then(result => {
-        let i = 0;
-        let floorList = result.data.sort();
-        floorList = floorList.map(floor => {
-          return {key: i++, label: floor}
-        });
+  getInfoFloor = () => {
+    get_floor_room()
+      .then(result => {
         this.setState({
-          floorList: floorList,
-          floorActive: floorList[0].label
-        });
-        resolve()
-      }).catch(err => {
-
-      });
-    })
-
-  };
-
-  getRoom = async() => {
-    await refreshToken();
-    let secret = JSON.parse(localStorage.getItem('secret'));
-    axios.get(`/manager/infoDormitory/getRoom/` + this.state.floorActive, { headers: { 'x-access-token': secret.access_token } }
-    ).then(result => {
-      this.setState({
-        roomList: result.data
+          infoFloor: result.data,
+          floorActive: result.data[0].floor.name,
+          roomList: result.data[0].rooms
+        })
       })
-    }).catch((err) => {
-    })
+      .catch(err => {
+
+      })
   };
 
   getRoomOptions = async() => {
@@ -120,11 +95,24 @@ class InfoDormitory extends React.Component{
     })
   };
 
-  handleSelectFloor = async(floor) => {
+  getInfoManageDormitory = async() => {
+    await refreshToken();
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.get(`/manager/infoDormitory/getInfoManageDormitory`, { headers: { 'x-access-token': secret.access_token } }
+    ).then(result => {
+      this.setState({
+        infoDormitory: result.data
+      });
+    }).catch(err => {
+
+    })
+  };
+
+  handleSelectFloor = async(index) => {
     await this.setState({
-      floorActive: floor
+      floorActive: this.state.infoFloor[index].floor.name,
+      roomList: this.state.infoFloor[index].rooms
     });
-    this.getRoom();
   };
 
   handleShowPopup = (type) => {
@@ -227,36 +215,43 @@ class InfoDormitory extends React.Component{
         waterNumAdd,
         genderAdd
       }} = this.state;
-    if(!roomNameAdd || !floorNameAdd)
+    if(parseInt(floorNameAdd) < 0){
+      this.setState({
+        messErrAddRoom: 'Tên lầu vui lòng không có số âm'
+      });
+      return;
+    }
+
+    if(!roomNameAdd || !floorNameAdd){
       this.setState({
         messErrAddRoom: 'Vui lòng nhập đầy đủ thông tin'
       });
-    else{
-      const params = {
-        tenPhong: roomNameAdd,
-        soNguoiToiDa: parseInt(limitPersonAdd),
-        moTa: descriptionAdd,
-        lau: parseInt(floorNameAdd),
-        loaiPhong: roomTypeAdd,
-        gioiTinh: genderAdd,
-        soDien: parseInt(electicalNumAdd),
-        soNuoc: parseInt(waterNumAdd),
-      };
-      await refreshToken();
-      let secret = JSON.parse(localStorage.getItem('secret'));
-      axios.post(`/manager/infoDormitory/addRoom`, params,{ headers: { 'x-access-token': secret.access_token } }
-      ).then(async() => {
-        ToastsStore.success("Thêm phòng thành công!");
-        this.handleClosePopup('addRoom');
-
-        await this.getData();
-        this.setState({
-          floorActive: parseInt(floorNameAdd)
-        })
-      }).catch(err => {
-        ToastsStore.error( err.response.data.msg);
-      })
+      return;
     }
+    const params = {
+      tenPhong: roomNameAdd,
+      soNguoiToiDa: parseInt(limitPersonAdd),
+      moTa: descriptionAdd,
+      lau: parseInt(floorNameAdd),
+      loaiPhong: roomTypeAdd,
+      gioiTinh: genderAdd,
+      soDien: parseInt(electicalNumAdd),
+      soNuoc: parseInt(waterNumAdd),
+    };
+    await refreshToken();
+    let secret = JSON.parse(localStorage.getItem('secret'));
+    axios.post(`/manager/infoDormitory/addRoom`, params,{ headers: { 'x-access-token': secret.access_token } }
+    ).then(async() => {
+      ToastsStore.success("Thêm phòng thành công!");
+      this.handleClosePopup('addRoom');
+
+      await this.getInfoFloor();
+      this.setState({
+        floorActive: parseInt(floorNameAdd)
+      })
+    }).catch(err => {
+      ToastsStore.error( err.response.data.msg);
+    })
   };
 
   handleShowDetail = async(room) => {
@@ -324,42 +319,42 @@ class InfoDormitory extends React.Component{
   };
 
   renderRoom = (roomList, color) => {
-    const roomRender = roomList && roomList.map((room, index) => {
-      if(room.loaiPhong){
-        if(room.loaiPhong.loai === 0 || room.loaiPhong.loai === 1){
-            return(
-              <div className={'id-room_item'} key={index}>
-                <Button
-                  shadow
-                  variant={(room.soNguoiToiDa-room.soNguoi) ? 'outline' : 'default'}
-                  color={color}
-                  onClick={()=>this.handleShowDetail(room)}
-                  style={{fontSize: '20px'}}
-                >
-                  { room.gioiTinh === 0 ? <i style={{fontSize: '25px'}} className="fas fa-female"/>:<i style={{fontSize: '25px'}} className="fas fa-male"/>}
-                  {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
-                </Button>
-              </div>
-            )
+    return roomList && roomList.map((room, index) => {
+      if (room.loaiPhong) {
+        if (room.loaiPhong.loai === 0 || room.loaiPhong.loai === 1) {
+          return (
+            <div className={'id-room_item'} key={index}>
+              <Button
+                shadow
+                variant={(room.soNguoiToiDa - room.soNguoi) ? 'outline' : 'default'}
+                color={color}
+                onClick={() => this.handleShowDetail(room)}
+                style={{fontSize: '20px'}}
+              >
+                {room.gioiTinh === 0 ? <i style={{fontSize: '25px'}} className="fas fa-female"/> :
+                  <i style={{fontSize: '25px'}} className="fas fa-male"/>}
+                {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
+              </Button>
+            </div>
+          )
         } else {
-            return(
-              <div className={'id-room_item'} key={index}>
-                <Button
-                  shadow
-                  variant={(room.soNguoiToiDa-room.soNguoi) ? 'outline' : 'default'}
-                  color={color}
-                  onClick={()=>this.handleShowDetail(room)}
-                  style={{fontSize: '20px'}}
-                >
-                  <i className="fas fa-home"/>
-                  {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
-                </Button>
-              </div>
-            )
+          return (
+            <div className={'id-room_item'} key={index}>
+              <Button
+                shadow
+                variant={(room.soNguoiToiDa - room.soNguoi) ? 'outline' : 'default'}
+                color={color}
+                onClick={() => this.handleShowDetail(room)}
+                style={{fontSize: '20px'}}
+              >
+                <i className="fas fa-home"/>
+                {room.tenPhong} ({room.soNguoi}/{room.soNguoiToiDa})
+              </Button>
+            </div>
+          )
         }
       }
-    });
-    return roomRender
+    })
   };
 
   MyTab = ( eventKey, title , roomList, color) =>{
@@ -380,11 +375,12 @@ class InfoDormitory extends React.Component{
     const {
       floorActive,
       roomList,
-      floorList,
       showRoomPopup,
       showAddRoomPopup,
       roomTypeOptions,
-      roomActive
+      roomActive,
+      infoDormitory,
+      infoFloor
     } = this.state;
 
     return(
@@ -513,7 +509,7 @@ class InfoDormitory extends React.Component{
                   Lầu<span style={{color:'red'}}>*</span>:
                 </Col>
                 <Col md={8}>
-                  <Input getValue={this.onChange} name={'floorNameAdd'} />
+                  <Input getValue={this.onChange} name={'floorNameAdd'} type={'number'} min={0}/>
                 </Col>
                 <Col md={4}>
                   Tên phòng<span style={{color:'red'}}>*</span>:
@@ -536,7 +532,7 @@ class InfoDormitory extends React.Component{
                   <Select
                     options={roomTypeOptions}
                     selected={this.roomTypeAddSelected}
-                    value={this.state.roomTypeAdd}
+                    value={this.state.roomAdd.roomTypeAdd}
                   />
                 </Col>
 
@@ -547,7 +543,7 @@ class InfoDormitory extends React.Component{
                   <Select
                     options={this.state.genderOptions}
                     selected={this.genderAddSelected}
-                    value={this.state.genderAdd}
+                    value={this.state.roomAdd.genderAdd}
                   />
                 </Col>
 
@@ -595,18 +591,19 @@ class InfoDormitory extends React.Component{
               <Col md={2}>
                 <div className={'id-floor'}>
 
-                  {floorList.map(floor => {
+                  {infoFloor && infoFloor.map((item, i) => {
                     return(
-                      <div className={'id-floor_item'} key={floor.key}>
+                      <div className={'id-floor_item'} key={i}>
                         <Button
                           color={'success'}
                           variant={'outline'}
                           diminsion
-                          actived={(floorActive === floor.label)}
-                          onClick={()=>this.handleSelectFloor(floor.label)}
+                          actived={(floorActive === item.floor.name)}
+                          onClick={()=>this.handleSelectFloor(i)}
                           style={{fontSize: '20px'}}
                         >
-                          Lầu {floor.label}
+                          Lầu {item.floor.name}
+                          <span className={'block warning-color'}>{item.floor.personStaying}/{item.floor.capacity}</span>
                         </Button>
                       </div>
                     )
@@ -615,6 +612,28 @@ class InfoDormitory extends React.Component{
 
               </Col>
               <Col md={10}>
+                <Row style={{padding: '15px', display: 'flex', justifyContent: 'space-between'}}>
+                  <div className={'flex'}>
+                    <div className={'note-room-color-item flex-middle'}>
+                      <span className={'note-room-color bg-success-color'}/>
+                      <span>Phòng sinh viên</span>
+                    </div>
+                    <div className={'note-room-color-item flex-middle'}>
+                      <span className={'note-room-color bg-primary-color'}/>
+                      <span>Phòng dịch vụ</span>
+                    </div>
+                    <div className={'note-room-color-item flex-middle'}>
+                      <span className={'note-room-color bg-warning-color'}/>
+                      <span>Phòng chức năng</span>
+                    </div>
+                  </div>
+                  <div className={'people-in-dormitory bold'}>
+                    Số người:
+                    <span className={'danger-color'}>{infoDormitory && infoDormitory.peopleStaying}</span>
+                    /
+                    <span className={'success-color'}>{infoDormitory && infoDormitory.capacity}</span>
+                  </div>
+                </Row>
                 <Tabs defaultActiveKey="all" id="uncontrolled-tab-example">
                   <Tab eventKey="all" title="Tất cả">
                     <div className={'id-room'}>
@@ -637,7 +656,7 @@ class InfoDormitory extends React.Component{
                   </Tab>
                   {this.MyTab("studentRoom", "Phòng sinh viên",
                     roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_SV),
-                    'info')
+                    'success')
                   }
                   {this.MyTab("proRoom", "Phòng dịch vụ",
                     roomList.filter(room => room.loaiPhong && room.loaiPhong.loai === PHONG_DVU),
@@ -663,7 +682,9 @@ class InfoDormitory extends React.Component{
                 </Button>
               </div>
               <div className={'id-add'}>
-                <RoomType />
+                <RoomType
+                  onSave={()=>{this.getRoomOptions()}}
+                />
               </div>
             </Row>
           </div>

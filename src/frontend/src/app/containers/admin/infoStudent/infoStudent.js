@@ -18,6 +18,8 @@ import Print from './infoStudentPrint';
 import { get_element, get_list_student_by_page } from './infoStudentActions'
 import { AddStudentModal, ConvertStudentModal, ImportDataModal, ExportDataModal } from './infoStudentModal';
 
+const PRESENT = 0, OLD = 1, PROCESSING = 2;
+
 class InfoStudent extends Component{
   constructor(props) {
     super(props);
@@ -25,6 +27,7 @@ class InfoStudent extends Component{
       loading: true,
       totalpages: 1,
       infoList: [],
+      checkedAll: false,
 
       searchValues: {
         name: '',
@@ -32,6 +35,7 @@ class InfoStudent extends Component{
         pageActive: 1,
         limit: 10,
         isOld: 0,
+        isActive: true,
         roomSelected: {value: 0, label: "Tất cả"},
         schoolSelected: {value: 0, label: "Tất cả"},
         floorSelected: {value: 0, label: "Tất cả"},
@@ -110,7 +114,7 @@ class InfoStudent extends Component{
       pathname: '/admin/student/detail/'+ mssv,
       //state: { info: info }
     });
-  }
+  };
 
   componentDidMount(){
     this.getData();
@@ -201,14 +205,6 @@ class InfoStudent extends Component{
       searchValues: {...this.state.searchValues, roomSelected: selectedOption}
     })
   };
-  handleSelectSchool = selectedOption => {
-    this.setState({
-      searchValues: {...this.state.searchValues, schoolSelected: selectedOption}
-    })
-  };
-  handleSelectFloor = selectedOption => {
-    this.setState({ floorSelected: selectedOption})
-  };
 
   handleSelected = (name, selectedOption) => {
     this.setState({
@@ -267,15 +263,49 @@ class InfoStudent extends Component{
   };
 
   handleChooseOption = async (prop) => {
-    await this.setState({
-      searchValues: {...this.state.searchValues, isOld: prop, pageActive: 1},
-      listChecked: []
-      });
+    switch (prop) {
+      case PRESENT:
+        await this.setState({
+          searchValues: {
+            ...this.state.searchValues,
+            isOld: 0, isActive: true,
+            pageActive: 1,
+
+          },
+          listChecked: [],
+          checkedAll:false
+        });
+        break;
+      case OLD:
+        await this.setState({
+          searchValues: {
+            ...this.state.searchValues,
+            isOld: 1,
+            isActive: false,
+            pageActive: 1,
+          },
+          listChecked: [],
+          checkedAll:false
+        });
+        break;
+      case PROCESSING:
+        await this.setState({
+          searchValues: {
+            ...this.state.searchValues,
+            isOld: 0,
+            isActive: false,
+            pageActive: 1,
+          },
+          listChecked: [],
+          checkedAll:false
+        });
+        break;
+    }
     this.getData();
   };
 
   handleRoomHistory = async(id) => {
-    this.handlePopup('history', true)
+    this.handlePopup('history', true);
     await refreshToken();
     var secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getRoomHistory/` + id, { headers: {'x-access-token': secret.access_token} }
@@ -293,12 +323,26 @@ class InfoStudent extends Component{
   changeState = (key, value) => {
     this.setState({ [key]: value })
   };
+
+  handleCheckAll = (prop) => {
+    const arr = [];
+    prop.chk && this.state.infoList.forEach(student => {
+      arr.push(student.MSSV);
+    });
+
+    this.setState({
+      checkedAll: prop.chk,
+      listChecked: arr
+    });
+  };
+
   render(){
     const {
       searchValues: {
         limit,
         pageActive,
-        isOld
+        isOld,
+        isActive
       },
       infoList,
       floorOptions,
@@ -441,7 +485,7 @@ class InfoStudent extends Component{
                   />
 
                   <ConvertStudentModal
-                    function={()=>this.setState({listChecked:[]})}
+                    function={()=>this.setState({listChecked:[], checkedAll: false})}
                     show={this.state.showDelPopup}
                     listStudent={this.state.listChecked}
                     onSave={()=>this.getData()}
@@ -497,18 +541,31 @@ class InfoStudent extends Component{
             <Row className={'is-btn-option'}>
               <Col>
                 <Button
-                  variant={isOld ? 'outline' :  'default'}
+                  classCustom={'info-student-tab-btn'}
+                  actived={!!(!isOld && isActive)}
+                  variant={'outline'}
                   color={'default'}
-                  onClick={() => this.handleChooseOption(0)}
+                  onClick={() => this.handleChooseOption(PRESENT)}
                 >
-                  Hiện tại
+                  Sinh viên hiện tại
                 </Button>
                 <Button
+                  classCustom={'info-student-tab-btn'}
                   color={'default'}
-                  variant={isOld ? 'default' : 'outline'}
-                  onClick={() => this.handleChooseOption(1)}
+                  actived={!!(isOld && !isActive)}
+                  variant={'outline'}
+                  onClick={() => this.handleChooseOption(OLD)}
                 >
                   Sinh viên cũ
+                </Button>
+                <Button
+                  classCustom={'info-student-tab-btn'}
+                  actived={!!(!isOld && !isActive)}
+                  color={'default'}
+                  variant={'outline'}
+                  onClick={() => this.handleChooseOption(PROCESSING)}
+                >
+                  Đang chờ xử lý
                 </Button>
               </Col>
             </Row>
@@ -521,7 +578,20 @@ class InfoStudent extends Component{
                 <th>Họ và Tên</th>
                 <th>Trường</th>
                 <th>Phòng</th>
-                <th>Thao tác</th>
+                <th>
+                  Thao tác
+                  <span style={{display: 'inline-block', marginLeft: '20px'}}>
+                    {(isActive || isOld) ?
+                    <Checkbox
+                      name={'checkedAll'}
+                      isCheck={this.handleCheckAll}
+                      checkmark={'check-mark-fix'}
+                      check={this.state.checkedAll}
+                    />
+                      : ''
+                    }
+                  </span>
+                </th>
               </tr>
               </thead>
               <tbody>
@@ -553,7 +623,7 @@ class InfoStudent extends Component{
                           title={'In thẻ'}
                           color={'success'}
                           style={{marginRight: '10px'}}
-                          onClick={ e => {this.changeState('showPrint', true); this.changeState('dataPrint', info) }}
+                          onClick={ () => {this.changeState('showPrint', true); this.changeState('dataPrint', info) }}
                         >
                           <i className="fas fa-print"/>
                         </Button>
@@ -565,8 +635,14 @@ class InfoStudent extends Component{
                       >
                         <i className="fas fa-edit"/>
                       </Button>
-                        <Checkbox name={info.MSSV} isCheck={this.handleCheckBox} checkmark={'check-mark-fix'} check={this.handleValueCheck(info.MSSV)}/>
-
+                      {(isActive || isOld) ?
+                        <Checkbox
+                          name={info.MSSV}
+                          isCheck={this.handleCheckBox}
+                          checkmark={'check-mark-fix'}
+                          check={this.handleValueCheck(info.MSSV)}
+                        /> : ''
+                      }
                     </td>
                   </tr>
                 )

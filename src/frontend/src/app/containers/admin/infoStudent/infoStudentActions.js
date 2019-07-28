@@ -4,18 +4,17 @@ import axios from "axios";
 export const get_headers = async() => {
   await refreshToken();
   let secret = JSON.parse(localStorage.getItem('secret'));
-  let headers = {
+  return {
     headers: {
       'x-access-token': secret.access_token
     }
-  };
-  return headers
+  }
 };
 
 export const get_element = async(name) => {
   const headers = await get_headers();
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     axios.get(`/manager/getElement/` + name, headers)
       .then(result => {
       switch (name) {
@@ -77,8 +76,7 @@ export const convert_student = async(arr, option, regisExpiredDate, dayOut) => {
 
 export const get_list_student_by_page = async(params) => {
   const headers = await get_headers();
-
-  const { studentNumber, name, roomSelected, schoolSelected, yearSelected, floorSelected, isOld, pageActive, limit } = params;
+  const { studentNumber, name, roomSelected, schoolSelected, yearSelected, floorSelected, isOld, isActive, pageActive, limit } = params;
   let idPhong = roomSelected.value;
   let idTruong = schoolSelected.value;
   const options = {
@@ -101,6 +99,7 @@ export const get_list_student_by_page = async(params) => {
         idPhong: idPhong,
         idTruong: idTruong,
         isOld: isOld,
+        isActive: isActive,
         lau: floorSelected.value,
         nam: yearSelected.value
       }, headers
@@ -115,7 +114,7 @@ export const get_list_student_by_page = async(params) => {
 export const get_list_student = async(searchValues, activityPoint) => {
   const headers = await get_headers();
 
-  const { studentNumber, name, roomSelected, schoolSelected, yearSelected, floorSelected, isOld } = searchValues;
+  const { studentNumber, name, roomSelected, schoolSelected, yearSelected, floorSelected, isOld, isActive } = searchValues;
   let idPhong = roomSelected.value;
   let idTruong = schoolSelected.value;
 
@@ -134,6 +133,7 @@ export const get_list_student = async(searchValues, activityPoint) => {
         idPhong: idPhong,
         idTruong: idTruong,
         isOld: isOld,
+        isActive: isActive,
         lau: floorSelected.value,
         nam: yearSelected.value,
         getPoint: activityPoint,
@@ -200,4 +200,4 @@ export const get_activites_by_MSSV = async(mssv) => {
       reject(err)
     })
   })
-}
+};

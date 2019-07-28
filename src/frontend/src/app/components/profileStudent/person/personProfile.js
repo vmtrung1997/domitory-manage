@@ -18,39 +18,9 @@ import {
 } from "react-toasts";
 import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
-import * as CONST from "../../../function/constant"
+import * as CONST from "../../../function/constant";
 
 var gender = [{ value: 0, label: "Nữ" }, { value: 1, label: "Nam" }];
-var nationOption = [
-  { value: "Kinh", label: "Kinh" },
-  { value: "Chăm", label: "Chăm" },
-  { value: "Dao", label: "Dao" },
-  { value: "Êđê", label: "Êđê" },
-  { value: "Hoa", label: "Hoa" },
-  { value: "Jrai", label: "Jrai" },
-  { value: "Khmer", label: "Khmer" },
-
-  { value: "K'Ho", label: "K'Ho" },
-  { value: "Mường", label: "Mường" },
-  { value: "Nùng", label: "Nùng" },
-  { value: "Sán Dìu", label: "Sán Dìu" },
-
-  { value: "Khác", label: "Khác" }
-];
-
-var tonGiaoOption = [
-  { value: "Phật Giáo", label: "Phật Giáo" },
-  { value: "Công Giáo", label: "Công Giáo" },
-  { value: "Cao Đài", label: "Cao Đài" },
-  { value: "Hồi Giáo", label: "Hồi Giáo" },
-  { value: "Khác", label: "Khác" },
-  { value: "Không", label: "Không" }
-];
-var dangVienOption = [
-  { value: "0", label: "Không" },
-  { value: "1", label: "Có" }
-];
-
 class PersonProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -60,6 +30,7 @@ class PersonProfile extends React.Component {
       isDisable: true,
       isLoad: true,
       dangVien: undefined,
+      doanVien: undefined,
       MSSV: undefined,
       CMND: undefined,
       danToc: undefined,
@@ -94,8 +65,13 @@ class PersonProfile extends React.Component {
   editProfile = () => {
     this.setState({ readOnly: false });
     this.setState({ isDisable: false });
-    this.getNganhHoc(this.state.truongOptions[0].value);
+    // console.log(this.state);
+    this.getNganhHoc(this.state.truong.value);
 
+    // this.setState({
+    //   nganhHoc:nganh
+    // })
+    //Chỉnh lại ngành của sinh viên
     // this.getDanToc();
     // this.getTonGiao();
   };
@@ -146,7 +122,7 @@ class PersonProfile extends React.Component {
             });
           });
           this.setState({ nganhOptions: options });
-          this.setState({ nganhHoc: options[0] });
+          // this.setState({ nganhHoc: options[0] });
         }
       })
       .catch(err => {});
@@ -161,7 +137,8 @@ class PersonProfile extends React.Component {
       tonGiao: this.state.tonGiao,
       diaChi: this.state.diaChi,
       email: this.state.email,
-      dangVien: this.state.dangVien,
+      dangVien: Boolean(this.state.dangVien),
+      doanVien: Boolean( this.state.doanVien),
       gioiTinh: this.state.gioiTinh,
       //idPhong: this.state.tenPhong._id,
       nganhHoc: this.state.nganhHoc ? this.state.nganhHoc.value : undefined,
@@ -174,13 +151,14 @@ class PersonProfile extends React.Component {
       flag: false
     };
 
+  
     if (data.danToc === undefined) {
-      data.danToc = nationOption[0].value;
-      this.setState({ danToc: nationOption[0].value });
+      data.danToc = CONST.danTocArr[0].value;
+      this.setState({ danToc: CONST.danTocArr[0].value });
     }
     if (data.tonGiao === undefined) {
-      data.tonGiao = tonGiaoOption[0].value;
-      this.setState({ tonGiao: tonGiaoOption[0].value });
+      data.tonGiao = CONST.tonGiaoArr[0].value;
+      this.setState({ tonGiao: CONST.tonGiaoArr[0].value });
     }
     if (data.gioiTinh === undefined) {
       data.gioiTinh = gender[0].value;
@@ -198,8 +176,12 @@ class PersonProfile extends React.Component {
       }
     }
     if (data.dangVien === undefined) {
-      data.dangVien = dangVienOption[0].value;
-      this.setState({ dangVien: dangVienOption[0].value });
+      data.dangVien = CONST.dangVienArr[0].value;
+      this.setState({ dangVien: CONST.dangVienArr[0].value });
+    }
+    if (data.doanVien === undefined) {
+      data.doanVien = CONST.doanVienArr[0].value;
+      this.setState({ doanVien: CONST.doanVienArr[0].value });
     }
     if (data.nganhHoc === undefined) {
       if (this.state.nganhOptions[0] === undefined) {
@@ -212,12 +194,10 @@ class PersonProfile extends React.Component {
         this.setState({ nganhHoc: this.state.nganhOptions[0] });
       }
     }
-    console.log(data);
     //   else if ()
     if (!error) {
       this.setState({ isDisable: true });
       this.setState({ readOnly: true });
-
       await refreshToken();
 
       var secret = localStorage.getItem("secret");
@@ -286,6 +266,8 @@ class PersonProfile extends React.Component {
               CMND: res.data.data.CMND,
               danToc: danToc,
               dangVien: res.data.data.dangVien,
+              doanVien: res.data.data.doanVien,
+
               tonGiao: tonGiao,
               diaChi: res.data.data.diaChi,
               email: res.data.data.email,
@@ -337,7 +319,17 @@ class PersonProfile extends React.Component {
   };
 
   dangVienSelected = value => {
-    this.setState({ dangVien: parseInt(value) });
+    if(value === 'true')
+      this.setState({ dangVien: true });
+      else this.setState({ dangVien: false });
+      
+  };
+
+  doanVienSelected = value => {
+    if(value === 'true')
+    this.setState({ doanVien: true });
+    else this.setState({ doanVien: false });
+
   };
 
   genderSelected = value => {
@@ -391,21 +383,21 @@ class PersonProfile extends React.Component {
   // });
 
   render() {
+
     if (!this.state.isLoad) {
-      var gender = [
-        { value: -1, label: "Chọn giới tính" },
-        { value: 0, label: "Nữ" },
-        { value: 1, label: "Nam" }
-      ];
+      var gender = [{ value: 0, label: "Nữ" }, { value: 1, label: "Nam" }];
       var nationOption = CONST.danTocArr;
       var tonGiaoOption = CONST.tonGiaoArr;
       var dangVienOption = CONST.dangVienArr;
+      var doanVienOption = CONST.doanVienArr;
       var majorInput;
       var schoolInput;
       var genderInput;
       var nationInput;
       var religionInput;
       var dangVienInput;
+      var doanVienInput;
+
       //Định dạng ngày sinh
       var d = new Date(this.state.ngaySinh);
       var month = d.getMonth() + 1;
@@ -431,6 +423,17 @@ class PersonProfile extends React.Component {
             value={this.state.dangVien ? this.state.dangVien : ""}
             options={dangVienOption}
             selected={this.dangVienSelected}
+          />
+        );
+
+        doanVienInput = (
+          <MySelectOption
+            name="doanVien"
+            getValue={this.getValue}
+            disabled={this.state.readOnly}
+            value={this.state.doanVien ? this.state.doanVien : ""}
+            options={doanVienOption}
+            selected={this.doanVienSelected}
           />
         );
 
@@ -482,11 +485,19 @@ class PersonProfile extends React.Component {
             getValue={this.getValue}
             name="dangVien"
             disabled={this.state.readOnly}
-            value={this.state.dangVien === 1 ? "Có" : "Không"}
+            value={this.state.dangVien === true ? "Có" : "Không"}
             borderRadius="3px"
           />
         );
-
+        doanVienInput = (
+          <MyInput
+            getValue={this.getValue}
+            name="doanVien"
+            disabled={this.state.readOnly}
+            value={this.state.doanVien === true ? "Có" : "Không"}
+            borderRadius="3px"
+          />
+        );
         schoolInput = (
           <MyInput
             getValue={this.getValue}
@@ -714,9 +725,12 @@ class PersonProfile extends React.Component {
                               value={this.state.diaChi ? this.state.diaChi : ""}
                             />
                           </Col>
-                          <Col sm={6}>
+                          <Col sm={3}>
+                            <span className="label-font">Đoàn viên</span>
+                            {doanVienInput}
+                          </Col>
+                          <Col sm={3}>
                             <span className="label-font">Đảng viên</span>
-
                             {dangVienInput}
                           </Col>
                           <Col />

@@ -8,7 +8,7 @@ var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
 var { background } = require('./background')
 //mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao
-mongoose.connect('mongodb://127.0.0.1:27017/ktx',
+mongoose.connect('mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao',//mongodb://127.0.0.1:27017/ktx',
 { 
   useNewUrlParser: true,
   autoReconnect:true,
