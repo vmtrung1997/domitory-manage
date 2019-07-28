@@ -69,26 +69,26 @@ class Example extends React.Component {
       trangThai: 0
     });
   }
-  
+
   getRoomOption = (month, year) => {
     if (month == null)
       month = this.state.month
     if (year == null)
       year = this.state.year
     return new Promise(resolve => {
-      getData({month: month, year: year}).then(result => {
-        if (result.data){
+      getData({ month: month, year: year }).then(result => {
+        if (result.data) {
           var roomOptions = []
           result.data.result.forEach((room) => {
             let find = this.state.table.find(item => item.phong.value === room._id)
-            if (!find){
+            if (!find) {
               roomOptions.push(room)
             }
           })
           roomOptions = roomOptions.map(room => ({ value: room._id, label: room.tenPhong, loaiPhong: room.loaiPhong }))
           resolve(roomOptions);
         }
-      }).catch(() => { resolve([])})
+      }).catch(() => { resolve([]) })
     })
   }
   handleShow = async () => {
@@ -105,7 +105,7 @@ class Example extends React.Component {
     });
     this.selected(roomOptions[0].value);
   }
-  selected =  (value) => {
+  selected = (value) => {
     var room = this.state.rooms.find(obj => obj.value === value)
     info_room({ idPhong: value }).then(result => {
       if (result.data) {
@@ -115,18 +115,26 @@ class Example extends React.Component {
   }
   monthSelected = async value => {
     let roomOptions = await this.getRoomOption(value);
-    this.setState({ month: value,rooms : roomOptions })
+    this.setState({ month: value, rooms: roomOptions }, () => {
+      if (roomOptions.length > 0) {
+        this.selected(roomOptions[0].value)
+      }
+    })
   }
   yearSelected = async value => {
     let roomOptions = await this.getRoomOption(null, value);
-    this.setState({ year: value, rooms : roomOptions });
+    this.setState({ year: value, rooms: roomOptions }, () => {
+      if (roomOptions.length > 0) {
+        this.selected(roomOptions[0].value)
+      }
+    });
   }
   onChange = (target) => {
     this.setState({ [target.name]: target.value })
   }
   setDienNuoc = (table, room) => {
     var roomOptions = this.state.rooms.filter(item => item.value !== room.value);
-    if (roomOptions.length> 0){
+    if (roomOptions.length > 0) {
       this.selected(roomOptions[0].value)
     }
     this.setState({
@@ -226,14 +234,14 @@ class Example extends React.Component {
     })
   }
   onDeleteRow = (index) => {
-    var {table, rooms} = this.state
+    var { table, rooms } = this.state
     var room = table.find((_, _index) => index === _index);
     rooms.push(room);
     table.splice(index, 1);
     this.setState({ table: table, rooms: rooms });
   }
   handleCheckTrangThai = e => {
-    this.setState({trangThai: e.chk?2:0})
+    this.setState({ trangThai: e.chk ? 2 : 0 })
   }
   render() {
     var table = this.state.table && this.state.table.length > 0 ? this.state.table.map((row, index) => {
@@ -319,14 +327,14 @@ class Example extends React.Component {
                       <Button title='Reset số nước' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.nuoc : false} onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button>
                   </Col>
                   <Col md={3} xs={12}>
-                  &nbsp;
-                  <Checkbox label={'Thiếu dữ liệu'}  check={this.state.trangThai === 2} isCheck={(e) => this.handleCheckTrangThai(e)} />
+                    &nbsp;
+                  <Checkbox label={'Thiếu dữ liệu'} check={this.state.trangThai === 2} isCheck={(e) => this.handleCheckTrangThai(e)} />
                   </Col>
                   <Col md={1}>
                     &nbsp;
                       <Button color={'warning'} type='submit' size={'md'}><i className="fas fa-plus" /></Button>
                   </Col>
-                  
+
                 </Row>
                 {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
                   <Row>
