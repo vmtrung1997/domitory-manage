@@ -83,11 +83,10 @@ class Confirm extends Component {
     var data = type === 'table' ? this.state.tableData : this.state.selectedData;
     get_data_print({ type: type, data: data }).then(result => {
       if (result.data.rs === 'success') {
-        console.log(result.data.data);
         var printCpn=this.componentPrint(this.printData(result.data.data));
         this.setState({ printComponent: printCpn })
       } else {
-        this.setState({printComponent: (<div>{result.data.msg}</div>)})
+        this.setState({printComponent: (<div>Có lỗi xảy ra</div>)})
       }
     })
   }
@@ -96,7 +95,6 @@ class Confirm extends Component {
       <div>
         {data.map((value, index) => {
           return (
-            <React.Fragment>
               <div key={index}>
                 <div style={{height:'50vh'}}>
                   {this.printDetailStructure(value)}
@@ -105,7 +103,6 @@ class Confirm extends Component {
                   {this.printTableStructure(value)}
                 </div> */}
               </div>
-            </React.Fragment>
           )
         })}
       </div>
@@ -178,7 +175,8 @@ class Confirm extends Component {
     return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
   }
   printDetailStructure = (data) => {
-    let exp = data.detail
+    // let exp = data.detail
+    let exp = data
     let { fromDay, toDay, admin, lastDay } = this.state
     return (<div className={'layout-print'}>
       <Row className='m-b-10'>
@@ -193,7 +191,7 @@ class Confirm extends Component {
       </Row>
       <Row className={'m-b-10'}>
         <Col xs={12}>
-          Phòng: {exp.idPhong.tenPhong} &nbsp;&nbsp; Số người: {data.soNguoi}
+          Phòng: {exp.idPhong.tenPhong} &nbsp;&nbsp; Số người: {exp.soNguoi}
         </Col>
       </Row>
       <Row>

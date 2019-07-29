@@ -10,6 +10,7 @@ var chiPhiPhongSchema = new Schema({
     soNuoc: Number,
     soDienCu: Number,
     soNuocCu: Number,
+    soNguoi: Number,
     tienDien: Number,
     tienNuoc: Number,
     tienRac: Number,

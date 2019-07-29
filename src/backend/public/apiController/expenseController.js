@@ -257,6 +257,7 @@ function Calculation(phong, soDienCu, soNuocCu) {
 			tienNuoc: 0,
 			tongTien: 0,
 			tienRac: 0,
+			soNguoi: 0,
 			tongTienChu: '',
 			trangThai: phong.trangThai,
 		}
@@ -279,12 +280,11 @@ function Calculation(phong, soDienCu, soNuocCu) {
 								}
 							}
 							var songuoi = await getPersonInRoom(phong.phong.value)
+							row.soNguoi = songuoi;
 							if (phong.isResetNuoc) {
 								row.thayNuoc = { nuocCu: phong.soNuocResetDau, nuocMoi: phong.soNuocResetCuoi }
 								if (arrNuoc.length > 0) {
 									row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu + phong.soNuocResetCuoi - phong.soNuocResetDau, songuoi));
-									// await Phong.findOne({ _id: phong.phong.value }).select(['_id', 'soNguoi']).then(p => {
-									// })
 								}
 							} else {
 								row.thayNuoc = null
@@ -392,7 +392,6 @@ exports.remove_expense = (req, res) => {
 }
 exports.update_expense = async (req, res) => {
 	var exp = req.body;
-	console.log(exp);
 	var id = new ObjectId(exp._id);
 	Phong.findOne({ _id: exp.idPhong }).then(value => {
 		if (value) {
@@ -413,15 +412,22 @@ exports.update_expense = async (req, res) => {
 							}
 							if (loaiPhong.nuoc) {
 								var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id })
-								await getPersonInRoom(exp.idPhong).then(soNguoi => {
-									if (exp.thayNuoc)
-										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, soNguoi));
+								// await getPersonInRoom(exp.idPhong).then(soNguoi => {
+								// 	if (exp.thayNuoc)
+								// 		exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, soNguoi));
+								// 	else
+								// 		{
+								// 			exp.thayNuoc = null;
+								// 			exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, soNguoi));
+								// 		}
+								// })
+								if (exp.thayNuoc)
+										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, exp.soNguoi));
 									else
 										{
 											exp.thayNuoc = null;
-											exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, soNguoi));
+											exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, exp.soNguoi));
 										}
-								})
 							}
 						})
 					}
@@ -558,7 +564,6 @@ exports.report_expense = (req, res) => {
 		total.push(0)
 		total.push('')
 	}
-	console.log(query)
 	if (Object.keys(query).length) {
 		ChiPhiPhong.find(query)
 			.sort([['nam', 1], ['thang', 1]])
@@ -863,15 +868,19 @@ exports.get_data_print = (req, res) => {
 			}
 		}).then(async expenses => {
 			if (expenses.length > 0) {
-				var data = [];
-				expenses.forEach(value => {
-					data.push(getDetailRoom(value))
-				})
-				Promise.all(data).then(value => {
-					res.json({
-						rs: 'success',
-						data: value
-					})
+				// var data = [];
+				// expenses.forEach(value => {
+				// 	data.push(getDetailRoom(value))
+				// })
+				// Promise.all(data).then(value => {
+				// 	res.json({
+				// 		rs: 'success',
+				// 		data: value
+				// 	})
+				// })
+				res.json({
+					rs: 'success',
+					data: expenses
 				})
 			}
 		}).catch(err => {

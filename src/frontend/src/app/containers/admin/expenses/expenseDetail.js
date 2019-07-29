@@ -33,16 +33,13 @@ class Example extends React.Component {
   componentDidMount() {
     var { expenseDetail } = this.props;
     this.getRoles();
-    this.setState({ exp: expenseDetail, soDien: expenseDetail.soDien, soNuoc: expenseDetail.soNuoc })
+    this.setState({ exp: expenseDetail, soDien: expenseDetail.soDien, soNuoc: expenseDetail.soNuoc, soNguoi: expenseDetail.soNguoi })
     if (expenseDetail.thayDien) {
       this.setState({ thayDien: true, soDienResetDau: expenseDetail.thayDien.dienCu, soDienResetCuoi: expenseDetail.thayDien.dienMoi })
     }
     if (expenseDetail.thayNuoc) {
       this.setState({ thayNuoc: true, soNuocResetDau: expenseDetail.thayNuoc.nuocCu, soNuocResetCuoi: expenseDetail.thayNuoc.nuocMoi })
     }
-    getPersonInRoom({ id: expenseDetail.idPhong._id }).then(result => {
-      this.setState({ soNguoi: result.data.data })
-    })
   }
   getRoles = () => {
     let token = JSON.parse(localStorage.getItem('secret'));
