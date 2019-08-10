@@ -21,6 +21,7 @@ import Loader from '../../../../components/loader/loader';
 import { ChooseRoom } from './../infoStudentModal'
 import { get_info_Student_detail, get_activites_by_MSSV, get_floor_room } from './../infoStudentActions'
 import Checkbox from "../../../../components/checkbox/checkbox";
+import Print from "../infoStudentPrint";
 
 const nationOption = [
   { value: "Kinh", label: "Kinh" },
@@ -71,6 +72,8 @@ class InfoStudentDetail extends Component {
           moTa: ''
         },
         activity: {},
+      showPrint: false,
+      dataPrint: undefined,
       school: {},
       room: {},
       major: {},
@@ -141,7 +144,6 @@ class InfoStudentDetail extends Component {
         })
       });
       get_floor_room().then(result => {
-        console.log('=hi',result)
         this.setState({roomData: result.data})
       }).catch(err => {
     });
@@ -329,6 +331,10 @@ class InfoStudentDetail extends Component {
       });
   };
 
+  changeState = (key, value) => {
+    this.setState({ [key]: value })
+  };
+
   render() {
     let {
       profile,
@@ -339,6 +345,8 @@ class InfoStudentDetail extends Component {
       major,
       dataActivities,
       isOld,
+      dataPrint,
+      showPrint,
       profile: {isActive}
     } = this.state;
     const { CMND, doanVien, dangVien, } = profile;
@@ -349,6 +357,7 @@ class InfoStudentDetail extends Component {
     return (
       <div>
         <Loader loading={this.state.loading}/>
+        <Print data={dataPrint} show={showPrint} handleClose={() => this.changeState('showPrint', false)}/>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground />
         <Title>
           Thông tin sinh viên
@@ -379,6 +388,17 @@ class InfoStudentDetail extends Component {
                   <label htmlFor="file-1">
                     <span>Tải ảnh</span>
                   </label>
+                </div>
+
+                <div className="f-center">
+                  <Button
+                    title={'In thẻ'}
+                    color={'success'}
+                    onClick={ () => {this.changeState('showPrint', true); this.changeState('dataPrint', profile) }}
+                  >
+                    In thẻ &#160;
+                    <i className="fas fa-print"/>
+                  </Button>
                 </div>
               </Col>
               <Col md={10}>
