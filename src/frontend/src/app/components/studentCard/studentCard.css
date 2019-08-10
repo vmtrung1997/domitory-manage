@@ -145,13 +145,18 @@
 	font-size: 13px;
   }
   .name-card{
-	font-size: 25px
+	font-size: 20px;
+	line-height: 24px;
   }
   .name-person{
-  	font-size: 25px
+  	font-size: 23px;
+  	line-height: 23px;
   }
-  .info-card .info-content{
-	font-size: 16px;
+  .info-card{
+  	font-size: 22px;
+  }
+  .info-content{
+	font-size: 22px;
   }
   
 }
