@@ -194,57 +194,7 @@ class RequestStay extends React.Component {
 
     return (
       <div className = 'padding-menu'>
-      <>
-        <ToastsContainer
-          position={ToastsContainerPosition.BOTTOM_CENTER}
-          lightBackground
-          store={ToastsStore}
-        />
-       <div >
-          <h1 className="title-header" >ĐĂNG KÝ LƯU TRÚ</h1>
-        </div>
-        <div className="title-header-line" />
-        {formRequest}
-        {/* TODO: Kiểm tra nếu đủ điểm sẽ hiện Đăng ký  */}
-        <Modal size="lg" show={this.state.show} onHide={this.handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Đăng ký tiếp tục lưu trú</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group>
-                <Form.Label>Sinh viên thuộc diện</Form.Label>
-                <Form.Control value={this.state.type} onChange={this.getValue} name="type" />
-              </Form.Group>
-            </Form>
-            <Form>
-              <Form.Group>
-                <Form.Label>Trình bày hoàn cảnh gia đình hiện nay</Form.Label>
-                <Form.Control
-                  onChange={this.getValue}
-                  as="textarea"
-                  rows="4"
-                  name="content"
-                  value={this.state.content} 
-                />
-              </Form.Group>
-            </Form>
-            <div>
-              <span style={{ color: "#007bff" }}>
-                Không bắt buộc, có thể bỏ qua
-              </span>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleClose}>
-              Đóng
-            </Button>
-            <Button variant="primary" onClick={this.request}>
-              Xác nhận
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </>
+      <span>Tính năng đang trong quá trình hoàn thiện </span>
       </div>
     );
   }
