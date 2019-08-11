@@ -244,6 +244,7 @@ function CalculationTest(phong, soDienCu, soNuocCu) {
 	})
 }
 function Calculation(phong, soDienCu, soNuocCu) {
+	console.log(phong)
 	return new Promise((resolve, reject) => {
 		var row = {
 			idPhong: phong.phong.value,
@@ -260,6 +261,7 @@ function Calculation(phong, soDienCu, soNuocCu) {
 			soNguoi: 0,
 			tongTienChu: '',
 			trangThai: phong.trangThai,
+			soNguoi: phong.soNguoi
 		}
 		LoaiPhong.findOne({ _id: phong.phong.loaiPhong }).then(loaiPhong => {
 			if (loaiPhong) {
@@ -279,17 +281,15 @@ function Calculation(phong, soDienCu, soNuocCu) {
 									row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu));
 								}
 							}
-							var songuoi = await getPersonInRoom(phong.phong.value)
-							row.soNguoi = songuoi;
 							if (phong.isResetNuoc) {
 								row.thayNuoc = { nuocCu: phong.soNuocResetDau, nuocMoi: phong.soNuocResetCuoi }
 								if (arrNuoc.length > 0) {
-									row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu + phong.soNuocResetCuoi - phong.soNuocResetDau, songuoi));
+									row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu + phong.soNuocResetCuoi - phong.soNuocResetDau, row.songuoi));
 								}
 							} else {
 								row.thayNuoc = null
 								if (arrNuoc.length > 0) {
-									row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, songuoi));
+									row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, row.songuoi));
 								}
 							}
 							row.tongTien = ceilMoney(row.tienDien + row.tienNuoc + row.tienRac)
@@ -412,22 +412,15 @@ exports.update_expense = async (req, res) => {
 							}
 							if (loaiPhong.nuoc) {
 								var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id })
-								// await getPersonInRoom(exp.idPhong).then(soNguoi => {
-								// 	if (exp.thayNuoc)
-								// 		exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, soNguoi));
-								// 	else
-								// 		{
-								// 			exp.thayNuoc = null;
-								// 			exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, soNguoi));
-								// 		}
-								// })
 								if (exp.thayNuoc)
 										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, exp.soNguoi));
 									else
 										{
 											exp.thayNuoc = null;
+											console.log(exp.soNguoi)
 											exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, exp.soNguoi));
 										}
+									
 							}
 						})
 					}
@@ -564,6 +557,8 @@ exports.report_expense = (req, res) => {
 		total.push(0)
 		total.push('')
 	}
+	header.push('Trạng thái')
+	options.push('trangThai')
 	if (Object.keys(query).length) {
 		ChiPhiPhong.find(query)
 			.sort([['nam', 1], ['thang', 1]])
@@ -608,6 +603,7 @@ exports.report_expense = (req, res) => {
 							total[header.indexOf('Tiền nước')] = total[header.indexOf('Tiền nước')] + item.tienNuoc
 							total[header.indexOf('Tổng tiền')] = total[header.indexOf('Tổng tiền')] + item.tongTien
 						}
+						arr.push(item.trangThai == 0?'Chưa thanh toán':item.trangThai==1?"Đã thanh toán":"Thiếu dữ liệu")
 						array.push(arr)
 					}
 					if (options.indexOf('tongTien') > 0) {
@@ -727,7 +723,6 @@ exports.update_detail_type_room = (req, res) => {
 									rs: 'fail'
 								})
 							} else {
-								console.log(data.table);
 								var table = data.table.map(value => {
 									return {
 										id: parseInt(value.id),
@@ -804,15 +799,17 @@ exports.get_info_room = async (req, res) => {
 	var detail = {};
 	await Phong.findOne({ _id: info.idPhong }).populate('loaiPhong').then(phong => {
 		detail.loaiPhong = phong.loaiPhong
-		ChiPhiHienTai.findOne({ idPhong: info.idPhong }).then(chiphi => {
+		ChiPhiHienTai.findOne({ idPhong: info.idPhong }).then(async chiphi => {
 			if (chiphi) {
 				detail.chiPhi = chiphi
 			}
 			else {
 				detail.chiPhi = { soDien: 0, soNuoc: 0 }
 			}
+			let soNguoi = await getPersonInRoom(info.idPhong)
 			res.json({
-				data: detail
+				data: detail,
+				soNguoi: soNguoi
 			})
 		})
 	})

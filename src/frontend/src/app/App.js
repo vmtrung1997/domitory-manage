@@ -23,7 +23,7 @@ const checkAuth = () => {
             case 'GDN':
                 return 'isAdmin'
             case 'BV':
-                return 'isSecurity'
+                return 'isAdmin'
             default:
                 break
         }
@@ -64,7 +64,7 @@ class App extends Component {
       		<Router basename="">
                 <Switch>
                     <AdminRoute path={`/admin`} component={Admin} />
-                    <SecurityRoute path={`/security`} component={Security} />
+                    <AdminRoute path={`/security`} component={Security} />
                     <Route path={`/signin-admin`} component={SignInAdmin} />
                     <Route path={`/500`} component={InternalServer} />
                     <Route path={`/401`} component={NotAuthen}/>

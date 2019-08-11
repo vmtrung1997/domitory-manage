@@ -10,6 +10,10 @@
   position: absolute
 }
 
+.table-style-print table,.table-style-print table th,.table-style-print table td{
+  border: 2px solid black!important;
+}
+
 .none-display {
   display: none
 }

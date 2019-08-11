@@ -35,14 +35,20 @@
 .id-back{
   margin-bottom: 15px;
 }
+.mainScreen-security{
+  cursor: pointer;
+  color: blue;
+}
 
-.id-back span, .id-back i{
+.id-back span, .id-back i, .mainScreen{
   text-decoration: none;
   color: #999c9e;
   font-weight: bold;
   cursor: pointer;
 }
-
+.mainScreen{
+  padding-right: 30px
+}
 .id-back i{
   margin-right: 5px;
 }
@@ -81,6 +87,11 @@ box-shadow: 6px 10px 10px -9px rgba(179,179,179,1);
   display: flex;
   justify-content: space-between;
   padding-bottom: 10px;
+  width: 100%;
+}
+.security-search{
+  position: fixed;
+  z-index: 300;
 }
 .header-security a{
   cursor: pointer;

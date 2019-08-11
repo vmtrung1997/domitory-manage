@@ -34,6 +34,7 @@ class Example extends React.Component {
       soNuocResetCuoi: 0,
       idRoom: 0,
       trangThai: 0,
+      soNguoi:0
     };
   }
 
@@ -50,6 +51,7 @@ class Example extends React.Component {
       soNuocResetDau: 0,
       soNuocResetCuoi: 0,
       trangThai: 0,
+      soNguoi:0
     });
   }
   handleReset = async () => {
@@ -66,7 +68,8 @@ class Example extends React.Component {
       soNuocResetDau: 0,
       soNuocResetCuoi: 0,
       rooms: roomOptions,
-      trangThai: 0
+      trangThai: 0,
+      soNguoi: 0
     });
   }
 
@@ -109,7 +112,7 @@ class Example extends React.Component {
     var room = this.state.rooms.find(obj => obj.value === value)
     info_room({ idPhong: value }).then(result => {
       if (result.data) {
-        this.setState({ room: room, infoRoom: result.data.data, idRoom: room.value })
+        this.setState({ room: room, infoRoom: result.data.data, idRoom: room.value, soNguoi: result.data.soNguoi })
       }
     })
   }
@@ -148,7 +151,8 @@ class Example extends React.Component {
       soNuocResetDau: 0,
       soNuocResetCuoi: 0,
       trangThai: 0,
-      rooms: roomOptions
+      rooms: roomOptions,
+      soNguoi: 0
     });
   }
   addRow = (event) => {
@@ -156,7 +160,7 @@ class Example extends React.Component {
     var { table, month, year, soDien, soNuoc, room, infoRoom,
       resetSoDien, resetSoNuoc,
       soDienResetDau, soDienResetCuoi,
-      soNuocResetDau, soNuocResetCuoi, trangThai } = this.state;
+      soNuocResetDau, soNuocResetCuoi, trangThai,soNguoi } = this.state;
     find_expense({ thang: parseInt(month), nam: parseInt(year), phong: room }).then(result => {
       if (result.data.rs === 'accept') {
         if (infoRoom.loaiPhong.dien || infoRoom.loaiPhong.nuoc) {
@@ -187,7 +191,8 @@ class Example extends React.Component {
           soNuocCu: infoRoom.loaiPhong.nuoc ? infoRoom.chiPhi.soNuoc : 0,
           isResetDien: resetSoDien,
           isResetNuoc: resetSoNuoc,
-          trangThai: trangThai
+          trangThai: trangThai,
+          soNguoi: soNguoi
         }
         if (resetSoDien) {
           row.soDienResetDau = soDienResetDau ? parseInt(soDienResetDau) : 0;
@@ -279,22 +284,26 @@ class Example extends React.Component {
                     Tháng
                   <Select options={this.state.monthOptions} value={this.state.month} selected={this.monthSelected} />
                   </Col>
-                  <Col md={1} xs={12}></Col>
+                  {/* <Col md={1} xs={12}></Col> */}
                   <Col md={3} xs={12}>
                     Năm
                   <Select options={this.state.yearOptions} value={this.state.year} selected={this.yearSelected} />
                   </Col>
-                  <Col md={1} xs={12}></Col>
+                  {/* <Col md={1} xs={12}></Col> */}
                   <Col md={3} xs={12}>
                     Phòng
                   <Select options={this.state.rooms} value={this.state.idRoom} selected={this.selected} />
+                  </Col>
+                  <Col md={3} xs={12}>
+                    Số người
+                    <Input type="number" min={0} value={this.state.soNguoi} getValue={this.onChange} name={'soNguoi'}/>
                   </Col>
                 </Row>
                 <Row>
                   <Col md={3} xs={12}>
                     Số điện
                   <Input type="number" min={0} value={this.state.soDien} getValue={this.onChange} name={'soDien'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.dien} />
-                    {this.state.resetSoDien &&
+                    {/* {this.state.resetSoDien &&
                       <Row className="d-md-none">
                         <Col>
                           Chỉ số đầu
@@ -303,15 +312,15 @@ class Example extends React.Component {
                     <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
                         </Col>
                       </Row>
-                    }
+                    } */}
                   </Col>
-                  <Col md={1} xs={12}>&nbsp;
+                  {/* <Col md={1} xs={12}>&nbsp;
                       <Button title='Reset số điện' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.dien : false} onClick={() => { this.setState({ resetSoDien: !this.state.resetSoDien }) }}><i className="fas fa-retweet"></i></Button>
-                  </Col>
+                  </Col> */}
                   <Col md={3}>
                     Số nước
                   <Input type="number" min={0} value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.nuoc} />
-                    {this.state.resetSoDien &&
+                    {/* {this.state.resetSoDien &&
                       <Row className="d-md-none">
                         <Col>
                           Chỉ số đầu
@@ -320,12 +329,12 @@ class Example extends React.Component {
                     <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />
                         </Col>
                       </Row>
-                    }
+                    } */}
                   </Col>
-                  <Col md={1} xs={12}>
+                  {/* <Col md={1} xs={12}>
                     &nbsp;
                       <Button title='Reset số nước' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.nuoc : false} onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button>
-                  </Col>
+                  </Col> */}
                   <Col md={3} xs={12}>
                     &nbsp;
                   <Checkbox label={'Thiếu dữ liệu'} check={this.state.trangThai === 2} isCheck={(e) => this.handleCheckTrangThai(e)} />
@@ -336,7 +345,7 @@ class Example extends React.Component {
                   </Col>
 
                 </Row>
-                {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
+                {/* {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
                   <Row>
                     <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '2' : !this.state.resetSoDien && this.state.resetSoNuoc ? '5' : '2'} className='text-right'>
                       Chỉ số đầu
@@ -364,7 +373,7 @@ class Example extends React.Component {
                       <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />}
                     </Col>
                   </Row>
-                </div>}
+                </div>} */}
                 {Object.keys(this.state.infoRoom).length && <Row className={'m-b-10'}>
                   <Col md={4} xs={12}>
                     Số điện hiện tại: {this.state.infoRoom.chiPhi.soDien}

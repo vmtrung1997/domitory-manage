@@ -17,6 +17,7 @@ import Loader from "../../../components/loader/loader";
 import Print from './infoStudentPrint';
 import { get_element, get_list_student_by_page } from './infoStudentActions'
 import { AddStudentModal, ConvertStudentModal, ImportDataModal, ExportDataModal } from './infoStudentModal';
+import jwt_decode from 'jwt-decode';
 
 const PRESENT = 0, OLD = 1, PROCESSING = 2;
 
@@ -28,7 +29,7 @@ class InfoStudent extends Component{
       totalpages: 1,
       infoList: [],
       checkedAll: false,
-
+      roles: [],
       searchValues: {
         name: '',
         studentNumber: '',
@@ -111,7 +112,7 @@ class InfoStudent extends Component{
 
   onViewDetail = (mssv) => {
     this.props.history.push({
-      pathname: '/admin/student/detail/'+ mssv,
+      pathname: `${this.props.match.url}/detail/${mssv}`//'/admin/student/detail/'+ mssv,
       //state: { info: info }
     });
   };
@@ -123,8 +124,18 @@ class InfoStudent extends Component{
     this.getElement('floor');
     this.getYear()
     // this.modifyData();
+    this.getRoles()
   }
+  getRoles = () => {
+		let token = JSON.parse(localStorage.getItem('secret'));
+		let decode = jwt_decode(token.access_token)
+		if (decode && decode.user.userEntity.phanQuyen){
+			this.setState({
+				roles: decode.user.userEntity.phanQuyen.quyen
+			})
 
+		}
+	}
   getElement = (name) => {
     get_element(name).then(result => {
       switch (name) {
@@ -347,6 +358,7 @@ class InfoStudent extends Component{
       infoList,
       floorOptions,
       roomHistory,
+      roles
     } = this.state;
     let i = pageActive*limit - 10;
     return(
@@ -459,6 +471,7 @@ class InfoStudent extends Component{
                 </Col>
               </Row>
             </form>
+            {roles.includes('SV_DASHBOARD') && 
             <Row className={'group-btn'}>
                 <div className={'is-manipulation'}>
                   <ImportDataModal
@@ -493,6 +506,7 @@ class InfoStudent extends Component{
                   />
                 </div>
             </Row>
+            }
           </div>
           <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
           {/*end modal*/}
@@ -549,6 +563,7 @@ class InfoStudent extends Component{
                 >
                   Sinh viên hiện tại
                 </Button>
+                {roles.includes('SV_DASHBOARD') && 
                 <Button
                   classCustom={'info-student-tab-btn'}
                   color={'default'}
@@ -557,7 +572,8 @@ class InfoStudent extends Component{
                   onClick={() => this.handleChooseOption(OLD)}
                 >
                   Sinh viên cũ
-                </Button>
+                </Button>}
+                {roles.includes('SV_DASHBOARD') && 
                 <Button
                   classCustom={'info-student-tab-btn'}
                   actived={!!(!isOld && !isActive)}
@@ -567,6 +583,7 @@ class InfoStudent extends Component{
                 >
                   Đang chờ xử lý
                 </Button>
+              }
               </Col>
             </Row>
 
@@ -578,7 +595,7 @@ class InfoStudent extends Component{
                 <th>Họ và Tên</th>
                 <th>Trường</th>
                 <th>Phòng</th>
-                <th>
+                {roles.includes('SV_DASHBOARD') && <th>
                   Thao tác
                   <span style={{display: 'inline-block', marginLeft: '20px'}}>
                     {(isActive || isOld) ?
@@ -591,7 +608,7 @@ class InfoStudent extends Component{
                       : ''
                     }
                   </span>
-                </th>
+                </th>}
               </tr>
               </thead>
               <tbody>
@@ -618,7 +635,7 @@ class InfoStudent extends Component{
                       </Button>
                       </div>
                       </td>
-                    <td style={{display: 'flex', justifyContent: 'center'}}>
+                      {roles.includes('SV_DASHBOARD') && <td style={{display: 'flex', justifyContent: 'center'}}>
                        <Button
                           title={'In thẻ'}
                           color={'success'}
@@ -643,7 +660,7 @@ class InfoStudent extends Component{
                           check={this.handleValueCheck(info.MSSV)}
                         /> : ''
                       }
-                    </td>
+                    </td>}
                   </tr>
                 )
               })}

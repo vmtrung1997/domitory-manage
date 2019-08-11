@@ -24,17 +24,21 @@ class Confirm extends Component {
   }
   constructor(props) {
     super(props);
+    var today = new Date()
     this.state = {
       show: this.props.show,
       printComponent: (<div></div>),
       tableData: {},
       selectedData: [],
-      fromDay: new Date(),
-      toDay: new Date(),
-      lastDay: new Date(),
+      fromDay: new Date(today.getFullYear(),today.getMonth(),1),
+      toDay: new Date(today.getFullYear(),today.getMonth(),5),
+      lastDay: new Date(today.getFullYear(),today.getMonth(),10),
       selectType: '',
       admin: 'Phan Văn Thành'
     }
+  }
+  getToday = () => {
+    return new Date();
   }
   componentDidMount() {
     this.setState({
@@ -62,9 +66,6 @@ class Confirm extends Component {
   handleClose = () => {
     this.setState({ show: false, 
       printComponent: (<div></div>),
-      fromDay: new Date(),
-      toDay: new Date(),
-      lastDay: new Date(),
       selectType: '',
       admin: 'Phan Văn Thành'
     })
@@ -72,9 +73,6 @@ class Confirm extends Component {
   handleShow = () => {
     this.setState({
       show: true,
-      fromDay: new Date(),
-      toDay: new Date(),
-      lastDay: new Date(),
       admin: 'Phan Văn Thành'
     })
   }
@@ -196,6 +194,7 @@ class Confirm extends Component {
       </Row>
       <Row>
         <Col xs={12}>
+        <div className="table-style-print">
           <Table bordered className='table-print'>
             <thead className="text-center">
               <tr>
@@ -251,6 +250,7 @@ class Confirm extends Component {
               </tr>
             </tbody>
           </Table>
+          </div>
         </Col>
       </Row>
       <Row className={'m-b-10'}>

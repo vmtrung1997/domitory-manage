@@ -26,6 +26,7 @@ class Example extends React.Component {
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
       soNuocResetCuoi: 0,
+      soNguoi: 0,
       roles: [],
       soNguoi: 0
     };
@@ -82,6 +83,8 @@ class Example extends React.Component {
     event.preventDefault();
     var self = this;
     var { expenseDetail } = this.props;
+    expenseDetail.soNguoi = this.state.soNguoi;
+    console.log(expenseDetail)
     if (parseInt(this.state.soDien) < expenseDetail.soDienCu) {
       ToastsStore.error("Số điện đầu phải nhỏ hơn số điện cuối")
       return;
@@ -177,7 +180,13 @@ class Example extends React.Component {
             <Input disabled={true} value={exp.thang + '/' + exp.nam} />
                 </Col>
                 <Col>Số người
-            <Input disabled={true} value={this.state.soNguoi} /></Col>
+            <Input
+                    disabled={!this.state.capNhat}
+                    type={'number'}
+                    min={0}
+                    value={this.state.soNguoi}
+                    name="soNguoi"
+                    getValue={this.handleChange} /></Col>
               </Row>
               <Row>
                 <Col md='12'>

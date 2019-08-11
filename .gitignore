@@ -7,6 +7,10 @@ hinhanhtostring
 .env.local
 .env.*.local
 
+# log file db
+/src/backend/public/logs
+
+/src/backend/public/backups
 # Log files
 npm-debug.log*
 yarn-debug.log*

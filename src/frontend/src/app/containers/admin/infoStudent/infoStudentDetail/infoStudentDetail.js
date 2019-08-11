@@ -21,6 +21,7 @@ import Loader from '../../../../components/loader/loader';
 import { ChooseRoom } from './../infoStudentModal'
 import { get_info_Student_detail, get_activites_by_MSSV, get_floor_room } from './../infoStudentActions'
 import Checkbox from "../../../../components/checkbox/checkbox";
+import jwt_decode from 'jwt-decode';
 
 const nationOption = [
   { value: "Kinh", label: "Kinh" },
@@ -83,6 +84,8 @@ class InfoStudentDetail extends Component {
       showRoomPopup: false,
       roomData: {},
       isOld: true,
+      loaiUser: 'SA',
+      roles: []
     }
   }
 
@@ -90,12 +93,14 @@ class InfoStudentDetail extends Component {
     this.getData();
     this.getElement('room');
     this.getElement('school');
+    this.getRoles()
   }
 
   getData = () => {
     this.setState({
       loading: true,
     });
+    console.log(this.props.match.params)
     get_info_Student_detail(this.props.match.params.mssv)
       .then(result => {
         let profile = result.data;
@@ -152,7 +157,17 @@ class InfoStudentDetail extends Component {
     }).catch(() => {
     })
   };
+  getRoles = () => {
+		let token = JSON.parse(localStorage.getItem('secret'));
+		let decode = jwt_decode(token.access_token)
+		if (decode && decode.user.userEntity.phanQuyen){
+			this.setState({
+        roles: decode.user.userEntity.phanQuyen.quyen,
+				loaiUser: decode.user.userEntity.loai
+			})
 
+		}
+	}
   getElement = async (name) => {
     await refreshToken();
     let secret = JSON.parse(localStorage.getItem('secret'));
@@ -339,13 +354,16 @@ class InfoStudentDetail extends Component {
       major,
       dataActivities,
       isOld,
-      profile: {isActive}
+      profile: {isActive},
+      loaiUser,
+      roles
     } = this.state;
     const { CMND, doanVien, dangVien, } = profile;
     let imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
     let gender = this.state.profile && this.state.profile.gioiTinh ? this.state.profile.gioiTinh: 0;
     let danToc = profile.danToc ? profile.danToc : 'Kinh';
     let tonGiao = profile.tonGiao ? profile.tonGiao : 'Không';
+    let linkBack = loaiUser === 'BV'?'security':'admin'
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -357,7 +375,7 @@ class InfoStudentDetail extends Component {
         <div className={'content-body'}>
           <div className={'infoDetail'}>
             <div className={'id-back'}>
-              <Link to={'/admin/student'}>
+              <Link to={`/${linkBack}/student`}>
                 <i className="fas fa-chevron-left" />
                 <span>Trở về</span>
               </Link>
@@ -649,6 +667,7 @@ class InfoStudentDetail extends Component {
             </Row>
 
           </div>
+          {roles.includes('SV_CHANGE_DETAIL') && 
           <Row className={'isc-footer-btn'}>
             {!isOld &&
               <Button
@@ -666,6 +685,7 @@ class InfoStudentDetail extends Component {
             </Button>
             }
           </Row>
+        }
         </div>
 
       </div>
