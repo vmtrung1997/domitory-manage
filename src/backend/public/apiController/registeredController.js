@@ -35,12 +35,8 @@ exports.get_list_register = async (req, res) => {
 		query.isAc = req.body.accept
 	}
 
-	if(parseInt(req.body.year) !== 0){
-		var year = parseInt(req.body.year)
-		query.date = {
-			$lte: new Date( year+1 , 7, 31),
-			$gte: new Date(  year, 8, 1)
-		}
+	query.date = {
+		$gte: new Date(now.getFullYear() - 1, 3, 1)
 	}
 
 	var last = await Register.paginate( {} , { sort: {date : 1}}).catch(err => {
@@ -76,8 +72,11 @@ exports.get_list_register = async (req, res) => {
 			    ObPoint[sv.idProfile._id] = point
 	    	})
 	      	.catch( err => {
-	      		console.log('==get_register: ',err)
 				res.status(500)
+				res.json({
+					err: err
+				})
+	      		console.log('==get_register: ',err)
 	      	})
 	    }))
 
@@ -88,8 +87,11 @@ exports.get_list_register = async (req, res) => {
 			rs: result
 		})
 	}).catch(err => {
-		console.log('==get_register: ',err)
 		res.status(500)
+		res.json({
+			err: err
+		})
+		console.log('==get_register: ',err)
 	})                             
 }
 
@@ -129,6 +131,9 @@ exports.accept_request = (req, res) => {
 				if(err){
 					console.log('==update_request:', err)
 					res.status(500)
+					res.json({
+						err: err
+					})
 				}
 			})
 		}

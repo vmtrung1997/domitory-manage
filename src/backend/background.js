@@ -2,7 +2,7 @@ const Profile = require('./public/models/Profile');
 const Account = require('./public/models/TaiKhoan');
 const History = require('./public/models/LichSuPhong')
 
-exports.background = () => {
+exports.background = async () => {
 	var query = {
 		isActive: false,
 	    hanDangKy: { 
@@ -10,7 +10,7 @@ exports.background = () => {
 	    }
 	}
 	
-	Profile.find(query, (err, val) => {
+	await Profile.find(query, (err, val) => {
 		if(err) { console.log("==background: ", err )}
 		else {
 			val.map((item, index) => {
@@ -20,6 +20,32 @@ exports.background = () => {
 				item.save()
 				Account.updateOne({idProfile: item._id}, {isDelete: 1}, (err, res) => {
 					if(err) { console.log("==background: ", err )}
+				})
+			})
+		}
+	})
+
+	Profile.find({isActive: false, hanDangKy: null, idPhong: null}, (err, val) => {
+		if(err) { console.log("==background: ", err )}
+		else {
+			val.map((item, index) => {
+				Account.findOne({idProfile: item._id}, async (err, res) => {
+					if(err) { console.log('==background: ', err)}
+					if(res) {
+						var his = await History.findOne({idTaiKhoan: res._id}).catch(err => {
+							console.log('==background: ',err)
+						})
+						if(!his) {
+							Profile.deleteOne({ _id: item._id }, function (err) {
+								if(err){
+									console.log('==background: ', err)
+								}
+							})
+							Account.deleteOne({idProfile: item._id}, function (err) {
+								if(err) { console.log("==background: ", err )}
+							})
+						}
+					}
 				})
 			})
 		}

@@ -57,3 +57,8 @@
 .isc-footer-btn button{
     margin-right: 10px;
 }
+
+.f-center{
+    display: flex;
+    justify-content: center;
+}

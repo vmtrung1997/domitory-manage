@@ -24,12 +24,12 @@ exports.dbAutoBackUp = function () {
         var newBackupDir = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
         // check for remove old backup after keeping # of days given in configuration
         var cmd = 'mongodump --db ' + dbOptions.database + ' -o ' + dbOptions.autoBackupPath + newBackupDir; // Command for mongodb dump process
-        console.log('backup');
+        console.log('backup cmd',cmd);
         exec(cmd, function (error, stdout, stderr) {
             console.log('just backup')
             if (this.empty(error)) {
                 // check for remove old backup after keeping # of days given in configuration
-                if (dbOptions.removeOldBackup == true) {
+                if (dbOptions.removeOldBackup) {
                     beforeDate = _.clone(currentDate);
                     beforeDate.setDate(beforeDate.getDate() - dbOptions.keepLastBackup * 7); // Substract number of days to keep backup and remove old backup
                     oldBackupPath = dbOptions.autoBackupPath + beforeDate.getFullYear() + '-' + (beforeDate.getMonth() + 1) + beforeDate.getDate() // old backup(after keeping # of days)

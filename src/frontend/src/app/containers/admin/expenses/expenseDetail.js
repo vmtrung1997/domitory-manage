@@ -138,11 +138,7 @@ class Example extends React.Component {
     })
   }
   handleSubmit = () => {
-    if (this.state.thayDien && this.state.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật đồng hồ điện [${this.state.soDienResetCuoi}] và đồng hồ nước [${this.state.soNuocResetCuoi}])`))
-      return;
-    else if (this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ điện: [${this.state.soDienResetCuoi}] và đồng hồ nước [${this.state.soDien}])`))
-      return;
-    else if (this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ nước: [${this.state.soNuocResetCuoi}] và đồng hồ nước [${this.state.soNuoc}])`))
+    if (!window.confirm(`Xác nhận thanh toán chi phí này?`))
       return;
     this.props.loading(true)
     var exp = { id: this.props.expenseDetail._id };
@@ -282,10 +278,10 @@ class Example extends React.Component {
               {this.state.capNhat && <Button color="warning" type='submit'>
                 Cập nhật
             </Button>}
-              {exp.trangThai === 0 && <Button variant="default" onClick={this.handleSubmit}>
+              
+              {this.state.roles && this.state.roles.includes('CP_CONFIRM') && exp.trangThai === 0 && <Button variant="default" onClick={this.handleSubmit}>
                 Xác nhận thanh toán
-        </Button>
-              }
+        </Button>}
             </Modal.Footer> :
               <Modal.Footer>
                 <Button variant="default" color="default" onClick={this.handleClose}>

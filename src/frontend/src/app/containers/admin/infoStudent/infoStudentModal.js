@@ -1032,7 +1032,7 @@ export class ChooseRoom extends Component{
   render(){
     return(
       <React.Fragment>
-        <div>{this.state.label}
+        <div>{this.state.label} &#160;
         <Button
           disabled={this.props.disabled}
           style={{marginLeft: '2px'}}

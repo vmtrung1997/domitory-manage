@@ -44,11 +44,12 @@ export default class ListRoom extends React.Component{
     else
       return(
         <Tabs id="controlled-tab-example" defaultActiveKey={data && 'Lầu ' + data[0].floor}>
-          {data && data.map(floor => {
+          {data && data.map((floor, index) => {
             return(
               <Tab
-                eventKey={'Lầu ' + floor.floor}
-                title={'Lầu ' + floor.floor}
+                eventKey={'Lầu ' + floor.floor.name}
+                title={'Lầu ' + floor.floor.name}
+                key={index}
               >
                 <div className={'list-room_box'}>
                 {floor && floor.rooms.map((room, index) => {
