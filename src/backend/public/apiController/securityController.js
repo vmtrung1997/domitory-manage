@@ -30,7 +30,6 @@ function find_history(type){
 
 exports.get_history_list = (req, res) => {
   var {type} = req.body
-  console.log(type);
   find_history({type: type=='in-dormitory'?0:1}).then(result => {
     res.json({
       rs: 'success',
@@ -53,7 +52,6 @@ exports.input_card = (req, res) => {
   {path: 'nganhHoc', select: 'tenNganh'}
 ]).then(profile => {
       if (profile && profile.idTaiKhoan!=null){
-        console.log(profile)
         if (profile.MSSV)
         var his = new LichSu({
           MSSV: profile.MSSV,
