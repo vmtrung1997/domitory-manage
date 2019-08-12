@@ -1,7 +1,7 @@
 .card{
 	border-radius: 20px;
 	min-height: 226px;
-	width: 365px;
+	width: 366px;
 	height: 232px;
 	position: relative;
 	background-image: url(https://media.kenhtuyensinh.vn/images/2013/12/dai_hoc_khoa_hoc_tu_nhien_tp_hcm.jpg);
@@ -48,7 +48,8 @@
 
 .body-card{
 	display: flex;
-	padding: 5px 15px;
+	padding: 5px 0px;
+	height: 100%;
 }
 .body-card::after {
 	content: '';
@@ -102,12 +103,14 @@
 	display: flex;
 }
 .info-card{
-	font-size: 17px;
-	display: block;
+	font-size: 12px;
 	color: #2b5a7a;
-	font-weight: bold;
+}
+.font-bold{
+	font-weight: bold
 }
 .info-content{
+	font-size: 14px;
 	color: #040461
 }
 
