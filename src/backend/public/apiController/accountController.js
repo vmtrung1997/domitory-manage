@@ -117,7 +117,7 @@ exports.update_Account = (req, res) => {
 	const id = req.query.id
 	if(req.body){
 		const rule = req.body.rule
-		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' || rule === 'ADCP' || rule === 'DD' || rule === 'GDN' ){
+		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' || rule === 'ADCP' || rule === 'DD' || rule === 'GDN' || rule === 'XNTT' ){
 			Account.updateOne({ _id: id }, {loai: rule}, (err, val) => {
 				if(!err){
 					res.json({ rs: 'ok'})
