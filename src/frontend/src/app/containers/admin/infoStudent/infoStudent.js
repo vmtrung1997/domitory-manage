@@ -17,6 +17,7 @@ import Loader from "../../../components/loader/loader";
 import Print from './infoStudentPrint';
 import { get_element, get_list_student_by_page } from './infoStudentActions'
 import { AddStudentModal, ConvertStudentModal, ImportDataModal, ExportDataModal } from './infoStudentModal';
+import {getMajor} from "../university/universityAction";
 
 const PRESENT = 0, OLD = 1, PROCESSING = 2;
 
@@ -38,6 +39,7 @@ class InfoStudent extends Component{
         isActive: true,
         roomSelected: {value: 0, label: "Tất cả"},
         schoolSelected: {value: 0, label: "Tất cả"},
+        majorSelected: {value: 0, label: "Tất cả"},
         floorSelected: {value: 0, label: "Tất cả"},
         yearSelected: {value: 0, label: "Tất cả"}
       },
@@ -121,7 +123,9 @@ class InfoStudent extends Component{
     this.getElement('room');
     this.getElement('school');
     this.getElement('floor');
+    this.getMajorOptions();
     this.getYear()
+
     // this.modifyData();
   }
 
@@ -172,6 +176,18 @@ class InfoStudent extends Component{
           loading: false
         })
       });
+  };
+
+  getMajorOptions = () => {
+    getMajor().then(result =>{
+      if (result.data.rs === 'success') {
+        let majorList = result.data.data.map(major => ({ value: major._id, label: major.tenNganh }));
+        majorList.unshift({ value: -1, label: 'Chưa xác định' });
+        this.setState({
+          majorOptions: majorList,
+        })
+      }
+    })
   };
 
   getYear = () => {
@@ -255,6 +271,7 @@ class InfoStudent extends Component{
         pageActive: 1,
         roomSelected: {value: 0, label: "Tất cả"},
         schoolSelected: {value: 0, label: "Tất cả"},
+        majorSelected: {value: 0, label: "Tất cả"},
         floorSelected: {value: 0, label: "Tất cả"}
       },
       loading: true,
@@ -336,6 +353,7 @@ class InfoStudent extends Component{
     });
   };
 
+
   render(){
     const {
       searchValues: {
@@ -361,57 +379,21 @@ class InfoStudent extends Component{
           <div className={'is-header'}>
             <form onSubmit={e => this.handleSearch(e)}>
               <Row>
-              <Col md={1}>
-                MSSV
-              </Col>
-              <Col md={2}>
-                <Input
-                  getValue={this.onChange}
-                  name={'studentNumber'}
-                  value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}
-                />
-              </Col>
-
-              <Col md={1}>
-                Họ tên
-              </Col>
-              <Col md={4}>
-                <Input
-                  getValue={this.onChange}
-                  name={'name'}
-                  value={this.state.searchValues.name}/>
-              </Col>
-
-              <Col md={1}>
-                Phòng
-              </Col>
-              <Col md={2}>
-                <SearchSelect
-                  isSearchable={true}
-                  placeholder={''}
-                  value={this.state.searchValues.roomSelected}
-                  onChange={this.handleSelectRoom}
-                  options={this.state.roomOptions}
-                />
-              </Col>
-            </Row>
-              <Row>
                 <Col md={1}>
-                  Năm
+                  MSSV
                 </Col>
-                <Col md={2}>
-                  <SearchSelect
-                    isSearchable={true}
-                    value={this.state.searchValues.yearSelected}
-                    onChange={(selectedOption) => this.handleSelected('yearSelected',selectedOption)}
-                    options={this.state.yearOptions}
+                <Col md={3}>
+                  <Input
+                    getValue={this.onChange}
+                    name={'studentNumber'}
+                    value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}
                   />
                 </Col>
 
                 <Col md={1}>
                   Trường
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                   <SearchSelect
                     isSearchable={true}
                     value={this.state.searchValues.schoolSelected}
@@ -421,9 +403,57 @@ class InfoStudent extends Component{
                 </Col>
 
                 <Col md={1}>
+                  Khoa
+                </Col>
+                <Col md={3}>
+                  <SearchSelect
+                    isSearchable={true}
+                    value={this.state.searchValues.majorSelected}
+                    onChange={(selectedOption) => this.handleSelected('majorSelected',selectedOption)}
+                    options={this.state.majorOptions}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={1}>
+                  Họ tên
+                </Col>
+                <Col md={3}>
+                  <Input
+                    getValue={this.onChange}
+                    name={'name'}
+                    value={this.state.searchValues.name}/>
+                </Col>
+
+                {/*<Col md={1}>*/}
+                  {/*Năm*/}
+                {/*</Col>*/}
+                {/*<Col md={2}>*/}
+                  {/*<SearchSelect*/}
+                    {/*isSearchable={true}*/}
+                    {/*value={this.state.searchValues.yearSelected}*/}
+                    {/*onChange={(selectedOption) => this.handleSelected('yearSelected',selectedOption)}*/}
+                    {/*options={this.state.yearOptions}*/}
+                  {/*/>*/}
+                {/*</Col>*/}
+
+                <Col md={1}>
+                  Phòng
+                </Col>
+                <Col md={3}>
+                  <SearchSelect
+                    isSearchable={true}
+                    placeholder={''}
+                    value={this.state.searchValues.roomSelected}
+                    onChange={this.handleSelectRoom}
+                    options={this.state.roomOptions}
+                  />
+                </Col>
+
+                <Col md={1}>
                   Lầu
                 </Col>
-                <Col md={2}>
+                <Col md={3}>
                   <SearchSelect
                     isSearchable={true}
                     value={this.state.searchValues.floorSelected}
@@ -577,6 +607,7 @@ class InfoStudent extends Component{
                 <th>MSSV</th>
                 <th>Họ và Tên</th>
                 <th>Trường</th>
+                <th>Khoa</th>
                 <th>Phòng</th>
                 <th>
                   Thao tác
@@ -606,6 +637,7 @@ class InfoStudent extends Component{
                     <td>{info.MSSV || 'Trống'}</td>
                     <td>{info.hoTen || 'Trống'}</td>
                     <td>{info.truong ? info.truong.tenTruong : 'Chưa xác định'}</td>
+                    <td>{info.nganhHoc ? info.nganhHoc.tenNganh : 'Chưa xác định'}</td>
                     <td>
                       {info.idPhong ? info.idPhong.tenPhong : '-----'}
                       <div className='float-right'>
