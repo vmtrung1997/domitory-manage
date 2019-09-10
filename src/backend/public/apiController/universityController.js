@@ -1,7 +1,7 @@
-const Truong = require('../models/Truong')
-const Nganh = require('../models/NganhHoc')
-const TruongNganh = require('../models/TruongNganh')
-const Profile =require('../models/Profile')
+const Truong = require('../models/Truong');
+const Nganh = require('../models/NganhHoc');
+const TruongNganh = require('../models/TruongNganh');
+const Profile =require('../models/Profile');
 
 exports.getSchoolList = (req, res) => {
   Truong.find().sort('tenTruong').then(value => {
@@ -9,7 +9,7 @@ exports.getSchoolList = (req, res) => {
       data: value
     })
   })
-}
+};
 
 exports.insertSchool = (req, res) => {
   Truong.findOne({ tenTruong: { $regex: `.*${req.body.tenTruong}.*`, $options: 'i' } })
@@ -20,7 +20,7 @@ exports.insertSchool = (req, res) => {
         msg: 'Tên trường đã tồn tại'
       })
     } else {
-      var truong = new Truong({tenTruong: req.body.tenTruong})
+      var truong = new Truong({tenTruong: req.body.tenTruong});
       truong.save().then(() => {
         res.json({
           rs: 'success'
@@ -33,9 +33,9 @@ exports.insertSchool = (req, res) => {
       })
     }
   })
-}
+};
 exports.editSchool = (req, res) => {
-  var school = req.body
+  var school = req.body;
   Truong.updateOne({_id: school.id}, {
     $set: {tenTruong: school.tenTruong}
   }, (err, raw) => {
@@ -49,10 +49,10 @@ exports.editSchool = (req, res) => {
       })
     }
   })
-}
+};
 
 exports.removeSchool = (req, res) => {
-  var {id} = req.body
+  var {id} = req.body;
   TruongNganh.findOne({idTruong: id}).then(truongNganh => {
     if (truongNganh){
       res.json({
@@ -84,28 +84,35 @@ exports.removeSchool = (req, res) => {
       })
     }
   })
-}
+};
 
 exports.getMajor = (req, res) => {
-  var id = req.body.id;
-  TruongNganh.find({idTruong: id}).populate('idNganhHoc').then(value => {
-    res.json({
-      rs: 'success',
-      data: value
-    })
-  }).catch(err => res.json({rs: 'fail'}))
-}
+  const id = req.body.id;
+  if(id) {
+    TruongNganh.find({idTruong: id}).populate('idNganhHoc').then(value => {
+      res.status(200).json({
+        rs: 'success',
+        data: value
+      })
+    }).catch(err => res.json({rs: 'fail'}))
+  } else {
+
+    Nganh.find().then(result => {
+      res.status(200).json({rs: 'success', data:result})
+    }).catch(err => res.status(400).json({rs: 'fail'}))
+  }
+};
 
 exports.insertMajor = (req, res) => {
   var nganh = new Nganh({
     tenNganh: req.body.tenNganh
-  })
+  });
   nganh.save().then(nganhSave => {
     if (nganhSave){
       var truongNganh = new TruongNganh({
         idTruong: req.body.idTruong,
         idNganhHoc: nganhSave._id
-      })
+      });
       truongNganh.save().then(truongNganh => {
         if (truongNganh){
           res.json({
@@ -115,7 +122,7 @@ exports.insertMajor = (req, res) => {
       })
     }
   })
-}
+};
 exports.updateMajor = (req, res) => {
   Nganh.findOneAndUpdate({_id: req.body.id},
     {$set: {
@@ -132,7 +139,7 @@ exports.updateMajor = (req, res) => {
         })
       }
     })
-}
+};
 
 exports.removeMajor = (req, res) => {
   Profile.findOne({nganhHoc: req.body.id})
@@ -166,4 +173,4 @@ exports.removeMajor = (req, res) => {
       })
     }
   })
-}
+};
