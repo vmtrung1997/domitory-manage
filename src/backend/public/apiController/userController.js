@@ -7,7 +7,7 @@ const ReToken = require("../models/refreshToken");
 const auth = require("../repos/authRepo");
 const nodemailer = require("nodemailer");
 const sanitize = require("mongo-sanitize");
-require("../models/PhanQuyen")
+require("../models/PhanQuyen");
 var handlebars = require('handlebars');
 
 const fs = require("fs");
@@ -40,12 +40,10 @@ exports.register = (req, res) => {
         gioiTinh: 1
       });
       profile.save().then(() => {
-        console.log("==register: success");
         res.status(201).json(req.body);
       });
     })
     .catch(err => {
-      console.log("==register: ", err);
       res.status(500);
     });
 };

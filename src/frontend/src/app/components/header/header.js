@@ -7,13 +7,13 @@ import './header.css'
 
 export default class Header extends React.Component{
   constructor(props){
-    super(props)
+    super(props);
     this.state = {
       collapsed: false
     }
   }
     logout = () => {
-        const secret = JSON.parse(localStorage.getItem('secret'))
+        const secret = JSON.parse(localStorage.getItem('secret'));
 
         axios.get(`/logout`, {
             headers: {
@@ -21,23 +21,22 @@ export default class Header extends React.Component{
             }
         }).then( res => localStorage.removeItem('secret') )
             
-    }
+    };
 
   onChangeStyleNav = () => {
-    console.log('==btn click')
     if(this.state.collapsed){
-      this.props.onChangeStyleNav(false)
+      this.props.onChangeStyleNav(false);
       this.setState({
         collapsed: false
       })
     } else {
-      this.props.onChangeStyleNav(true)
+      this.props.onChangeStyleNav(true);
       this.setState({
         collapsed: true
       })
     }
 
-  }
+  };
     render() {
         return(
             <div className={"header"}>

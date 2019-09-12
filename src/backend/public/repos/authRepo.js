@@ -59,7 +59,7 @@ exports.verifyAdmin = (req, res, next) => {
     if(token){
         const decode = jwt_decode(token)
         const rule = decode.user.userEntity.loai
-        if( rule === 'SA' || rule === 'AM' || rule === 'DD' || rule === 'ADCP' || rule === 'GDN' || rule === 'BV')
+        if( rule === 'SA' || rule === 'AM' || rule === 'DD' || rule === 'ADCP' || rule === 'GDN' || rule === 'XNTT'|| rule === 'BV' )
             next()
     }
 }

@@ -71,7 +71,6 @@ function addOneStudent(data) {
               });
           }
         }).catch(err => {
-        console.log('==truy van err', err)
         //resolve( {status: 500, msg: 'Truy vấn mssv không được!', data: data, err: err})
       });
     }
@@ -275,6 +274,11 @@ exports.getListStudent = async(req, res) => {
   else if(params.idTruong === -1)
     query.truong = undefined; //{"$exists": false};
 
+  if(params.idNganhHoc && params.idNganhHoc!== -1)
+    query.nganhHoc = params.idNganhHoc;
+  else if(params.idNganhHoc === -1)
+    query.nganhHoc = undefined;
+
   if(params.nam && params.nam !== 0){
     let startTime =  new Date(params.nam, 1, 1);
     startTime.setHours(0,0,0,0);
@@ -348,6 +352,11 @@ exports.getListStudentPaging = async(req, res) => {
     query.truong = params.idTruong;
   else if(params.idTruong === -1)
     query.truong = undefined;//{"$exists": false};
+
+  if(params.idNganhHoc && params.idNganhHoc!== -1)
+    query.nganhHoc = params.idNganhHoc;
+  else if(params.idNganhHoc === -1)
+    query.nganhHoc = undefined;
 
   if(params.nam && params.nam !== 0){
     let startTime =  new Date(params.nam, 1, 1);

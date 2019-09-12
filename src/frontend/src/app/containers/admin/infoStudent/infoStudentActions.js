@@ -76,20 +76,26 @@ export const convert_student = async(arr, option, regisExpiredDate, dayOut) => {
 
 export const get_list_student_by_page = async(params) => {
   const headers = await get_headers();
-  const { studentNumber, name, roomSelected, schoolSelected, yearSelected, floorSelected, isOld, isActive, pageActive, limit } = params;
-  let idPhong = roomSelected.value;
-  let idTruong = schoolSelected.value;
+  const {
+    studentNumber,
+    name,
+    roomSelected,
+    schoolSelected,
+    majorSelected,
+    yearSelected,
+    floorSelected,
+    isOld,
+    isActive,
+    pageActive,
+    limit
+  } = params;
+  const idPhong = roomSelected.value === '0' ? '' : roomSelected.value;
+  const idTruong = schoolSelected.value === '0' ? '' : schoolSelected.value;
+  const idNganhHoc = majorSelected.value === '0' ? '' : majorSelected.value;
   const options = {
     page: pageActive,
     limit: limit
   };
-
-  if(idPhong === '0'){
-    idPhong = ''
-  }
-  if(idTruong === '0'){
-    idTruong = ''
-  }
 
   return new Promise((resolve, reject) => {
     axios.post(`/manager/infoStudent/getPaging`,
@@ -98,6 +104,7 @@ export const get_list_student_by_page = async(params) => {
         hoTen: name,
         idPhong: idPhong,
         idTruong: idTruong,
+        idNganhHoc: idNganhHoc,
         isOld: isOld,
         isActive: isActive,
         lau: floorSelected.value,
@@ -114,16 +121,10 @@ export const get_list_student_by_page = async(params) => {
 export const get_list_student = async(searchValues, activityPoint) => {
   const headers = await get_headers();
 
-  const { studentNumber, name, roomSelected, schoolSelected, yearSelected, floorSelected, isOld, isActive } = searchValues;
-  let idPhong = roomSelected.value;
-  let idTruong = schoolSelected.value;
-
-  if(idPhong === '0'){
-    idPhong = ''
-  }
-  if(idTruong === '0'){
-    idTruong = ''
-  }
+  const { studentNumber, name, roomSelected, schoolSelected, majorSelected, yearSelected, floorSelected, isOld, isActive } = searchValues;
+  const idPhong = roomSelected.value === '0' ? '' : roomSelected.value;
+  const idTruong = schoolSelected.value === '0' ? '' : schoolSelected.value;
+  const idNganhHoc = majorSelected.value === '0' ? '' : majorSelected.value;
 
   return new Promise((resolve, reject) => {
     axios.post(`/manager/infoStudent/getAll`,
@@ -132,6 +133,7 @@ export const get_list_student = async(searchValues, activityPoint) => {
         hoTen: name,
         idPhong: idPhong,
         idTruong: idTruong,
+        idNganhHoc: idNganhHoc,
         isOld: isOld,
         isActive: isActive,
         lau: floorSelected.value,

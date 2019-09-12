@@ -648,7 +648,7 @@ class InfoStudentDetail extends Component {
 
                       <Row>
                         <Col md={2}>
-                          Ngành học:
+                          Khoa:
                         </Col>
                         <Col md={10}>
                           <SearchSelect
