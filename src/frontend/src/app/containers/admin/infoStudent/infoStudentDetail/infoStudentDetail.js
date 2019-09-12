@@ -35,7 +35,8 @@ const nationOption = [
   { value: "Mường", label: "Mường" },
   { value: "Nùng", label: "Nùng" },
   { value: "Sán Dìu", label: "Sán Dìu" },
-  { value: "Khác", label: "Khác" }
+  { value: "Khác", label: "Khác" },
+  { value: "", label: "" }
 ];
 
 const tonGiaoOption = [
@@ -352,7 +353,7 @@ class InfoStudentDetail extends Component {
     const { CMND, doanVien, dangVien, } = profile;
     let imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
     let gender = this.state.profile && this.state.profile.gioiTinh ? this.state.profile.gioiTinh: 0;
-    let danToc = profile.danToc ? profile.danToc : 'Kinh';
+    let danToc = profile.danToc ? profile.danToc : '';
     let tonGiao = profile.tonGiao ? profile.tonGiao : 'Không';
     return (
       <div>
