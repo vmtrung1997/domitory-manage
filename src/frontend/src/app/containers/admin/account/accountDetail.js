@@ -49,6 +49,8 @@ class AccountDetail extends Component{
 			case 'DD':
 				rule = 'Điểm danh'
 				break
+			case 'XNTT':
+				rule = 'Xác nhận thanh toán'
 			default:
 				break
 		}

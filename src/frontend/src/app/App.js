@@ -21,6 +21,7 @@ const checkAuth = () => {
             case 'DD':
             case 'ADCP':
             case 'GDN':
+            case 'XNTT':
                 return 'isAdmin'
             case 'BV':
                 return 'isAdmin'

@@ -43,7 +43,8 @@ class AccountEdit extends Component{
       {value: 'BV', label: 'Bảo vệ'},
       {value: 'ADCP', label: 'Quản lý chi phí'},
       {value: 'GDN', label: 'Ghi chi phí'},
-      {value: 'DD', label: 'Điểm danh'}
+      {value: 'DD', label: 'Điểm danh'},
+      {value: 'XNTT', label: 'Xác nhận thanh toán'}
     ]
   }
 
