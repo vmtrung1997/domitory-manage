@@ -183,6 +183,7 @@ class InfoStudent extends Component{
       if (result.data.rs === 'success') {
         let majorList = result.data.data.map(major => ({ value: major._id, label: major.tenNganh }));
         majorList.unshift({ value: -1, label: 'Chưa xác định' });
+        majorList.unshift({ value: 0, label: 'Tất cả' });
         this.setState({
           majorOptions: majorList,
         })
