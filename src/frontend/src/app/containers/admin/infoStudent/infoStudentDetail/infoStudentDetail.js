@@ -25,6 +25,7 @@ import jwt_decode from 'jwt-decode';
 import Print from "../infoStudentPrint";
 
 const nationOption = [
+  { value: "", label: "" },
   { value: "Kinh", label: "Kinh" },
   { value: "Chăm", label: "Chăm" },
   { value: "Dao", label: "Dao" },
@@ -36,8 +37,7 @@ const nationOption = [
   { value: "Mường", label: "Mường" },
   { value: "Nùng", label: "Nùng" },
   { value: "Sán Dìu", label: "Sán Dìu" },
-  { value: "Khác", label: "Khác" },
-  { value: "", label: "" }
+  { value: "Khác", label: "Khác" }
 ];
 
 const tonGiaoOption = [
