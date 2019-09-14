@@ -191,6 +191,7 @@ class InfoStudent extends Component{
 
   getMajorOptions = () => {
     getMajor().then(result =>{
+      console.log(`major ${result}`)
       if (result.data.rs === 'success') {
         let majorList = result.data.data.map(major => ({ value: major._id, label: major.tenNganh }));
         majorList.unshift({ value: -1, label: 'Chưa xác định' });

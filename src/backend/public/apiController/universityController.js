@@ -89,7 +89,8 @@ exports.removeSchool = (req, res) => {
 
 exports.getMajor = async (req, res) => {
   var id = req.body.id;
-  const taiKhoan = await TaiKhoan.find({isDelete: 0,loai:"SV"}).select('_id');
+  if (id){
+    const taiKhoan = await TaiKhoan.find({isDelete: 0,loai:"SV"}).select('_id');
   const arrTaiKhoan = taiKhoan.map(v => v._id);
   TruongNganh.find({idTruong: id}).populate('idNganhHoc').then(majorList => {
     const data = majorList.map(major => {
@@ -109,6 +110,12 @@ exports.getMajor = async (req, res) => {
     })
     
   }).catch(err => res.json({rs: 'fail'}))
+  } else {
+    Nganh.find().then(result => {
+      res.status(200).json({rs: 'success', data:result})
+    }).catch(err => res.status(400).json({rs: 'fail'}))
+  }
+  
 }
 
 exports.insertMajor = (req, res) => {
