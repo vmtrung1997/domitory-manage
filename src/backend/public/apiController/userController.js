@@ -95,6 +95,7 @@ exports.login = (req, res) => {
 };
 
 var readHTMLFile = function(path, callback) {
+  console.log(path);
   fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
       if (err) {
           throw err;
@@ -135,7 +136,7 @@ exports.resetPassword = async (req, res) => {
           }
         );
         const path = url.dirname(__dirname);
-        readHTMLFile(path + '/template/forgotPassword.html', function(err, html) {
+        readHTMLFile(path + '\\template\\forgotPassword.html', function(err, html) {
           var template = handlebars.compile(html);
           var replacements = {
               username: result.hoTen,
