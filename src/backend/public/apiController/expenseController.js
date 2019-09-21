@@ -176,7 +176,7 @@ function toMoneyString(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 function ceilMoney(number) {
-	return Math.ceil(number / 500) * 500;
+	return Math.ceil((number-101) / 1000) * 1000;
 }
 
 function CalculationTest(phong, soDienCu, soNuocCu) {
