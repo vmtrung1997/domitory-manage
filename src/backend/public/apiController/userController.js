@@ -136,7 +136,7 @@ exports.resetPassword = async (req, res) => {
           }
         );
         const path = url.dirname(__dirname);
-        readHTMLFile(path + '\\template\\forgotPassword.html', function(err, html) {
+        readHTMLFile(path + '/template/forgotPassword.html', function(err, html) {
           var template = handlebars.compile(html);
           var replacements = {
               username: result.hoTen,
