@@ -9,7 +9,7 @@ const nodemailer = require("nodemailer");
 const sanitize = require("mongo-sanitize");
 require("../models/PhanQuyen");
 var handlebars = require('handlebars');
-
+var url = require('path');
 const fs = require("fs");
 
 const { promisify } = require("util");
@@ -134,7 +134,8 @@ exports.resetPassword = async (req, res) => {
             }
           }
         );
-        readHTMLFile('./public/template/forgotPassword.html', function(err, html) {
+        const path = url.dirname(__dirname);
+        readHTMLFile(path + '/template/forgotPassword.html', function(err, html) {
           var template = handlebars.compile(html);
           var replacements = {
               username: result.hoTen,
