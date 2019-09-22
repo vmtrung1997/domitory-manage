@@ -28,13 +28,13 @@ class Example extends React.Component {
       infoRoom: {},
       resetSoDien: false,
       resetSoNuoc: false,
-      soDienResetDau: 0,
-      soDienResetCuoi: 0,
-      soNuocResetDau: 0,
-      soNuocResetCuoi: 0,
+      // soDienResetDau: 0,
+      // soDienResetCuoi: 0,
+      // soNuocResetDau: 0,
+      // soNuocResetCuoi: 0,
       idRoom: 0,
       trangThai: 0,
-      soNguoi:0
+      soNguoi: 0
     };
   }
 
@@ -46,12 +46,12 @@ class Example extends React.Component {
       soNuoc: 0,
       resetSoDien: false,
       resetSoNuoc: false,
-      soDienResetDau: 0,
-      soDienResetCuoi: 0,
-      soNuocResetDau: 0,
-      soNuocResetCuoi: 0,
+      // soDienResetDau: 0,
+      // soDienResetCuoi: 0,
+      // soNuocResetDau: 0,
+      // soNuocResetCuoi: 0,
       trangThai: 0,
-      soNguoi:0
+      soNguoi: 0
     });
   }
   handleReset = async () => {
@@ -63,10 +63,10 @@ class Example extends React.Component {
       soNuoc: 0,
       resetSoDien: false,
       resetSoNuoc: false,
-      soDienResetDau: 0,
-      soDienResetCuoi: 0,
-      soNuocResetDau: 0,
-      soNuocResetCuoi: 0,
+      // soDienResetDau: 0,
+      // soDienResetCuoi: 0,
+      // soNuocResetDau: 0,
+      // soNuocResetCuoi: 0,
       rooms: roomOptions,
       trangThai: 0,
       soNguoi: 0
@@ -146,10 +146,10 @@ class Example extends React.Component {
       soNuoc: 0,
       resetSoDien: false,
       resetSoNuoc: false,
-      soDienResetDau: 0,
-      soDienResetCuoi: 0,
-      soNuocResetDau: 0,
-      soNuocResetCuoi: 0,
+      // soDienResetDau: 0,
+      // soDienResetCuoi: 0,
+      // soNuocResetDau: 0,
+      // soNuocResetCuoi: 0,
       trangThai: 0,
       rooms: roomOptions,
       soNguoi: 0
@@ -159,8 +159,9 @@ class Example extends React.Component {
     event.preventDefault();
     var { table, month, year, soDien, soNuoc, room, infoRoom,
       resetSoDien, resetSoNuoc,
-      soDienResetDau, soDienResetCuoi,
-      soNuocResetDau, soNuocResetCuoi, trangThai,soNguoi } = this.state;
+      // soDienResetDau, soDienResetCuoi,
+      // soNuocResetDau, soNuocResetCuoi, 
+      trangThai, soNguoi } = this.state;
     find_expense({ thang: parseInt(month), nam: parseInt(year), phong: room }).then(result => {
       if (result.data.rs === 'accept') {
         if (infoRoom.loaiPhong.dien || infoRoom.loaiPhong.nuoc) {
@@ -173,14 +174,14 @@ class Example extends React.Component {
             return;
           }
         }
-        if (resetSoDien && parseInt(soDienResetCuoi) < parseInt(soDienResetDau)) {
-          ToastsStore.error(`Số điện reset cuối phải lớn hơn số điện reset đầu`);
-          return;
-        }
-        if (resetSoNuoc && parseInt(soNuocResetCuoi) < parseInt(soNuocResetDau)) {
-          ToastsStore.error(`Số nước reset cuối phải lớn hơn số nước reset đầu`);
-          return;
-        }
+        // if (resetSoDien && parseInt(soDienResetCuoi) < parseInt(soDienResetDau)) {
+        //   ToastsStore.error(`Số điện reset cuối phải lớn hơn số điện reset đầu`);
+        //   return;
+        // }
+        // if (resetSoNuoc && parseInt(soNuocResetCuoi) < parseInt(soNuocResetDau)) {
+        //   ToastsStore.error(`Số nước reset cuối phải lớn hơn số nước reset đầu`);
+        //   return;
+        // }
         var row = {
           thang: parseInt(month),
           nam: parseInt(year),
@@ -194,14 +195,14 @@ class Example extends React.Component {
           trangThai: trangThai,
           soNguoi: soNguoi
         }
-        if (resetSoDien) {
-          row.soDienResetDau = soDienResetDau ? parseInt(soDienResetDau) : 0;
-          row.soDienResetCuoi = soDienResetCuoi ? parseInt(soDienResetCuoi) : 0;
-        }
-        if (resetSoNuoc) {
-          row.soNuocResetDau = soNuocResetDau ? parseInt(soNuocResetDau) : 0;
-          row.soNuocResetCuoi = soNuocResetCuoi ? parseInt(soNuocResetCuoi) : 0;
-        }
+        // if (resetSoDien) {
+        //   row.soDienResetDau = soDienResetDau ? parseInt(soDienResetDau) : 0;
+        //   row.soDienResetCuoi = soDienResetCuoi ? parseInt(soDienResetCuoi) : 0;
+        // }
+        // if (resetSoNuoc) {
+        //   row.soNuocResetDau = soNuocResetDau ? parseInt(soNuocResetDau) : 0;
+        //   row.soNuocResetCuoi = soNuocResetCuoi ? parseInt(soNuocResetCuoi) : 0;
+        // }
         table.push(row);
         this.setDienNuoc(table, room);
       } else {
@@ -296,7 +297,7 @@ class Example extends React.Component {
                   </Col>
                   <Col md={3} xs={12}>
                     Số người
-                    <Input type="number" min={0} value={this.state.soNguoi} getValue={this.onChange} name={'soNguoi'}/>
+                    <Input type="number" min={0} value={this.state.soNguoi} getValue={this.onChange} name={'soNguoi'} />
                   </Col>
                 </Row>
                 <Row>
@@ -339,9 +340,11 @@ class Example extends React.Component {
                     &nbsp;
                   <Checkbox label={'Thiếu dữ liệu'} check={this.state.trangThai === 2} isCheck={(e) => this.handleCheckTrangThai(e)} />
                   </Col>
-                  <Col md={1}>
+                  <Col md={1} xs={12}>
                     &nbsp;
+                    <div>
                       <Button color={'warning'} type='submit' size={'md'}><i className="fas fa-plus" /></Button>
+                    </div>
                   </Col>
 
                 </Row>
