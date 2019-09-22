@@ -11,9 +11,7 @@ require("../models/PhanQuyen");
 var handlebars = require('handlebars');
 var url = require('path');
 const fs = require("fs");
-
 const { promisify } = require("util");
-
 const readFile = promisify(fs.readFile);
 
 require("../models/PhanQuyen");
@@ -135,21 +133,33 @@ exports.resetPassword = async (req, res) => {
             }
           }
         );
-        const path = url.dirname(__dirname);
-        readHTMLFile(path + '/template/forgotPassword.html', function(err, html) {
-          var template = handlebars.compile(html);
-          var replacements = {
-              username: result.hoTen,
-              password: pass
-          };
-          var htmlToSend = template(replacements);
+        // const path = url.dirname(__dirname);
+        // readHTMLFile(path + '//template//forgotPassword.html', function(err, html) {
+          // var template = handlebars.compile(html);
+          // var replacements = {
+          //     username: result.hoTen,
+          //     password: pass
+          // };
+          // var htmlToSend = template(replacements);
        
           let mailOptions = {
             from: ' "KTX Trần Hưng Đạo" <ktx135btranhungdao@gmail.com>',
             to: result.email,
             subject: "Mật khẩu của bạn đã được thay đổi",
-            html:  htmlToSend
+            html:
+              "Chào " +
+              result.hoTen +
+              " , <br> Đây là mật khẩu mới của bạn: <strong>" +
+              pass +
+              "</strong>"
           };
+
+          // let mailOptions = {
+          //   from: ' "KTX Trần Hưng Đạo" <ktx135btranhungdao@gmail.com>',
+          //   to: result.email,
+          //   subject: "Mật khẩu của bạn đã được thay đổi",
+          //   html:  htmlToSend
+          // };
           smtpTransport.sendMail(mailOptions, (error, info) => {
             if (error) {
               return console.log(error);
@@ -160,7 +170,7 @@ exports.resetPassword = async (req, res) => {
               });
             }
           });
-      });
+      // });
 
 
       } else {
