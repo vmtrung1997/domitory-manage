@@ -3,16 +3,11 @@ import { Table, Row, Col, Modal } from 'react-bootstrap'
 import Input from '../../../components/input/input'
 import Button from '../../../components/button/button'
 import Select from '../../../components/selectOption/select'
-import { getData, add_expense, find_expense, check_expense, info_room } from '../expenses/expensesAction'
-import { get_month, get_year, } from './expenseRepo'
+import { getData, add_expense, find_expense, info_room } from '../expenses/expensesAction'
+import { get_month } from './expenseRepo'
 import { ToastsStore } from 'react-toasts';
 import './expenses.css'
 class Example extends React.Component {
-  static defaultProps = {
-    currentYear: 2015,
-    currentMonth: 1
-  }
-
   constructor(props, context) {
     super(props, context);
     this.handleShow = this.handleShow.bind(this);
@@ -21,8 +16,10 @@ class Example extends React.Component {
       rooms: [],
       table: [],
       room: 0,
-      month: this.props.currentMonth,
-      year: this.props.currentYear,
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      monthOptions: [],
+      yearOptions: [],
       soDien: 0,
       soNuoc: 0,
       submit: false,
@@ -33,35 +30,56 @@ class Example extends React.Component {
       soDienResetDau: 0,
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
-      soNuocResetCuoi: 0
+      soNuocResetCuoi: 0,
+      idRoom: 0,
     };
   }
   componentDidMount() {
 
   }
   handleClose() {
-    this.setState({ show: false, 
-      table: [], 
-      room: 0, 
-      month: this.props.currentMonth, 
-      year: this.props.currentYear, 
-      soDien: 0, 
+    this.setState({
+      show: false,
+      room: 0,
+      soDien: 0,
       soNuoc: 0,
       resetSoDien: false,
       resetSoNuoc: false,
       soDienResetDau: 0,
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
-      soNuocResetCuoi: 0 });
+      soNuocResetCuoi: 0
+    });
   }
-
+  handleReset() {
+    this.setState({
+      table: [],
+      room: 0,
+      soDien: 0,
+      soNuoc: 0,
+      resetSoDien: false,
+      resetSoNuoc: false,
+      soDienResetDau: 0,
+      soDienResetCuoi: 0,
+      soNuocResetDau: 0,
+      soNuocResetCuoi: 0
+    })
+  }
   handleShow() {
     this.setState({ show: true });
     var self = this;
     getData().then(result => {
       if (result.data) {
+        let monthOptions = get_month();
+        monthOptions.shift();
+        let yearNow = new Date().getFullYear() - 1;
+        let yearOptions = [...Array(3)].map((_, i) => { return { value: i + yearNow, label: i + yearNow } })
         var roomOptions = result.data.result.map(room => ({ value: room._id, label: room.tenPhong, loaiPhong: room.loaiPhong }))
-        self.setState({ rooms: roomOptions });
+        self.setState({
+          rooms: roomOptions,
+          monthOptions: monthOptions,
+          yearOptions: yearOptions,
+        });
         this.selected(roomOptions[0].value);
       }
     }).catch(err => {
@@ -71,7 +89,7 @@ class Example extends React.Component {
     var room = this.state.rooms.find(obj => obj.value === value)
     info_room({ idPhong: value }).then(result => {
       if (result.data) {
-        this.setState({ room: room, infoRoom: result.data.data })
+        this.setState({ room: room, infoRoom: result.data.data, idRoom: room.value })
       }
     })
   }
@@ -105,46 +123,45 @@ class Example extends React.Component {
       soNuocResetDau, soNuocResetCuoi } = this.state;
     find_expense({ thang: parseInt(month), nam: parseInt(year), phong: room }).then(result => {
       if (result.data.rs === 'accept') {
-        check_expense({ phong: room, soDien: parseInt(soDien), soNuoc: parseInt(soNuoc) }).then(rsCheck => {
-          if (rsCheck.data.rs === 'accept') {
-            if (this.state.table.find(p => p.thang === month && p.nam === year && p.phong === room)) {
-              ToastsStore.error(`Dữ liệu [${month}/${year} phòng ${room.label}] đã có trong bảng`);
-            } else {
-
-              if (resetSoDien && parseInt(soDienResetCuoi) <= parseInt(soDienResetDau)) {
-                ToastsStore.error(`Số điện reset cuối phải lớn hơn số điện reset đầu`);
-                return;
-              }
-              if (resetSoNuoc && parseInt(soNuocResetCuoi) <= parseInt(soNuocResetDau)) {
-                ToastsStore.error(`Số nước reset cuối phải lớn hơn số nước reset đầu`);
-                return;
-              }
-              var row = {
-                thang: parseInt(month),
-                nam: parseInt(year),
-                phong: room,
-                soDien: parseInt(soDien),
-                soNuoc: parseInt(soNuoc),
-                soDienCu: infoRoom.chiPhi.soDien,
-                soNuocCu: infoRoom.chiPhi.soNuoc,
-                isResetDien: resetSoDien,
-                isResetNuoc: resetSoNuoc
-              }
-              if (resetSoDien) {
-                row.soDienResetDau = soDienResetDau?parseInt(soDienResetDau):0;
-                row.soDienResetCuoi = soDienResetCuoi?parseInt(soDienResetCuoi):0;
-              }
-              if (resetSoNuoc) {
-                row.soNuocResetDau = soNuocResetDau?parseInt(soNuocResetDau):0;
-                row.soNuocResetCuoi = soNuocResetCuoi?parseInt(soNuocResetCuoi):0;
-              }
-              table.push(row);
-              this.setDienNuoc(table);
-            }
-          } else {
+        if (infoRoom.loaiPhong.dien || infoRoom.loaiPhong.nuoc) {
+          if (infoRoom.chiPhi.soDien > parseInt(soDien) || infoRoom.chiPhi.soNuoc > parseInt(soNuoc)) {
             ToastsStore.error(`Dữ liệu [điện: ${soDien}, nước: ${soNuoc}] phải lớn hơn hiện tại`);
+            return;
           }
-        })
+          if (this.state.table.find(p => p.thang === month && p.nam === year && p.phong === room)) {
+            ToastsStore.error(`Dữ liệu [${month}/${year} phòng ${room.label}] đã có trong bảng`);
+            return;
+          }
+        }
+        if (resetSoDien && parseInt(soDienResetCuoi) <= parseInt(soDienResetDau)) {
+          ToastsStore.error(`Số điện reset cuối phải lớn hơn số điện reset đầu`);
+          return;
+        }
+        if (resetSoNuoc && parseInt(soNuocResetCuoi) <= parseInt(soNuocResetDau)) {
+          ToastsStore.error(`Số nước reset cuối phải lớn hơn số nước reset đầu`);
+          return;
+        }
+        var row = {
+          thang: parseInt(month),
+          nam: parseInt(year),
+          phong: room,
+          soDien: infoRoom.loaiPhong.dien ? parseInt(soDien) : 0,
+          soNuoc: infoRoom.loaiPhong.nuoc ? parseInt(soNuoc) : 0,
+          soDienCu: infoRoom.loaiPhong.dien ? infoRoom.chiPhi.soDien : 0,
+          soNuocCu: infoRoom.loaiPhong.nuoc ? infoRoom.chiPhi.soNuoc : 0,
+          isResetDien: resetSoDien,
+          isResetNuoc: resetSoNuoc
+        }
+        if (resetSoDien) {
+          row.soDienResetDau = soDienResetDau ? parseInt(soDienResetDau) : 0;
+          row.soDienResetCuoi = soDienResetCuoi ? parseInt(soDienResetCuoi) : 0;
+        }
+        if (resetSoNuoc) {
+          row.soNuocResetDau = soNuocResetDau ? parseInt(soNuocResetDau) : 0;
+          row.soNuocResetCuoi = soNuocResetCuoi ? parseInt(soNuocResetCuoi) : 0;
+        }
+        table.push(row);
+        this.setDienNuoc(table);
       } else {
         ToastsStore.error(`Dữ liệu [${month}/${year} phòng ${room.label}] đã tồn tại`);
       }
@@ -182,17 +199,13 @@ class Example extends React.Component {
     this.setState({ table: table });
   }
   render() {
-    var monthOptions = get_month();
-    monthOptions.shift();
-    var yearOptions = get_year();
-    yearOptions.shift();
     var table = this.state.table && this.state.table.length > 0 ? this.state.table.map((row, index) => {
       return (
         <tr key={index}>
           <td>{row.thang + "/" + row.nam}</td>
           <td>{row.phong.label}</td>
-          <td>{row.isResetDien?row.soDienResetCuoi-row.soDienResetDau + row.soDien-row.soDienCu:row.soDien-row.soDienCu}</td>
-          <td>{row.isResetNuoc?row.soNuocResetCuoi-row.soNuocResetDau + row.soNuoc-row.soNuocCu:row.soNuoc-row.soNuocCu}</td>
+          <td>{row.isResetDien ? row.soDienResetCuoi - row.soDienResetDau + row.soDien - row.soDienCu : row.soDien - row.soDienCu}</td>
+          <td>{row.isResetNuoc ? row.soNuocResetCuoi - row.soNuocResetDau + row.soNuoc - row.soNuocCu : row.soNuoc - row.soNuocCu}</td>
           <td>
             {!this.state.submit && <i className="fas fa-times-circle"
               style={{ cursor: 'pointer', fontSize: '1em', color: 'red' }}
@@ -206,8 +219,8 @@ class Example extends React.Component {
         <Button color={'warning'} onClick={this.handleShow}>
           <i className="fas fa-plus" />
         </Button>
-        <Modal show={this.state.show} onHide={this.handleClose}
-          dialogClassName="modal-90w">
+        <Modal show={this.state.show} onHide={this.handleClose} size="lg"> 
+        {/* dialogClassName="modal-90w" */}
           <Modal.Header closeButton>
             <Modal.Title>
               Thêm chi phí
@@ -215,73 +228,107 @@ class Example extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <div className={'p-10'}>
-            <form onSubmit={e => this.addRow(e)}>
-              <Row>
-                <Col md={1}>
-                  Tháng
-                  <Select options={monthOptions} selected={this.monthSelected} />
-                </Col>
-                <Col md={2}>
-                  Năm
-                  <Select options={yearOptions} selected={this.yearSelected} />
-                </Col>
-                <Col md={2}>
-                  Phòng
-                  <Select options={this.state.rooms} selected={this.selected} />
-                </Col>
-                <Col md={2}>
-                  Số điện
-                  <Input type="number" min={0} value={this.state.soDien} getValue={this.onChange} name={'soDien'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.dien} />
-                </Col>
-                <Col md={1}>&nbsp;
-                <Col md='12'>
-                    <Button title='Reset số điện' onClick={() => { this.setState({ resetSoDien: !this.state.resetSoDien }) }}><i className="fas fa-retweet"></i></Button>
+              <form onSubmit={e => this.addRow(e)}>
+                <Row>
+                  <Col md={3} xs={12}> 
+                    Tháng
+                  <Select options={this.state.monthOptions} value={this.state.month} selected={this.monthSelected} />
                   </Col>
-                </Col>
-                <Col md={2}>
-                  Số nước
+                  <Col md={1} xs={12}></Col>
+                  <Col md={3} xs={12}>
+                    Năm
+                  <Select options={this.state.yearOptions} value={this.state.year} selected={this.yearSelected} />
+                  </Col>
+                  <Col md={1} xs={12}></Col>
+                  <Col md={3} xs={12}>
+                    Phòng
+                  <Select options={this.state.rooms} value={this.state.idRoom} selected={this.selected} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={3} xs={12}>
+                    Số điện
+                  <Input type="number" min={0} value={this.state.soDien} getValue={this.onChange} name={'soDien'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.dien} />
+                    {this.state.resetSoDien &&
+                      <Row className="d-md-none">
+                        <Col>
+                          Chỉ số đầu
+                    <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
+                          Chỉ số cuối
+                    <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
+                        </Col>
+                      </Row>
+                    }
+                  </Col>
+                  <Col md={1} xs={12}>&nbsp;
+                      <Button title='Reset số điện' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.dien : false} onClick={() => { this.setState({ resetSoDien: !this.state.resetSoDien }) }}><i className="fas fa-retweet"></i></Button>
+                  </Col>
+                  <Col md={3}>
+                    Số nước
                   <Input type="number" min={0} value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.nuoc} />
-                </Col>
-                <Col md={1}>&nbsp;
-                <Col md='12'>
-                    <Button title='Reset số nước' onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button></Col>
-                </Col>
-                <Col md={1}>
-                  &nbsp;
-                <Col md={12}><Button  color={'warning'} type='submit' size={'md'}><i className="fas fa-plus" /></Button></Col>
-                </Col>
-              </Row>
-              {(this.state.resetSoDien || this.state.resetSoNuoc) && <Row>
-                <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '5' : !this.state.resetSoDien&& this.state.resetSoNuoc? '8': '5'} className='text-right'>Chỉ số đầu</Col>
-                {this.state.resetSoDien && <Col md='2'>
-                  <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
-                </Col>}
-                {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
-                <Col md='2'>{this.state.resetSoNuoc &&
-                  <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />}</Col>
-              </Row>}
-              {(this.state.resetSoDien || this.state.resetSoNuoc) && <Row>
-                <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '5' : !this.state.resetSoDien&& this.state.resetSoNuoc? '8': '5'} className='text-right'>Chỉ số cuối</Col>
-                {this.state.resetSoDien && <Col md='2'>
-                  <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
-                </Col>}
-                {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
-                <Col md='2'>{this.state.resetSoNuoc &&
-                  <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />}</Col>
-              </Row>}
-              {Object.keys(this.state.infoRoom).length && <Row className={'m-b-10'}>
-                <Col md={4}>
-                  Loại: {this.state.infoRoom.loaiPhong.ten}
-                </Col>
-                <Col md={4}>
-                  Số điện hiện tại: {this.state.infoRoom.chiPhi.soDien}
-                </Col>
-                <Col md={4}>
-                  Số nước hiện tại: {this.state.infoRoom.chiPhi.soNuoc}
-                </Col>
-              </Row>}
-
-            </form>
+                    {this.state.resetSoDien &&
+                      <Row className="d-md-none">
+                        <Col>
+                          Chỉ số đầu
+                    <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />
+                          Chỉ số cuối
+                    <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />
+                        </Col>
+                      </Row>
+                    }
+                  </Col>
+                  <Col md={1} xs={12}>
+                    &nbsp;
+                      <Button title='Reset số nước' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.nuoc : false} onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button>
+                  </Col>
+                  <Col md={1}>
+                    &nbsp;
+                    <Col md={12}>
+                      <Button color={'warning'} type='submit' size={'md'}><i className="fas fa-plus" /></Button>
+                    </Col>
+                  </Col>
+                </Row>
+                {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
+                  <Row>
+                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '2' : !this.state.resetSoDien && this.state.resetSoNuoc ? '5' : '2'} className='text-right'>
+                      Chỉ số đầu
+                    </Col>
+                    {this.state.resetSoDien &&
+                      <Col md='2'>
+                        <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
+                      </Col>}
+                    {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
+                    <Col md='2'>{this.state.resetSoNuoc &&
+                      <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />}
+                    </Col>
+                  </Row>
+                </div>}
+                {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
+                  <Row>
+                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '2' : !this.state.resetSoDien && this.state.resetSoNuoc ? '5' : '2'} className='text-right'>
+                      Chỉ số cuối
+                    </Col>
+                    {this.state.resetSoDien && <Col md='2'>
+                      <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
+                    </Col>}
+                    {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
+                    <Col md='2'>{this.state.resetSoNuoc &&
+                      <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />}
+                    </Col>
+                  </Row>
+                </div>}
+                {Object.keys(this.state.infoRoom).length && <Row className={'m-b-10'}>
+                  <Col md={4} xs={12}>
+                    Loại: {this.state.infoRoom.loaiPhong.ten}
+                  </Col>
+                  <Col md={4} xs={12}>
+                    Số điện hiện tại: {this.state.infoRoom.chiPhi.soDien}
+                  </Col>
+                  <Col md={4} xs={12}>
+                    Số nước hiện tại: {this.state.infoRoom.chiPhi.soNuoc}
+                  </Col>
+                </Row>}
+              </form>
               <Row>
                 <Col>
                   <div className={'maxHeight'}>
@@ -308,6 +355,9 @@ class Example extends React.Component {
             <Button variant="default" color="default" onClick={this.handleClose}>
               Đóng
             </Button>
+            <Button variant="default" color="danger" onClick={this.handleReset}>
+              Xóa bảng
+            </Button>
             <Button variant="default" onClick={this.handleSubmit}>
               Xác nhận
               </Button>
@@ -319,3 +369,107 @@ class Example extends React.Component {
 }
 
 export default Example;
+
+{/* <form onSubmit={e => this.addRow(e)}>
+                <Row>
+                  <Col md={1} xs={12}> 
+                    Tháng
+                  <Select options={this.state.monthOptions} value={this.state.month} selected={this.monthSelected} />
+                  </Col>
+                  <Col md={2} xs={12}>
+                    Năm
+                  <Select options={this.state.yearOptions} value={this.state.year} selected={this.yearSelected} />
+                  </Col>
+                  <Col md={2} xs={12}>
+                    Phòng
+                  <Select options={this.state.rooms} value={this.state.idRoom} selected={this.selected} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={2} xs={12}>
+                    Số điện
+                  <Input type="number" min={0} value={this.state.soDien} getValue={this.onChange} name={'soDien'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.dien} />
+                    {this.state.resetSoDien &&
+                      <Row className="d-md-none">
+                        <Col>
+                          Chỉ số đầu
+                    <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
+                          Chỉ số cuối
+                    <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
+                        </Col>
+                      </Row>
+                    }
+                  </Col>
+                  <Col md={1} xs={12}>&nbsp;
+                <Col md='12'>
+                      <Button title='Reset số điện' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.dien : false} onClick={() => { this.setState({ resetSoDien: !this.state.resetSoDien }) }}><i className="fas fa-retweet"></i></Button>
+                    </Col>
+                  </Col>
+                  <Col md={2}>
+                    Số nước
+                  <Input type="number" min={0} value={this.state.soNuoc} getValue={this.onChange} name={'soNuoc'} disabled={Object.keys(this.state.infoRoom).length && !this.state.infoRoom.loaiPhong.nuoc} />
+                    {this.state.resetSoDien &&
+                      <Row className="d-md-none">
+                        <Col>
+                          Chỉ số đầu
+                    <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />
+                          Chỉ số cuối
+                    <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />
+                        </Col>
+                      </Row>
+                    }
+                  </Col>
+                  <Col md={1} xs={12}>
+                    &nbsp;
+                    <Col md='12'>
+                      <Button title='Reset số nước' disabled={this.state.infoRoom.loaiPhong ? !this.state.infoRoom.loaiPhong.nuoc : false} onClick={() => { this.setState({ resetSoNuoc: !this.state.resetSoNuoc }) }}><i className="fas fa-retweet"></i></Button>
+                    </Col>
+                  </Col>
+                  <Col md={1}>
+                    &nbsp;
+                    <Col md={12}>
+                      <Button color={'warning'} type='submit' size={'md'}><i className="fas fa-plus" /></Button>
+                    </Col>
+                  </Col>
+                </Row>
+                {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
+                  <Row>
+                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '5' : !this.state.resetSoDien && this.state.resetSoNuoc ? '8' : '5'} className='text-right'>
+                      Chỉ số đầu
+                    </Col>
+                    {this.state.resetSoDien &&
+                      <Col md='2'>
+                        <Input type='number' min={0} name='soDienResetDau' value={this.state.soDienResetDau} getValue={this.onChange} />
+                      </Col>}
+                    {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
+                    <Col md='2'>{this.state.resetSoNuoc &&
+                      <Input type='number' min={0} name='soNuocResetDau' value={this.state.soNuocResetDau} getValue={this.onChange} />}
+                    </Col>
+                  </Row>
+                </div>}
+                {(this.state.resetSoDien || this.state.resetSoNuoc) && <div className="d-none d-md-block">
+                  <Row>
+                    <Col md={this.state.resetSoDien && this.state.resetSoNuoc ? '5' : !this.state.resetSoDien && this.state.resetSoNuoc ? '8' : '5'} className='text-right'>
+                      Chỉ số cuối
+                    </Col>
+                    {this.state.resetSoDien && <Col md='2'>
+                      <Input type='number' min={0} name='soDienResetCuoi' value={this.state.soDienResetCuoi} getValue={this.onChange} />
+                    </Col>}
+                    {!this.state.resetSoDien || this.state.resetSoNuoc && <Col md='1'></Col>}
+                    <Col md='2'>{this.state.resetSoNuoc &&
+                      <Input type='number' min={0} name='soNuocResetCuoi' value={this.state.soNuocResetCuoi} getValue={this.onChange} />}
+                    </Col>
+                  </Row>
+                </div>}
+                {Object.keys(this.state.infoRoom).length && <Row className={'m-b-10'}>
+                  <Col md={4} xs={12}>
+                    Loại: {this.state.infoRoom.loaiPhong.ten}
+                  </Col>
+                  <Col md={4} xs={12}>
+                    Số điện hiện tại: {this.state.infoRoom.chiPhi.soDien}
+                  </Col>
+                  <Col md={4} xs={12}>
+                    Số nước hiện tại: {this.state.infoRoom.chiPhi.soNuoc}
+                  </Col>
+                </Row>}
+              </form> */}

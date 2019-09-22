@@ -1,88 +1,87 @@
 const Room = require('../models/Phong');
 const RoomType = require('../models/LoaiPhong');
 const RoomParams = require('../models/ChiSoHienTai');
+const Profile = require('../models/Profile');
 
-function getRoom(floor){
-  return new Promise((resolve, reject) => {
-    Room.find({ lau: floor }).populate({
-      path: 'loaiPhong',
-      options: { sort: { name: -1 } }
-    }).exec(function (err, kittens) {
-      if (err)
-        reject(err);
-      resolve(kittens)
+function getPersonInRoom(room){
+  return new Promise((resolve) => {
+    Profile.countDocuments({idPhong: room._id},function (err, count){
+      if(err)
+        resolve({...room, soNguoi: -1});
+      else
+        resolve({...room, soNguoi: count});
     })
   })
+
 }
 exports.getRoom = async (req, res) => {
   const floor = req.params.floor;
-  //let roomList = {};
-  getRoom(floor).then(result => {
+  getRoomDetail(floor).then(async(result) => {
     res.status(200).json(result)
   }).catch(err => {
     res.status(400).json(err)
   })
 };
 
-exports.addRoom = (req, res) => {
-  Room.findOne({ tenPhong: req.body.tenPhong, lau: req.body.lau }).then(result => {
-    console.log('==find room', result)
+exports.addRoom = async(req, res) => {
+  await Room.findOne({ tenPhong: req.body.tenPhong, lau: req.body.lau }).then(result => {
     if (result)
-      res.status(409).json({ msg: 'Tên phòng đã tồn tại' })
+      res.status(409).json({ msg: 'Tên phòng đã tồn tại' });
+    else{
+      const newRoom = {
+        tenPhong: req.body.tenPhong,
+        lau: req.body.lau,
+        soNguoi: 0,
+        soNguoiToiDa: req.body.soNguoiToiDa,
+        loaiPhong: req.body.loaiPhong,
+        gioiTinh: req.body.gioiTinh,
+        moTa: req.body.moTa
+      };
+
+      let room = new Room(newRoom);
+      room.save().then(result => {
+        const today = new Date();
+        const chiSoPhong = {
+          idPhong: result._id,
+          thang: today.getMonth(),
+          nam: today.getFullYear(),
+          soDien: req.body.soDien,
+          soNuoc: req.body.soNuoc,
+        };
+
+        let roomParams = new RoomParams(chiSoPhong);
+        roomParams.save().then(() => {
+          res.status(200).json({ msg: 'Tạo phòng thành công' })
+        }).catch(err => {
+          res.status(400).json({ msg: 'Tạo phòng không thành công', err: err })
+        })
+      }).catch(err => {
+        res.status(400).json({ msg: 'Tạo phòng không thành công', err: err })
+      })
+    }
   }).catch(err => {
-    console.log('==err find room');
+    res.status(400).json({ msg: 'Tạo phòng không thành công', err: err })
   });
-
-  const newRoom = {
-    tenPhong: req.body.tenPhong,
-    lau: req.body.lau,
-    soNguoi: 0,
-    soNguoiToiDa: req.body.soNguoiToiDa,
-    loaiPhong: req.body.loaiPhong
-  };
-
-  let room = new Room(newRoom);
-  room.save().then(result => {
-    console.log('==success add room', result);
-    const today = new Date()
-    const chiSoPhong = {
-      idPhong: result._id,
-      thang: today.getMonth(),
-      nam: today.getFullYear(),
-      soDien: req.body.soDien,
-      soNuoc: req.body.soNuoc,
-    };
-    console.log('==success add room222', chiSoPhong);
-
-    let roomParams = new RoomParams(chiSoPhong);
-    roomParams.save().then(result => {
-      console.log('==success add chiso', result);
-
-      res.status(200).json({ msg: 'Tạo phòng thành công' })
-    }).catch(err => {
-      res.status(400).json({ msg: 'Tạo phòng không thành công' })
-    })
-  }).catch(err => {
-    res.status(400).json({ msg: 'Tạo phòng không thành công' })
-  })
 };
 
 exports.delRoom = (req, res) => {
   const id = req.params.id;
-  Room.findOne({ _id: id }).then(result => {
-    if (result.soNguoi !== 0)
-      res.status(409).json({ msg: "Phòng này đang có người sử dụng không thể xóa!!" })
-    result.remove().then(result => {
-      RoomParams.findOneAndRemove({ idPhong: result._id }).then(result => {
-        res.status(200).json({ msg: 'Xóa phòng thành công' })
+  Profile.findOne({ idPhong: id }).then(result => {
+    if (result)
+      res.status(409).json({ msg: "Phòng này đang có người sử dụng không thể xóa!!" });
+    else
+      Room.findOneAndRemove({_id:id}).then(result => {
+        // Delete electric number and water number
+        RoomParams.findOneAndRemove({ idPhong: result._id }).then(() => {
+          res.status(200).json({ msg: 'Xóa phòng thành công' })
+        }).catch(err => {
+          res.status(401).json({ msg: 'Xóa chỉ số phòng không thành công', err: err })
+        })
       }).catch(err => {
-        res.status(401).json({ msg: 'Xóa không thành công' })
+        res.status(401).json({ msg: 'Xóa phòng không thành công', err: err })
       })
-    }).catch(err => {
-      res.status(401).json({ msg: 'Xóa không thành công' })
-    })
   }).catch(err => {
-    res.status(400).json({ msg: 'Xóa không thành công' })
+    res.status(400).json({ msg: 'Xóa phòng không thành công', err: err })
   })
 };
 
@@ -91,14 +90,16 @@ exports.updateRoom = (req, res) => {
   Room.findOne({ _id: params.id })
     .then(result => {
       if (result.soNguoi > params.soNguoiToiDa)
-        res.status(409).json({ msg: 'Không thể cập nhật vì số người đang ở lớn hơn số người tối đa bạn muốn cập nhật!' })
+        res.status(409).json({ msg: 'Không thể cập nhật vì số người đang ở lớn hơn số người tối đa bạn muốn cập nhật!' });
+      result.tenPhong = params.tenPhong ? params.tenPhong : result.tenPhong;
       result.soNguoiToiDa = params.soNguoiToiDa ? params.soNguoiToiDa : result.soNguoiToiDa;
       result.moTa = params.moTa ? params.moTa : result.moTa;
       result.loaiPhong = params.loaiPhong ? params.loaiPhong : result.loaiPhong;
-      result.save()
+      result.gioiTinh = params.gioiTinh ? params.gioiTinh : result.gioiTinh;
+      result.save();
       res.status(200).json({ msg: 'Cập nhật thành công!!' })
     }).catch(err =>
-      res.status(400).json({ msg: 'Có lỗi xảy ra, vui lòng thử lại!!' })
+      res.status(400).json({ msg: 'Có lỗi xảy ra, vui lòng thử lại!!', err: err })
     )
 };
 
@@ -106,13 +107,12 @@ exports.getRoomType = (req, res) => {
   RoomType.find().then(result => {
     res.status(200).json(result)
   }).catch(err => {
-    res.status(400).json({ msg: 'Lấy danh sách loại phòng không thành công!' })
+    res.status(400).json({ msg: 'Lấy danh sách loại phòng không thành công!', err: err })
   })
-}
+};
 
 exports.addRoomType = (req, res) => {
   var { data } = req.body;
-  console.log(data);
   var roomType = new RoomType({
     loai: data.loai,
     ten: data.ten,
@@ -132,20 +132,20 @@ exports.addRoomType = (req, res) => {
       rs: 'fail'
     })
   })
-}
+};
+
 exports.updateRoomType = (req, res) => {
-  var { data } = req.body
-  console.log(data)
+  let { data } = req.body;
   RoomType.findOne({ _id: data._id })
     .then(roomType => {
       if (roomType) {
-        var object = {
+        let object = {
           loai: data.loai,
           ten: data.ten,
           dien: data.dien,
           nuoc: data.nuoc,
           tienRac: data.tienRac
-        }
+        };
         RoomType.updateOne({ _id: data._id }, object, err => {
           if (err) {
             res.json({
@@ -168,7 +168,7 @@ exports.updateRoomType = (req, res) => {
         msg: err
       })
     })
-}
+};
 
 exports.removeRoomType = (req, res) => {
   var { data } = req.body;
@@ -194,21 +194,58 @@ exports.removeRoomType = (req, res) => {
   })
 };
 
+function getRoomDetail(floor){
+  return new Promise((resolve, reject) => {
+    Room.find({ lau: floor }).populate({
+      path: 'loaiPhong',
+      options: { sort: { name: -1 } }
+    }).exec(async(err, kittens) => {
+      if (err){
+        reject(err);
+      }
+      else {
+        let listPromise = [];
+        kittens.forEach(async(room) => {
+          listPromise.push(getPersonInRoom(room._doc))
+        });
+        Promise.all(listPromise).then(result => {
+          resolve(result)
+        }).catch(err => {
+          reject(err);
+        })
+      }
+    })
+  })
+}
+
 exports.getFloorRoom = async (req, res) => {
-  let data = []
   await Room.distinct('lau')
     .then(async(result) => {
     result.sort();
     let i = 0;
     let listPromise = [];
     let data = [];
+
     await result.forEach(async(floor) => {
-      listPromise.push(getRoom(floor));
+      listPromise.push(getRoomDetail(floor));
     });
       await Promise.all(listPromise).then(result=> {
-        console.log('==result all',result);
-        data = result.map(rooms => ({key: i++, floor: rooms[0].lau, rooms: rooms}))
-        console.log('==data',data);
+        data = result.map(rooms => {
+          let capacityFloor = 0, personStaying = 0;
+          rooms.forEach(room => {
+            capacityFloor += room.soNguoiToiDa;
+            personStaying += room.soNguoi;
+          });
+          return{
+            key: i++,
+            floor: {
+              name: rooms[0].lau,
+              capacity: capacityFloor,
+              personStaying: personStaying,
+            },
+            rooms: rooms
+          }
+        });
 
         res.status(200).json(data)
       }).catch()
@@ -216,4 +253,40 @@ exports.getFloorRoom = async (req, res) => {
     }).catch(err => {
     res.status(400).json({err: err});
   })
+};
+
+exports.getPersonInRoom = (req, res) => {
+  const id = req.params.idPhong;
+  Profile.find({idPhong: id})
+    .populate({
+      path: 'truong',
+      select: 'tenTruong'
+    })
+    .select('MSSV hoTen truong')
+    .then(result => {
+      res.status(200).json(result)
+    })
+    .catch(err => {})
+};
+
+//return person in dormimtory
+exports.getInfoManageDormitory = async(req, res) => {
+  let resultResponse = {};
+  await Profile.find({idPhong: {"$ne": null}}).count()
+    .then(result => {
+      resultResponse.peopleStaying = result;
+    }).catch(err => {
+      res.status(400).json({msg: 'Có lỗi', err: err})
+  });
+  await Room.find()
+    .then(result => {
+      let capacity = 0;
+      result.forEach(room => {
+        capacity += room.soNguoiToiDa
+      });
+      resultResponse.capacity = capacity;
+    }).catch(err => {
+    res.status(400).json({msg: 'Có lỗi', err: err})
+  });
+  res.status(200).json(resultResponse)
 };

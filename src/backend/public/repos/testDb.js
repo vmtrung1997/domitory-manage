@@ -6,6 +6,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var ThongSoLoaiPhong = require('../models/ThongSoLoaiPhong')
 var fs = require('fs')
 var XLSX = require('xlsx')
+const md5 = require('md5')
 require('../models/Profile')
 require('../models/TaiKhoan')
 function updateProfile(object) {
@@ -133,22 +134,27 @@ function saveDetailRoom(value){
 		phong.save().then(()=>resolve({rs: 'ok'})).catch(err => reject(err))
 	})
 }
+function check (acc) {
+	return new Promise((resolve) => {
+		TaiKhoan.findOne({username: acc.username, password: md5(acc.username)}).then(account=> {
+			if (account){
+				resolve({username: acc.username, rs: true})
+			} else {
+				resolve({username: acc.username, rs: false})
+			}
+		})
+	})
+}
 exports.import_detail_room = (req, res) => {
-	readFile('./public/bin/hinhanhtostring/ChiSoTungLoaiPhong.csv').then(result => {
-		var arr = result.split('\r\n')
-		var arr_split = arr.map(value => {
-			return value.split(',')
-		})
-		console.log(arr_split);
-		var arr_promise =[]
-		arr_split.forEach(value => {
-			arr_promise.push(saveDetailRoom(value))
-		})
-		Promise.all(arr_promise).then( () => {
+	TaiKhoan.find().then(tks => {
+		console.log(tks.length);
+		var arr = []
+		tks.forEach(value => { arr.push(check(value))})
+		Promise.all(arr).then(v => {
 			res.json({
-				rs: 'ok'
+				rs: v
 			})
-		}).catch(err => res.json({rs: 'fail'}))
+		})
 	})
 }
 exports.uploadExcelFile = (req, res) => {

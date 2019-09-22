@@ -3,10 +3,12 @@ import { Row, Col, Modal, Table } from 'react-bootstrap'
 import Button from '../../../components/button/button'
 import Input from '../../../components/input/input'
 import Optimize from '../../../optimization/optimizationNumber/optimizationNumber'
-import { remove_expense, update_expense, submit_expense } from './expensesAction'
+import { remove_expense, update_expense, submit_expense, getPersonInRoom } from './expensesAction'
 import { ToastsStore } from 'react-toasts';
 import './expenses.css'
 import Checkbox from '../../../components/checkbox/checkbox';
+import jwt_decode from 'jwt-decode';
+
 class Example extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -23,17 +25,33 @@ class Example extends React.Component {
       soDienResetDau: 0,
       soDienResetCuoi: 0,
       soNuocResetDau: 0,
-      soNuocResetCuoi: 0
+      soNuocResetCuoi: 0,
+      roles: [],
+      soNguoi: 0
     };
   }
   componentDidMount() {
     var { expenseDetail } = this.props;
+    this.getRoles();
     this.setState({ exp: expenseDetail, soDien: expenseDetail.soDien, soNuoc: expenseDetail.soNuoc })
     if (expenseDetail.thayDien) {
       this.setState({ thayDien: true, soDienResetDau: expenseDetail.thayDien.dienCu, soDienResetCuoi: expenseDetail.thayDien.dienMoi })
     }
     if (expenseDetail.thayNuoc) {
       this.setState({ thayNuoc: true, soNuocResetDau: expenseDetail.thayNuoc.nuocCu, soNuocResetCuoi: expenseDetail.thayNuoc.nuocMoi })
+    }
+    getPersonInRoom({ id: expenseDetail.idPhong._id }).then(result => {
+      this.setState({ soNguoi: result.data.data })
+    })
+  }
+  getRoles = () => {
+    let token = JSON.parse(localStorage.getItem('secret'));
+    let decode = jwt_decode(token.access_token)
+    if (decode && decode.user.userEntity.phanQuyen) {
+      this.setState({
+        roles: decode.user.userEntity.phanQuyen.quyen
+      })
+
     }
   }
   handleClose() {
@@ -95,12 +113,11 @@ class Example extends React.Component {
       expenseDetail.thayNuoc.nuocCu = parseInt(this.state.soNuocResetDau);
       expenseDetail.thayNuoc.nuocMoi = parseInt(this.state.soNuocResetCuoi);
     }
-    console.log(expenseDetail);
     if (expenseDetail.trangThai === 1 && this.state.thayDien && this.state.thayNuoc && !window.confirm(`Cập nhật đồng hồ điện [${expenseDetail.thayDien.dienMoi}] và đồng hồ nước [${expenseDetail.thayNuoc.nuocMoi}]`))
       return;
-    else if (expenseDetail.trangThai === 1 && this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Cập nhật lại đồng hồ điện: [${expenseDetail.thayDien.dienMoi}]`))
+    else if (expenseDetail.trangThai === 1 && this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Cập nhật lại đồng hồ điện: [${expenseDetail.thayDien.dienMoi}] và đồng hồ nước [${expenseDetail.soNuoc}]`))
       return;
-    else if (expenseDetail.trangThai === 1 && this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Cập nhật lại đồng hồ nước: [${expenseDetail.thayNuoc.nuocMoi}]`))
+    else if (expenseDetail.trangThai === 1 && this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Cập nhật lại đồng hồ nước: [${expenseDetail.thayNuoc.nuocMoi}] và đồng hồ điện [${expenseDetail.soDien}]`))
       return;
     self.props.loading(true)
     update_expense(expenseDetail).then(result => {
@@ -119,9 +136,9 @@ class Example extends React.Component {
   handleSubmit = () => {
     if (this.state.thayDien && this.state.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật đồng hồ điện [${this.state.soDienResetCuoi}] và đồng hồ nước [${this.state.soNuocResetCuoi}])`))
       return;
-    else if (this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ điện: [${this.state.soDienResetCuoi}])`))
+    else if (this.state.thayDien && !this.state.thayNuoc && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ điện: [${this.state.soDienResetCuoi}] và đồng hồ nước [${this.state.soDien}])`))
       return;
-    else if (this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ nước: [${this.state.soNuocResetCuoi}])`))
+    else if (this.state.thayNuoc && !this.state.thayDien && !window.confirm(`Xác nhận thanh toán chi phí này? \n (Cập nhật lại đồng hồ nước: [${this.state.soNuocResetCuoi}] và đồng hồ nước [${this.state.soNuoc}])`))
       return;
     this.props.loading(true)
     var exp = { id: this.props.expenseDetail._id };
@@ -150,7 +167,7 @@ class Example extends React.Component {
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <form onSubmit={this.handleUpdate}>
             <Modal.Header closeButton>
-              <Modal.Title>Chi tiết</Modal.Title>
+              <Modal.Title>Chi tiết phòng {exp.idPhong.tenPhong}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Row>
@@ -158,8 +175,8 @@ class Example extends React.Component {
                   Tháng/năm
             <Input disabled={true} value={exp.thang + '/' + exp.nam} />
                 </Col>
-                <Col>Phòng
-            <Input disabled={true} value={exp.idPhong.tenPhong} /></Col>
+                <Col>Số người
+            <Input disabled={true} value={this.state.soNguoi} /></Col>
               </Row>
               <Row>
                 <Col md='12'>
@@ -234,14 +251,15 @@ class Example extends React.Component {
                 </Col>
               </Row>
               <Row>
-                <Col md={6} xs={12}>
+                <Col md={4} xs={12}>
                   {this.state.capNhat && <Checkbox check={this.state.thayDien} isCheck={e => this.setState({ thayDien: e.chk })} label={'Thay điện'} />}
                   {this.state.capNhat && <Checkbox check={this.state.thayNuoc} isCheck={e => this.setState({ thayNuoc: e.chk })} label={'Thay nước'} />}
                 </Col>
-                <Col md={6} xs={12} className="text-right warning-text"> Thành tiền: {exp.tongTienChu}</Col>
+                <Col md={8} xs={12} className="text-right warning-text"> Thành tiền: {exp.tongTienChu}</Col>
               </Row>
             </Modal.Body>
-            <Modal.Footer>
+
+            {this.state.roles && this.state.roles.includes('CP02') ? <Modal.Footer>
               <Button variant="default" color="default" onClick={this.handleClose}>
                 Đóng
             </Button>
@@ -256,8 +274,16 @@ class Example extends React.Component {
             </Button>}
               {exp.trangThai === 0 && <Button variant="default" onClick={this.handleSubmit}>
                 Xác nhận thanh toán
-        </Button>}
-            </Modal.Footer>
+        </Button>
+              }
+            </Modal.Footer> :
+              <Modal.Footer>
+                <Button variant="default" color="default" onClick={this.handleClose}>
+                  Đóng
+        </Button>
+              </Modal.Footer>
+            }
+
           </form>
         </Modal>
       </React.Fragment>

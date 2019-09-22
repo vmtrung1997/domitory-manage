@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import {Collapse} from 'react-bootstrap';
-import Logo from './../../../utils/image/logo_HCMUS.jpg'
+import { Dropdown } from 'react-bootstrap';
 
+import Logo from './../../../utils/image/logo_HCMUS.jpg'
+import ChangePas from './../changePas/changePas'
 import './menuButton.css';
 
 export default class MenuButton extends React.Component {
@@ -53,15 +54,41 @@ export default class MenuButton extends React.Component {
   }
 }
 
-export const MenuButtonHeader = (props) => {
-  const { name, role } = props;
-  return(
-    <div style={{color: 'white', textAlign: 'center', marginTop: '-30px'}}>
-      <img alt="avatar" className="img-circle center" src={Logo} style={{width: '80px', height: '80px'}}/>
-      <div style={{fontWeight: 'bold'}}> {name} </div>
-      <div style={{fontSize: '14px', marginBottom: '5px'}}> {role} </div>
-    </div>
-  );
+export class MenuButtonHeader extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      show: false,
+    }
+  }
+
+  getValue = (key, value) => {
+    this.setState({ [key]: value})
+  };
+
+  render(){
+    const { name, role } = this.props;
+    return(
+      <div style={{color: 'white', textAlign: 'center', marginTop: '-30px'}}>
+        <ChangePas show={this.state.show} handleClose={ e => this.getValue('show', false)}/>
+        <img alt="avatar" className="img-circle center avt" src={Logo} />
+
+        <div className={'user-name '}>
+
+        <Dropdown>
+          <Dropdown.Toggle childBsPrefix="dropdown" variant="success" id="dropdown-basic" >
+            {name}
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={ e => this.getValue('show', true)}>Đổi mật khẩu</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+
+        <div style={{fontSize: '14px', marginBottom: '5px'}}> {role} </div>
+        </div>
+      </div>
+    );
+  }
 };
 
-//<img alt="avatar" className="img-circle" src="https://img.kpopmap.com/2018/09/iu-tour-cover.jpg"/>

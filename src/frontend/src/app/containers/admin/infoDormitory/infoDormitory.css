@@ -3,8 +3,7 @@
 }
 
 .id-floor{
-    margin-top: 40px;
-    height: 400px;
+    height: 500px;
     overflow: auto;
     background-color: #f5f5f5;
 }
@@ -50,5 +49,31 @@
 
 .id-add button{
     width: 100%;
+}
+
+.room-detail {
+    border-top: 1px solid #ddd ;
+}
+
+.room-gender{
+    margin: 15px 0 0;
+    color: #f88b62;
+}
+
+.note-room-color-item{
+    display: inline-block;
+    margin-right: 30px;
+}
+
+.note-room-color{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 7px;
+    background-color: #1c84c6;
+}
+
+.people-in-dormitory{
+    font-size: 25px;
 }
 

@@ -6,8 +6,14 @@ import Button from './../button/button'
 import './header.css'
 
 export default class Header extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      collapsed: false
+    }
+  }
     logout = () => {
-        const secret = JSON.parse(localStorage.getItem('secret'))
+        const secret = JSON.parse(localStorage.getItem('secret'));
 
         axios.get(`/logout`, {
             headers: {
@@ -15,11 +21,30 @@ export default class Header extends React.Component{
             }
         }).then( res => localStorage.removeItem('secret') )
             
+    };
+
+  onChangeStyleNav = () => {
+    if(this.state.collapsed){
+      this.props.onChangeStyleNav(false);
+      this.setState({
+        collapsed: false
+      })
+    } else {
+      this.props.onChangeStyleNav(true);
+      this.setState({
+        collapsed: true
+      })
     }
+
+  };
     render() {
         return(
             <div className={"header"}>
-                <Button color='default' style={{fontSize: '20px', padding: '0 12px'}}>
+                <Button
+                  onClick={this.onChangeStyleNav}
+                  color='default'
+                  style={{fontSize: '20px', padding: '0 12px'}}
+                >
                     <i className='fas fa-bars'/>
                 </Button>
                 <div className={"header-right"}>

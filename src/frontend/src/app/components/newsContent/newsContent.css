@@ -14,7 +14,11 @@
 }
 
 .img-background{
-    background-image: url("/img/bgr-img.jpg");
+    background-image: url("/images/sl1.png") ;
+    -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
     width: 100%;
     min-height: 40vh
 }

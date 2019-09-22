@@ -4,8 +4,8 @@ import Button from '../../../components/button/button'
 import Checkbox from '../../../components/checkbox/checkbox'
 // import Input from '../../../components/input/input'
 import Select from '../../../components/selectOption/select'
-import { report_expense } from './expensesAction'
-import { get_month, get_year, get_status } from './expenseRepo'
+import { report_expense, getYear } from './expensesAction'
+import { get_month, get_year_db, get_status } from './expenseRepo'
 import { ToastsStore } from 'react-toasts';
 import { saveAs } from 'file-saver'
 class Example extends React.Component {
@@ -18,8 +18,8 @@ class Example extends React.Component {
       show: false,
       fromMonth: 1,
       toMonth: 1,
-      fromYear: 2015,
-      toYear: 2015,
+      fromYear: 0,
+      toYear: 0,
       soDien: true,
       soNuoc: true,
       tienRac: true,
@@ -37,19 +37,35 @@ class Example extends React.Component {
       loading: false,
       fromMonth: 1,
       toMonth: 1,
-      toYear: 2015,
-      fromYear: 2015,
+      toYear: 0,
+      fromYear: 0,
       soDien: true,
       soNuoc: true,
       tienRac: true,
       tongTien: true,
       room: 0,
-      status: 0,
-      disableToMonth: true
+      status: 2,
+      disableToMonth: true,
+      monthOptions: [],
+      yearOptions: []
     });
   }
   handleShow() {
     this.setState({ show: true });
+    getYear().then(result => {
+      if (result.data){
+        this.setState({
+          monthOptions: get_month(),
+          yearOptions: get_year_db(result.data.year),
+          fromYear: Math.max(...result.data.year),
+          toYear: Math.max(...result.data.year),
+          fromMonth: (new Date).getMonth()+1,
+          toMonth: (new Date).getMonth() +1,
+          status: 2
+
+        })
+      }
+    })
   }
   monthFromSelected = (value) => {
     this.setState({ fromMonth: value })
@@ -116,10 +132,8 @@ class Example extends React.Component {
     this.setState({ disableToMonth: !this.state.disableToMonth })
   }
   render() {
-    var month = get_month().filter(m => m.value !== 0);
-    var year = get_year().filter(y => y.value !== 0);
-    var trangThai = get_status();
-    var { roomList } = this.props
+    let trangThai = get_status();
+    let { roomList } = this.props
     return (
       <>
         <Button title={'Xuất báo cáo'} onClick={this.handleShow}>
@@ -134,24 +148,24 @@ class Example extends React.Component {
               <Col>
                 <div style={{ marginBottom: '8px' }}>Tháng</div>
                 <Row>
-                  <Col><Select options={month} selected={this.monthFromSelected} /></Col>
-                  <Col><Select options={year} selected={this.yearFromSelected} /></Col>
+                  <Col><Select options={this.state.monthOptions} value={this.state.fromMonth} selected={this.monthFromSelected} /></Col>
+                  <Col><Select options={this.state.yearOptions} value={this.state.fromYear} selected={this.yearFromSelected} /></Col>
                 </Row>
               </Col>
               <Col>
                 <Checkbox label={'Đến tháng'} check={!this.state.disableToMonth} name={'sdtt'} isCheck={this.handleCheckToMonth} />
                 <Row>
-                  <Col><Select options={month} selected={this.monthToSelected} disabled={this.state.disableToMonth} /></Col>
-                  <Col><Select options={year} selected={this.yearToSelected} disabled={this.state.disableToMonth} /></Col>
+                  <Col><Select options={this.state.monthOptions} value={this.state.toMonth} selected={this.monthToSelected} disabled={this.state.disableToMonth} /></Col>
+                  <Col><Select options={this.state.yearOptions} value={this.state.toYear} selected={this.yearToSelected} disabled={this.state.disableToMonth} /></Col>
                 </Row>
               </Col>
             </Row>
             <Row>
               <Col>Phòng
-              <Select options={roomList} selected={this.roomSelected} />
+              <Select options={roomList} value={this.state.room} selected={this.roomSelected} />
               </Col>
               <Col>Trạng thái
-              <Select options={trangThai} selected={this.statusSelected} /></Col>
+              <Select options={trangThai} value={this.state.status}  selected={this.statusSelected} /></Col>
             </Row>
             <Row>
               <Col><Checkbox label={'Số điện'} check={this.state.soDien} name={'soDien'} isCheck={this.handleCheck} /></Col>

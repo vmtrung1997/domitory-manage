@@ -7,7 +7,7 @@ var YeuCauLuuTruSchema = new Schema({
     des: {type: String},
     type: {type: String}, // sinh viên thuộc diện
     date: {type: Date},
-    isAccept: {type: Boolean}
+    isAc: {type: Boolean}
 });
 YeuCauLuuTruSchema.plugin(mongoosePaginate);
 

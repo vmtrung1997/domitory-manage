@@ -1,14 +1,11 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap'
-import DatePicker from 'react-datepicker'
-import TimeField from 'react-simple-timefield';
 import axios from './../../../config'
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
 import Input from './../../../components/input/input'
-import CheckBox from './../../../components/checkbox/checkbox'
 import Select from './../../../components/selectOption/select'
 
 const initialState = {
@@ -44,7 +41,10 @@ class AccountEdit extends Component{
       {value: 'SA', label: 'Trưởng quản lý'},
       {value: 'AM', label: 'Quản lý'},
       {value: 'BV', label: 'Bảo vệ'},
-      {value: 'SV', label: 'Sinh viên'},
+      {value: 'ADCP', label: 'Quản lý chi phí'},
+      {value: 'GDN', label: 'Ghi chi phí'},
+      {value: 'DD', label: 'Điểm danh'},
+      {value: 'XNTT', label: 'Xác nhận thanh toán'}
     ]
   }
 

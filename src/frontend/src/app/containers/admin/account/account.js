@@ -31,7 +31,12 @@ class Account extends Component{
 		this.getData()
 	}
 
+	sleep = (ms) => {
+		return new Promise(resolve => setTimeout(resolve, ms))
+	}
+
 	getData = async () => {
+		await this.sleep(750)
 		this.setState({ loading: true})		
 		await refreshToken()
 		var secret = JSON.parse(localStorage.getItem('secret'))
@@ -72,7 +77,10 @@ class Account extends Component{
 			{value: 'SA', label: 'Trưởng quản lý'},
 			{value: 'AM', label: 'Quản lý'},
 			{value: 'BV', label: 'Bảo vệ'},
-			{value: 'SV', label: 'Sinh viên'},
+			{value: 'ADCP', label: 'Quản lý chi phí'},
+			{value: 'GDN', label: 'Ghi chi phí'},
+			{value: 'DD', label: 'Điểm danh'},
+			{value: 'XNTT', label: 'Xác nhận thanh toán'}
 		]
 	}
 	
@@ -87,7 +95,7 @@ class Account extends Component{
 					handleClose={() => this.changeState('showAdd', false)}
 					handleSave={this.getData}
 				/>
-				<Title> Hoạt động sinh viên </Title>
+				<Title> Tài khoản </Title>
 
         		<div className={'content-body full'}>
 					<div>
@@ -131,12 +139,19 @@ class Account extends Component{
 						</div>
 					</div>
 					<AccountTable data={this.state.data} refresh={this.getData}/>
-					<div className={'is-pagination'}>
-						<MyPagination 
-							page={this.state.page} 
-							totalPages={this.state.totalPages} 
-							clickPage={this.handleSearch}
-						/>
+		            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+						<div style={{display: 'flex', alignItems: 'baseline'}}>
+			                <span style={{marginRight: '2px'}}>Trang</span>
+			                <Input width='40px' textAlign='center' value={this.state.page}/>
+			                <span>/{this.state.totalPages}</span>
+			            </div>
+						<div className={'is-pagination'}>
+							<MyPagination 
+								page={this.state.page} 
+								totalPages={this.state.totalPages} 
+								clickPage={this.handleSearch}
+							/>
+		            	</div>
 	            	</div>
 				</div>
 

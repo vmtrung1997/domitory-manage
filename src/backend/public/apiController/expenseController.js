@@ -7,7 +7,9 @@ const writeXlsx = require('../repos/xlsxRepo');
 const ThongSo = require('../models/ThongSo');
 const LoaiPhong = require('../models/LoaiPhong');
 const ThongSoLoaiPhong = require('../models/ThongSoLoaiPhong');
+const Profile = require('../models/Profile');
 const NumberReader = require('read-vn-number').default
+const logsDb = require('../repos/logsRepo').logs_database;
 exports.quan_ly_dien_nuoc = (req, res, next) => {
 	res.json({
 		msg: 'from quan ly dien nuoc'
@@ -20,6 +22,13 @@ exports.get_data = (req, res) => {
 			result: result
 		})
 	})
+}
+exports.get_year = (req, res) => {
+	ChiPhiPhong
+		.distinct('nam')
+		.then(value => {
+			res.json({ year: value })
+		})
 }
 exports.select_expense_table = (req, res) => {
 	var search = req.body;
@@ -42,7 +51,6 @@ exports.select_expense_table = (req, res) => {
 	// console.log('==searchObj: ', searchObj);
 	// console.log('==options: ', options)
 	ChiPhiPhong.paginate(searchObj, options).then(value => {
-		// console.log(value);
 		res.json({
 			rs: value
 		})
@@ -61,9 +69,22 @@ function update_data(item, cb) {
 		})
 	}, 100)
 }
+function getPersonInRoom(id) {
+	return new Promise((resolve) => {
+		Profile.countDocuments({ idPhong: id }, function (err, count) {
+			if (err)
+				resolve(-1);
+			else
+				resolve(count);
+		})
+	})
+
+}
 function TinhTienDien(arr, number) {
 	let total = 0;
-	let temp = number
+	let temp = number;
+	if (arr.length > 0 && temp <= arr[0].giaTriCuoi)
+		return temp * arr[0].giaTriThuc;
 	for (let i = 0; i < arr.length; i++) {
 		if (temp >= arr[i].giaTriDau && temp <= arr[i].giaTriCuoi) {
 			for (let j = 0; j < i; j++) {
@@ -82,13 +103,10 @@ function TinhTienNuoc(arr, number, soNguoi) {
 	let total = 0;
 	let temp = number;
 	for (let i = 0; i < arr.length; i++) {
-		if (i === arr.length - 1) {
-			return total + temp * arr[i].giaTriThuc
-		}
 		var diff = (arr[i].giaTriCuoi - arr[i].giaTriDau) * soNguoi
 		if (temp > diff) {
 			total = total + diff * arr[i].giaTriThuc;
-			temp = temp - diff
+			temp = temp - diff;
 		} else {
 			return total + temp * arr[i].giaTriThuc
 		}
@@ -132,6 +150,71 @@ function toMoneyString(string) {
 function ceilMoney(number) {
 	return Math.ceil(number / 500) * 500;
 }
+
+function CalculationTest(phong, soDienCu, soNuocCu) {
+	return new Promise(async (resolve, reject) => {
+		var row = {
+			idPhong: phong.phong.value,
+			thang: phong.thang,
+			nam: phong.nam,
+			soDien: phong.soDien,
+			soNuoc: phong.soNuoc,
+			soDienCu: soDienCu,
+			soNuocCu: soNuocCu,
+			tienDien: 0,
+			tienNuoc: 0,
+			tongTien: 0,
+			tienRac: 0,
+			tongTienChu: '',
+			trangThai: 0,
+		}
+		var phongReset = await ChiPhiPhong.findOne({ phong: phong.phong.value, thang: phong.thang, nam: phong.nam });
+		var loaiPhong = await LoaiPhong.findOne({ _id: phong.phong.loaiPhong });
+		var arrThongSo = await ThongSoLoaiPhong.find({ idLoaiPhong: loaiPhong._id }).sort({ id: 1 });
+		var arrDien, arrNuoc;
+		if (arrThongSo.length > 0) {
+			arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0) || [];
+			arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1) || [];
+		}
+		if (loaiPhong) {
+			row.tienRac = loaiPhong.tienRac;
+			if (phongReset) {
+				if (phongReset.thayDien){
+					row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu + phongReset.thayDien.dienCu));
+				}
+				if (phongReset.thayNuoc){
+					row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, songuoi));
+				}
+			}
+			else {
+				if (loaiPhong.dien || loaiPhong.nuoc) {
+					if (arrDien.length > 0) {
+						row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu));
+					}
+					phong.isResetDien ?
+						row.thayDien = { dienCu: phong.soDienResetDau }:
+						row.thayDien = null;
+					
+					var songuoi = await getPersonInRoom(phong.phong.value);
+
+					if (arrNuoc.length > 0) {
+						row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, songuoi));
+					}
+					phong.isResetNuoc ?
+						row.thayNuoc = { nuocCu: phong.soNuocResetDau }:
+						row.thayNuoc = null;
+					
+					console.log(row)
+					row.tongTien = ceilMoney(row.tienDien + row.tienNuoc + row.tienRac)
+					row.tongTienChu = toMoneyString(NumberReader.read(row.tongTien));
+				}
+				resolve(row)
+			}
+		}
+		else reject({ status: false })
+
+	})
+}
 function Calculation(phong, soDienCu, soNuocCu) {
 	return new Promise((resolve, reject) => {
 		var row = {
@@ -168,19 +251,18 @@ function Calculation(phong, soDienCu, soNuocCu) {
 									row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu));
 								}
 							}
+							var songuoi = await getPersonInRoom(phong.phong.value)
 							if (phong.isResetNuoc) {
 								row.thayNuoc = { nuocCu: phong.soNuocResetDau, nuocMoi: phong.soNuocResetCuoi }
 								if (arrNuoc.length > 0) {
-									await Phong.findOne({ _id: phong.phong.value }).select(['_id', 'soNguoi']).then(p => {
-										row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu + phong.soNuocResetCuoi - phong.soNuocResetDau, p.soNguoi));
-									})
+									row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu + phong.soNuocResetCuoi - phong.soNuocResetDau, songuoi));
+									// await Phong.findOne({ _id: phong.phong.value }).select(['_id', 'soNguoi']).then(p => {
+									// })
 								}
 							} else {
 								row.thayNuoc = null
 								if (arrNuoc.length > 0) {
-									await Phong.findOne({ _id: phong.phong.value }).select(['_id', 'soNguoi']).then(p => {
-										row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, p.soNguoi));
-									})
+									row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, songuoi));
 								}
 							}
 							row.tongTien = ceilMoney(row.tienDien + row.tienNuoc + row.tienRac)
@@ -197,7 +279,6 @@ function Calculation(phong, soDienCu, soNuocCu) {
 }
 exports.add_data = (req, res) => {
 	var table = req.body
-	console.log(table);
 	var tableAdd = [];
 	var arrId = table.map(val => { return val.phong.value })
 	ChiPhiHienTai.find({ idPhong: { $in: arrId } }).then(vals => {
@@ -212,6 +293,7 @@ exports.add_data = (req, res) => {
 				if (tableNewAdd.length > 0) {
 					ChiPhiPhong.insertMany(tableNewAdd).then((result) => {
 						if (result.length > 0) {
+							logsDb(req.headers['x-access-token'], 'Thêm chi phí', tableNewAdd)
 							res.json({
 								rs: 'success',
 								data: result,
@@ -252,6 +334,10 @@ exports.confirm = (req, res) => {
 						msg: err
 					})
 				} else {
+					logsDb(req.headers['x-access-token'], 'Xác nhận thanh toán', {
+						soDien: soDien,
+						soNuoc: soNuoc
+					})
 					res.json({
 						rs: 'success',
 						data: doc
@@ -271,6 +357,7 @@ exports.remove_expense = (req, res) => {
 				msg: err
 			})
 		} else {
+			logsDb(req.headers['x-access-token'], 'Xóa chi phí', { data: exp })
 			res.status(201).json({
 				rs: 'success'
 			})
@@ -279,6 +366,7 @@ exports.remove_expense = (req, res) => {
 }
 exports.update_expense = async (req, res) => {
 	var exp = req.body;
+	console.log(exp);
 	var id = new ObjectId(exp._id);
 	Phong.findOne({ _id: exp.idPhong }).then(value => {
 		if (value) {
@@ -296,11 +384,11 @@ exports.update_expense = async (req, res) => {
 							}
 							if (loaiPhong.nuoc) {
 								var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id })
-								await Phong.findOne({ _id: exp.idPhong }).select(['_id', 'soNguoi']).then(p => {
+								await getPersonInRoom(exp.idPhong).then(soNguoi => {
 									if (exp.thayNuoc)
-										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, p.soNguoi));
+										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, soNguoi));
 									else
-										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, p.soNguoi));
+										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, soNguoi));
 								})
 							}
 						})
@@ -325,15 +413,20 @@ exports.update_expense = async (req, res) => {
 								}, err => {
 									if (err)
 										res.json({ rs: 'fail', msg: err })
-									else
+									else {
+										logsDb(req.headers['x-access-token'], 'Cập nhật thông số', { idPhong: exp, soDien: soDienMoi, soNuoc: soNuocMoi })
+										logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
 										res.json({
 											rs: 'success'
 										})
+									}
 								})
-							} else
+							} else {
+								logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
 								res.json({
 									rs: 'success'
 								})
+							}
 						}
 					})
 				}
@@ -341,12 +434,7 @@ exports.update_expense = async (req, res) => {
 		}
 	})
 }
-exports.reports_expense = (req, res) => {
-	var xlsx = writeXlsx.testXlsx();
-	res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	res.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-	res.json({ filename: 'Report.xlsx', file: xlsx });
-}
+
 exports.report_expense = (req, res) => {
 	var condition = req.body;
 	var query = {};
@@ -359,7 +447,7 @@ exports.report_expense = (req, res) => {
 		if (condition.room !== 0) {
 			query.idPhong = condition.room
 		}
-		if (condition.status !== 0) {
+		if (condition.status !== 2) {
 			query.trangThai = condition.status
 		}
 	}
@@ -371,7 +459,7 @@ exports.report_expense = (req, res) => {
 				if (condition.room !== 0) {
 					query.idPhong = condition.room
 				}
-				if (condition.status !== 0) {
+				if (condition.status !== 2) {
 					query.trangThai = condition.status
 				}
 			}
@@ -394,11 +482,9 @@ exports.report_expense = (req, res) => {
 			if (condition.room !== 0) {
 				query.$and.push({ idPhong: condition.room })
 			}
-			if (condition.status !== 0) {
+			if (condition.status !== 2) {
 				query.$and.push({ trangThai: condition.status })
 			}
-
-
 		} else {
 			query = {}
 		}
@@ -438,8 +524,7 @@ exports.report_expense = (req, res) => {
 		total.push(0)
 		total.push('')
 	}
-	//console.log('==query: ', query);
-	//console.log('==options: ', options);
+	console.log(query)
 	if (Object.keys(query).length) {
 		ChiPhiPhong.find(query)
 			.sort([['nam', 1], ['thang', 1]])
@@ -459,20 +544,16 @@ exports.report_expense = (req, res) => {
 						arr.push(item.thang);
 						arr.push(item.idPhong.tenPhong);
 						if (options.indexOf('soDien') > 0) {
-							arr.push(item.thayDien.dienMoi>0 ? item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu : (item.soDien > item.soDienCu ? item.soDien - item.soDienCu : 0));
-							console.log('dienMoi')
-							total[header.indexOf('Số điện trong tháng')] = item.thayDien.dienMoi>0? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu :
+							arr.push(item.thayDien.dienMoi > 0 ? item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu : (item.soDien > item.soDienCu ? item.soDien - item.soDienCu : 0));
+							total[header.indexOf('Số điện trong tháng')] = item.thayDien.dienMoi > 0 ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu :
 								(item.soDien > item.soDienCu ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu : total[header.indexOf('Số điện trong tháng')])
 							//totalObj.soDien = item.soDien > item.soDienCu ? totalObj.soDien + item.soDien - item.soDienCu : totalObj.soDien
-							console.log('totalDienMoi')
 						}
 						if (options.indexOf('soNuoc') > 0) {
-							console.log('nuocMoi')
-							arr.push(item.thayNuoc.nuocMoi>0 ? item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu + item.soNuoc - item.soNuocCu : (item.soNuoc > item.soNuocCu ? item.soNuoc - item.soNuocCu : 0));
-							total[header.indexOf('Số nước trong tháng')] = item.thayNuoc.nuocMoi>0? total[header.indexOf('Số nước trong tháng')] + item.soNuoc - item.soNuocCu + item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu :
+							arr.push(item.thayNuoc.nuocMoi > 0 ? item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu + item.soNuoc - item.soNuocCu : (item.soNuoc > item.soNuocCu ? item.soNuoc - item.soNuocCu : 0));
+							total[header.indexOf('Số nước trong tháng')] = item.thayNuoc.nuocMoi > 0 ? total[header.indexOf('Số nước trong tháng')] + item.soNuoc - item.soNuocCu + item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu :
 								(item.soNuoc > item.soNuocCu ? total[header.indexOf('Số nước trong tháng')] + item.soNuoc - item.soNuocCu : total[header.indexOf('Số nước trong tháng')])
-								console.log('totalNuocMoi')
-								//totalObj.soNuoc = item.soNuoc > item.soNuocCu ? totalObj.soNuoc + item.soNuoc - item.soNuocCu : totalObj.soNuoc 
+							//totalObj.soNuoc = item.soNuoc > item.soNuocCu ? totalObj.soNuoc + item.soNuoc - item.soNuocCu : totalObj.soNuoc 
 						}
 						if (options.indexOf('tienRac') > 0) {
 							arr.push(item.tienRac);
@@ -552,8 +633,6 @@ exports.apply_config = (req, res) => {
 
 exports.refresh_data = (req, res) => {
 	ChiPhiPhong.find().then(results => {
-		console.log(results[0])
-		var idx = 0;
 		results.map((item) => {
 			return new Promise((resolve) => update_data(item, resolve))
 		})
@@ -583,17 +662,16 @@ exports.get_detail_type_room = (req, res) => {
 	ThongSoLoaiPhong.find({ idLoaiPhong: req.body.idLoaiPhong })
 		.sort({ id: 1 })
 		.then(arrThongSo => {
-				res.json({
-					rs: 'success',
-					data: arrThongSo
-				})
-			
+			res.json({
+				rs: 'success',
+				data: arrThongSo
+			})
+
 		}).catch(err => { res.json({ err: err }) })
 }
 
 exports.update_detail_type_room = (req, res) => {
 	var data = req.body;
-	console.log(data);
 	LoaiPhong.updateOne({ _id: data.idLoaiPhong },
 		{ $set: { 'tienRac': data.tienRac } },
 		(err, result) => {
@@ -626,6 +704,7 @@ exports.update_detail_type_room = (req, res) => {
 								if (table.length > 0) {
 									ThongSoLoaiPhong.insertMany(table).then(result => {
 										if (result.length > 0) {
+											logsDb(req.headers['x-access-token'], 'Cập nhật cài đặt', table)
 											res.json({
 												rs: 'success'
 											})
@@ -659,6 +738,7 @@ exports.update_detail_type_room = (req, res) => {
 						if (table.length > 0) {
 							ThongSoLoaiPhong.insertMany(table).then(result => {
 								if (result.length > 0) {
+									logsDb(req.headers['x-access-token'], 'Cập nhật cài đặt', table)
 									res.json({
 										rs: 'success'
 									})
@@ -676,7 +756,6 @@ exports.update_detail_type_room = (req, res) => {
 						}
 					}
 				})
-
 			}
 		})
 }
@@ -703,41 +782,30 @@ exports.get_info_room = async (req, res) => {
 exports.reset_room = (req, res) => {
 	var detail = req.body;
 	var roomUpdate = {}
-	// ChiPhiHienTai.findOne({ idPhong: detail.idPhong }).then(value => {
-	// 	if (value) {
-
-	// 	}
-	// })
 	if (detail.dienCheck)
-		//roomUpdate.soDien = detail.dienCu === 0 ? detail.dienMoi : detail.dienMoi - (detail.dienCu - value.soDien)
 		roomUpdate.soDien = detail.dienMoi;
 	if (detail.nuocCheck)
-		//roomUpdate.soNuoc = detail.nuocCu === 0 ? detail.nuocMoi : detail.nuocCu - (detail.nuocCu - value.soNuoc);
-		roomUpdate.soNuoc = detail.nuocMoi
+		roomUpdate.soNuoc = detail.nuocMoi;
 	if (Object.keys(roomUpdate).length > 0) {
 		ChiPhiHienTai.updateOne({ idPhong: detail.idPhong }, {
 			$set: roomUpdate
 		}, (err) => {
 			if (err)
 				res.json({ rs: 'fail' })
-			else
+			else {
+				logsDb(req.headers['x-access-token'], 'Cập nhật số điện nước ban đầu', { idPhong: detail.idPhong, update: roomUpdate })
 				res.json({ rs: 'success' })
+			}
 		})
 	}
 }
-function getDetailTypeRoom(value) {
-	return new Promise(resolve => {
-		if (value.idPhong.loaiPhong.dien || value.idPhong.loaiPhong.nuoc) {
-			ThongSoLoaiPhong.find({ idLoaiPhong: value.idPhong.loaiPhong._id }).then(arr => {
-				resolve({ detail: value, thongSo: arr })
-			}).catch(err => console.log(err))
-		} else { resolve(value) }
-	})
+
+async function getDetailRoom(value) {
+	let soNguoi = await getPersonInRoom(value.idPhong._id);
+	return Promise.resolve({ detail: value, soNguoi: soNguoi })
 }
 exports.get_data_print = (req, res) => {
 	var { data, type } = req.body
-	console.log(data);
-	console.log(type);
 	var searchObj = {};
 	if (type === 'table') {
 		if (data.month !== 0)
@@ -752,19 +820,18 @@ exports.get_data_print = (req, res) => {
 		if (data.length > 0)
 			searchObj._id = { $in: data }
 	}
-	if (Object.keys(searchObj).length>0 || type === 'table') {
-		console.log(searchObj);
+	if (Object.keys(searchObj).length > 0 || type === 'table') {
 		ChiPhiPhong.find(searchObj).populate({
 			path: 'idPhong',
 			select: 'loaiPhong tenPhong soNguoi',
 			populate: {
 				path: 'loaiPhong'
 			}
-		}).then(expenses => {
+		}).then(async expenses => {
 			if (expenses.length > 0) {
-				var data = []
+				var data = [];
 				expenses.forEach(value => {
-					data.push(getDetailTypeRoom(value))
+					data.push(getDetailRoom(value))
 				})
 				Promise.all(data).then(value => {
 					res.json({
@@ -782,4 +849,11 @@ exports.get_data_print = (req, res) => {
 	} else {
 		res.json({ rs: 'fail', msg: 'Không có dữ liệu chọn' })
 	}
+}
+exports.get_person_room = (req, res) => {
+	getPersonInRoom(req.body.id).then(num => {
+		res.json({
+			data: num
+		})
+	})
 }

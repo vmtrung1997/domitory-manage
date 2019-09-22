@@ -7,7 +7,7 @@ import News from './news/news'
 import Header from './../../components/headerHomepage/headerHomepage'
 import NewsContent from '../../components/newsContent/newsContent';
 import DashBoardStudent from './dashBoard/dashBoard'
-
+import Introduce from '../../components/introducePage/introduce';
 
 // ReallySmoothScroll.shim();
 const checkAuth = () => {
@@ -65,6 +65,7 @@ class Student extends Component {
 				<Route exact path={`/news`} component={News} />
 				<Route exact path={`/news/detail`} component={NewsContent} />
 				<Route exact path={`/`} component={Homepage} />
+                <Route exact path={`/introduce`} component={Introduce} />
                 <StudentRoute exact path={`/dashboard`} component={DashBoardStudent} />
             </React.Fragment>
         )

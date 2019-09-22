@@ -1,16 +1,15 @@
 import React from "react";
-import { InputGroup, Row, Col, Table } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import "./../profileStudent.css";
 import "react-datepicker/dist/react-datepicker.css";
 import MyInput from "../../input/input";
-import MySelectOption from "../../selectOption/select";
+
 import "./../../titleStudent/titleStudent.css";
 import { connect } from "react-redux";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { bindActionCreators } from "redux";
 import * as UserAction from "../../../actions/studentAction";
-import Button from "./../../button/button";
 import {
   ToastsContainer,
   ToastsContainerPosition,
@@ -18,7 +17,7 @@ import {
 } from "react-toasts";
 import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
-import ChooseRoom from './chooseRoom'
+import ChooseRoom from "./chooseRoom";
 class StayProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -74,15 +73,13 @@ class StayProfile extends React.Component {
     var secret = localStorage.getItem("secret");
     secret = JSON.parse(secret);
     axios.defaults.headers["x-access-token"] = secret.access_token;
-    axios
-      .post(`/student/update-info`, { data: data })
-      .then(res => {
-        if (res.data.res === "success") {
-          ToastsStore.success("Cập nhật thành công");
-        } else {
-          ToastsStore.error("Cập nhật thất bại");
-        }
-      });
+    axios.post(`/student/update-info`, { data: data }).then(res => {
+      if (res.data.res === "success") {
+        ToastsStore.success("Cập nhật thành công");
+      } else {
+        ToastsStore.error("Cập nhật thất bại");
+      }
+    });
   };
 
   handleChange(date) {
@@ -91,11 +88,11 @@ class StayProfile extends React.Component {
     });
   }
 
-  componentDidMount =  () => {
+  componentDidMount = () => {
     this.getStay();
   };
 
-  getStay = async() =>{
+  getStay = async () => {
     await refreshToken();
 
     var secret = localStorage.getItem("secret");
@@ -112,9 +109,8 @@ class StayProfile extends React.Component {
           if (res) {
             //Lưu trong redux
             this.props.getUserAction(res.data.data);
-
             //Data mặc định nếu chưa có data trên db
-            var tenPhong = {tenPhong: undefined}
+            var tenPhong = { tenPhong: undefined };
             //var ngayHetHan = {ngayHetHan:}
             //Lưu trong state
             this.setState({
@@ -128,23 +124,31 @@ class StayProfile extends React.Component {
             });
           }
         })
-        .catch(err => {
-        });
+        .catch(err => {});
     } else {
     }
-  }
+  };
 
   render() {
     if (!this.state.isLoad) {
       //Định dạng ngày vào
-      var d = new Date(this.state.ngayVaoO);
-      var month = d.getMonth() + 1;
-      var dayInFormat = d.getDate() + "/" + month + "/" + d.getFullYear();
+      var dayInFormat = "Chưa xác định";
+      if (this.state.ngayVaoO) {
+        var d = new Date(this.state.ngayVaoO);
+        var month = d.getMonth() + 1;
+        
+
+        dayInFormat = d.getDate() + "/" + month + "/" + d.getFullYear();
+      }
 
       //Định dạng ngày ra
-      d = new Date(this.state.ngayHetHan);
-      month = d.getMonth() + 1;
-      var dayOutFormat = d.getDate() + "/" + month + "/" + d.getFullYear();
+
+      var dayOutFormat = "Chưa xác định";
+      if (this.state.ngayHetHan !== undefined) {
+        var dof = new Date(this.state.ngayHetHan);
+        month = dof.getMonth() + 1;
+        dayOutFormat = dof.getDate() + "/" + month + "/" + dof.getFullYear();
+      }
     }
 
     return (
@@ -156,7 +160,6 @@ class StayProfile extends React.Component {
         ) : (
           <div>
             <div className="profile-panel">
-           
               <Row>
                 <ToastsContainer
                   position={ToastsContainerPosition.BOTTOM_CENTER}
@@ -194,7 +197,9 @@ class StayProfile extends React.Component {
                         <Col sm={6}>
                           <span className="label-font">
                             Phòng{" "}
-                            {this.state.tenPhong.tenPhong === undefined?<ChooseRoom isLoad = {this.getStay}></ChooseRoom>:null}
+                            {this.state.tenPhong.tenPhong === undefined ? (
+                              <ChooseRoom isLoad={this.getStay} />
+                            ) : null}
                           </span>
 
                           <MyInput
@@ -219,7 +224,7 @@ class StayProfile extends React.Component {
                     </div>
                   </div>
                 </Col>
-                <Col sm={10}>
+                {/* <Col sm={10}>
                   <Table bordered hover responsive size="sm">
                     <thead className="thread-student">
                       <tr>
@@ -237,7 +242,7 @@ class StayProfile extends React.Component {
                       </tr>
                     </tbody>
                   </Table>
-                </Col>
+                </Col> */}
               </Row>
             </div>
           </div>

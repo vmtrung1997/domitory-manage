@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 var profileSchema = new Schema({
     idTaiKhoan: {type: Schema.Types.String, ref: 'TaiKhoan'},
-    CMND: Number,
+    CMND: String,
     hoTen: String,
     ngaySinh: Date,
     gioiTinh: {type: Number, enum: [0,1]}, //1 nam 0 nu
@@ -12,7 +12,7 @@ var profileSchema = new Schema({
     diaChi: String,
     sdt: String,
     MSSV: String,
-    tonGiao: String,
+    tonGiao: {type: Schema.Types.String,ref: 'TonGiao'},
     maThe: String,
     nganhHoc: {type: Schema.Types.String, ref: 'NganhHoc'},
     truong: {type: Schema.Types.String, ref: 'Truong'},
@@ -20,14 +20,16 @@ var profileSchema = new Schema({
     moTa: String,
     sdtNguoiThan: String,
     ngayVaoO: Date,
+    nam: Number,
     ngayHetHan: Date,
-    danToc: String,
+    danToc: {type: Schema.Types.String,ref: 'DanToc'},
+    dangVien:  Boolean, //1 có 0 không,
+    doanVien: Boolean,
     img:  String,
-    //img:  String,//{ data: Buffer, contentType: String }
-    //expireAt: {type: Schema.Types.Date,default: Date.now(), expires: 3600},
+    isActive: Boolean,
+    hanDangKy: Date,
     flag: Boolean
 });
-
 profileSchema.plugin(mongoosePaginate);
 const model = mongoose.model('Profile', profileSchema, 'Profile');
 module.exports = model;

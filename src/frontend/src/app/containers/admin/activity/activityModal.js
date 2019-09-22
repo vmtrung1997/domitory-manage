@@ -12,7 +12,16 @@ import Input from './../../../components/input/input'
 import CheckBox from './../../../components/checkbox/checkbox'
 
 const today = new Date()
-const time = today.getHours() + ':' + today.getMinutes()
+var getStringTime = () => {
+  var h = today.getHours()
+  var m = today.getMinutes()
+  if (today.getHours() < 10)
+    h = '0' + today.getHours()
+  if (today.getMinutes() < 10)
+    m = '0' + today.getMinutes()
+  return h + ':' + m
+}
+const time = getStringTime()
 const initialState = {
   name: '',
   location: '',
@@ -39,14 +48,30 @@ class ActivityModal extends Component{
     this.setState({ [name]: val })
   }
   handleSave = async () => {
-    var {name, location, des, point, date, dateEnd} = this.state
-    if(!name || !location || !des || !point)
-    {
+    var {name, location, des, point} = this.state
+    var date = this.state.date
+    var dateEnd = this.state.dateEnd
+    var cur = new Date()
+
+    var tmp = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    var tmpEnd = new Date(dateEnd.getFullYear(), dateEnd.getMonth(), dateEnd.getDate())
+    var tmpCur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate())
+
+    // Hoạt động
+    var timeFirst = this.state.time.split(':')
+    var timeFinal = this.state.timeEnd.split(':')
+
+    this.state.date.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]), 0)
+    this.state.dateEnd.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]), 0)
+
+    if(!name || !location || !des || !point) {
       ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
     } else if(parseInt(point) <= 0){
       ToastsStore.error("Điểm hoạt động phải lớn hơn 0!");
-    } else if(date < new Date || dateEnd < new Date()){
-      ToastsStore.error("Thời gian bắt đầu và kết thúc phải lớn hơn ngày hiện tại!");
+    } else if(tmp < tmpCur || tmpEnd < tmpCur) {
+      ToastsStore.error("Thời gian bắt đầu và kết thúc không nhỏ hơn ngày hiện tại!");
+    } else if(tmp > tmpEnd){
+      ToastsStore.error("Thời gian kết thúc không nhỏ hơn thời gian bắt đầu!");
     } else {
       await refreshToken()
       var secret = JSON.parse(localStorage.getItem('secret'))
@@ -60,10 +85,8 @@ class ActivityModal extends Component{
         data:{
           name: this.state.name,
           location: this.state.location,
-          date: this.state.date,
-          time: this.state.time,
-          dateEnd: this.state.date,
-          timeEnd: this.state.time,
+          date: this.state.date.toString(),
+          dateEnd: this.state.dateEnd.toString(),
           isRequire: this.state.isRequire,
           point: this.state.point,
           des: this.state.des

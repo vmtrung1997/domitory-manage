@@ -9,8 +9,7 @@ var accountController = require('./../apiController/accountController');
 var historyController = require('../apiController/historyController');
 let repo = require('../repos/phongRepo');
 var universityController = require('../apiController/universityController');
-var studentController = require('../apiController/studentController')
-var registeredController = require('./../apiController/registeredController')
+var registeredController = require('./../apiController/registeredController');
 
 // Expense
 router.get('/expense', expenseController.quan_ly_dien_nuoc);
@@ -30,6 +29,8 @@ router.post('/expense/update_expense', expenseController.update_expense);
 router.post('/expense/report', expenseController.report_expense);
 
 router.get('/expense/get_parameter', expenseController.get_parameter);
+
+router.get('/expense/get_year', expenseController.get_year);
 
 router.post('/expense/config', expenseController.apply_config)
 
@@ -51,10 +52,14 @@ router.post('/expense/reset_room', expenseController.reset_room);
 
 router.post('/expense/get_data_print', expenseController.get_data_print);
 
+router.post('/expense/get_person_in_room', expenseController.get_person_room);
+
 // Activity
 router.post('/activity/get_activity', activityController.get_list_activity);
 
 router.post('/activity/export_activity', activityController.export_activity);
+
+router.post('/activity/export_detail_activity', activityController.export_detail_activity);
 
 router.get('/activity/detail', activityController.detail_activity);
 
@@ -64,7 +69,9 @@ router.post('/activity/delete', activityController.delete_activity);
 
 router.post('/activity/update', activityController.update_activity);
 
-router.post('/activity/rollcall', activityController.rollcall_activity)
+router.post('/activity/rollcall', activityController.rollcall_activity);
+
+router.post('/activity/import_rollcall', activityController.import_rollcall);
 
 // Info of student
 router.post('/infoStudent/getPaging', infoStudent.getListStudentPaging);
@@ -73,13 +80,15 @@ router.post('/infoStudent/getAll', infoStudent.getListStudent);
 
 router.post('/infoStudent/add', infoStudent.addStudent);
 
-router.post('/infoStudent/delete', infoStudent.deleteStudent);
+router.post('/infoStudent/convertStudent', infoStudent.convertStudent);
 
 router.post('/infoStudent/update', infoStudent.updateInfo);
 
 router.post('/infoStudent/importFile', infoStudent.importFile);
 
-router.get('/infoStudent/getActivities/:id', infoStudent.getListActivities);
+router.get('/infoStudent/getActivities/:mssv', infoStudent.getListActivitiesByMSSV);
+
+router.get('/infoStudent/getDetail/:mssv', infoStudent.getProfile);
 
 router.get('/getElement/:name', repo.get_element);
 
@@ -102,7 +111,11 @@ router.post('/infoDormitory/updateRoomType', infoDormitory.updateRoomType);
 
 router.post('/infoDormitory/removeRoomType', infoDormitory.removeRoomType);
 
+router.get('/infoDormitory/getPersonInRoom/:idPhong', infoDormitory.getPersonInRoom);
+
 router.get('/getRoomWithFloor', infoDormitory.getFloorRoom);
+
+router.get('/infoDormitory/getInfoManageDormitory', infoDormitory.getInfoManageDormitory);
 
 //News
 router.post('/news/add',newsController.addNews);
@@ -146,5 +159,7 @@ router.post('/university/removeMajor',universityController.removeMajor);
 
 //Registed
 router.post('/register/getListRegister', registeredController.get_list_register);
+
+router.post('/register/acceptRequest', registeredController.accept_request);
 
 module.exports = router;

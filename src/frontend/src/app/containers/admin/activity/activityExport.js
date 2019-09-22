@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import { Table, Modal } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import { saveAs } from 'file-saver'
+import DatePicker from 'react-datepicker'
 import axios from './../../../config'
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 
+import './activityExport.css'
 import Loader from './../../../components/loader/loader'
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
-import Input from './../../../components/input/input'
-import CheckBox from './../../../components/checkbox/checkbox'
 
 class ActivityExport extends Component{
 	static defaultProps = {
@@ -20,12 +20,13 @@ class ActivityExport extends Component{
   constructor(props) {
     super(props)
     this.state = {
-      check: 0
+      dateBegin: new Date(),
+      dateEnd: new Date()
     }
   }
 
-  changeState = (val) => {
-    this.setState({ check: parseInt(val) })
+  changeState = (key, value) => {
+    this.setState({ [key]: value })
   }
 
   handleSubmit = async () => {
@@ -38,7 +39,8 @@ class ActivityExport extends Component{
         url: '/manager/activity/export_activity',
         headers: { 'x-access-token': secret.access_token},
         data: {
-          year: this.state.check,
+          dateBegin: this.state.dateBegin,
+          dateEnd: this.state.dateEnd
         }
       })
       .then( res => {
@@ -69,17 +71,6 @@ class ActivityExport extends Component{
   }
 
 	render(){
-    var tableSemester = []
-    for(var i =  new Date().getFullYear() + 1; i >= this.props.last; i--){
-      tableSemester.push(
-        <tr key={i} style={{textAlign: 'center'}}>
-          <td>
-            <input type='radio' name='year' value={i} onClick={(e) => this.changeState(e.target.value)}/>
-          </td>
-          <td> {i - 1} - { i } </td>
-        </tr>
-      )
-    }
 
 		return(
       <React.Fragment>
@@ -90,21 +81,25 @@ class ActivityExport extends Component{
               		<Modal.Title>Xuất báo cáo hoạt động</Modal.Title>
             		</Modal.Header>
             		<Modal.Body>
-                  <div style={{maxHeight: '400px', overflow: 'auto'}}>
-                  <Table bordered hover responsive size="sm" >
-                    <thead style={{ textAlign: 'center'}}>
-                      <tr>
-                        <th >
-                          Chọn
-                        </th>
-                        <th>Năm học</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tableSemester}
-                    </tbody>
-                  </Table>
-                  </div>
+                  <>
+                    <span> Chọn mốc thời gian </span>
+                    <div style={{display: 'flex', justifyContent: 'space-evenly', alignItems: 'center'}}>
+                      <div style={{margin: '0 10px'}}> Từ</div>
+                      <DatePicker
+                        dateFormat='dd/MM/yyyy'
+                        selected={this.state.dateBegin}
+                        onChange={(val) => this.changeState('dateBegin', val)}
+                        className='input1'
+                      />
+                      <div style={{margin: '0 10px'}}> Đến</div>
+                      <DatePicker
+                        dateFormat='dd/MM/yyyy'
+                        selected={this.state.dateEnd}
+                        onChange={(val) => this.changeState('dateEnd', val)}
+                        className='input1'
+                      />
+                    </div>
+                  </>
             		</Modal.Body>
             		<Modal.Footer>
   	            	<Button variant='default' color='default' onClick={this.handleClose}>

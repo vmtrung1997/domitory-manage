@@ -6,12 +6,12 @@ import {
   convertFromHTML
 } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { Modal, Button, FormControl, Col, Row } from "react-bootstrap";
+import { Modal, Button, Col, Row } from "react-bootstrap";
 import draftToHtml from "draftjs-to-html";
 import "../../../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import Input from "./../../../components/input/input";
 import axios from "axios";
-import jwt_decode from 'jwt-decode'
+import jwt_decode from "jwt-decode";
 import refreshToken from "../../../.././utils/refresh_token";
 import Checkbox from "./../../../components/checkbox/checkbox";
 import MySelectOption from "./../../../components/selectOption/select";
@@ -37,7 +37,7 @@ class EditorConvertToHTML extends Component {
       isFirst: true,
       pin: false,
       sendEmail: false,
-      loai: 2,
+      loai: 0,
       typeOptions: [
         { value: 0, label: "Thông Tin" },
         { value: 1, label: "Hoạt Động" }
@@ -72,9 +72,7 @@ class EditorConvertToHTML extends Component {
       convertToRaw(this.state.editorState.getCurrentContent())
     );
 
-    var value1 = convertToRaw(
-      this.state.editorState.getCurrentContent()
-    );
+    var value1 = convertToRaw(this.state.editorState.getCurrentContent());
 
     if (!this.state.title || value1.blocks[0].text === "") {
       ToastsStore.warning("Tiêu đề hoặc nội dung không được để trống!");
@@ -88,15 +86,39 @@ class EditorConvertToHTML extends Component {
         author: decode.user.profile.idTaiKhoan,
         trangThai: this.state.check === true ? 1 : 0,
         ghim: this.state.pin === true ? 1 : 0,
-        loai: this.state.loai,
-        stamp: stamp.getTime()
+        loai: this.state.loai
       };
 
-      console.log(data);
+      if (this.state.pictures.length > 0) {
+        data.stamp = stamp.getTime();
+      }
 
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios.post("/manager/news/add", { data: data }).then(res => {
         if (res.status === 202) {
+          const { pictures } = this.state;
+          if (pictures.length > 0) {
+            var name = data.stamp + ".jpg";
+            const uploadTask = storage.ref(`news/${name}`).put(pictures[0]);
+            uploadTask.on(
+              "state_changed",
+              snapshot => {
+                //progress function
+              },
+              error => {
+                //error function
+              },
+              () => {
+                //complete function
+                storage
+                  .ref("news")
+                  .child(name)
+                  .getDownloadURL()
+                  .then(url => {              
+                  });
+              }
+            );
+          }  
           this.props.showPopup("add");
           this.handleClose();
         } else {
@@ -104,32 +126,6 @@ class EditorConvertToHTML extends Component {
         }
       });
     }
-
-
-    console.log(this.state.pictures);
-    const { pictures } = this.state;
-    var name = data.stamp + ".jpg"
-    const uploadTask = storage.ref(`news/${name}`).put(pictures[0]);
-    uploadTask.on(
-      "state_changed",
-      snapshot => {
-        //progress function
-      },
-      error => {
-        //error function
-        console.log(error);
-      },
-      () => {
-        //complete function
-        storage
-          .ref("news")
-          .child(name)
-          .getDownloadURL()
-          .then(url => {
-            console.log(url);
-          });
-      }
-    );
   };
 
   kindSelected = value => {
@@ -212,20 +208,18 @@ class EditorConvertToHTML extends Component {
   };
 
   onDrop = picture => {
-    console.log(picture);
     this.setState({
       pictures: this.state.pictures.concat(picture)
     });
   };
 
   render() {
-  
     var type = this.props.type;
 
     if (type === "edit" && this.state.isFirst) {
       loai = this.props.content.loai;
     }
-    const { editorState } = this.state;
+   
     const editorStyle = {
       padding: "5px",
       height: "400px",
@@ -270,7 +264,7 @@ class EditorConvertToHTML extends Component {
             </Col>
             <Col sm={3}>
               <MySelectOption
-                value={loai}
+                value={this.state.loai}
                 options={this.state.typeOptions}
                 selected={this.kindSelected}
               />

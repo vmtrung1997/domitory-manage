@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from './../../../config'
 import { Row, Col } from 'react-bootstrap'
+import jwt_decode from 'jwt-decode'
 
 import './activity.css'
 import Title from './../../../components/title/title'
@@ -36,7 +37,12 @@ class Activity extends Component{
 		this.getData()
 	}
 
+	sleep = (ms) => {
+		return new Promise(resolve => setTimeout(resolve, ms))
+	}
+
 	getData = async () => {
+		await this.sleep(750)
 		this.setState({ loading: true})		
 		await refreshToken()
 		var secret = JSON.parse(localStorage.getItem('secret'))
@@ -105,6 +111,9 @@ class Activity extends Component{
 		var lastDate = new Date().getFullYear()
 		if(this.state.last)
 			lastDate = new Date(this.state.last.ngayBD).getFullYear()
+		const secret = JSON.parse(localStorage.getItem('secret'))
+		const user = jwt_decode(secret.access_token).user
+      	const isAdmin = user.userEntity.loai === 'DD' ? false : true
 
 		return(
 			<React.Fragment>
@@ -160,23 +169,36 @@ class Activity extends Component{
               					<div>&nbsp;</div>
               					<Button title={'Tìm kiếm'} style={{padding: '7px 15px'}} onClick={e => this.handleSearch(1)}><i className="fas fa-search" /></Button>
               				</Col>
-              			</Row>		
-						<div className='bts-header'>
-							<Button title={'Thêm mới'} color={'warning'} onClick={() => this.changeState('showAdd', true)} style={{padding: '5px 20px'}}> 
-								<i className="fas fa-plus"/>
-							</Button>
-							<Button title={'Xuất báo cáo'} onClick={() => this.changeState('showExport', true)}  style={{margin: '0 5px', padding: '5px 20px'}}>
-                				<i className="fas fa-file-export"/>
-                			</Button>
-						</div>
+              			</Row>
+              			{ isAdmin ? (
+              				<div className='bts-header'>
+								<Button title={'Thêm mới'} color={'warning'} onClick={() => this.changeState('showAdd', true)} style={{padding: '5px 20px'}}> 
+									<i className="fas fa-plus"/>
+								</Button>
+								<Button title={'Xuất báo cáo'} onClick={() => this.changeState('showExport', true)}  style={{margin: '0 5px', padding: '5px 20px'}}>
+	                				<i className="fas fa-file-export"/>
+	                			</Button>
+							</div>
+              			):(
+              				<>
+              				</>
+              			)}		
+						
 					</div>
 					<InfoActivity data={this.state.data} refresh={this.getData}/>
-					<div className={'is-pagination'}>
-						<MyPagination 
-							page={this.state.page}
-							totalPages={this.state.totalPages}
-							clickPage={this.handleSearch}
-						/>
+					<div style={{display: 'flex', justifyContent: 'space-between'}}>
+						<div style={{display: 'flex', alignItems: 'baseline'}}>
+			                <span style={{marginRight: '2px'}}>Trang</span>
+			                <Input width='40px' textAlign='center' value={this.state.page}/>
+			                <span>/{this.state.totalPages}</span>
+			            </div>
+						<div className={'is-pagination'}>
+							<MyPagination 
+								page={this.state.page} 
+								totalPages={this.state.totalPages} 
+								clickPage={this.handleSearch}
+							/>
+		            	</div>
 	            	</div>
 				</div>
 

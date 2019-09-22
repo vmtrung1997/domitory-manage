@@ -1,6 +1,7 @@
 import React from "react";
-import { InputGroup, Row, Col, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import "./../profileStudent.css";
+import Button from "./../../button/button";
 import "react-datepicker/dist/react-datepicker.css";
 import MyInput from "../../input/input";
 import MySelectOption from "../../selectOption/select";
@@ -17,9 +18,9 @@ import {
 } from "react-toasts";
 import Loader from "./../../loader/loader";
 import refreshToken from "./../../../../utils/refresh_token";
+import * as CONST from "../../../function/constant";
 
-import { css } from '@emotion/core';
-
+var gender = [{ value: 0, label: "Nữ" }, { value: 1, label: "Nam" }];
 class PersonProfile extends React.Component {
   constructor(props) {
     super(props);
@@ -28,7 +29,8 @@ class PersonProfile extends React.Component {
       readOnly: true,
       isDisable: true,
       isLoad: true,
-
+      dangVien: undefined,
+      doanVien: undefined,
       MSSV: undefined,
       CMND: undefined,
       danToc: undefined,
@@ -50,7 +52,8 @@ class PersonProfile extends React.Component {
       truong: undefined,
       nganhOptions: [],
       truongOptions: [],
-      flag: true
+      flag: true,
+      tonGiaoOptions: []
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -62,9 +65,71 @@ class PersonProfile extends React.Component {
   editProfile = () => {
     this.setState({ readOnly: false });
     this.setState({ isDisable: false });
+    // console.log(this.state);
+    this.getNganhHoc(this.state.truong.value);
+
+    // this.setState({
+    //   nganhHoc:nganh
+    // })
+    //Chỉnh lại ngành của sinh viên
+    // this.getDanToc();
+    // this.getTonGiao();
   };
 
-  updateProfile = async () => {
+  getDanToc = () => {
+    //Lấy danh sách các ngành học
+    axios
+      .get("/student/get-nation")
+      .then(res => {
+        if (res) {
+          var options = [];
+          res.data.data.forEach((obj, index) => {
+            options.push({ value: obj._id, label: obj.tenDanToc });
+          });
+          this.setState({ danTocOptions: options });
+        }
+      })
+      .catch(err => {});
+  };
+
+  getTonGiao = () => {
+    //Lấy danh sách các ngành học
+    axios
+      .get("/student/get-religion")
+      .then(res => {
+        if (res) {
+          var options = [];
+          res.data.data.forEach((obj, index) => {
+            options.push({ value: obj._id, label: obj.tenTonGiao });
+          });
+          this.setState({ tonGiaoOptions: options });
+        }
+      })
+      .catch(err => {});
+  };
+
+  getNganhHoc = value => {
+    //Lấy danh sách các ngành học
+    axios
+      .post("/student/get-specialized", { id: value })
+      .then(res => {
+        if (res) {
+          var options = [];
+          res.data.data.forEach((obj, index) => {
+            options.push({
+              value: obj.idNganhHoc._id,
+              label: obj.idNganhHoc.tenNganh
+            });
+          });
+          this.setState({ nganhOptions: options });
+          // this.setState({ nganhHoc: options[0] });
+        }
+      })
+      .catch(err => {});
+  };
+  updateProfile = async event => {
+    var error = false;
+    event.preventDefault();
     var data = {
       id: this.props.userProfile._id,
       CMND: this.state.CMND,
@@ -72,34 +137,65 @@ class PersonProfile extends React.Component {
       tonGiao: this.state.tonGiao,
       diaChi: this.state.diaChi,
       email: this.state.email,
+      dangVien: Boolean(this.state.dangVien),
+      doanVien: Boolean( this.state.doanVien),
       gioiTinh: this.state.gioiTinh,
       //idPhong: this.state.tenPhong._id,
-      nganhHoc: this.state.nganhHoc.value,
+      nganhHoc: this.state.nganhHoc ? this.state.nganhHoc.value : undefined,
       //ngayHetHan: this.state.ngayHetHan,
       ngaySinh: this.state.ngaySinh,
       //ngayVaoO: this.state.ngayVaoO,
       sdt: this.state.sdt,
       sdtNguoiThan: this.state.sdtNguoiThan,
-      truong: this.state.truong.value,
+      truong: this.state.truong ? this.state.truong.value : undefined,
       flag: false
     };
 
-    console.log(data);
-    //Kiểm tra các giá trị đã nhập
-    if (
-      data.CMND === undefined ||
-      data.danToc === undefined ||
-      data.tonGiao === undefined ||
-      data.diaChi === undefined ||
-      data.email === undefined ||
-      data.gioiTinh === undefined ||
-      data.ngaySinh === undefined ||
-      data.sdt === undefined ||
-      data.sdtNguoiThan === undefined ||
-      data.truong === undefined
-    ) {
-      window.alert("Vui lòng nhập đầy đủ thông tin");
-    } else {
+  
+    if (data.danToc === undefined) {
+      data.danToc = CONST.danTocArr[0].value;
+      this.setState({ danToc: CONST.danTocArr[0].value });
+    }
+    if (data.tonGiao === undefined) {
+      data.tonGiao = CONST.tonGiaoArr[0].value;
+      this.setState({ tonGiao: CONST.tonGiaoArr[0].value });
+    }
+    if (data.gioiTinh === undefined) {
+      data.gioiTinh = gender[0].value;
+      this.setState({ gioiTinh: gender[0].value });
+    }
+    if (data.truong === undefined) {
+      if (this.state.truongOptions[0] === undefined) {
+        window.alert(
+          "Hiện tại vẫn chưa có trường nào trong danh sách, vui lòng đợi BQL thêm trường."
+        );
+        error = true;
+      } else {
+        data.truong = this.state.truongOptions[0].value;
+        this.setState({ truong: this.state.truongOptions[0] });
+      }
+    }
+    if (data.dangVien === undefined) {
+      data.dangVien = CONST.dangVienArr[0].value;
+      this.setState({ dangVien: CONST.dangVienArr[0].value });
+    }
+    if (data.doanVien === undefined) {
+      data.doanVien = CONST.doanVienArr[0].value;
+      this.setState({ doanVien: CONST.doanVienArr[0].value });
+    }
+    if (data.nganhHoc === undefined) {
+      if (this.state.nganhOptions[0] === undefined) {
+        window.alert(
+          "Hiện tại vẫn chưa có ngành nào của trường bạn chọn trong danh sách, vui lòng đợi BQL thêm ngành."
+        );
+        error = true;
+      } else {
+        data.nganhHoc = this.state.nganhOptions[0].value;
+        this.setState({ nganhHoc: this.state.nganhOptions[0] });
+      }
+    }
+    //   else if ()
+    if (!error) {
       this.setState({ isDisable: true });
       this.setState({ readOnly: true });
       await refreshToken();
@@ -133,7 +229,6 @@ class PersonProfile extends React.Component {
       secret = JSON.parse(secret);
       var id = decode.user.userEntity._id;
       //Lấy thông tin sinh viên
-      console.log(id)
       axios.defaults.headers["x-access-token"] = secret.access_token;
       axios
         .post(`/student/get-info`, { id: id })
@@ -159,13 +254,21 @@ class PersonProfile extends React.Component {
               value: res.data.data.truong ? res.data.data.truong._id : undefined
             };
 
-            console.log(nganhHoc, truong);
+            var tonGiao = res.data.data.tonGiao
+              ? res.data.data.tonGiao
+              : undefined;
+            var danToc = res.data.data.danToc
+              ? res.data.data.danToc
+              : undefined;
             //Lưu trong state
             this.setState({
               MSSV: res.data.data.MSSV,
               CMND: res.data.data.CMND,
-              danToc: res.data.data.danToc,
-              tonGiao: res.data.data.tonGiao,
+              danToc: danToc,
+              dangVien: res.data.data.dangVien,
+              doanVien: res.data.data.doanVien,
+
+              tonGiao: tonGiao,
               diaChi: res.data.data.diaChi,
               email: res.data.data.email,
               gioiTinh: res.data.data.gioiTinh,
@@ -189,49 +292,21 @@ class PersonProfile extends React.Component {
             });
           }
         })
-        .catch(err => {
-        });
-
-      //Lấy danh sách các ngành học
-      axios
-        .get("/student/get-specialized")
-        .then(res => {
-          if (res) {
-            // res.data.data.forEach(element => {
-            //     this.props.getSpecialized(element);
-            // });
-
-            var options = res.data.data.map((obj, index) => {
-              if (index === 0) {
-                return { value: -1, label: "Chọn ngành" };
-              }
-              return { value: obj._id, label: obj.tenNganh };
-            });
-            this.setState({ nganhOptions: options });
-          }
-        })
-        .catch(err => {
-        });
+        .catch(err => {});
 
       //Lấy danh sách các trường
+      var options = [];
       axios
         .get("/student/get-school")
         .then(res => {
           if (res) {
-            // res.data.data.forEach(element => {
-            //     this.props.getSchool(element);
-            // });
-            var options = res.data.data.map((obj, index) => {
-              if (index === 0) {
-                return { value: -1, label: "Chọn trường" };
-              }
-              return { value: obj._id, label: obj.tenTruong };
+            res.data.data.forEach((obj, index) => {
+              options.push({ value: obj._id, label: obj.tenTruong });
             });
             this.setState({ truongOptions: options });
           }
         })
-        .catch(err => {
-        });
+        .catch(err => {});
     } else {
     }
   };
@@ -243,27 +318,85 @@ class PersonProfile extends React.Component {
     });
   };
 
+  dangVienSelected = value => {
+    if(value === 'true')
+      this.setState({ dangVien: true });
+      else this.setState({ dangVien: false });
+      
+  };
+
+  doanVienSelected = value => {
+    if(value === 'true')
+    this.setState({ doanVien: true });
+    else this.setState({ doanVien: false });
+
+  };
+
   genderSelected = value => {
-    this.setState({ gioiTinh: value });
+    var intValue = parseInt(value);
+    // console.log(intValue)
+    if (intValue !== -1) {
+      this.setState({ gioiTinh: intValue });
+    }
+  };
+
+  nationSelected = (value, nationOption) => {
+    if (value !== "-1") {
+      var danToc = nationOption.find(obj => obj.value === value);
+      this.setState({
+        danToc: danToc.value
+      });
+    }
+  };
+
+  religionSelected = (value, religionOption) => {
+    if (value !== "-1") {
+      var tonGiao = religionOption.find(obj => obj.value === value);
+      this.setState({
+        tonGiao: tonGiao.value
+      });
+    }
   };
 
   truongSelected = value => {
-    var truong = this.state.truongOptions.find(obj => obj.value === value);
-    this.setState({
-      truong: truong
-    });
+    if (value !== "-1") {
+      var truong = this.state.truongOptions.find(obj => obj.value === value);
+      this.setState({
+        truong: truong
+      });
+    }
+    this.getNganhHoc(value);
   };
+  //Lấy danh sách các ngành học
+  // axios
+  // .post("/student/get-specialized",{id:truong.value})
+  // .then(res => {
+  //   if (res) {
+  //     var options = [{ value: -1, label: "Chọn ngành" }];
+  //     res.data.data.forEach((obj, index) => {
+  //       options.push({ value: obj.idNganhHoc._id, label: obj.idNganhHoc.tenNganh });
+  //     });
+  //     this.setState({ nganhOptions: options });
+  //   }
+  // })
+  // .catch(err => {
+  // });
 
   render() {
+
     if (!this.state.isLoad) {
-      var gender = [
-        { value: "-1", label: "Chọn giới tính" },
-        { value: "0", label: "Nữ" },
-        { value: "1", label: "Nam" }
-      ];
+      var gender = [{ value: 0, label: "Nữ" }, { value: 1, label: "Nam" }];
+      var nationOption = CONST.danTocArr;
+      var tonGiaoOption = CONST.tonGiaoArr;
+      var dangVienOption = CONST.dangVienArr;
+      var doanVienOption = CONST.doanVienArr;
       var majorInput;
       var schoolInput;
       var genderInput;
+      var nationInput;
+      var religionInput;
+      var dangVienInput;
+      var doanVienInput;
 
       //Định dạng ngày sinh
       var d = new Date(this.state.ngaySinh);
@@ -275,19 +408,62 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="gioiTinh"
             getValue={this.getValue}
-            disabled={this.state.flag? this.state.readOnly: true}
+            disabled={this.state.readOnly}
             value={this.state.gioiTinh}
             options={gender}
             selected={this.genderSelected}
           />
         );
 
+        dangVienInput = (
+          <MySelectOption
+            name="dangVien"
+            getValue={this.getValue}
+            disabled={this.state.readOnly}
+            value={this.state.dangVien ? this.state.dangVien : ""}
+            options={dangVienOption}
+            selected={this.dangVienSelected}
+          />
+        );
+
+        doanVienInput = (
+          <MySelectOption
+            name="doanVien"
+            getValue={this.getValue}
+            disabled={this.state.readOnly}
+            value={this.state.doanVien ? this.state.doanVien : ""}
+            options={doanVienOption}
+            selected={this.doanVienSelected}
+          />
+        );
+
+        nationInput = (
+          <MySelectOption
+            name="danToc"
+            getValue={this.getValue}
+            disabled={this.state.readOnly}
+            value={this.state.danToc ? this.state.danToc : ""}
+            options={nationOption}
+            selected={e => this.nationSelected(e, nationOption)}
+          />
+        );
+
+        religionInput = (
+          <MySelectOption
+            name="tonGiao"
+            getValue={this.getValue}
+            disabled={this.state.readOnly}
+            value={this.state.tonGiao ? this.state.tonGiao : ""}
+            options={tonGiaoOption}
+            selected={e => this.religionSelected(e, tonGiaoOption)}
+          />
+        );
         majorInput = (
           <MySelectOption
             name="nganhHoc"
             getValue={this.getValue}
-            disabled={this.state.flag? this.state.readOnly:true}
-            value={this.state.nganhHoc.value}
+            disabled={this.state.readOnly}
+            value={this.state.nganhHoc ? this.state.nganhHoc.value : ""}
             options={this.state.nganhOptions}
             selected={this.nganhSelected}
           />
@@ -297,28 +473,67 @@ class PersonProfile extends React.Component {
           <MySelectOption
             name="truong"
             getValue={this.getValue}
-            disabled={this.state.flag?this.state.readOnly:true}
-            value={this.state.truong.value}
+            disabled={this.state.readOnly}
+            value={this.state.truong ? this.state.truong.value : ""}
             options={this.state.truongOptions}
             selected={this.truongSelected}
           />
         );
       } else {
+        dangVienInput = (
+          <MyInput
+            getValue={this.getValue}
+            name="dangVien"
+            disabled={this.state.readOnly}
+            value={this.state.dangVien === true ? "Có" : "Không"}
+            borderRadius="3px"
+          />
+        );
+        doanVienInput = (
+          <MyInput
+            getValue={this.getValue}
+            name="doanVien"
+            disabled={this.state.readOnly}
+            value={this.state.doanVien === true ? "Có" : "Không"}
+            borderRadius="3px"
+          />
+        );
         schoolInput = (
           <MyInput
             getValue={this.getValue}
             name="truong"
             disabled={this.state.readOnly}
-            value={this.state.truong.label}
+            value={this.state.truong.label ? this.state.truong.label : ""}
             borderRadius="3px"
           />
         );
+
+        nationInput = (
+          <MyInput
+            getValue={this.getValue}
+            name="danToc"
+            disabled={this.state.readOnly}
+            value={this.state.danToc ? this.state.danToc : ""}
+            borderRadius="3px"
+          />
+        );
+
+        religionInput = (
+          <MyInput
+            getValue={this.getValue}
+            name="tonGiao"
+            disabled={this.state.readOnly}
+            value={this.state.tonGiao ? this.state.tonGiao : ""}
+            borderRadius="3px"
+          />
+        );
+
         majorInput = (
           <MyInput
             getValue={this.getValue}
             name="nganhHoc"
             disabled={this.state.readOnly}
-            value={this.state.nganhHoc.label}
+            value={this.state.nganhHoc ? this.state.nganhHoc.label : ""}
             borderRadius="3px"
           />
         );
@@ -351,191 +566,205 @@ class PersonProfile extends React.Component {
                 />
                 <Col>
                   <div className="profile-panel-content">
-                    <div>
-                      <Row>
-                        <Col>
-                          <span className="label-font">Mã số sinh viên</span>
+                    <form onSubmit={e => this.updateProfile(e)}>
+                      <div>
+                        <Row>
+                          <Col>
+                            <span className="label-font">MSSV</span>
+                            <MyInput
+                              getValue={this.getValue}
+                              name="MSSV"
+                              disabled
+                              type="text"
+                              value={this.state.MSSV}
+                              borderRadius="3px"
+                            />
+                          </Col>
 
-                          <MyInput
-                            getValue={this.getValue}
-                            name="MSSV"
-                            disabled
-                            value={this.state.MSSV}
-                            borderRadius="3px"
-                          />
-                        </Col>
+                          <Col>
+                            <span className="label-font">CMND</span>
+                            <MyInput
+                              pattern="\d*"
+                              name="CMND"
+                              type="text"
+                              required
+                              getValue={this.getValue}
+                              disabled={this.state.readOnly}
+                              value={this.state.CMND ? this.state.CMND : ""}
+                              className="input-picker"
+                              borderRadius="3px"
+                            />
+                          </Col>
+                        </Row>
+                      </div>
+                      <div>
+                        <Row>
+                          <Col>
+                            <span className="label-font">Họ tên</span>
 
-                        <Col>
-                          <span className="label-font">
-                            Chứng minh nhân dân
-                          </span>
-                          <MyInput
-                            name="CMND"
-                            getValue={this.getValue}
-                            disabled={this.state.flag? this.state.readOnly:true}
-                            value={this.state.CMND}
-                            className="input-picker"
-                            borderRadius="3px"
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                    <div>
-                      <Row>
-                        <Col>
-                          <span className="label-font">Họ tên</span>
+                            <MyInput
+                              pattern="[a-z]$"
+                              getValue={this.getValue}
+                              name="hoTen"
+                              type="text"
+                              disabled
+                              value={this.state.hoTen}
+                              borderRadius="3px"
+                            />
+                          </Col>
 
-                          <MyInput
-                            getValue={this.getValue}
-                            name="hoTen"
-                            disabled
-                            value={this.state.hoTen}
-                            borderRadius="3px"
-                          />
-                        </Col>
+                          <Col>
+                            <span className="label-font"> Ngày sinh</span>
+                            <MyInput
+                              name="ngaySinh"
+                              getValue={this.getValue}
+                              disabled
+                              type="text"
+                              value={birthdayFormat}
+                              className="input-picker"
+                              borderRadius="3px"
+                            />
+                          </Col>
+                        </Row>
+                      </div>
+                      <div>
+                        <Row>
+                          <Col>
+                            <span className="label-font">Giới tính</span>
 
-                        <Col>
-                          <span className="label-font"> Ngày sinh</span>
-                          <MyInput
-                            name="ngaySinh"
-                            getValue={this.getValue}
-                            disabled
-                            value={birthdayFormat}
-                            className="input-picker"
-                            borderRadius="3px"
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                    <div>
-                      <Row>
-                        <Col>
-                          <span className="label-font">Giới tính</span>
+                            {genderInput}
+                          </Col>
 
-                          {genderInput}
-                        </Col>
+                          <Col>
+                            <span className="label-font">Email</span>
+                            <MyInput
+                              pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                              required
+                              className={
+                                this.state.readOnly ? "profile-not-allowed" : ""
+                              }
+                              type="email"
+                              getValue={this.getValue}
+                              name="email"
+                              disabled={this.state.readOnly}
+                              value={this.state.email ? this.state.email : ""}
+                              borderRadius="3px"
+                            />
+                          </Col>
+                        </Row>
+                      </div>
+                      <div>
+                        <Row>
+                          <Col>
+                            <span className="label-font"> Dân tộc</span>
+                            {nationInput}
+                          </Col>
 
-                        <Col>
-                          <span className="label-font">Email</span>
-                          <MyInput
-                            required
-                            className={
-                              this.state.readOnly ? "profile-not-allowed" : ""
-                            }
-                            getValue={this.getValue}
-                            name="email"
-                            disabled={this.state.readOnly}
-                            value={this.state.email}
-                            borderRadius="3px"
-                          />
-                        </Col>
-                      </Row>
-                    </div>
+                          <Col>
+                            <span className="label-font">Tôn giáo</span>
+                            {religionInput}
+                          </Col>
+                        </Row>
+                      </div>
+                      <div>
+                        <Row>
+                          <Col>
+                            <span className="label-font">Số điện thoại</span>
+                            <MyInput
+                              required
+                              type="text"
+                              pattern="\d*"
+                              getValue={this.getValue}
+                              name="sdt"
+                              disabled={this.state.readOnly}
+                              value={this.state.sdt ? this.state.sdt : ""}
+                              borderRadius="3px"
+                            />
+                          </Col>
+                          <Col>
+                            <span className="label-font">SDT người thân</span>
+                            <MyInput
+                              required
+                              pattern="\d*"
+                              getValue={this.getValue}
+                              name="sdtNguoiThan"
+                              disabled={this.state.readOnly}
+                              value={
+                                this.state.sdtNguoiThan
+                                  ? this.state.sdtNguoiThan
+                                  : ""
+                              }
+                              borderRadius="3px"
+                            />
+                          </Col>
+                        </Row>
+                      </div>
+                      <div className="profile-panel-content-row">
+                        <Row>
+                          <Col>
+                            <span className="label-font">Trường</span>
+                            {schoolInput}
+                          </Col>
+                          <Col>
+                            <span className="label-font">Ngành</span>
 
-                    <div>
-                      <Row>
-                        <Col>
-                          <span className="label-font"> Dân tộc</span>
-                          <MyInput
-                            getValue={this.getValue}
-                            name="danToc"
-                            disabled={this.state.flag? this.state.readOnly:true}
-                            value={this.state.danToc}
-                            borderRadius="3px"
-                          />
-                        </Col>
-
-                        <Col>
-                          <span className="label-font">Tôn giáo</span>
-                          <MyInput
-                            getValue={this.getValue}
-                            name="tonGiao"
-                            disabled={this.state.readOnly}
-                            value={this.state.tonGiao}
-                            borderRadius="3px"
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                    <div>
-                      <Row>
-                        <Col>
-                          <span className="label-font">Số điện thoại</span>
-                          <MyInput
-                            getValue={this.getValue}
-                            name="sdt"
-                            disabled={this.state.readOnly}
-                            value={this.state.sdt}
-                            borderRadius="3px"
-                          />
-                        </Col>
-                        <Col>
-                          <span className="label-font">
-                            Số điện thoại người thân
-                          </span>
-                          <MyInput
-                            getValue={this.getValue}
-                            name="sdtNguoiThan"
-                            disabled={this.state.readOnly}
-                            value={this.state.sdtNguoiThan}
-                            borderRadius="3px"
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                    <div className="profile-panel-content-row">
-                      <Row>
-                        <Col>
-                          <span className="label-font">Trường</span>
-                          {schoolInput}
-                        </Col>
-                        <Col>
-                          <span className="label-font">Ngành học</span>
-
-                          {majorInput}
-                        </Col>
-                      </Row>
-                      <Row sm={6}>
-                        <Col sm={6}>
-                          <span className="label-font">Địa chỉ thường trú</span>
-                          <MyInput
-                            getValue={this.getValue}
-                            name="diaChi"
-                            disabled={this.state.flag? this.state.readOnly: true}
-                            value={this.state.diaChi}
-                          />
-                        </Col>
-                        <Col />
-                      </Row>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        marginTop: "5px",
-                        marginBottom: "10px"
-                      }}
-                    >
-                      <Row>
-                        <div className="profile-panel-button">
-                          <Button
-                            disabled={!this.state.isDisable}
-                            onClick={this.editProfile}
-                          >
-                            Chỉnh sửa
-                          </Button>
-                        </div>
-                        <div className="profile-panel-button">
-                          <Button
-                            disabled={this.state.isDisable}
-                            variant="success"
-                            onClick={this.updateProfile}
-                          >
-                            Lưu
-                          </Button>
-                        </div>
-                      </Row>
-                    </div>
+                            {majorInput}
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col sm={6}>
+                            <span className="label-font">
+                              Địa chỉ thường trú
+                            </span>
+                            <MyInput
+                              required
+                              getValue={this.getValue}
+                              type="text"
+                              name="diaChi"
+                              disabled={this.state.readOnly}
+                              value={this.state.diaChi ? this.state.diaChi : ""}
+                            />
+                          </Col>
+                          <Col sm={3}>
+                            <span className="label-font">Đoàn viên</span>
+                            {doanVienInput}
+                          </Col>
+                          <Col sm={3}>
+                            <span className="label-font">Đảng viên</span>
+                            {dangVienInput}
+                          </Col>
+                          <Col />
+                        </Row>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          marginTop: "5px",
+                          marginBottom: "10px"
+                        }}
+                      >
+                        <Row>
+                          <div className="profile-panel-button">
+                            <Button
+                              disabled={!this.state.isDisable}
+                              onClick={this.editProfile}
+                            >
+                              Chỉnh sửa
+                            </Button>
+                          </div>
+                          <div className="profile-panel-button">
+                            <Button
+                              type="submit"
+                              disabled={this.state.isDisable}
+                              //onClick={this.updateProfile}
+                            >
+                              Lưu
+                            </Button>
+                          </div>
+                        </Row>
+                      </div>
+                    </form>
                   </div>
                 </Col>
               </Row>

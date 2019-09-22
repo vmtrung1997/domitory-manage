@@ -7,33 +7,43 @@
 }
 
 .normal-room{
-    background-color: #0c846b
+    /* /background-color:  */
 }
 
 .normal-room:hover{
-    background-color: #0c846b8f
+    background-color: #0c846b8f;
+    color: #ffffff;
 }
 
 .vip-room{
-    background-color: #08f53e
+    background-color: #ed5565;
+    color: #ffffff !important;
+    border: #ffffff !important
 }
 
 .normal-room:active{
-    background-color: #0c846b8f !important
+    background-color: #0c846b8f !important;
+    color: #ffffff;
 }
 
 .normal-room:focus{
-    background-color: #0c846b8f !important
+    background-color: #0c846b8f !important;
+    color: #ffffff;
 }
 
 
 .vip-room:hover{
-    background-color: #08f53ea3
+    background-color: #ec4758
 }
 .vip-room:active{
-    background-color: #08f53ea3 !important
+    background-color: #ec4758 !important
 }
 
 .vip-room:focus{
-    background-color: #08f53ea3 !important
+    background-color: #ec4758 !important
+}
+
+.header-card-room{
+    margin: 10px;
+    text-align: center;
 }

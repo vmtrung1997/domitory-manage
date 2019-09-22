@@ -3,8 +3,6 @@ import { Row, Col, Table, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import {ToastsContainer, ToastsStore, ToastsContainerPosition} from 'react-toasts';
 import { withRouter } from 'react-router-dom';
-import XLSX from 'xlsx';
-import DatePicker from "react-datepicker/es/index";
 
 
 import './infoStudent.css';
@@ -18,7 +16,10 @@ import MyPagination from "../../../components/pagination/pagination";
 import Loader from "../../../components/loader/loader";
 import Print from './infoStudentPrint';
 import { get_element, get_list_student_by_page } from './infoStudentActions'
-import { AddStudentModal, MarkOldStudentModal, ImportDataModal, ExportDataModal } from './infoStudentModal';
+import { AddStudentModal, ConvertStudentModal, ImportDataModal, ExportDataModal } from './infoStudentModal';
+import {getMajor} from "../university/universityAction";
+
+const PRESENT = 0, OLD = 1, PROCESSING = 2;
 
 class InfoStudent extends Component{
   constructor(props) {
@@ -27,6 +28,7 @@ class InfoStudent extends Component{
       loading: true,
       totalpages: 1,
       infoList: [],
+      checkedAll: false,
 
       searchValues: {
         name: '',
@@ -34,8 +36,12 @@ class InfoStudent extends Component{
         pageActive: 1,
         limit: 10,
         isOld: 0,
-        roomSelected: {},
-        schoolSelected: {}
+        isActive: true,
+        roomSelected: {value: 0, label: "Tất cả"},
+        schoolSelected: {value: 0, label: "Tất cả"},
+        majorSelected: {value: 0, label: "Tất cả"},
+        floorSelected: {value: 0, label: "Tất cả"},
+        yearSelected: {value: 0, label: "Tất cả"}
       },
 
       schoolOptions: [],
@@ -53,14 +59,11 @@ class InfoStudent extends Component{
         regisExpiredDateAdded: new Date(),
       },
 
-
       phong: [],
       truong: [],
 
       listChecked: [],
       flag: false,
-
-
 
       roomHistory: [],
 
@@ -87,7 +90,6 @@ class InfoStudent extends Component{
   }
 
   handlePopup = (type, state) => {
-    console.log('==handle popup')
     switch(type){
       case 'add':
         this.setState({ showAddPopup: state });
@@ -109,23 +111,25 @@ class InfoStudent extends Component{
     }
   };
 
-  onViewDetail = (info) => {
+  onViewDetail = (mssv) => {
     this.props.history.push({
-      pathname: '/admin/student/detail',
-      state: { info: info }
+      pathname: '/admin/student/detail/'+ mssv,
+      //state: { info: info }
     });
-  }
+  };
 
   componentDidMount(){
     this.getData();
     this.getElement('room');
     this.getElement('school');
     this.getElement('floor');
+    this.getMajorOptions();
+    this.getYear()
+
     // this.modifyData();
   }
 
   getElement = (name) => {
-    console.log('==ahihi')
     get_element(name).then(result => {
       switch (name) {
         case 'room':
@@ -147,7 +151,7 @@ class InfoStudent extends Component{
           break;
 
         case 'floor':
-          let i = 0;
+          let i = 1;
           result.sort();
           const floorOptions = result.map(floor => {
             return {value: i++, label: floor}
@@ -174,43 +178,65 @@ class InfoStudent extends Component{
       });
   };
 
+  getMajorOptions = () => {
+    getMajor().then(result =>{
+      if (result.data.rs === 'success') {
+        let majorList = result.data.data.map(major => ({ value: major._id, label: major.tenNganh }));
+        majorList.unshift({ value: -1, label: 'Chưa xác định' });
+        this.setState({
+          majorOptions: majorList,
+        })
+      }
+    })
+  };
+
+  getYear = () => {
+    let yearOptions = [{value: 0, label: 'Tất cả'}];
+      var today = new Date().getFullYear();
+      for(var i = today; i >= today - 5; i--){
+        yearOptions.push({value: i, label: i})
+      }
+    this.setState({
+      yearOptions: yearOptions
+    })
+  };
+
   onChange = (event) => {
     this.setState({
       searchValues: {...this.state.searchValues, [event.name]: event.value}
     })
   };
 
-  handleSearch = () => {
+  handleSearch = (e) => {
+    e.preventDefault();
     this.setState({
-      pageActive: 1,
+      searchValues: {...this.state.searchValues, pageActive: 1},
       loading: true,
     });
     this.getData();
-  }
+  };
 
   handleSelectRoom = selectedOption => {
     this.setState({
-      searchValues: {...this.state.searchValues, roomSelected: selectedOption, pageActive: 1}
+      searchValues: {...this.state.searchValues, roomSelected: selectedOption}
     })
-  }
-  handleSelectSchool = selectedOption => {
+  };
+
+  handleSelected = (name, selectedOption) => {
     this.setState({
-      searchValues: {...this.state.searchValues, schoolSelected: selectedOption, pageActive: 1}
+      searchValues: {...this.state.searchValues, [name]: selectedOption}
     })
-  }
-  handleSelectFloor = selectedOption => {
-    this.setState({ floorSelected: selectedOption, pageActive: 1 })
-  }
+  };
 
   clickPage = async (page) => {
     await this.setState({
-      pageActive: page,
+      searchValues: {...this.state.searchValues, pageActive: page},
       loading: true
     });
     this.getData();
-  }
+  };
 
-  handleCheckDelete = (props) => {
+  handleCheckBox = (props) => {
     if(props.chk){
       let arrDel = this.state.listChecked;
       arrDel.push(props.value);
@@ -229,100 +255,116 @@ class InfoStudent extends Component{
         listChecked: arrDel
       })
     }
-  }
+  };
 
   handleValueCheck = mssv => {
     const i = this.state.listChecked.indexOf(mssv);
     return i !== -1;
   };
 
-  handleReload = () => {
-    this.setState({
+  handleReload = async() => {
+    await this.setState({
+      searchValues: {
+        ...this.state.searchValues,
+        name: '',
+        studentNumber: '',
+        pageActive: 1,
+        roomSelected: {value: 0, label: "Tất cả"},
+        schoolSelected: {value: 0, label: "Tất cả"},
+        majorSelected: {value: 0, label: "Tất cả"},
+        floorSelected: {value: 0, label: "Tất cả"}
+      },
       loading: true,
-      pageActive: 1,
-      hoTen: '',
-      mssv: '',
-      roomSelected: '',
-      schoolSelected: '',
-      floorSelected: '',
-
-    })
+    });
     this.getData();
   };
 
   handleChooseOption = async (prop) => {
-    await this.setState({
-      searchValues: {...this.state.searchValues, isOld: prop}
-      });
+    switch (prop) {
+      case PRESENT:
+        await this.setState({
+          searchValues: {
+            ...this.state.searchValues,
+            isOld: 0, isActive: true,
+            pageActive: 1,
+
+          },
+          listChecked: [],
+          checkedAll:false
+        });
+        break;
+      case OLD:
+        await this.setState({
+          searchValues: {
+            ...this.state.searchValues,
+            isOld: 1,
+            isActive: false,
+            pageActive: 1,
+          },
+          listChecked: [],
+          checkedAll:false
+        });
+        break;
+      case PROCESSING:
+        await this.setState({
+          searchValues: {
+            ...this.state.searchValues,
+            isOld: 0,
+            isActive: false,
+            pageActive: 1,
+          },
+          listChecked: [],
+          checkedAll:false
+        });
+        break;
+    }
     this.getData();
   };
 
-  getValueDate = (name, val) => {
-    this.setState({
-      infoAdded: {
-        ...this.state.infoAdded,
-        [name]: val
-      }
-    })
-  }
-
   handleRoomHistory = async(id) => {
-    this.handlePopup('history', true)
+    this.handlePopup('history', true);
     await refreshToken();
     var secret = JSON.parse(localStorage.getItem('secret'));
     axios.get(`/manager/getRoomHistory/` + id, { headers: {'x-access-token': secret.access_token} }
     ).then(result => {
-      console.log('==history', result);
       let i=1;
       const history = result.data && result.data.map(his => {
         return{key: i++, data: his}
-      })
+      });
       this.setState({
         roomHistory: history
       })
     }).catch()
-  }
+  };
 
   changeState = (key, value) => {
     this.setState({ [key]: value })
   };
 
+  handleCheckAll = (prop) => {
+    const arr = [];
+    prop.chk && this.state.infoList.forEach(student => {
+      arr.push(student.MSSV);
+    });
+
+    this.setState({
+      checkedAll: prop.chk,
+      listChecked: arr
+    });
+  };
 
 
   render(){
-    console.log('==render state', this.state);
     const {
       searchValues: {
         limit,
         pageActive,
-        isOld
+        isOld,
+        isActive
       },
       infoList,
-      floorSelected,
       floorOptions,
-      hoTen,
-      mssv,
       roomHistory,
-      infoAdded: { dateAdded, expiredDateAdded, regisExpiredDateAdded},
-      valueExport :{
-        hoTenEx,
-        mssvEx,
-        ngaySinhEx,
-        gioiTinhEx,
-        diaChiEx,
-        emailEx,
-        sdtEx,
-        sdtNguoiThanEx,
-        tonGiaoEx,
-        danTocEx,
-        ngayVaoOEx,
-        ngayHetHanEx,
-        diemHDEx,
-        phongEx,
-        truongEx,
-        nganhHocEx,
-        ghiChuEx,
-      }
     } = this.state;
     let i = pageActive*limit - 10;
     return(
@@ -335,95 +377,119 @@ class InfoStudent extends Component{
         <div className={'content-body'}>
 
           <div className={'is-header'}>
-            <Row>
-              <Col md={1}>
-                MSSV
-              </Col>
-              <Col md={2}>
-                <Input getValue={this.onChange} name={'studentNumber'} value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}/>
-              </Col>
+            <form onSubmit={e => this.handleSearch(e)}>
+              <Row>
+                <Col md={1}>
+                  MSSV
+                </Col>
+                <Col md={3}>
+                  <Input
+                    getValue={this.onChange}
+                    name={'studentNumber'}
+                    value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}
+                  />
+                </Col>
 
-              <Col md={1}>
-                Họ tên
-              </Col>
-              <Col md={4}>
-                <Input getValue={this.onChange} name={'name'} value={this.state.searchValues.name}/>
-              </Col>
+                <Col md={1}>
+                  Trường
+                </Col>
+                <Col md={3}>
+                  <SearchSelect
+                    isSearchable={true}
+                    value={this.state.searchValues.schoolSelected}
+                    onChange={(selectedOption) => this.handleSelected('schoolSelected',selectedOption)}
+                    options={this.state.schoolOptions}
+                  />
+                </Col>
 
-              <Col md={1}>
-                Phòng
-              </Col>
-              <Col md={2}>
-                <SearchSelect
-                  isSearchable={true}
-                  placeholder={''}
-                  value={this.state.searchValues.roomSelected}
-                  onChange={this.handleSelectRoom}
-                  options={this.state.roomOptions}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={1}>
-                Năm
-              </Col>
-              <Col md={2}>
-                <Input getValue={this.onChange} name={'mssv'} />
-              </Col>
+                <Col md={1}>
+                  Khoa
+                </Col>
+                <Col md={3}>
+                  <SearchSelect
+                    isSearchable={true}
+                    value={this.state.searchValues.majorSelected}
+                    onChange={(selectedOption) => this.handleSelected('majorSelected',selectedOption)}
+                    options={this.state.majorOptions}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={1}>
+                  Họ tên
+                </Col>
+                <Col md={3}>
+                  <Input
+                    getValue={this.onChange}
+                    name={'name'}
+                    value={this.state.searchValues.name}/>
+                </Col>
 
-              <Col md={1}>
-                Trường
-              </Col>
-              <Col md={4}>
-                <SearchSelect
-                  isSearchable={true}
-                  placeholder={''}
-                  value={this.state.searchValues.schoolSelected}
-                  onChange={this.handleSelectSchool}
-                  options={this.state.schoolOptions}
-                />
-              </Col>
+                {/*<Col md={1}>*/}
+                  {/*Năm*/}
+                {/*</Col>*/}
+                {/*<Col md={2}>*/}
+                  {/*<SearchSelect*/}
+                    {/*isSearchable={true}*/}
+                    {/*value={this.state.searchValues.yearSelected}*/}
+                    {/*onChange={(selectedOption) => this.handleSelected('yearSelected',selectedOption)}*/}
+                    {/*options={this.state.yearOptions}*/}
+                  {/*/>*/}
+                {/*</Col>*/}
 
-              <Col md={1}>
-                Lầu
-              </Col>
-              <Col md={2}>
-                <SearchSelect
-                  isSearchable={true}
-                  placeholder={''}
-                  value={floorSelected}
-                  onChange={this.handleSelectFloor}
-                  options={floorOptions}
-                />
-              </Col>
-            </Row>
+                <Col md={1}>
+                  Phòng
+                </Col>
+                <Col md={3}>
+                  <SearchSelect
+                    isSearchable={true}
+                    placeholder={''}
+                    value={this.state.searchValues.roomSelected}
+                    onChange={this.handleSelectRoom}
+                    options={this.state.roomOptions}
+                  />
+                </Col>
 
-            {/*search*/}
-            <Row style={{display: 'flex', justifyContent: 'center'}}>
-            <Col md={3} >
-              <Button
-                size={'md'}
-                fullWidth
-                onClick={() => this.handleSearch()}
-              >
-                <i className="fas fa-search"/>
-                Tìm kiếm
-              </Button>
-            </Col>
-            <Col md={1} >
-              <Button
-                size={'md'}
-                color={'default'}
-                fullWidth
-                onClick={() => this.handleReload()}
-              >
-                <i className="fas fa-sync-alt"/>
-              </Button>
-            </Col>
-            </Row>
+                <Col md={1}>
+                  Lầu
+                </Col>
+                <Col md={3}>
+                  <SearchSelect
+                    isSearchable={true}
+                    value={this.state.searchValues.floorSelected}
+                    onChange={(selectedOption) => this.handleSelected('floorSelected',selectedOption)}
+                    options={floorOptions}
+                  />
+                </Col>
+              </Row>
 
-            <Row>
-              <Col md={6} className={''}>
+              {/*search*/}
+              <Row style={{display: 'flex', justifyContent: 'center', margin: '15px 0'}}>
+                <Col sm={3} className={'btn-search'}>
+                  <Button
+                    type={'submit'}
+                    size={'md'}
+                    fullWidth
+                  >
+                    <i className="fas fa-search"/>
+                    Tìm kiếm
+                  </Button>
+                </Col>
+                <Col sm={1} >
+                  <Button
+                    title={'Làm mới tìm kiếm'}
+                    type={'submit'}
+                    size={'md'}
+                    color={'default'}
+                    fullWidth
+                    onClick={() => this.handleReload()}
+                  >
+                    <i className="fas fa-redo-alt"/>
+                  </Button>
+                </Col>
+              </Row>
+            </form>
+            <Row className={'group-btn'}>
                 <div className={'is-manipulation'}>
                   <ImportDataModal
                     show={this.state.showImportPopup}
@@ -434,37 +500,31 @@ class InfoStudent extends Component{
                     show={this.state.showExportPopup}
                     searchValues={this.state.searchValues}
                   />
-
-                  <Button
-                    variant={'rounded'}
-                    color={'success'}
-                  >
-                    <i className="fas fa-address-card"/>
-                  </Button>
+                  {/*<Button*/}
+                    {/*variant={'rounded'}*/}
+                    {/*color={'success'}*/}
+                  {/*>*/}
+                    {/*<i className="fas fa-address-card"/>*/}
+                  {/*</Button>*/}
                 </div>
-              </Col>
 
-              <Col md={6} >
                 <div className={'is-manipulation'} style={{float: 'right'}}>
                   <AddStudentModal
                     show={this.state.showAddPopup}
                     onSave={()=>this.getData()}
                   />
 
-                  <MarkOldStudentModal
-                    function={()=>this.setState({listChecked:[]})}
+                  <ConvertStudentModal
+                    function={()=>this.setState({listChecked:[], checkedAll: false})}
                     show={this.state.showDelPopup}
                     listStudent={this.state.listChecked}
                     onSave={()=>this.getData()}
-
+                    option={this.state.searchValues.isOld}
                   />
                 </div>
-              </Col>
             </Row>
           </div>
-
           <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-
           {/*end modal*/}
 
           {/*modal popup room history student*/}
@@ -511,18 +571,31 @@ class InfoStudent extends Component{
             <Row className={'is-btn-option'}>
               <Col>
                 <Button
-                  variant={isOld ? 'outline' :  'default'}
+                  classCustom={'info-student-tab-btn'}
+                  actived={!!(!isOld && isActive)}
+                  variant={'outline'}
                   color={'default'}
-                  onClick={() => this.handleChooseOption(0)}
+                  onClick={() => this.handleChooseOption(PRESENT)}
                 >
-                  Hiện tại
+                  Sinh viên hiện tại
                 </Button>
                 <Button
+                  classCustom={'info-student-tab-btn'}
                   color={'default'}
-                  variant={isOld ? 'default' : 'outline'}
-                  onClick={() => this.handleChooseOption(1)}
+                  actived={!!(isOld && !isActive)}
+                  variant={'outline'}
+                  onClick={() => this.handleChooseOption(OLD)}
                 >
                   Sinh viên cũ
+                </Button>
+                <Button
+                  classCustom={'info-student-tab-btn'}
+                  actived={!!(!isOld && !isActive)}
+                  color={'default'}
+                  variant={'outline'}
+                  onClick={() => this.handleChooseOption(PROCESSING)}
+                >
+                  Đang chờ xử lý
                 </Button>
               </Col>
             </Row>
@@ -534,8 +607,22 @@ class InfoStudent extends Component{
                 <th>MSSV</th>
                 <th>Họ và Tên</th>
                 <th>Trường</th>
+                <th>Khoa</th>
                 <th>Phòng</th>
-                <th>Thao tác</th>
+                <th>
+                  Thao tác
+                  <span style={{display: 'inline-block', marginLeft: '20px'}}>
+                    {(isActive || isOld) ?
+                    <Checkbox
+                      name={'checkedAll'}
+                      isCheck={this.handleCheckAll}
+                      checkmark={'check-mark-fix'}
+                      check={this.state.checkedAll}
+                    />
+                      : ''
+                    }
+                  </span>
+                </th>
               </tr>
               </thead>
               <tbody>
@@ -543,14 +630,24 @@ class InfoStudent extends Component{
               {infoList && infoList.map(info => {
 
                 return(
-                  <tr onDoubleClick ={() => this.onViewDetail(info)} key={i++}>
+                  <tr
+                    onDoubleClick ={() => this.onViewDetail(info.MSSV)} key={i++}
+                  >
                     <td >{i}</td>
                     <td>{info.MSSV || 'Trống'}</td>
                     <td>{info.hoTen || 'Trống'}</td>
                     <td>{info.truong ? info.truong.tenTruong : 'Chưa xác định'}</td>
+                    <td>{info.nganhHoc ? info.nganhHoc.tenNganh : 'Chưa xác định'}</td>
                     <td>
                       {info.idPhong ? info.idPhong.tenPhong : '-----'}
-                      <div className='float-right'> <Button color={'info'} variant={'outline'} style={{marginLeft: '15px'}} onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}>
+                      <div className='float-right'>
+                        <Button
+                          title={'Lịch sử phòng'}
+                          color={'info'}
+                          variant={'outline'}
+                          style={{marginLeft: '15px'}}
+                          onClick={() => this.handleRoomHistory(info.idTaiKhoan._id)}
+                        >
                         <i className="fas fa-history"/>
                       </Button>
                       </div>
@@ -560,15 +657,25 @@ class InfoStudent extends Component{
                           title={'In thẻ'}
                           color={'success'}
                           style={{marginRight: '10px'}}
-                          onClick={ e => {this.changeState('showPrint', true); this.changeState('dataPrint', info) }}
+                          onClick={ () => {this.changeState('showPrint', true); this.changeState('dataPrint', info) }}
                         >
                           <i className="fas fa-print"/>
                         </Button>
-                      <Button color={'warning'} style={{marginRight: '10px'}} onClick={() => this.onViewDetail(info)}>
+                      <Button
+                        title={'Xem chi tiết'}
+                        color={'warning'}
+                        style={{marginRight: '10px'}}
+                        onClick={() => this.onViewDetail(info.MSSV)}
+                      >
                         <i className="fas fa-edit"/>
                       </Button>
-                      {!isOld &&
-                        <Checkbox name={info.MSSV} isCheck={this.handleCheckDelete} checkmark={'check-mark-fix'} check={this.handleValueCheck(info.MSSV)}/>
+                      {(isActive || isOld) ?
+                        <Checkbox
+                          name={info.MSSV}
+                          isCheck={this.handleCheckBox}
+                          checkmark={'check-mark-fix'}
+                          check={this.handleValueCheck(info.MSSV)}
+                        /> : ''
                       }
                     </td>
                   </tr>
@@ -579,13 +686,15 @@ class InfoStudent extends Component{
             <Row>
               <Col md={3} className={'page-input'}>
                 <label style={{marginRight:'3px'}}>Trang</label>
-                <Input width='50px' textAlign='center' value={this.state.pageActive}/>
+                <Input width='50px' textAlign='center' value={this.state.searchValues.pageActive}/>
+                <label style={{marginLeft:'3px'}}>/{this.state.totalPages}</label>
               </Col>
               <Col md={9}>
                 <div className={'is-pagination'}>
-
-                  <MyPagination page={this.state.pageActive} totalPages={this.state.totalPages} clickPage={this.clickPage}/>
-
+                  <MyPagination
+                    page={this.state.searchValues.pageActive}
+                    totalPages={this.state.totalPages}
+                    clickPage={this.clickPage}/>
                 </div>
               </Col>
             </Row>

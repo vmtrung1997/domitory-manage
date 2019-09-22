@@ -58,7 +58,8 @@ exports.verifyAdmin = (req, res, next) => {
     var token = req.headers['x-access-token'];
     if(token){
         const decode = jwt_decode(token)
-        if(decode.user.userEntity.loai === 'SA' || decode.user.userEntity.loai === 'AM')
+        const rule = decode.user.userEntity.loai
+        if( rule === 'SA' || rule === 'AM' || rule === 'DD' || rule === 'ADCP' || rule === 'GDN' || rule === 'XNTT' )
             next()
     }
 }

@@ -18,7 +18,17 @@
     margin-top: 15px;
 }
 
+@media screen and (max-width: 768px){
+    .btn-search{
+        margin-bottom: 10px
+    }
+}
 
+.group-btn{
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
 
 .is-pagination{
     float: right;

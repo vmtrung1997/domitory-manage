@@ -15,8 +15,8 @@
 	border-radius: 0 0 5px 5px;
 	padding: 5px 30px;
 }
-p{
-	margin: 5px 0;
+.detail-activity p{
+	margin: 0;
 }
 
 .title-detail{

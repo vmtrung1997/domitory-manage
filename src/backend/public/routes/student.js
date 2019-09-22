@@ -5,7 +5,7 @@ router.post('/get-info', studentController.getInfo);
 
 router.post('/get-info-by-idCard', studentController.getInfoByIdCard);
 
-router.get('/get-specialized', studentController.getSpecialized);
+router.post('/get-specialized', studentController.getSpecialized);
 
 router.get('/get-school',studentController.getSchool);
 
@@ -33,5 +33,14 @@ router.post('/get-profile-by-idPhong',studentController.getProfileByIdPhong);
 
 router.post('/get-point',studentController.getPoint);
 
+router.post('/request-stay',studentController.requestStay);
+
+router.post('/check-request',studentController.checkRequest);
+
+router.get('/get-floor',studentController.getListFloor);
+
+router.get('/get-religion',studentController.getListReligion);
+
+router.get('/get-nation',studentController.getListNation);
 
 module.exports = router;

@@ -18,17 +18,22 @@ class RadioButton extends Component {
       check: this.props.check
     }
   }
+  componentWillReceiveProps(props){
+    if (props.check !== this.state.check){
+      this.setState({check: props.check})
+    }
+  }
   handleChangeChk = () => {
     var temp = !this.state.check
     this.setState({check: temp})
     this.props.isRadioChk({value: this.props.value})
   }
   render() {
-    var label = this.props.label;
+    let {label, className} = this.props;
     return (
     <React.Fragment>
-        <label className="container-radio">{label}
-          <input type="radio" defaultChecked={this.state.check} onChange={this.handleChangeChk} value={this.props.value} name={this.props.name}/>
+        <label className={`container-radio ${className}`}>{label}
+          <input type="radio" checked={this.state.check} onChange={this.handleChangeChk} value={this.props.value} name={this.props.name}/>
           <span className="checkmark-radio"></span>
         </label>
     </React.Fragment>

@@ -16,10 +16,17 @@ class ActivityEdit extends Component{
 		handleClose: () => {},
 		handleSave: () => {},
 	}
+
   constructor(props){
     super(props)
     var today = new Date()
-    var time = today.getHours() + ':' + today.getMinutes()
+    var h = today.getHours()
+    var m = today.getMinutes()
+    if (today.getHours() < 10)
+      h = '0' + today.getHours()
+    if (today.getMinutes() < 10)
+      m = '0' + today.getMinutes()
+    var time = h + ':' + m
     this.state = {
       name: '',
       location: '',
@@ -37,14 +44,31 @@ class ActivityEdit extends Component{
     this.setState({ [name]: val })
   }
   handleSave = async () => {
-    var {name, location, des, point, date, dateEnd} = this.state
-    if(!name || !location || !des || !point)
-    {
+    var {name, location, des, point} = this.state
+    var date = this.state.date
+    var dateEnd = this.state.dateEnd
+    var cur = new Date()
+
+    var tmp = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    var tmpEnd = new Date(dateEnd.getFullYear(), dateEnd.getMonth(), dateEnd.getDate())
+    var tmpCur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate())
+
+    // Hoạt động
+    var timeFirst = this.state.time.split(':')
+    var timeFinal = this.state.timeEnd.split(':')
+
+    this.state.date.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]), 0)
+    this.state.dateEnd.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]), 0)
+
+
+    if(!name || !location || !des || !point) {
       ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
-    } else if(parseInt(point) <= 0){
+    } else if(parseInt(point) <= 0) {
       ToastsStore.error("Điểm hoạt động phải lớn hơn 0!");
-    } else if(date < new Date || dateEnd < new Date()){
-      ToastsStore.error("Thời gian bắt đầu và kết thúc phải lớn hơn ngày hiện tại!");
+    } else if(tmp < tmpCur || tmpEnd < tmpCur) {
+      ToastsStore.error("Thời gian bắt đầu và kết thúc không nhỏ hơn ngày hiện tại!");
+    } else if(tmp > tmpEnd){
+      ToastsStore.error("Thời gian kết thúc không nhỏ hơn thời gian bắt đầu!");
     } else {
       await refreshToken()
       var secret = JSON.parse(localStorage.getItem('secret'))
@@ -58,10 +82,8 @@ class ActivityEdit extends Component{
         data:{
           name: this.state.name,
           location: this.state.location,
-          time: this.state.time,
-          date: this.state.date,
-          dateEnd: this.state.dateEnd,
-          timeEnd: this.state.timeEnd,
+          date: this.state.date.toString(),
+          dateEnd: this.state.dateEnd.toString(),
           isRequire: this.state.isRequire,
           des: this.state.des,
           point: this.state.point
@@ -76,21 +98,33 @@ class ActivityEdit extends Component{
     }
   }
 
+  getStringTime = (today) => {
+    var h = today.getHours()
+    var m = today.getMinutes()
+    if (today.getHours() < 10)
+      h = '0' + today.getHours()
+    if (today.getMinutes() < 10)
+      m = '0' + today.getMinutes()
+    return h + ':' + m
+  }
+
   componentWillMount(){
     const data = this.props.data
+    
     this.setState({
       name: data.ten,
       location: data.diaDiem,
       date: new Date(data.ngayBD),
-      time: new Date(data.ngayBD).getHours() + ':' + new Date(data.ngayBD).getMinutes(),
+      time: this.getStringTime(new Date(data.ngayBD)),
       dateEnd: new Date(data.ngayKT),
-      timeEnd: new Date(data.ngayKT).getHours() + ':' + new Date(data.ngayKT).getMinutes(),
+      timeEnd: this.getStringTime(new Date(data.ngayKT)),
       isRequire: data.batBuoc,
       des: data.moTa,
       point: data.diem
     })
   }
 	render(){
+	  
 		return(
       <React.Fragment>
         <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>

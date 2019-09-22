@@ -1,3 +1,9 @@
+.dropdown{
+    background-color: #2f4050;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+}
 .menu-button.active{
     border-left: 4px solid #19aa8d;
     background: #293846;
@@ -59,4 +65,9 @@ li{
 .focus_lb a:focus{
     color: white !important;
     font-weight: 600;
+}
+
+.avt{
+    width: 80px;
+    height: 80px;
 }

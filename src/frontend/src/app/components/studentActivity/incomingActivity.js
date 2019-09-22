@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import "./../titleStudent/titleStudent.css";
 import "./../tableStudentTextStyle/tableStudentTextStyle.css";
 import axios from "axios";
@@ -15,6 +15,7 @@ import {
   ToastsStore
 } from "react-toasts";
 import refreshToken from "./../../../utils/refresh_token";
+import Button from '../button/button'
 
 class IncomingStudentActivity extends React.Component {
   constructor(props) {
@@ -24,7 +25,8 @@ class IncomingStudentActivity extends React.Component {
       isLoad: true,
       pageActive: 1,
       totalPages: 1,
-      limit: 5
+      limit: 5,
+      onlyOneLoad: false //chỉ load api 1 lần duy nhất
     };
   }
 
@@ -40,7 +42,7 @@ class IncomingStudentActivity extends React.Component {
     };
     var secret = localStorage.getItem("secret");
     const decode = jwt_decode(secret);
-    if(decode.user.profile){
+    if (decode.user.profile) {
       var id = decode.user.profile._id;
       //Lấy thông tin hoạt động
       var incomingActivities = [];
@@ -50,11 +52,12 @@ class IncomingStudentActivity extends React.Component {
           options: options
         })
         .then(res => {
+          if(res.data){
           this.setState({
             totalPages: res.data.totalPages
           });
           res.data.data.map(item => {
-            var d = new Date(item.idHD.ngayBD);
+            var d = new Date(item.idHD.ngayKT);
             var today = new Date();
 
             if (d >= today) {
@@ -63,6 +66,7 @@ class IncomingStudentActivity extends React.Component {
             }
             return true;
           });
+        }
         })
         .then(() => {
           this.setState({
@@ -98,8 +102,7 @@ class IncomingStudentActivity extends React.Component {
       data = this.state.incomingActivities.filter(obj => obj.check === true);
 
       await refreshToken();
-      var secret = localStorage.getItem("secret");
-      const decode = jwt_decode(secret);
+      
       var id = this.props.profile._id;
 
       var info = {
@@ -137,18 +140,27 @@ class IncomingStudentActivity extends React.Component {
     this.setState({ incomingActivities: act });
   };
 
+
   clickPage = e => {
+    if(e <= this.state.totalPages){
     this.setState({
       pageActive: e
     });
     this.getActivities();
+    }
   };
   refresh = () => {
+   
     this.getActivities();
   };
-  componentDidMount() {
-    this.getActivities();
+  componentDidMount() { 
+          this.getActivities();
   }
+
+  componentDidUpdate(){
+    this.props.setClick(this.refresh);
+  }
+
 
   render() {
     return (
@@ -165,10 +177,14 @@ class IncomingStudentActivity extends React.Component {
         ) : (
           <div>
             <div className="time-bill">
-              {this.state.incomingActivities.length === 0 ? (
-                <div style={{ marginTop: "20px" }}>
-                  <span>Bạn chưa có hoạt động nào</span>
-                </div>
+              {this.state.incomingActivities.length === 0?(
+                <div style={{ marginTop: "30px",textAlign:'center' }}>
+                <img alt = "true"
+                  style={{ height: "150px", width: "150px" }}
+                  src="/images/notdatafound.png"
+                />
+                <p>Bạn chưa tham gia hoạt động nào</p>                
+              </div>
               ) : (
                 <div>
                   <div className="profile-panel">
@@ -187,6 +203,7 @@ class IncomingStudentActivity extends React.Component {
                         </thead>
                         <tbody>
                           {this.state.incomingActivities.map(
+                            
                             (activity, index) => {
                               var item = activity.idHD;
                               var d = new Date(item.ngayBD);
@@ -220,7 +237,7 @@ class IncomingStudentActivity extends React.Component {
                                     {item.batBuoc === true ? "Bắt buộc" : ""}
                                   </td>
                                   <td>
-                                    {" "}
+                                    {!activity.isTG &&
                                     <input
                                       checked={activity.check}
                                       onChange={e =>
@@ -230,7 +247,7 @@ class IncomingStudentActivity extends React.Component {
                                         )
                                       }
                                       type="checkbox"
-                                    />
+                                    />}
                                   </td>
                                 </tr>
                               );
@@ -254,7 +271,7 @@ class IncomingStudentActivity extends React.Component {
                     >
                       Làm mới <i className="fas fa-spinner" />
                     </Button> */}
-                    <Button variant="success" onClick={this.cancelRegister}>
+                    <Button color="success" onClick={this.cancelRegister}>
                       Huỷ đăng ký
                     </Button>
                   </div>

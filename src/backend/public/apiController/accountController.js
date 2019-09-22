@@ -17,27 +17,14 @@ exports.get_List = (req, res) => {
 	}
 	var query = { 
 		isDelete: 0,
+		loai: {$ne: "SV"}
 	}
 	
 	if(req.body.search){ 
 		query.username = { $regex: '.*' + req.body.search + '.*', $options: 'i' }
 	}
-	switch(req.body.rule){
-		case 'SA':
-			query.loai = 'SA'
-			break
-		case 'AM':
-			query.loai = 'AM'
-			break
-		case 'BV':
-			query.loai = 'BV'
-			break
-		case 'SV':
-			query.loai = 'SV'
-			break
-		default:
-			break
-	}
+
+	req.body.rule ? query.loai = req.body.rule : query
 
 	Account.paginate(query, options)
 	.then( result => {
@@ -96,18 +83,19 @@ exports.add_Account = async (req, res) => {
 			}
 
 			if(!val || val.CMND === undefined){
-				var person = new Profile({
+				let person = new Profile({
 					hoTen: data.name,
 					CMND: data.CMND,
-					email: data.Email,
+					email: data.Email
 				})
 				person.save()
-				
 				account.idProfile = person._id
 				account.save()
 
 				person.idTaiKhoan = account._id
-				person.save()
+				person.save().catch(err =>{
+		          resolve( {status: 400, msg: 'tạo tài khoản không thành công!', data: data})
+		        })
 
 				console.log('==add_account: success')
 				res.status(201).json({
@@ -129,8 +117,8 @@ exports.update_Account = (req, res) => {
 	const id = req.query.id
 	if(req.body){
 		const rule = req.body.rule
-		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' ||  rule === 'SV'){
-			Account.update({ _id: id }, {loai: rule}, (err, val) => {
+		if( rule === 'BV' ||  rule === 'AM' ||  rule === 'SA' || rule === 'ADCP' || rule === 'DD' || rule === 'GDN' || rule === 'XNTT' ){
+			Account.updateOne({ _id: id }, {loai: rule}, (err, val) => {
 				if(!err){
 					res.json({ rs: 'ok'})
 					console.log('==update_account: success')
@@ -146,7 +134,7 @@ exports.update_Account = (req, res) => {
 
 exports.delete_Account = (req, res) =>{
 	const id = req.query.id
-	Account.update({ _id: id }, {isDelete: 1}, (err, val) => {
+	Account.updateOne({ _id: id }, {isDelete: 1}, (err, val) => {
 		if(!err){
 			res.json({ rs: 'ok'})
 			console.log('==delete_account: success')

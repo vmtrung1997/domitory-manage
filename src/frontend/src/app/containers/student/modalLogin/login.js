@@ -1,8 +1,8 @@
 import React from "react";
-import { Modal, Button, Container } from "react-bootstrap";
+import { Modal, Container } from "react-bootstrap";
 import md5 from "md5";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import Button from '../../../components/button/button'
 import { connect } from "react-redux";
 import Input from "../../../components/input/input";
 import "./login.css";
@@ -58,12 +58,12 @@ class StudentLogin extends React.Component {
           
           this.props.hideLogin(false);
           this.props.dataLogin(res.data);
-        } else {
+        } else if(res.status === 400)
           this.setState({
             wrongLogin: true
           });
         }
-      })
+      )
       .catch(err => {
         this.setState({
           wrongLogin: true

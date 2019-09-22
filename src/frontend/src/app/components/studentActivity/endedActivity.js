@@ -38,7 +38,7 @@ class EndedStudentActivity extends React.Component {
     };
     var secret = localStorage.getItem("secret");
     const decode = jwt_decode(secret);
-    if(decode.user.profile){
+    if (decode.user.profile) {
       var id = decode.user.profile._id;
       //Lấy thông tin hoạt động
       var oldActivities = [];
@@ -48,20 +48,21 @@ class EndedStudentActivity extends React.Component {
           options: options
         })
         .then(res => {
-          this.setState({
-            totalPages: res.data.totalPages
-          });
-          res.data.data.map(item => {
-    
-            var d = new Date(item.idHD.ngayKT);
+          if (res.data) {
+            this.setState({
+              totalPages: res.data.totalPages
+            });
+            res.data.data.map(item => {
+              var d = new Date(item.idHD.ngayKT)  ;
 
-            var today = new Date();
+              var today = new Date();
 
-            if (d < today) {
-              oldActivities.push(item);
-            }
-            return true;
-          });
+              if (d < today) {
+                oldActivities.push(item);
+              }
+              return true;
+            });
+          }
         })
         .then(() => {
           this.setState({
@@ -75,10 +76,12 @@ class EndedStudentActivity extends React.Component {
   };
 
   clickPage = e => {
+    if(e <= this.state.totalPages){
     this.setState({
       pageActive: e
     });
     this.getActivities();
+  }
   };
 
   refresh = () => {
@@ -105,12 +108,15 @@ class EndedStudentActivity extends React.Component {
             <div className="time-bill">
               <div className="text-style">
                 {this.state.oldActivities.length === 0 ? (
-                  <div style={{ marginTop: "30px" }}>
-                    <span>Bạn chưa có hoạt động nào</span>
-                  </div>
+                  <div style={{ marginTop: "30px",textAlign:'center' }}>
+                  <img alt = "true"
+                    style={{ height: "150px", width: "150px" }}
+                    src="/images/notdatafound.png"
+                  />
+                  <p>Bạn chưa tham gia hoạt động nào</p>                
+                  </div> 
                 ) : (
                   <div className="profile-panel">
-
                     <div className="time-bill">
                       <div className="text-style">
                         <Table responsive bordered size="sm" hover>

@@ -17,6 +17,7 @@ import refreshToken from "../../../.././utils/refresh_token";
 import Loader from "./../../../components/loader/loader";
 import MyPagination from "./../../../components/pagination/pagination";
 import Select from './../../../components/selectOption/select'
+import Confirm from './../../../components/confirm/confirm'
 
 
 class News extends Component {
@@ -31,7 +32,8 @@ class News extends Component {
       loading: false,
       typeEdit: undefined,
       selectedItem: undefined,
-      type: -1
+      type: -1,
+      showDelete: false,
     };
   }
 
@@ -60,8 +62,10 @@ class News extends Component {
   };
 
   onViewDetail = id => {
-    var address = window.location.host +"/news/detail?id=" + id;
-    window.open(address, "_blank");
+    // window.alert(id);
+    var address = "/news/detail?id=" + id;
+    //console.log(address);
+    window.open(address,'_blank');
   };
 
   showPopupSuccess = val => {
@@ -74,19 +78,8 @@ class News extends Component {
     }
   };
 
-  onDetete = async id => {
-    await refreshToken();
-    var secret = JSON.parse(localStorage.getItem("secret"));
-
-    axios.defaults.headers["x-access-token"] = secret.access_token;
-    axios.post("/manager/news/delete", { id: id }).then(res => {
-      if (res.status === 202) {
-        ToastsStore.success("Đã xóa");
-        this.getNews();
-      } else {
-        ToastsStore.error("Xóa thất bại");
-      }
-    });
+  onDetete = async (id) => {
+    this.setState({showDelete: true,selectedItem: id});
   };
 
   getNews = async () => {
@@ -114,6 +107,10 @@ class News extends Component {
     });
   };
 
+  handleClose = () =>{
+    this.setState({showDelete:false})
+  }
+
   clickPage = e => {
     this.setState({ pageActive: e });
     this.getNews();
@@ -127,6 +124,24 @@ class News extends Component {
     this.setState({ [key] : val})
   }
 
+  handleSave = async () =>{
+  await refreshToken();
+    var secret = JSON.parse(localStorage.getItem("secret"));
+
+    axios.defaults.headers["x-access-token"] = secret.access_token;
+    axios.post("/manager/news/delete", { id: this.state.selectedItem }).then(res => {
+      if (res.status === 202) {
+        ToastsStore.success("Đã xóa");
+        this.handleClose();
+        this.getNews();
+
+      } else {
+        ToastsStore.error("Xóa thất bại");
+      }
+    });
+  }
+
+
   render() {
     var type = [
       {value: -1, label: 'Tất cả'},
@@ -136,7 +151,7 @@ class News extends Component {
     return (
       <React.Fragment>
         <ToastsContainer
-          position={ToastsContainerPosition.BOTTOM_CENTER}
+          position={ToastsContainerPosition.TOP_CENTER}
           lightBackground
           store={ToastsStore}
         />
@@ -149,6 +164,13 @@ class News extends Component {
             hideLogin={this.hideLogin}
           />
         )}
+        <Confirm 
+					show={this.state.showDelete}
+					title={'Xóa bài viết'}
+					content={'Bạn có muốn xóa bài viết này !'}
+					handleClose={() => this.handleClose()}
+					handleSave={() => this.handleSave()}
+				/>
         <div>
           <Title>Quản lý bài viết</Title>
         </div>
@@ -253,13 +275,21 @@ class News extends Component {
               </tbody>
             </Table>
           )}
-          <div className="pagination-position">
-            <MyPagination
-              page={this.state.pageActive}
-              totalPages={this.state.totalPages}
-              clickPage={this.clickPage}
-            />
-          </div>
+          <Row>
+              <Col md={3} className={'page-input'}>
+              <label style={{marginRight:'3px'}}>Trang</label>
+                <Input width='50px' textAlign='center' value={this.state.pageActive}/>
+                <label style={{marginLeft:'3px'}}>/ {Math.ceil(this.state.totalPages)}</label>
+              </Col>
+              <Col md={9}>
+                <div className={'is-pagination'}>
+                  <MyPagination
+                    page={this.state.pageActive}
+                    totalPages={this.state.totalPages}
+                    clickPage={this.clickPage}/>
+                </div>
+              </Col>
+            </Row>
         </div>
       </React.Fragment>
     );

@@ -6,8 +6,9 @@ var express = require('express'),
     cors = require('cors')
 var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
-
-mongoose.connect('mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao', 
+var { background } = require('./background')
+//mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao
+mongoose.connect('mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao',//mongodb://127.0.0.1:27017/ktx',
 { 
   useNewUrlParser: true,
   autoReconnect:true,
@@ -45,10 +46,13 @@ app.use((req, res, next) => {
   res.sendStatus(404)
 })
 
+setInterval(background, 1000*3600*24);
+
+setInterval(require('./backup').dbAutoBackUp, 1000*3600*24);
+
 app.use((err, req, res, next) => {
   res.status(500)
   res.send(err)
 })
-
 
 module.exports = app

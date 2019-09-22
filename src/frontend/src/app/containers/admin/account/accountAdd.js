@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap'
-import DatePicker from 'react-datepicker'
-import TimeField from 'react-simple-timefield';
 import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
 import axios from './../../../config'
 
@@ -9,7 +7,6 @@ import './accountAdd.css'
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
 import Input from './../../../components/input/input'
-import CheckBox from './../../../components/checkbox/checkbox'
 import Select from './../../../components/selectOption/select'
 
 const initialState = {
@@ -30,8 +27,6 @@ class AccountAdd extends Component{
 	}
   constructor(props){
     super(props)
-    var today = new Date()
-    var time = today.getHours() + ':' + today.getMinutes()
     this.state = initialState
   }
 
@@ -44,6 +39,10 @@ class AccountAdd extends Component{
       {value: 'SA', label: 'Trưởng quản lý'},
       {value: 'AM', label: 'Quản lý'},
       {value: 'BV', label: 'Bảo vệ'},
+      {value: 'ADCP', label: 'Quản lý chi phí'},
+      {value: 'GDN', label: 'Ghi chi phí'},
+      {value: 'DD', label: 'Điểm danh'},
+      {value: 'XNTT', label: 'Xác nhận thanh toán'}
     ]
   }
 

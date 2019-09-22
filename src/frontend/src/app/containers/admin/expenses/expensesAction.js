@@ -24,6 +24,18 @@ export const search = async (searchConditions) => {
         reject(error)});
       })
 }
+export const getPersonInRoom = async (idPhong) => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.post('/manager/expense/get_person_in_room', idPhong).then(result => { 
+      resolve(result);
+    })
+    .catch(error =>{
+        reject(error)});
+      })
+}
 export const add_expense = async (table) => {
   await refreshToken();
   const secret = JSON.parse(localStorage.getItem('secret'))
@@ -212,6 +224,18 @@ export const get_data_print = async (exp) => {
   axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
     axios.post('/manager/expense/get_data_print', exp).then(result => { 
+      resolve(result);
+    })
+    .catch(error => reject(error));
+  })
+}
+
+export const getYear = async () => {
+  await refreshToken();
+  const secret = JSON.parse(localStorage.getItem('secret'))
+  axios.defaults.headers.common['x-access-token'] = secret.access_token
+  return new Promise((resolve, reject) => {
+    axios.get('/manager/expense/get_year').then(result => { 
       resolve(result);
     })
     .catch(error => reject(error));

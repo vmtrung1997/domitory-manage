@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
-import { withRouter, Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { ToastsContainer, ToastsContainerPosition, ToastsStore } from "react-toasts";
 import axios from './../../../config'
 
@@ -80,9 +80,17 @@ class AccountTable extends Component{
 				case 'BV':
 					rule = 'Bảo vệ'
 					break
-				case 'SV':
-					rule = 'Sinh viên'
+				case 'ADCP':
+					rule = 'Quản lý chi phí'
 					break
+				case 'GDN':
+					rule = 'Ghi chi phí'
+					break
+				case 'DD':
+					rule = 'Điểm danh'
+					break
+				case 'XNTT':
+					rule = 'Xác nhận thanh toán'
 				default:
 					break
 			}

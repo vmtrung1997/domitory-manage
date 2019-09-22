@@ -12,13 +12,8 @@ router.post('/reset-password',taiKhoan.resetPassword)
 
 router.post('/reset-password-admin', taiKhoan.resetPasswordAdmin)
 
-// router.get('/test_sv', require('../repos/testDb').update_image)
-
-// router.post('/test_file_excel', require('../repos/testDb').uploadExcelFile)
-
-// router.get('/import_room',require('../repos/testDb').import_room)
-
-// router.get('/test_idTaiKhoan',require('../repos/testDb').test_idTaiKhoan)
+router.post('/change-password-admin', taiKhoan.changePasswordAdmin)
 
 router.get('/import_detail_room',require('../repos/testDb').import_detail_room)
+
 module.exports = router;

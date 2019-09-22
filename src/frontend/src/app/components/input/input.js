@@ -11,6 +11,7 @@ class Input extends Component {
     ref: PropTypes.any
   }
   static defaultProps = {
+    required: false,
     type: 'text',
     width: '100%',
     fontSize: '14px',
@@ -36,7 +37,7 @@ class Input extends Component {
     var {color} = this.props
     return (
       <React.Fragment>
-        <input 
+        <input
           style={{width: `${this.props.width}`, fontSize: `${this.props.fontSize}`, padding: `${this.props.padding}`, borderRadius: `${this.props.borderRadius}`, textAlign: `${this.props.textAlign}`}}
           className={`input-control input-${color}`}
           name={this.props.name}
@@ -51,6 +52,8 @@ class Input extends Component {
           onFocus={this.props.onFocus}
           min={this.props.min}
           max={this.props.max}
+          pattern={this.props.pattern}
+          required={this.props.required}
         />
       </React.Fragment>
     );

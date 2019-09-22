@@ -225,6 +225,7 @@ textarea.input {
 }
 .section {
     padding-top: 40px;
+    background-color: #FFF
 }
 .section.section-grey {
     background-color: #fbfbfd;

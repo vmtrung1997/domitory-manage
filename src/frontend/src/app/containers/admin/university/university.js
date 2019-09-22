@@ -39,7 +39,7 @@ class Security extends Component {
   onHandleSchoolClick = (id) => {
     if (id === '')
       return;
-    this.setState({selectSchool: id })
+    this.setState({ selectSchool: id })
     getMajor({ id: id }).then(result => {
       if (result.data.rs == 'success') {
         this.setState({ majorsList: result.data.data, idTruongUpdate: id })
@@ -49,7 +49,7 @@ class Security extends Component {
   getInit = () => {
     return new Promise(resolve => {
       getSchools().then(result => {
-        this.setState({ schools: result.data.data})
+        this.setState({ schools: result.data.data })
         resolve()
       })
     })
@@ -58,8 +58,14 @@ class Security extends Component {
     var object = {
       id: this.state.idUpdate,
     }
-    this.setState({ loading: true});
+    this.setState({ loading: true });
     if (this.state.isEditSChool) {
+      if (object.tenTruong === '')
+      {
+        ToastsStore.error("Không để tên trường rỗng");
+        this.setState({ loading: false });
+        return;
+      }
       object.tenTruong = this.state.valueUpdate
       updateSchool(object).then(result => {
         if (result.data.rs === 'success') {
@@ -69,12 +75,17 @@ class Security extends Component {
           ToastsStore.success("Cập nhật thành công");
         }
         else
-        ToastsStore.error("Cập nhật thất bại");
+          ToastsStore.error("Cập nhật thất bại");
         this.setState({ idUpdate: '', valueUpdate: '', isEditSChool: false, loading: false, show: false });
 
       })
     } else if (this.state.isEditMajor) {
       object.tenNganh = this.state.valueUpdate;
+      if (object.tenNganh === ''){
+        ToastsStore.error("Không để tên ngành rỗng");
+        this.setState({ loading: false });
+        return;
+      }
       updateMajor(object).then(result => {
         if (result.data.rs === 'success') {
           ToastsStore.success("Cập nhật thành công");
@@ -107,10 +118,10 @@ class Security extends Component {
   }
 
   onAddSchool = () => {
-    this.setState({ loading: true })
     var { schoolTxt } = this.state;
     if (schoolTxt === '')
       return;
+    this.setState({ loading: true })
     insertSchool({ tenTruong: schoolTxt }).then(result => {
       if (result.data.rs === 'fail') {
         ToastsStore.error(result.data.msg);
@@ -124,10 +135,10 @@ class Security extends Component {
     })
   }
   onAddMajor = () => {
-    this.setState({ loading: true })
     var { majorTxt, selectSchool } = this.state;
     if (majorTxt === '')
       return;
+    this.setState({ loading: true })
     insertMajor({ tenNganh: majorTxt, idTruong: selectSchool }).then(result => {
       if (result.data.rs === 'fail') {
         ToastsStore.error(result.data.msg);
@@ -141,8 +152,7 @@ class Security extends Component {
     })
   }
   onDel = (type, id, name) => {
-    if (type === 'school')
-    {
+    if (type === 'school') {
       this.setState({
         showDel: true,
         titleDel: 'Xóa trường',
@@ -160,11 +170,11 @@ class Security extends Component {
       })
   }
   onAccepDel = () => {
-    this.setState({loading: true})
-    var {idUpdate} = this.state;
-    if (this.state.isSchoolDel){
-      removeSchool({id: idUpdate}).then(result => {
-        if (result.data.rs === 'fail'){
+    this.setState({ loading: true })
+    var { idUpdate } = this.state;
+    if (this.state.isSchoolDel) {
+      removeSchool({ id: idUpdate }).then(result => {
+        if (result.data.rs === 'fail') {
           ToastsStore.error(result.data.msg);
         } else {
           ToastsStore.success('Xóa trường thành công')
@@ -179,9 +189,9 @@ class Security extends Component {
           loading: false
         })
       })
-    } else if (this.state.isMajorDel){
-      removeMajor({id: idUpdate}).then(result => {
-        if (result.data.rs === 'fail'){
+    } else if (this.state.isMajorDel) {
+      removeMajor({ id: idUpdate }).then(result => {
+        if (result.data.rs === 'fail') {
           ToastsStore.error(result.data.msg);
         } else {
           ToastsStore.success('Xóa ngành thành công')
@@ -201,7 +211,7 @@ class Security extends Component {
   render() {
     return (
       <React.Fragment>
-        <ToastsContainer position={ToastsContainerPosition.BOTTOM_CENTER} lightBackground store={ToastsStore} />
+        <ToastsContainer position={ToastsContainerPosition.TOP_CENTER} lightBackground store={ToastsStore} />
         <Loader loading={this.state.loading} />
         <Title>Trường ngành</Title>
         <div className="content-body">
@@ -213,11 +223,11 @@ class Security extends Component {
               handleClose={() => this.setState({ show: false })}>
               <Input value={this.state.valueUpdate} getValue={(target) => { this.setState({ valueUpdate: target.value }) }} />
             </Modal>}
-          <Confirm show={this.state.showDel} 
-              title={this.state.titleDel}
-              handleSave={this.onAccepDel}
-              content={this.state.contentDel}
-              handleClose={() => this.setState({showDel: false})}/>
+          <Confirm show={this.state.showDel}
+            title={this.state.titleDel}
+            handleSave={this.onAccepDel}
+            content={this.state.contentDel}
+            handleClose={() => this.setState({ showDel: false })} />
           <Row>
             <Col md={{ span: 5 }} xs={12}>
               <div>
@@ -234,24 +244,22 @@ class Security extends Component {
               </div>
               <div>Danh sách trường</div>
               <div className={'col-box'}>
-              {
-                this.state.schools && this.state.schools.length > 0 && this.state.schools.map(sch => {
-                  return (
-                    <Col md={12} key={sch._id} >
-                      <Row className={sch._id === this.state.selectSchool ? 'school-item school-item-cursor is-active-school m-b-10' : 'school-item school-item-cursor m-b-10'}>
-                        <Col md={9} onClick={() => {this.onHandleSchoolClick(sch._id); this.setState({loading: false})}}>{sch.tenTruong}</Col>
-                        <Col md={3}>
-                          <i className="fas fa-edit school-item-edit" onClick={() => this.onUpdateSchoolItem(sch)}></i>&nbsp;
+                {
+                  this.state.schools && this.state.schools.length > 0 && this.state.schools.map(sch => {
+                    return (
+                      <Col md={12} key={sch._id} >
+                        <Row className={sch._id === this.state.selectSchool ? 'school-item school-item-cursor is-active-school m-b-10' : 'school-item school-item-cursor m-b-10'}>
+                          <Col md={9} onClick={() => { this.onHandleSchoolClick(sch._id); this.setState({ loading: false }) }}>{sch.tenTruong}</Col>
+                          <Col md={3}>
+                            <i className="fas fa-edit school-item-edit" onClick={() => this.onUpdateSchoolItem(sch)}></i>&nbsp;
                           <i className="fas fa-trash-alt school-item-trash" onClick={() => this.onDel('school', sch._id, sch.tenTruong)}></i>
-                        </Col>
-                      </Row>
-                    </Col>
-                  )
-                })
-              }
-
+                          </Col>
+                        </Row>
+                      </Col>
+                    )
+                  })
+                }
               </div>
-
             </Col>
             <Col md={{ offset: 1, span: 5 }} xs={12}  >
               <div>
@@ -277,7 +285,7 @@ class Security extends Component {
                         <Col md={9}>{value.idNganhHoc.tenNganh}</Col>
                         <Col md={3}>
                           <i className="fas fa-edit school-item-edit school-item-cursor" onClick={() => this.onUpdateMajorItem(value)}></i>&nbsp;
-                          <i className="fas fa-trash-alt school-item-trash school-item-cursor" onClick={() => this.onDel('major',value.idNganhHoc._id,value.idNganhHoc.tenNganh)}></i>
+                          <i className="fas fa-trash-alt school-item-trash school-item-cursor" onClick={() => this.onDel('major', value.idNganhHoc._id, value.idNganhHoc.tenNganh)}></i>
                         </Col>
                       </Row>
                     </Col>
@@ -285,7 +293,6 @@ class Security extends Component {
                 })}
               </div>
             </Col>
-
           </Row>
         </div>
       </React.Fragment>

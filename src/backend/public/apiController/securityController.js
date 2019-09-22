@@ -1,19 +1,18 @@
-const LichSu = require('../models/LichSu')
-const mongoose = require('mongoose')
+const LichSu = require('../models/LichSuRaVao')
 const Profile = require('../models/Profile')
 require('../models/Profile')
 require('../models/Truong')
 require('../models/NganhHoc')
 require('../models/Phong')
 require('../models/TaiKhoan')
-function find_history(){
-  return new Promise((resolve,reject) => {
-    LichSu.find().sort({thoiGian: -1}).
+function find_history(type){
+  return new Promise(async (resolve,reject) => {
+    LichSu.find(type).sort({thoiGian: -1}).
     limit(15).
     populate({
       path: 'profile',
       select: 'hoTen idPhong truong nganhHoc img',
-      populate: [{ path: 'idPhong', select: 'tenPhong'}, ]
+      populate: [{ path: 'idPhong', select: 'tenPhong'}]
     }).
     exec((err,result) => {
       if (result){
@@ -26,7 +25,9 @@ function find_history(){
 }
 
 exports.get_history_list = (req, res) => {
-  find_history().then(result => {
+  var {type} = req.body
+  console.log(type);
+  find_history({type: type=='in-dormitory'?0:1}).then(result => {
     res.json({
       rs: 'success',
       data: result
@@ -40,29 +41,20 @@ exports.get_history_list = (req, res) => {
 }
 
 exports.input_card = (req, res) => {
-  var {info} = req.body;
+  var {info, type} = req.body;
   Profile.findOne({maThe: info}).populate([
   { path:'idTaiKhoan', match:{ isDelete: 0}},
   { path: 'idPhong', select: 'tenPhong'}, 
-  { path: 'truong', select: 'tenTruong'}]).then(profile => {
-      if (profile){
+]).then(profile => {
+      if (profile && profile.idTaiKhoan!=null){
+        console.log(profile)
         if (profile.MSSV)
         var his = new LichSu({
           MSSV: profile.MSSV,
-          thoiGian: new Date()
+          thoiGian: new Date(),
+          type: type=='in-dormitory'?0:1
         })
         his.save().then(value => {
-          // find_history().then(result => {
-          //   res.json({
-          //     rs: 'success',
-          //     hisList: result
-          //   })
-          // }).catch(errFind => {
-          //   res.json({
-          //     rs: 'fail',
-          //     msg: errFind
-          //   })
-          // })
           res.json({
             rs:'success',
             data: {

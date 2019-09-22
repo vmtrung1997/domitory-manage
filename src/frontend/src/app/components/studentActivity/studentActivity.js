@@ -16,12 +16,14 @@ import refreshToken from "./../../../utils/refresh_token";
 class StudentActivity extends React.Component {
   constructor(props) {
     super(props);
+    this.child = React.createRef();
     this.state = {
       incomingActivities: [],
       oldActivities: [],
       isLoad: true
     };
   }
+
 
   getActivities = async () => {
     this.setState({
@@ -41,18 +43,23 @@ class StudentActivity extends React.Component {
           id: id
         })
         .then(res => {
-          res.data.data.map(item => {
-            var d = new Date(item.idHD.ngayBD);
-            var today = new Date();
-
-            if (d > today) {
-              item.check = false;
-              incomingActivities.push(item);
-            } else {
-              oldActivities.push(item);
-            }
-            return true;
-          });
+          if(res.data){
+          if(res.status === 200){
+            res.data.data.map(item => {
+              var d = new Date(item.idHD.ngayBD);
+              var today = new Date();
+  
+              if (d > today) {
+                item.check = false;
+                incomingActivities.push(item);
+              } else {
+                oldActivities.push(item);
+              }
+              return true;
+            });
+          }
+      }
+        
         })
         .then(() => {
           this.setState({
@@ -62,7 +69,7 @@ class StudentActivity extends React.Component {
           this.setState({
             isLoad: false
           });
-        });
+        }).catch(err => {});
     }
   };
 
@@ -138,26 +145,32 @@ class StudentActivity extends React.Component {
   }
   componentWillUpdate = (nextProps, nextState) => {};
 
+  onClick = () =>{
+  
+    this.clickChild();
+  }
   render() {
     return (
       <React.Fragment>
+        <div className='padding-menu'>
         <ToastsContainer
           position={ToastsContainerPosition.BOTTOM_CENTER}
           lightBackground
           store={ToastsStore}
         />
-        <div className="title-header ">
-          <span>HOẠT ĐỘNG CỦA BẠN</span>
+        <div >
+          <h1 className="title-header" >HOẠT ĐỘNG CỦA BẠN</h1>
         </div>
         <div className='title-header-line'></div>
         <Tabs id="controlled-tab-example" defaultActiveKey="incoming">
-          <Tab eventKey="incoming" title="Đang diễn ra">
-            <IncomingStudentActivity />
+          <Tab eventKey="incoming" title="Sắp diễn ra" >
+            <IncomingStudentActivity setClick={click => this.clickChild = click} dataFromListActivity = {this.props.dataFromListActivity}/>
           </Tab>
           <Tab eventKey="ended" title="Đã kết thúc">
             <EndedStudentActivity />
           </Tab>
         </Tabs>
+        </div>
       </React.Fragment>
     );
   }

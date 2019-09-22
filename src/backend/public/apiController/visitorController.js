@@ -27,7 +27,7 @@ exports.getDetailNews = (req, res) => {
 
 exports.getPinNews = (req, res) => {
   try {
-    BaiViet.find({ ghim: 1 }, (err, doc) => {
+    BaiViet.find({ ghim: 1, trangThai: 1}, (err, doc) => {
       if (doc.length === 0) {
         res.status(204).json({
           message: "oke",
@@ -40,7 +40,7 @@ exports.getPinNews = (req, res) => {
         });
       }
     })
-      .limit(4)
+      .limit(2)
       .sort({ ngayTao: -1 });
   } catch (err) {
     console.log(err);
@@ -53,7 +53,6 @@ exports.getPinNews = (req, res) => {
 
 exports.getNews = (req, res) => {
   var date = req.body.data;
-  console.log(req.body);
   var skip =  parseInt(req.body.skip);
   var limit = req.body.limit
   try {
@@ -62,7 +61,7 @@ exports.getNews = (req, res) => {
       .skip(skip)
       .limit(limit)
       .then(rs => {
-        console.log(rs.length);
+   
         if (rs.length === 0) {
           res.status(204).json({
             message: "fail"

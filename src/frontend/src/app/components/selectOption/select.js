@@ -47,6 +47,12 @@ class Select extends Component {
 		isSearchable: false,
 		placeholder: ''
 	}
+	// constructor(props){
+	// 	super(props);
+	// 	this.state = {
+  //     value: () => { return this.props.options[0].value },
+  //   }
+	// }
 	onHandleChange = (event) => {
 		event.persist();
 		this.props.selected(event.target.value);
@@ -63,7 +69,7 @@ class Select extends Component {
 						onChange={this.props.onChange}
 						options={this.props.options} /> :
 					<select className="select-control"
-						defaultValue={this.props.value}
+						value={this.props.value}
 						onChange={this.onHandleChange}
 						onSelect={this.onHandleChange}
 						disabled={this.props.disabled}>

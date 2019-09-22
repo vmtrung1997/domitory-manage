@@ -9,13 +9,21 @@
 .link-table:hover{
     color: #0056b3;
 }
-.flex-row-end{
-    display: flex;
-    flex-direction: row;
-    float: right;
+.flex-end{
+    justify-content: flex-end;
 }
-.flex-row-end button{
-    margin-left: 10px;
+.flex-baseline{
+    display: flex;
+    align-items: baseline;
+}
+.flex-between {
+    justify-content: space-between;
+}
+.button-control button{
+    width: 60px;
+}
+.button-space button{
+    margin-right: 10px;
 }
 /*.content-body{*/
     /*overflow: auto*/
