@@ -70,7 +70,6 @@ export default class ExpenseTable extends React.Component {
 				{this.state.showDetail && <ExpenseDetail expenseDetail={this.state.detail} show={this.showDetail} retriveSearch={this.retriveSearch} loading={this.handleLoading} />}
 				<Row>
 					<Col>
-
 						<Table bordered hover responsive size="sm">
 							<thead className="title-table text-center">
 								<tr>
