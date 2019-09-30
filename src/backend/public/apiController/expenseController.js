@@ -135,7 +135,8 @@ function TinhTienNuoc(arr, number, soNguoi) {
 			total = total + diff * arr[i].giaTriThuc;
 			temp = temp - diff;
 		} else {
-			return total + temp * arr[i].giaTriThuc
+			total = total + temp * arr[i].giaTriThuc;
+			break;
 		}
 	}
 	return total;
@@ -244,7 +245,6 @@ function CalculationTest(phong, soDienCu, soNuocCu) {
 	})
 }
 function Calculation(phong, soDienCu, soNuocCu) {
-	console.log(phong)
 	return new Promise((resolve, reject) => {
 		var row = {
 			idPhong: phong.phong.value,
@@ -307,14 +307,15 @@ exports.add_data = (req, res) => {
 	var table = req.body
 	var tableAdd = [];
 	var arrId = table.map(val => { return val.phong.value })
-	ChiPhiHienTai.find({ idPhong: { $in: arrId } }).then(vals => {
+	ChiPhiHienTai.find({ idPhong: { $in: arrId } }).then(async vals => {
 		if (vals.length > 0) {
-			table.forEach(row => {
+			for (let i=0; i< table.length;i++){
+				var row = table[i];
 				var obj = vals.find((val) => val.idPhong === row.phong.value)
 				if (obj) {
-					tableAdd.push(Calculation(row, obj.soDien, obj.soNuoc))
+					await tableAdd.push(Calculation(row, obj.soDien, obj.soNuoc))
 				}
-			});
+			}
 			Promise.all(tableAdd).then(tableNewAdd => {
 				if (tableNewAdd.length > 0) {
 					ChiPhiPhong.insertMany(tableNewAdd).then((result) => {
