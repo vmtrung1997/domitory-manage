@@ -9,7 +9,6 @@ body{
     z-index: 200;
     width: 16%;
     background-color: #2f4050;
-    position: fixed;
     height: 100%;
     transition: all 0.5s;
 }

@@ -64,3 +64,12 @@
     border-color: #18a689;
     color: #FFFFFF;
 }
+
+.hidden {
+    display: block;
+}
+
+.label {
+    font-weight: bold;
+    color: #999999;
+}

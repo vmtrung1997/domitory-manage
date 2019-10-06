@@ -62,7 +62,7 @@ export default class Layout extends React.Component{
               {key: 'SV01', link: '/admin/student', label: 'Sinh viên',icon: 'fas fa-user-graduate'},
               {key: 'CP01', link: '/admin/expense', label: 'Chi phí', icon: 'fas fa-dollar-sign'},
               {key: 'HD01', link: '/admin/activity', label: 'Hoạt động', icon: 'fas fa-running'},
-              {key: 'KT01', link: '/admin/dormitory', label: 'Ký túc xá', icon: 'fas fa-tasks'},
+              {key: 'KT01', link: '/admin/dormitory', label: 'Ký túc xá', icon: 'fas fa-building'},
               {key: 'TK01', link: '/admin/account', label: 'Tài khoản', icon: 'fas fa-users'},
               {key: 'BV01', link: '/admin/news', label: 'Bài viết', icon: 'far fa-newspaper'},
               {key: 'LS01', link: '/admin/history', label: 'Lịch sử', icon: 'fas fa-history'},
