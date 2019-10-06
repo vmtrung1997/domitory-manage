@@ -27,14 +27,19 @@ exports.dbAutoBackUp = function () {
         console.log('backup cmd',cmd);
         exec(cmd, function (error, stdout, stderr) {
             console.log('just backup')
-            if (this.empty(error)) {
+            if (!error) {
                 // check for remove old backup after keeping # of days given in configuration
                 if (dbOptions.removeOldBackup) {
                     beforeDate = _.clone(currentDate);
                     beforeDate.setDate(beforeDate.getDate() - dbOptions.keepLastBackup * 7); // Substract number of days to keep backup and remove old backup
-                    oldBackupPath = dbOptions.autoBackupPath + beforeDate.getFullYear() + '-' + (beforeDate.getMonth() + 1) + beforeDate.getDate() // old backup(after keeping # of days)
+                    oldBackupPath = dbOptions.autoBackupPath + beforeDate.getFullYear() + '-' + (beforeDate.getMonth() + 1) + '-' + beforeDate.getDate() // old backup(after keeping # of days)
                     if (fs.existsSync(oldBackupPath)) {
-                        exec("rm -rf " + oldBackupPath, function (err) { });
+                        exec("rm -rf " + oldBackupPath, function (err) {
+                            if (err)
+                                console.log('remove backup fail',err)
+                            else
+                                console.log('remove backup successfully')
+                         });
                     }
                 }
             }
