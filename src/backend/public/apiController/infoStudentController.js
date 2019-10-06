@@ -315,7 +315,6 @@ exports.getListStudent = async(req, res) => {
       });
       query.idTaiKhoan = {$in : arr};
       Profile.find(query)
-        .select('_id idTaiKhoan CMND hoTen ngaySinh gioiTinh email diaChi sdt MSSV tonGiao nganhHoc truong idPhong moTa sdtNguoiThan ngayVaoO ngayHetHan danToc')
         .populate(populateQuery)
         .then(async(rs) => {
           let result = [];

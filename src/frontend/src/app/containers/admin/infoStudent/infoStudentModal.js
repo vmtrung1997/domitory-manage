@@ -620,6 +620,8 @@ export class ExportDataModal extends Component{
         major: false,
         activityPoint: false,
         religion: false,
+        dangVien: false,
+        doanVien: false,
         note: false,
       }
     }
@@ -669,6 +671,8 @@ export class ExportDataModal extends Component{
         major,
         activityPoint,
         religion,
+        dangVien,
+        doanVien,
         note,
       },
       //note: false
@@ -707,6 +711,10 @@ export class ExportDataModal extends Component{
       header.truong = "Trường";
     if(major)
       header.nganhHoc = "Ngành học";
+    if(dangVien)
+      header.dangVien = "Đảng viên";
+    if(doanVien)
+      header.doanVien = "Đoàn viên";
     if(note)
       header.ghiChu = "Ghi chú";
     if(activityPoint){
@@ -717,7 +725,9 @@ export class ExportDataModal extends Component{
     get_list_student(searchValues, activityPoint).then(result => {
 
       let data = result.data && result.data.map((record, index) => {
-        let genderString = record.gioiTinh ? "nam" : "nữ";
+        const genderString = record.gioiTinh ? "nam" : "nữ";
+        const dandVienStr = record && record.dangVien ? "có" : "không";
+        const doanVienStr = record && record.doanVien ? "có" : "không";
         return({
           STT: index + 1,
           MSSV : studentNumber ? record.MSSV : undefined,
@@ -737,6 +747,8 @@ export class ExportDataModal extends Component{
           phong : room && record.idPhong ? record.idPhong.tenPhong : undefined,
           truong : school && record.truong ? record.truong.tenTruong : undefined,
           nganhHoc : major && record.nganhHoc ? record.nganhHoc.tenNganh : undefined,
+          dangVien: dangVien ? dandVienStr : undefined,
+          doanVien: doanVien ? doanVienStr : undefined,
           ghiChu : note ? record.moTa : undefined
         })});
 
@@ -777,6 +789,8 @@ export class ExportDataModal extends Component{
         school,
         activityPoint,
         religion,
+        dangVien,
+        doanVien,
         note
       }
 		} = this.state;
@@ -798,12 +812,154 @@ export class ExportDataModal extends Component{
             <Modal.Title>Xuất file</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Row>
+            <Row style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap'}}>
               <Col md={6}>
                 <Checkbox
                   check={studentNumber}
                   label={'MSSV'}
                   name={'studentNumber'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={dangVien}
+                  label={'Đảng viên'}
+                  name={'dangVien'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={name}
+                  label={'Họ và tên'}
+                  name={'name'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={doanVien}
+                  label={'Đoàn viên'}
+                  name={'doanVien'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={birthday}
+                  label={'Ngày sinh'}
+                  name={'birthday'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={dayIn}
+                  label={'Ngày vào'}
+                  name={'dayIn'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={gender}
+                  label={'Giới tính'}
+                  name={'gender'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={dayOut}
+                  label={'Ngày hết hạn'}
+                  name={'dayOut'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={address}
+                  label={'Địa chỉ'}
+                  name={'address'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={activityPoint}
+                  label={'Điểm hoạt động'}
+                  name={'activityPoint'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={email}
+                  label={'Email'}
+                  name={'email'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={phone}
+                  label={'Số điện thoại'}
+                  name={'phone'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={room}
+                  label={'Phòng'}
+                  name={'room'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={relativesPhone}
+                  label={'Số điện thoại người thân'}
+                  name={'relativesPhone'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={school}
+                  label={'Trường'}
+                  name={'school'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={religion}
+                  label={'Tôn giáo'}
+                  name={'religion'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={major}
+                  label={'Ngành học'}
+                  name={'major'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={note}
+                  label={'Ghi chú'}
+                  name={'note'}
                   isCheck={this.handleCheckValueExport}
                 />
               </Col>
@@ -816,143 +972,6 @@ export class ExportDataModal extends Component{
                 />
               </Col>
             </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={name}
-                  label={'Họ và tên'}
-                  name={'name'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={dayIn}
-                  label={'Ngày vào'}
-                  name={'dayIn'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={birthday}
-                  label={'Ngày sinh'}
-                  name={'birthday'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={dayOut}
-                  label={'Ngày hết hạn'}
-                  name={'dayOut'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={gender}
-                  label={'Giới tính'}
-                  name={'gender'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={activityPoint}
-                  label={'Điểm hoạt động'}
-                  name={'activityPoint'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={address}
-                  label={'Địa chỉ'}
-                  name={'address'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={room}
-                  label={'Phòng'}
-                  name={'room'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={email}
-                  label={'Email'}
-                  name={'email'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={school}
-                  label={'Trường'}
-                  name={'school'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={phone}
-                  label={'Số điện thoại'}
-                  name={'phone'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={major}
-                  label={'Ngành học'}
-                  name={'major'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={relativesPhone}
-                  label={'Số điện thoại người thân'}
-                  name={'relativesPhone'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={note}
-                  label={'Ghi chú'}
-                  name={'note'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={religion}
-                  label={'Tôn giáo'}
-                  name={'religion'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline" onClick={() =>this.handlePopup(false)}>

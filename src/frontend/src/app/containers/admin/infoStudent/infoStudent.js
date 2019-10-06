@@ -367,6 +367,7 @@ class InfoStudent extends Component{
       floorOptions,
       roomHistory,
     } = this.state;
+
     let i = pageActive*limit - 10;
     return(
       <div>
