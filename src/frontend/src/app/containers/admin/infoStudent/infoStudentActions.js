@@ -37,14 +37,14 @@ export const get_element = async(name) => {
 export const add_student = async(params) => {
   const headers = await get_headers();
 
-  const { name, studentNumber, birthDay, regisExpiredDate, expiredDate } = params;
+  const { name, studentNumber, cmnd, regisExpiredDate, expiredDate } = params;
 
   return new Promise((resolve, reject) => {
     axios.post(`/manager/infoStudent/add`,
       {
         mssv: studentNumber ? studentNumber : '',
         hoTen: name ? name : '',
-        ngaySinh: birthDay,
+        cmnd: cmnd,
         hanDangKy: regisExpiredDate,
         ngayHetHan: expiredDate
       }, headers

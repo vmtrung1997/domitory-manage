@@ -10,7 +10,7 @@ import Checkbox from "../../../components/checkbox/checkbox";
 import Loader from "../../../components/loader/loader";
 import ListRoom from '../../../components/listRoom/listroom'
 import { dateToString } from '../../../function/dateFunction'
-import SSF from 'ssf'
+// import SSF from 'ssf'
 export class AddStudentModal extends Component{
   constructor(props) {
     super(props);
@@ -21,7 +21,7 @@ export class AddStudentModal extends Component{
       infoAdded: {
         name: '',
         studentNumber: '',
-        birthDay: today,
+        cmnd: '',
         regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
         expiredDate: new Date(today.getFullYear()+1, 6, 31 ),
 			},
@@ -48,8 +48,8 @@ export class AddStudentModal extends Component{
 	};
 
   handleSubmitAddStudent = () => {
-    const { infoAdded, infoAdded: {name, studentNumber, birthDay, regisExpiredDate, expiredDate} } = this.state;
-    if(!name || !studentNumber || !birthDay || !regisExpiredDate || !expiredDate )
+    const { infoAdded, infoAdded: {name, studentNumber, cmnd, regisExpiredDate, expiredDate} } = this.state;
+    if(!name || !studentNumber || !cmnd || !regisExpiredDate || !expiredDate )
     {
       this.setState({
         message: 'Vui lòng điền đầy đủ thông tin!!'
@@ -111,15 +111,10 @@ export class AddStudentModal extends Component{
 
 						<Row>
 							<Col md={4}>
-								Ngày sinh:
+								CMND:
 							</Col>
 							<Col md={8}>
-								<DatePicker
-									dateFormat='dd/MM/yyyy'
-									selected={this.state.infoAdded.birthDay}
-									onChange={(val) => this.getValueDate('birthDay', val)}
-									className='input-datepicker'
-								/>
+                <Input getValue={this.onChangeInput} name={'cmnd'} />
 							</Col>
 						</Row>
 
@@ -334,8 +329,8 @@ export class ImportDataModal extends Component{
 
   downloadTemplate = () => {
     const data = [
-      {stt: "STT", mssv: "MSSV", hoTen: "Họ và tên", ngaySinh: "Ngày sinh"},
-      {stt: "1", mssv: "1512519", hoTen: "Nguyễn Văn A", ngaySinh: "29/10/1997"}
+      {stt: "STT", mssv: "MSSV", hoTen: "Họ và tên", cmnd: "Cmnd"},
+      {stt: "1", mssv: "1512519", hoTen: "Nguyễn Văn A", cmnd: "123456"}
     ];
     var ws = XLSX.utils.json_to_sheet(data, {skipHeader:true});
 
@@ -362,15 +357,15 @@ export class ImportDataModal extends Component{
         let workbook = XLSX.read(data, {type: 'array'});
 
         let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","ngaySinh"]});
-        listNewStudent = listNewStudent.map((st) => {
-          if (st.ngaySinh && typeof(st.ngaySinh) === 'number'){
-            let date = SSF.parse_date_code(st.ngaySinh,{date1904:false});
-            st.ngaySinh=`${date.d}/${date.m}/${date.y}`
-          }
-          return st
-
-        });
+        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","cmnd"]});
+        // listNewStudent = listNewStudent.map((st) => {
+        //   if (st.ngaySinh && typeof(st.ngaySinh) === 'number'){
+        //     let date = SSF.parse_date_code(st.ngaySinh,{date1904:false});
+        //     st.ngaySinh=`${date.d}/${date.m}/${date.y}`
+        //   }
+        //   return st
+        //
+        // });
         resolve(listNewStudent)
       };
       reader.readAsArrayBuffer(file);
@@ -389,6 +384,9 @@ export class ImportDataModal extends Component{
   };
 
   handleImportData = async() => {
+    this.setState({
+      listExpired: undefined,
+    });
     if (!this.state.hasOwnProperty('fileImport')) {
       this.setState({
         justFileServiceResponse: 'Vui lòng chọn 1 file!!'
@@ -401,9 +399,9 @@ export class ImportDataModal extends Component{
         });
         this.convertData(this.state.fileImport).then(async(resolve) => {
           const headers = resolve[0];
-          if(!(headers.mssv.toLowerCase() === 'mssv') ||
-            !((headers.hoTen.toLowerCase() === 'họ và tên') || (headers.hoTen.toLowerCase() === 'họ tên')) ||
-            !(headers.ngaySinh.toLowerCase() === 'ngày sinh'))
+          if(!(headers.mssv.trim().toLowerCase() === 'mssv') ||
+            !((headers.hoTen.trim().toLowerCase() === 'họ và tên') || (headers.hoTen.toLowerCase() === 'họ tên')) ||
+            !(headers.cmnd.trim().toLowerCase() === 'cmnd'))
             this.setState({
               justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!',
               loading: false,
@@ -425,6 +423,12 @@ export class ImportDataModal extends Component{
                 });
             })
           }
+
+
+        }).catch(() => {
+          this.setState({
+            justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
+          });
         })
       } else {
         this.setState({
@@ -525,7 +529,7 @@ export class ImportDataModal extends Component{
                 <Table responsive hover bordered size="sm">
                   <thead className="title-excel">
                   <tr>
-                    <td></td>
+                    <td/>
                     <td>A</td>
                     <td>B</td>
                     <td>C</td>
@@ -540,8 +544,8 @@ export class ImportDataModal extends Component{
                     <td>STT</td>
                     <td>MSSV</td>
                     <td>Họ Tên</td>
-                    <td>Ngày sinh</td>
-                    <td></td>
+                    <td>Cmnd</td>
+                    <td/>
                   </tr>
 
                   <tr key={1}>
@@ -549,8 +553,8 @@ export class ImportDataModal extends Component{
                     <td>1</td>
                     <td>1512519</td>
                     <td>Nguyễn Văn A</td>
-                    <td>29/10/1997</td>
-                    <td></td>
+                    <td>123456</td>
+                    <td/>
                   </tr>
 
                   <tr key={2}>
@@ -558,17 +562,17 @@ export class ImportDataModal extends Component{
                     <td>2</td>
                     <td>1512510</td>
                     <td>Nguyễn Văn B</td>
-                    <td>01/11/1997</td>
-                    <td></td>
+                    <td>123123</td>
+                    <td/>
                   </tr>
 
                   <tr key={3}>
                     <td className="title-excel">4</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td/>
+                    <td/>
+                    <td/>
+                    <td/>
+                    <td/>
                   </tr>
 
                   </tbody>
