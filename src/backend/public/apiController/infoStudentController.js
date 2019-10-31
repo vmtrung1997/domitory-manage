@@ -34,7 +34,7 @@ function addOneStudent(data) {
           } else {
             let acc = new Account({
               username: data.mssv,
-              password: md5(data.mssv),
+              password: md5(data.cmnd),
               loai: "SV",
               isDelete: 0,
             });
@@ -45,7 +45,7 @@ function addOneStudent(data) {
                   idTaiKhoan: acc._id,
                   hoTen: data.hoTen,
                   MSSV: data.mssv,
-                  ngaySinh: data.ngaySinh,
+                  cmnd: data.cmnd,
                   ngayHetHan: data.ngayHetHan,
                   hanDangKy: data.hanDangKy,
                   isActive: false,
@@ -94,19 +94,29 @@ exports.importFile = async (req, res) => {
   let listExpired = [];
   let listSuccess =[];
   let listPromise = [];
-  data.forEach(record => {
-    let [ngay, thang, nam] = [0, 0 , 0];
-    if(record.ngaySinh)
-      [ngay, thang, nam] = record.ngaySinh.split("/");
+  for( let i=0; i<data.length; i++) {
     let student = {
-      mssv: record.mssv,
-      hoTen: record.hoTen,
-      ngaySinh: record.ngaySinh ? new Date(`${thang}/${ngay}/${nam}`) : new Date(),
+      mssv: data[i].mssv,
+      hoTen: data[i].hoTen,
+      cmnd: data[i].cmnd,
       ngayHetHan: req.body.ngayHetHan,
       hanDangKy: req.body.hanDangKy
     };
     listPromise.push(addOneStudent(student))
-  });
+  }
+  // data.forEach(record => {
+  //   let [ngay, thang, nam] = [0, 0 , 0];
+  //   if(record.ngaySinh)
+  //     [ngay, thang, nam] = record.ngaySinh.split("/");
+  //   let student = {
+  //     mssv: record.mssv,
+  //     hoTen: record.hoTen,
+  //     ngaySinh: record.ngaySinh ? new Date(`${thang}/${ngay}/${nam}`) : new Date(),
+  //     ngayHetHan: req.body.ngayHetHan,
+  //     hanDangKy: req.body.hanDangKy
+  //   };
+  //   listPromise.push(addOneStudent(student))
+  // });
   await Promise.all(listPromise).then(result=> {
     let i = 0;
     result.forEach(r => {
@@ -305,7 +315,6 @@ exports.getListStudent = async(req, res) => {
       });
       query.idTaiKhoan = {$in : arr};
       Profile.find(query)
-        .select('_id idTaiKhoan CMND hoTen ngaySinh gioiTinh email diaChi sdt MSSV tonGiao nganhHoc truong idPhong moTa sdtNguoiThan ngayVaoO ngayHetHan danToc')
         .populate(populateQuery)
         .then(async(rs) => {
           let result = [];

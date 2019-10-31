@@ -183,6 +183,7 @@ class InfoStudent extends Component{
       if (result.data.rs === 'success') {
         let majorList = result.data.data.map(major => ({ value: major._id, label: major.tenNganh }));
         majorList.unshift({ value: -1, label: 'Chưa xác định' });
+        majorList.unshift({ value: 0, label: 'Tất cả' });
         this.setState({
           majorOptions: majorList,
         })
@@ -366,6 +367,7 @@ class InfoStudent extends Component{
       floorOptions,
       roomHistory,
     } = this.state;
+
     let i = pageActive*limit - 10;
     return(
       <div>
@@ -378,34 +380,75 @@ class InfoStudent extends Component{
 
           <div className={'is-header'}>
             <form onSubmit={e => this.handleSearch(e)}>
+
               <Row>
-                <Col md={1}>
-                  MSSV
+                <Col sm={2}>
+                  <div>
+                    <span className={'label'}>MSSV</span>
+                    <Input
+                      getValue={this.onChange}
+                      name={'studentNumber'}
+                      value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}
+                    />
+                  </div>
                 </Col>
-                <Col md={3}>
-                  <Input
-                    getValue={this.onChange}
-                    name={'studentNumber'}
-                    value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}
-                  />
+                <Col sm={3}>
+                  <div>
+                    <span className={'label'}>Họ tên</span>
+                    <Input
+                      getValue={this.onChange}
+                      name={'name'}
+                      value={this.state.searchValues.name}/>
+                  </div>
                 </Col>
+                <Col sm={3}>
+                  <div>
+                    <span className={'label'}>Trường</span>
+                    <SearchSelect
+                      isSearchable={true}
+                      value={this.state.searchValues.schoolSelected}
+                      onChange={(selectedOption) => this.handleSelected('schoolSelected',selectedOption)}
+                      options={this.state.schoolOptions}
+                    />
+                  </div>
+                </Col>
+                <Col sm={2}>
+                  <div>
+                    <span className={'label'}>Phòng</span>
+                    <SearchSelect
+                      isSearchable={true}
+                      placeholder={''}
+                      value={this.state.searchValues.roomSelected}
+                      onChange={this.handleSelectRoom}
+                      options={this.state.roomOptions}
+                    />
+                  </div>
+                </Col>
+                <Col sm={2}>
+                  <div>
+                    <span className={'label'}>Lầu</span>
+                    <SearchSelect
+                      isSearchable={true}
+                      value={this.state.searchValues.floorSelected}
+                      onChange={(selectedOption) => this.handleSelected('floorSelected',selectedOption)}
+                      options={floorOptions}
+                    />
+                  </div>
+                </Col>
+              </Row>
 
-                <Col md={1}>
-                  Trường
-                </Col>
-                <Col md={3}>
+              <Row>
+                <Col md={2}>
+                  <span className={'label'}>Năm</span>
                   <SearchSelect
-                    isSearchable={true}
-                    value={this.state.searchValues.schoolSelected}
-                    onChange={(selectedOption) => this.handleSelected('schoolSelected',selectedOption)}
-                    options={this.state.schoolOptions}
+                  isSearchable={true}
+                  value={this.state.searchValues.yearSelected}
+                  onChange={(selectedOption) => this.handleSelected('yearSelected',selectedOption)}
+                  options={this.state.yearOptions}
                   />
                 </Col>
-
-                <Col md={1}>
-                  Khoa
-                </Col>
                 <Col md={3}>
+                  <span className={'label'}>Khoa</span>
                   <SearchSelect
                     isSearchable={true}
                     value={this.state.searchValues.majorSelected}
@@ -413,69 +456,18 @@ class InfoStudent extends Component{
                     options={this.state.majorOptions}
                   />
                 </Col>
-              </Row>
-              <Row>
-                <Col md={1}>
-                  Họ tên
-                </Col>
-                <Col md={3}>
-                  <Input
-                    getValue={this.onChange}
-                    name={'name'}
-                    value={this.state.searchValues.name}/>
-                </Col>
-
-                {/*<Col md={1}>*/}
-                  {/*Năm*/}
-                {/*</Col>*/}
-                {/*<Col md={2}>*/}
-                  {/*<SearchSelect*/}
-                    {/*isSearchable={true}*/}
-                    {/*value={this.state.searchValues.yearSelected}*/}
-                    {/*onChange={(selectedOption) => this.handleSelected('yearSelected',selectedOption)}*/}
-                    {/*options={this.state.yearOptions}*/}
-                  {/*/>*/}
-                {/*</Col>*/}
-
-                <Col md={1}>
-                  Phòng
-                </Col>
-                <Col md={3}>
-                  <SearchSelect
-                    isSearchable={true}
-                    placeholder={''}
-                    value={this.state.searchValues.roomSelected}
-                    onChange={this.handleSelectRoom}
-                    options={this.state.roomOptions}
-                  />
-                </Col>
-
-                <Col md={1}>
-                  Lầu
-                </Col>
-                <Col md={3}>
-                  <SearchSelect
-                    isSearchable={true}
-                    value={this.state.searchValues.floorSelected}
-                    onChange={(selectedOption) => this.handleSelected('floorSelected',selectedOption)}
-                    options={floorOptions}
-                  />
-                </Col>
-              </Row>
-
-              {/*search*/}
-              <Row style={{display: 'flex', justifyContent: 'center', margin: '15px 0'}}>
-                <Col sm={3} className={'btn-search'}>
+                <Col sm={1} className={'btn-search'}>
+                  <br/>
                   <Button
                     type={'submit'}
                     size={'md'}
                     fullWidth
                   >
                     <i className="fas fa-search"/>
-                    Tìm kiếm
                   </Button>
                 </Col>
                 <Col sm={1} >
+                  <br/>
                   <Button
                     title={'Làm mới tìm kiếm'}
                     type={'submit'}
@@ -488,6 +480,10 @@ class InfoStudent extends Component{
                   </Button>
                 </Col>
               </Row>
+
+              {/*search*/}
+              {/*<Row style={{display: 'flex', justifyContent: 'center', margin: '15px 0'}}>                */}
+              {/*</Row>*/}
             </form>
             <Row className={'group-btn'}>
                 <div className={'is-manipulation'}>
