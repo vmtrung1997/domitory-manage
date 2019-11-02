@@ -194,22 +194,29 @@ class Expenses extends Component {
 						<Row className={'m-b-10'}>
 							<Col className='flex flex-between' >
 								<div className='button-control button-space'>
-									<ModalPrint show={this.state.showPrint}
-										printTable={{
-											month: this.state.monthSelected,
-											room: this.state.roomSelected,
-											year: this.state.yearSelected,
-											status: this.state.statusSelected
-										}}
-										printSelected={this.state.dataTable.docs.filter(v => v.check === true).map(v => v._id)}
-										tableModel={this.state.tableModel} />
-									<ModalExport loading={this.handleLoading} roomList={this.state.rooms} />
-									{this.state.roles && this.state.roles.includes('CP02') &&
+									{this.state.roles && this.state.roles.includes('CP_PRINT') &&
+										<ModalPrint show={this.state.showPrint}
+											printTable={{
+												month: this.state.monthSelected,
+												room: this.state.roomSelected,
+												year: this.state.yearSelected,
+												status: this.state.statusSelected
+											}}
+											printSelected={this.state.dataTable.docs.filter(v => v.check === true).map(v => v._id)}
+											tableModel={this.state.tableModel} />
+									}
+
+									{this.state.roles && this.state.roles.includes('CP_BAOCAO') &&
+									<ModalExport loading={this.handleLoading} roomList={this.state.rooms} />}
+
+									{this.state.roles && this.state.roles.includes('CP_THONGSO') &&
 									<ModalConfig loading={this.handleLoading} />}
-									{this.state.roles && this.state.roles.includes('CP02') &&
+
+									{this.state.roles && this.state.roles.includes('CP_RESET_CHISO') &&
 									<ModalReset loading={this.handleLoading}/>}
+
 								</div>
-								{this.state.roles && this.state.roles.includes('CP03') &&
+								{this.state.roles && this.state.roles.includes('CP_ADD') &&
 							<div className='button-control'>
 							<ModalExpense loading={this.handleLoading} retriveSearch={() => this.pageChange(1)} />
 						</div>}
@@ -217,7 +224,7 @@ class Expenses extends Component {
 						</Row>
 						<ExpenseTable table={this.state.dataTable}
 							pageChange={e => this.pageChange(e)}
-							retriveSearch={() => this.pageChange(1)}
+							retriveSearch={() => this.pageChange(this.state.options.page)}
 							loading={this.handleLoading}
 							sendTable={table => this.setState({ dataTable: { ...this.state.dataTable, docs: table } })}
 						><Input
