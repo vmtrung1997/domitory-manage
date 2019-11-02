@@ -1,23 +1,31 @@
-import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
+import React, {
+  Component
+} from 'react'
+import {
+  Modal
+} from 'react-bootstrap'
 import DatePicker from 'react-datepicker'
 import TimeField from 'react-simple-timefield';
 import axios from './../../../config'
-import {ToastsContainer, ToastsContainerPosition, ToastsStore} from "react-toasts";
+import {
+  ToastsContainer,
+  ToastsContainerPosition,
+  ToastsStore
+} from "react-toasts";
 
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
 import Input from './../../../components/input/input'
 import CheckBox from './../../../components/checkbox/checkbox'
 
-class ActivityEdit extends Component{
-	static defaultProps = {
-		show: false,
-		handleClose: () => {},
-		handleSave: () => {},
-	}
+class ActivityEdit extends Component {
+  static defaultProps = {
+    show: false,
+    handleClose: () => {},
+    handleSave: () => {},
+  }
 
-  constructor(props){
+  constructor(props) {
     super(props)
     var today = new Date()
     var h = today.getHours()
@@ -39,12 +47,19 @@ class ActivityEdit extends Component{
       point: 0
     }
   }
-  
+
   getValue = (name, val) => {
-    this.setState({ [name]: val })
+    this.setState({
+      [name]: val
+    })
   }
   handleSave = async () => {
-    var {name, location, des, point} = this.state
+    var {
+      name,
+      location,
+      des,
+      point
+    } = this.state
     var date = this.state.date
     var dateEnd = this.state.dateEnd
     var cur = new Date()
@@ -57,17 +72,15 @@ class ActivityEdit extends Component{
     var timeFirst = this.state.time.split(':')
     var timeFinal = this.state.timeEnd.split(':')
 
-    this.state.date.setHours(parseInt(timeFirst[0]),parseInt(timeFirst[1]), 0)
-    this.state.dateEnd.setHours(parseInt(timeFinal[0]),parseInt(timeFinal[1]), 0)
+    this.state.date.setHours(parseInt(timeFirst[0]), parseInt(timeFirst[1]), 0)
+    this.state.dateEnd.setHours(parseInt(timeFinal[0]), parseInt(timeFinal[1]), 0)
 
 
-    if(!name || !location || !des || !point) {
+    if (!name || !location || !des || !point) {
       ToastsStore.error("Bạn phải nhập đầy đủ thông tin!");
-    } else if(parseInt(point) <= 0) {
+    } else if (parseInt(point) <= 0) {
       ToastsStore.error("Điểm hoạt động phải lớn hơn 0!");
-    } else if(tmp < tmpCur || tmpEnd < tmpCur) {
-      ToastsStore.error("Thời gian bắt đầu và kết thúc không nhỏ hơn ngày hiện tại!");
-    } else if(tmp > tmpEnd){
+    } else if (tmp > tmpEnd) {
       ToastsStore.error("Thời gian kết thúc không nhỏ hơn thời gian bắt đầu!");
     } else {
       await refreshToken()
@@ -75,11 +88,11 @@ class ActivityEdit extends Component{
       axios({
         method: 'post',
         url: `/manager/activity/update?id=${this.props.data._id}`,
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'x-access-token': secret.access_token
         },
-        data:{
+        data: {
           name: this.state.name,
           location: this.state.location,
           date: this.state.date.toString(),
@@ -108,9 +121,9 @@ class ActivityEdit extends Component{
     return h + ':' + m
   }
 
-  componentWillMount(){
+  componentWillMount() {
     const data = this.props.data
-    
+
     this.setState({
       name: data.ten,
       location: data.diaDiem,
@@ -123,88 +136,209 @@ class ActivityEdit extends Component{
       point: data.diem
     })
   }
-	render(){
-	  
-		return(
-      <React.Fragment>
-        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-  			<Modal show={this.props.show} onHide={this.props.handleClose} style={{marginTop: '-20px'}}>
-          		<Modal.Header closeButton>
-              		<Modal.Title>Chỉnh sửa hoạt động</Modal.Title>
-            		</Modal.Header>
-            		<Modal.Body>
-            			<div>
-            				<span> Hoạt động </span>
-            				<Input value={this.state.name} getValue={ (obj) => this.getValue(obj.name, obj.value)} name='name'/>
-            			</div>
-            			<div>
-            				<span> Địa điểm </span>
-            				<Input value={this.state.location} getValue={ (obj) => this.getValue(obj.name, obj.value)} name='location'/>
-            			</div>
-            			<div>
-                    <span> Thời gian bắt đầu</span>
-                    <div style={{display: 'flex', justifyContent: 'space-around'}}>
-                      <TimeField
-                        style={{marginRight: '10px'}}
-                        value={this.state.time}
-                        onChange={(value) => {this.getValue('time', value)}}
-                        input={<input/>}
-                      />
-                      <DatePicker
-                        dateFormat='dd/MM/yyyy'
-                        selected={this.state.date}
-                        onChange={(val) => this.getValue('date', val)}
-                        className='input-datepicker'
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <span> Thời gian kết thúc</span>
-                    <div style={{display: 'flex', justifyContent: 'space-around'}}>
-                      <TimeField
-                        style={{marginRight: '10px'}}
-                        value={this.state.timeEnd}
-                        onChange={(value) => {this.getValue('timeEnd', value)}}
-                        input={<input/>}
-                      />
-                      <DatePicker
-                        dateFormat='dd/MM/yyyy'
-                        selected={this.state.dateEnd}
-                        onChange={(val) => this.getValue('dateEnd', val)}
-                        className='input-datepicker'
-                      />
-                    </div>
-                  </div>
-            			<div>
-            				<span> Mô tả </span>
-            				<textarea value={this.state.des} rows='4' onChange={ (obj) => this.getValue('des', obj.target.value)}/>
-            			</div>
-                  <div>
-                    <span> Điểm hoạt động </span>
-                    <Input value={this.state.point} getValue={ (obj) => this.getValue(obj.name, obj.value)} name='point'/>
-                  </div>
-            			<div style={{marginTop: '10px'}}>
-            				<span style={{fontWeight: 'bold'}}> Hoạt động bắt buộc </span>
-            				<CheckBox 
-                      name='isRequire'
-                      style={{display: 'grid'}}
-                      check={this.state.isRequire}
-                      isCheck={ (obj) => this.getValue(obj.value, obj.chk)}
-                    />
-            			</div>
-            		</Modal.Body>
-            		<Modal.Footer>
-  	            	<Button variant='default' color='default' onClick={this.props.handleClose}>
-  	            		Đóng
-  	            	</Button>
-  	            	<Button variant='default' onClick={this.handleSave}>
-  	            		Lưu
-  	              	</Button>
-          		</Modal.Footer>
-        </Modal>
-      </React.Fragment>
-		)
-	}
+  render() {
+
+    return ( <
+      React.Fragment >
+      <
+      ToastsContainer store = {
+        ToastsStore
+      }
+      position = {
+        ToastsContainerPosition.TOP_CENTER
+      }
+      lightBackground / >
+      <
+      Modal show = {
+        this.props.show
+      }
+      onHide = {
+        this.props.handleClose
+      }
+      style = {
+        {
+          marginTop: '-20px'
+        }
+      } >
+      <
+      Modal.Header closeButton >
+      <
+      Modal.Title > Chỉnh sửa hoạt động < /Modal.Title> <
+      /Modal.Header> <
+      Modal.Body >
+      <
+      div >
+      <
+      span > Hoạt động < /span> <
+      Input value = {
+        this.state.name
+      }
+      getValue = {
+        (obj) => this.getValue(obj.name, obj.value)
+      }
+      name = 'name' / >
+      <
+      /div> <
+      div >
+      <
+      span > Địa điểm < /span> <
+      Input value = {
+        this.state.location
+      }
+      getValue = {
+        (obj) => this.getValue(obj.name, obj.value)
+      }
+      name = 'location' / >
+      <
+      /div> <
+      div >
+      <
+      span > Thời gian bắt đầu < /span> <
+      div style = {
+        {
+          display: 'flex',
+          justifyContent: 'space-around'
+        }
+      } >
+      <
+      TimeField style = {
+        {
+          marginRight: '10px'
+        }
+      }
+      value = {
+        this.state.time
+      }
+      onChange = {
+        (value) => {
+          this.getValue('time', value)
+        }
+      }
+      input = {
+        < input / >
+      }
+      /> <
+      DatePicker dateFormat = 'dd/MM/yyyy'
+      selected = {
+        this.state.date
+      }
+      onChange = {
+        (val) => this.getValue('date', val)
+      }
+      className = 'input-datepicker' /
+      >
+      <
+      /div> <
+      /div> <
+      div >
+      <
+      span > Thời gian kết thúc < /span> <
+      div style = {
+        {
+          display: 'flex',
+          justifyContent: 'space-around'
+        }
+      } >
+      <
+      TimeField style = {
+        {
+          marginRight: '10px'
+        }
+      }
+      value = {
+        this.state.timeEnd
+      }
+      onChange = {
+        (value) => {
+          this.getValue('timeEnd', value)
+        }
+      }
+      input = {
+        < input / >
+      }
+      /> <
+      DatePicker dateFormat = 'dd/MM/yyyy'
+      selected = {
+        this.state.dateEnd
+      }
+      onChange = {
+        (val) => this.getValue('dateEnd', val)
+      }
+      className = 'input-datepicker' /
+      >
+      <
+      /div> <
+      /div> <
+      div >
+      <
+      span > Mô tả < /span> <
+      textarea value = {
+        this.state.des
+      }
+      rows = '4'
+      onChange = {
+        (obj) => this.getValue('des', obj.target.value)
+      }
+      /> <
+      /div> <
+      div >
+      <
+      span > Điểm hoạt động < /span> <
+      Input value = {
+        this.state.point
+      }
+      getValue = {
+        (obj) => this.getValue(obj.name, obj.value)
+      }
+      name = 'point' / >
+      <
+      /div> <
+      div style = {
+        {
+          marginTop: '10px'
+        }
+      } >
+      <
+      span style = {
+        {
+          fontWeight: 'bold'
+        }
+      } > Hoạt động bắt buộc < /span> <
+      CheckBox name = 'isRequire'
+      style = {
+        {
+          display: 'grid'
+        }
+      }
+      check = {
+        this.state.isRequire
+      }
+      isCheck = {
+        (obj) => this.getValue(obj.value, obj.chk)
+      }
+      /> <
+      /div> <
+      /Modal.Body> <
+      Modal.Footer >
+      <
+      Button variant = 'default'
+      color = 'default'
+      onClick = {
+        this.props.handleClose
+      } >
+      Đóng <
+      /Button> <
+      Button variant = 'default'
+      onClick = {
+        this.handleSave
+      } >
+      Lưu <
+      /Button> <
+      /Modal.Footer> <
+      /Modal> <
+      /React.Fragment>
+    )
+  }
 }
 
 export default ActivityEdit

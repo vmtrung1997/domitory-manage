@@ -14,25 +14,22 @@ class Introduce extends React.Component {
               <div class="personnel-img-box">
                 <img src="./images/dao-tao.png" alt="" />
               </div>
-              <p>TP: ThS. Văn Chí Nam</p>
-              <p>PTP: ThS. Phạm Nguyễn Thùy Dương</p>
+              <p>Anh Trần Vũ</p>
             </div>
 
             <div class="personnel-box">
-              <h3 class="personnel-box-title">Bộ phận Quản lý Ký túc xá</h3>
+              <h3 class="personnel-box-title">Trưởng Bộ phận Quản lý Ký túc xá</h3>
               <div class="personnel-img-box">
                 <img src="../images/khao-thi.png" alt="" />
               </div>
               <p>TBP: ThS. Trần Văn Huy</p>
-              <p>PBP: Ông Phan Văn Thành</p>
             </div>
 
             <div class="personnel-box">
-              <h3 class="personnel-box-title">Tổ Quản lý sinh viên</h3>
+              <h3 class="personnel-box-title">Quản lý sinh viên</h3>
               <div class="personnel-img-box">
                 <img src="./images/dao-tao.png" alt="" />
               </div>
-              <p>Ông Phan Văn Thành</p>
               <p>Bà Trương Thị Ánh Nhung</p>
             </div>
 
