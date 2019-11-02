@@ -16,9 +16,10 @@ var chiPhiPhongSchema = new Schema({
     tienRac: Number,
     tongTien: Number,
     tongTienChu: String,
-    trangThai: {type: Number, enum: [0, 1, 2]},
+    trangThai: {type: Number, enum: [0, 1, 2]}, // 0: Chưa thanh toán, 1: Đã thanh toán, 2: Thiếu dữ liệu
     thayDien: {dienCu: Number, dienMoi: Number },
-    thayNuoc: {nuocCu: Number, nuocMoi: Number }
+    thayNuoc: {nuocCu: Number, nuocMoi: Number },
+    isUpdated: Boolean
 });
 
 chiPhiPhongSchema.plugin(mongoosePaginate);

@@ -418,7 +418,6 @@ exports.update_expense = async (req, res) => {
 									else
 										{
 											exp.thayNuoc = null;
-											console.log(exp.soNguoi)
 											exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, exp.soNguoi));
 										}
 									
@@ -427,8 +426,8 @@ exports.update_expense = async (req, res) => {
 					}
 					exp.tongTien = ceilMoney(exp.tienRac + exp.tienDien + exp.tienNuoc);
 					exp.tongTienChu = toMoneyString(NumberReader.read(exp.tongTien));
+					exp.isUpdated = exp.trangThai === 2? false : true;
 					exp.trangThai = exp.trangThai === 2? 0: exp.trangThai;
-					console.log(exp);
 					ChiPhiPhong.updateOne({ _id: id }, exp, async (err) => {
 						if (err) {
 							res.json({
@@ -436,31 +435,35 @@ exports.update_expense = async (req, res) => {
 								msg: err
 							})
 						} else {
-							if (exp.trangThai === 1) {
-								var soDienMoi = exp.thayDien ? exp.thayDien.dienMoi : exp.soDien;
-								var soNuocMoi = exp.thayNuoc ? exp.thayNuoc.nuocMoi : exp.soNuoc;
-								await ChiPhiHienTai.findOneAndUpdate({ idPhong: exp.idPhong }, {
-									$set: {
-										soDien: soDienMoi,
-										soNuoc: soNuocMoi
-									}
-								}, err => {
-									if (err)
-										res.json({ rs: 'fail', msg: err })
-									else {
-										logsDb(req.headers['x-access-token'], 'Cập nhật thông số', { idPhong: exp, soDien: soDienMoi, soNuoc: soNuocMoi })
-										logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
-										res.json({
-											rs: 'success'
-										})
-									}
-								})
-							} else {
-								logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
+							// if (exp.trangThai === 1) {
+							// 	var soDienMoi = exp.thayDien ? exp.thayDien.dienMoi : exp.soDien;
+							// 	var soNuocMoi = exp.thayNuoc ? exp.thayNuoc.nuocMoi : exp.soNuoc;
+							// 	await ChiPhiHienTai.findOneAndUpdate({ idPhong: exp.idPhong }, {
+							// 		$set: {
+							// 			soDien: soDienMoi,
+							// 			soNuoc: soNuocMoi
+							// 		}
+							// 	}, err => {
+							// 		if (err)
+							// 			res.json({ rs: 'fail', msg: err })
+							// 		else {
+							// 			logsDb(req.headers['x-access-token'], 'Cập nhật thông số', { idPhong: exp, soDien: soDienMoi, soNuoc: soNuocMoi })
+							// 			logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
+							// 			res.json({
+							// 				rs: 'success'
+							// 			})
+							// 		}
+							// 	})
+							// } else {
+							// 	logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
+							// 	res.json({
+							// 		rs: 'success'
+							// 	})
+							// }
+							logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
 								res.json({
 									rs: 'success'
 								})
-							}
 						}
 					})
 				}
@@ -560,6 +563,7 @@ exports.report_expense = (req, res) => {
 	}
 	header.push('Trạng thái')
 	options.push('trangThai')
+	header.push('Ký tên')
 	if (Object.keys(query).length) {
 		ChiPhiPhong.find(query)
 			.sort([['nam', 1], ['thang', 1]])
