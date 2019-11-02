@@ -30,7 +30,7 @@ class Expenses extends Component {
 			roomSelected: 0,
 			monthSelected: 0,
 			yearSelected: 0,
-			statusSelected: 2,
+			statusSelected: -1,
 			monthOptions: [],
 			yearOptions: [],
 			statusOptions: [],
@@ -203,11 +203,11 @@ class Expenses extends Component {
 										}}
 										printSelected={this.state.dataTable.docs.filter(v => v.check === true).map(v => v._id)}
 										tableModel={this.state.tableModel} />
-
-									<ModalReset loading={this.handleLoading} />
+									<ModalExport loading={this.handleLoading} roomList={this.state.rooms} />
 									{this.state.roles && this.state.roles.includes('CP02') &&
 									<ModalConfig loading={this.handleLoading} />}
-									<ModalExport loading={this.handleLoading} roomList={this.state.rooms} />
+									{this.state.roles && this.state.roles.includes('CP02') &&
+									<ModalReset loading={this.handleLoading}/>}
 								</div>
 								{this.state.roles && this.state.roles.includes('CP03') &&
 							<div className='button-control'>

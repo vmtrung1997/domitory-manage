@@ -10,12 +10,13 @@ var chiPhiPhongSchema = new Schema({
     soNuoc: Number,
     soDienCu: Number,
     soNuocCu: Number,
+    soNguoi: Number,
     tienDien: Number,
     tienNuoc: Number,
     tienRac: Number,
     tongTien: Number,
     tongTienChu: String,
-    trangThai: {type: Number, enum: [0, 1]},
+    trangThai: {type: Number, enum: [0, 1, 2]},
     thayDien: {dienCu: Number, dienMoi: Number },
     thayNuoc: {nuocCu: Number, nuocMoi: Number }
 });

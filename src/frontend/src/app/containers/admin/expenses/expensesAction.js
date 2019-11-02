@@ -1,11 +1,11 @@
 import axios from 'axios';
 import refreshToken from './../../../../utils/refresh_token'
-export const getData = async () => {
+export const getData = async (value) => {
   await refreshToken();
   const secret = JSON.parse(localStorage.getItem('secret'))
   axios.defaults.headers.common['x-access-token'] = secret.access_token
   return new Promise((resolve, reject) => {
-    axios.get('/manager/expense/get_expense_data').then(result => {
+    axios.post('/manager/expense/get_room_option', value).then(result => {
       resolve(result);
     })
     .catch(error =>{reject(error)});

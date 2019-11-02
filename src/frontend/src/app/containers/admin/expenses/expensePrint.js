@@ -24,16 +24,21 @@ class Confirm extends Component {
   }
   constructor(props) {
     super(props);
+    var today = new Date()
     this.state = {
       show: this.props.show,
       printComponent: (<div></div>),
       tableData: {},
       selectedData: [],
-      fromDay: new Date(),
-      toDay: new Date(),
-      lastDay: new Date(),
+      fromDay: new Date(today.getFullYear(),today.getMonth(),1),
+      toDay: new Date(today.getFullYear(),today.getMonth(),5),
+      lastDay: new Date(today.getFullYear(),today.getMonth(),10),
+      selectType: '',
       admin: 'Phan Văn Thành'
     }
+  }
+  getToday = () => {
+    return new Date();
   }
   componentDidMount() {
     this.setState({
@@ -59,27 +64,27 @@ class Confirm extends Component {
   }
 
   handleClose = () => {
-    this.setState({ show: false })
+    this.setState({ show: false, 
+      printComponent: (<div></div>),
+      selectType: '',
+      admin: 'Phan Văn Thành'
+    })
   }
   handleShow = () => {
     this.setState({
       show: true,
-      fromDay: new Date(),
-      toDay: new Date(),
-      lastDay: new Date(),
       admin: 'Phan Văn Thành'
     })
   }
   getDataPrint = (type) => {
-    this.setState({printComponent: (<div>Đang tải dữ liệu</div>)})
+    this.setState({selectType: type, printComponent: (<div>Đang tải dữ liệu</div>)})
     var data = type === 'table' ? this.state.tableData : this.state.selectedData;
     get_data_print({ type: type, data: data }).then(result => {
       if (result.data.rs === 'success') {
-        console.log(result.data.data);
         var printCpn=this.componentPrint(this.printData(result.data.data));
         this.setState({ printComponent: printCpn })
       } else {
-        this.setState({printComponent: (<div>{result.data.msg}</div>)})
+        this.setState({printComponent: (<div>Có lỗi xảy ra</div>)})
       }
     })
   }
@@ -88,16 +93,14 @@ class Confirm extends Component {
       <div>
         {data.map((value, index) => {
           return (
-            <React.Fragment>
               <div key={index}>
-                <div style={{height:'100vh'}}>
+                <div style={{height:'50vh'}}>
                   {this.printDetailStructure(value)}
                 </div>
                 {/* <div style={{height:'100vh'}}>
                   {this.printTableStructure(value)}
                 </div> */}
               </div>
-            </React.Fragment>
           )
         })}
       </div>
@@ -170,7 +173,8 @@ class Confirm extends Component {
     return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
   }
   printDetailStructure = (data) => {
-    let exp = data.detail
+    // let exp = data.detail
+    let exp = data
     let { fromDay, toDay, admin, lastDay } = this.state
     return (<div className={'layout-print'}>
       <Row className='m-b-10'>
@@ -185,11 +189,12 @@ class Confirm extends Component {
       </Row>
       <Row className={'m-b-10'}>
         <Col xs={12}>
-          Phòng: {exp.idPhong.tenPhong} &nbsp;&nbsp; Số người: {data.soNguoi}
+          Phòng: {exp.idPhong.tenPhong} &nbsp;&nbsp; Số người: {exp.soNguoi}
         </Col>
       </Row>
       <Row>
         <Col xs={12}>
+        <div className="table-style-print">
           <Table bordered className='table-print'>
             <thead className="text-center">
               <tr>
@@ -245,6 +250,7 @@ class Confirm extends Component {
               </tr>
             </tbody>
           </Table>
+          </div>
         </Col>
       </Row>
       <Row className={'m-b-10'}>
@@ -276,7 +282,7 @@ class Confirm extends Component {
     </div>)
   }
   afterPrint = () => {
-    this.setState({ show: false, printComponent: (<div></div>) })
+    this.handleClose();
   }
   componentPrint = (component) => {
     return (
@@ -304,8 +310,11 @@ class Confirm extends Component {
           </Modal.Header>
           <Modal.Body>
           <Row className='m-b-10'>
+            <Col md={12}>
+            Thời gian chỉnh sửa
+            </Col>
 						<Col>
-						Ngày bắt đầu
+						Từ:
 						<div>
 							<DatePicker 
 								startDate={this.state.fromDay}
@@ -314,7 +323,7 @@ class Confirm extends Component {
 						</div>
 						</Col>
 						<Col>
-						Ngày kết thúc
+						Đến:
 						<div>
 							<DatePicker
 								startDate={this.state.toDay}
@@ -325,7 +334,7 @@ class Confirm extends Component {
 					</Row>
           <Row>
           <Col>
-          Hạn cuối
+          Đóng tiền trước ngày:
 						<div>
 							<DatePicker
 								startDate={this.state.lastDay}
@@ -340,11 +349,15 @@ class Confirm extends Component {
           </Row>
             <Row className='m-b-10'>
               <Col>
-              <RadioButton name='print-button' label={'In toàn bảng'} isRadioChk={() => this.getDataPrint('table')} />
+              <RadioButton name='print-button'
+              check={this.state.selectType == 'table'} name={'type'}
+                value={'table'}
+               label={'In toàn bảng'} isRadioChk={() => this.getDataPrint('table')} />
                 {/* <label className={'print-button'} htmlFor={'ktx-print'} onClick={() => this.getDataPrint('table')}>In toàn bảng</label> */}
               </Col>
               <Col>
-              <RadioButton name='print-button' label={'In đã chọn'} isRadioChk={() => this.getDataPrint('select')} />
+              <RadioButton name='print-button' check={this.state.selectType == 'select'} name={'type'} value={'select'} 
+              label={'In đã chọn'} isRadioChk={() => this.getDataPrint('select')} />
                 {/* <label className={'print-button'} htmlFor={'ktx-print'} onClick={() => this.getDataPrint('select')}>In đã chọn</label> */}
               </Col>
             </Row>

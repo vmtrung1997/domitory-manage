@@ -1,4 +1,3 @@
-import React, { Component } from 'react'
 class Security extends Component{
 	constructor(props) {
 	    super(props);

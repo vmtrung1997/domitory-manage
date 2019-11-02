@@ -8,7 +8,7 @@ var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
 var { background } = require('./background')
 //mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao
-mongoose.connect('mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao',//mongodb://127.0.0.1:27017/ktx',
+mongoose.connect('mongodb://127.0.0.1:27017/ktx1',//mongodb://127.0.0.1:27017/ktx',
 { 
   useNewUrlParser: true,
   autoReconnect:true,
@@ -25,8 +25,11 @@ global.appRoot = path.resolve(__dirname);
 
 app.use(morgan('tiny'));
 app.use(cors());
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({limit: '10mb'}));
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
+// for parsing multipart/form-data
+app.use(upload.array()); 
+
 var { verifyAccessToken, verifyAdmin, verifySecurity } = require('./public/repos/authRepo');
 
 app.use('/api/news',require('./public/routes/visitor'));

@@ -66,14 +66,11 @@ class Example extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    //var {dienCheck, dienCu, dienMoi, nuocCheck, nuocCu, nuocMoi} = this.state;
     var submit = {
       idPhong: this.state.idPhong,
       dienCheck: this.state.dienCheck,
-      //dienCu: this.state.dienCu,
       dienMoi: this.state.dienMoi,
       nuocCheck: this.state.nuocCheck,
-      //nuocCu: this.state.nuocCu,
       nuocMoi: this.state.nuocMoi
     }
     if (!submit.dienCheck && !submit.nuocCheck)
@@ -81,10 +78,10 @@ class Example extends React.Component {
     reset_room(submit).then(result => {
       if (result.data.rs === 'success') {
         ToastsStore.success('Thay đổi thành công')
+        this.selectRoom(this.state.idPhong);
       } else {
         ToastsStore.error('Thay đổi thất bại')
       }
-      this.handleClose();
     })
   }
 
@@ -94,7 +91,7 @@ class Example extends React.Component {
   selectRoom = (value) => {
     info_room({ idPhong: value }).then(result => {
       if (result.data) {
-        this.setState({ idPhong: result.data.data.chiPhi.idPhong, infoRoom: result.data.data })
+        this.setState({ idPhong: result.data.data.chiPhi.idPhong, infoRoom: result.data.data, dienMoi: 0, nuocMoi: 0, dienCheck: false, nuocCheck: false })
       }
     })
   }
