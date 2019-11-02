@@ -28,7 +28,7 @@ class Example extends React.Component {
       soNuocResetCuoi: 0,
       soNguoi: 0,
       roles: [],
-      soNguoi: 0
+      soNguoi: 0,
     };
   }
   componentDidMount() {
@@ -173,18 +173,24 @@ class Example extends React.Component {
               <Row>
                 <Col>
                   Tháng/năm
-            <Input disabled={true} value={exp.thang + '/' + exp.nam} />
+                  <Input disabled={true} value={exp.thang + '/' + exp.nam} />
                 </Col>
                 <Col>Số người
-            <Input
+                    <Input
                     disabled={!this.state.capNhat}
                     type={'number'}
                     min={0}
                     value={this.state.soNguoi}
                     name="soNguoi"
-                    getValue={this.handleChange} /></Col>
+                    getValue={this.handleChange} />
+                  </Col>
               </Row>
               <Row>
+                {this.state.exp && this.state.exp.isUpdated && <Col md='12'>
+                  <div style={{float:'right', display:'block', fontStyle:'italic', color:'red'}}>
+                    * Chi phí đã được cập nhật
+                  </div>
+                </Col>}
                 <Col md='12'>
                   <Table bordered hover responsive size="sm">
                     <thead className="title-table text-center">
@@ -264,32 +270,35 @@ class Example extends React.Component {
                 <Col md={8} xs={12} className="text-right warning-text"> Thành tiền: {exp.tongTienChu}</Col>
               </Row>
             </Modal.Body>
-
-            {this.state.roles && this.state.roles.includes('CP02') ? <Modal.Footer>
+            <Modal.Footer>
+              {
+                (exp.trangThai == 0 || exp.trangThai == 2) && this.state.roles && this.state.roles.includes('CP_DELETE') &&
+                <Button color="danger" onClick={this.handleDelete}>
+                  Xóa
+                </Button>
+              }
+              {
+                (exp.trangThai == 0 || exp.trangThai == 2) && !this.state.capNhat && this.state.roles && this.state.roles.includes('CP_UPDATE') &&
+                <Button color="warning" onClick={this.handleEdit}>
+                Chỉnh sửa
+                </Button>
+              }
+              {
+                (exp.trangThai == 0 || exp.trangThai == 2) && this.state.capNhat && this.state.roles && this.state.roles.includes('CP_UPDATE') &&
+                <Button color="warning" type='submit'>
+                Cập nhật
+                </Button>
+              }
+              {
+                this.state.roles && this.state.roles.includes('CP_CONFIRM') && exp.trangThai === 0 &&
+                <Button variant="default" onClick={this.handleSubmit}>
+                  Xác nhận thanh toán
+                </Button>
+              }
               <Button variant="default" color="default" onClick={this.handleClose}>
                 Đóng
             </Button>
-              {exp.trangThai === 0 && <Button color="danger" onClick={this.handleDelete}>
-                Xóa
-            </Button>}
-              {!this.state.capNhat && <Button color="warning" onClick={this.handleEdit}>
-                Chỉnh sửa
-            </Button>}
-              {this.state.capNhat && <Button color="warning" type='submit'>
-                Cập nhật
-            </Button>}
-              
-              {this.state.roles && this.state.roles.includes('CP_CONFIRM') && exp.trangThai === 0 && <Button variant="default" onClick={this.handleSubmit}>
-                Xác nhận thanh toán
-        </Button>}
-            </Modal.Footer> :
-              <Modal.Footer>
-                <Button variant="default" color="default" onClick={this.handleClose}>
-                  Đóng
-        </Button>
-              </Modal.Footer>
-            }
-
+            </Modal.Footer>
           </form>
         </Modal>
       </React.Fragment>
