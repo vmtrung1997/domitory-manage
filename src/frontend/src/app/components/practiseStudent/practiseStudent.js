@@ -101,9 +101,9 @@ class PractiseStudent extends React.Component {
               <div>Bạn chưa có hoạt động nào</div>
             ) : (
               <div style={{ marginTop: "20px" }}>
-                <div>
-                  <strong>Điểm hoạt động: {this.state.point}</strong>
-                </div>
+                <span style ={{color: 'red'}}>
+                  <strong>Tổng điểm hoạt động: {this.state.point}</strong>
+                  </span>
                 <div className="text-style">
                   <Table responsive bordered size="sm" hover>
                     <thead className="thread-student">
