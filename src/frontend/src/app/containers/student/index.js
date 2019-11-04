@@ -62,10 +62,10 @@ class Student extends Component {
         return (
             <React.Fragment>
                 <Header ></Header>
-				<Route exact path={`/news`} component={News} />
-				<Route exact path={`/news/detail`} component={NewsContent} />
+				<Route exact path={`/tin-tuc`} component={News} />
+				<Route exact path={`/tin-tuc/chi-tiet`} component={NewsContent} />
 				<Route exact path={`/`} component={Homepage} />
-                <Route exact path={`/introduce`} component={Introduce} />
+                <Route exact path={`/gioi-thieu`} component={Introduce} />
                 <StudentRoute exact path={`/dashboard`} component={DashBoardStudent} />
             </React.Fragment>
         )
