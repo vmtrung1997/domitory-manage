@@ -12,7 +12,8 @@ export const get_year_db = (yearArr) => {
 
 export const get_status = () => {
   return [
-    { value: 2, label: 'Tất cả' },
+    { value: -1, label: 'Tất cả' },
     { value: 1, label: 'Đã thanh toán' },
-    { value: 0, label: 'Chưa thanh toán' }]
+    { value: 0, label: 'Chưa thanh toán' },
+    { value: 2, label: 'Thiếu dữ liệu'}]
 }

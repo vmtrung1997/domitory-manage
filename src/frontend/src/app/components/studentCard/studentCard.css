@@ -1,7 +1,7 @@
 .card{
 	border-radius: 20px;
 	min-height: 226px;
-	width: 365px;
+	width: 366px;
 	height: 232px;
 	position: relative;
 	background-image: url(https://media.kenhtuyensinh.vn/images/2013/12/dai_hoc_khoa_hoc_tu_nhien_tp_hcm.jpg);
@@ -48,7 +48,8 @@
 
 .body-card{
 	display: flex;
-	padding: 5px 15px;
+	padding: 5px 0px;
+	height: 100%;
 }
 .body-card::after {
 	content: '';
@@ -62,7 +63,7 @@
 }
 .body-card-right{
 	width: 100%;
-	background-size: 200px 150px;
+	background-size: 205px 150px;
 	background-repeat: no-repeat;
 	background-position: center;
 	z-index: 100;
@@ -102,12 +103,14 @@
 	display: flex;
 }
 .info-card{
-	font-size: 17px;
-	display: block;
+	font-size: 12px;
 	color: #2b5a7a;
-	font-weight: bold;
+}
+.font-bold{
+	font-weight: bold
 }
 .info-content{
+	font-size: 14px;
 	color: #040461
 }
 
@@ -124,7 +127,10 @@
 	height: 50px;
 	width: 50px;
 	margin: 0 10px;
-  }
+	}
+	.img-card{
+		width: 35%;
+	}
   .header-card{
 	height: 70px;
   }
@@ -132,12 +138,14 @@
 	font-size: 18px
   }
   .avt-card{
-	height: 160px !important;
-	width: 120px !important;
+	height: 128px !important;
+	width: 96px !important;
 	margin-bottom: 5px;
   }
   .body-card{
-	padding: 11px 25px
+	padding-top: 10px;
+	padding-left: 0px;
+	width: 100%;
   }
   .lb-MSSV{
   	margin: 5px;
@@ -150,18 +158,17 @@
 	font-size: 13px;
   }
   .name-card{
-	font-size: 20px;
-	line-height: 24px;
+	font-size: 18px;
+	font-weight: bold;
   }
   .name-person{
   	font-size: 23px;
-  	line-height: 23px;
   }
   .info-card{
-  	font-size: 22px;
+  	font-size: 19px;
   }
   .info-content{
-	font-size: 22px;
+	font-size: 19px;
   }
   .print-room{
 	color: #f56f00;

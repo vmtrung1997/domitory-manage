@@ -53,9 +53,12 @@ class SignInAdmin extends Component{
 				switch(decode.user.userEntity.loai){
 					case 'SA':
 					case 'AM':
+					localStorage.setItem('secret', JSON.stringify(res.data));
+					from = { pathname: "/admin/student" }
+					break
 					case 'ADCP':
 						localStorage.setItem('secret', JSON.stringify(res.data));
-						from = { pathname: "/admin/student" }
+						from = { pathname: "/admin/expense" }
 						break
 					case 'DD':
 						localStorage.setItem('secret', JSON.stringify(res.data));

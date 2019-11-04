@@ -12,7 +12,7 @@ function dataFile(datetime, user, title, data) {
       stringFile = stringFile + `\n*\t      ${JSON.stringify(v)}`;
     })
   } else
-    stringFile = stringFile + `\n*\tData: \n*\t      ${JSON.stringify(data)}`
+    stringFile = stringFile + `\n*\tDữ liệu: \n*\t      ${JSON.stringify(data)}`
   stringFile = stringFile + `\n`
   return stringFile
 }
@@ -23,15 +23,14 @@ exports.logs_database = async (accessToken, title, data) => {
   const decode = jwt_decode(accessToken)
   const user = decode.user.userEntity.username
 
-  await fs.readFile(`./public/logs/${filedate}`, (err, buf) => {
+  await fs.readFile(__dirname+ `/../logs/${filedate}`, (err, buf) => {
     let fstring = ''
     if (err) {
       fstring = dataFile(date, user, title, data)
     } else {
       fstring = buf + dataFile(date, user, title, data)
     }
-    console.log(fstring);
-    fs.writeFile(`./public/logs/${filedate}`, fstring, (err) => {
+    fs.writeFile(__dirname + `/../logs/${filedate}`, fstring,'utf8', (err) => {
       if (err) console.log(err);
       return;
     });
