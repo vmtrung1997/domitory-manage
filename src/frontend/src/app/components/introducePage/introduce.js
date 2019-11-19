@@ -30,7 +30,7 @@ class Introduce extends React.Component {
               <div class="personnel-img-box">
                 <img src="./images/dao-tao.png" alt="" />
               </div>
-              <p>Bà Trương Thị Ánh Nhung</p>
+              <p>Trương Thị Ánh Nhung</p>
             </div>
 
             <div class="personnel-box">
