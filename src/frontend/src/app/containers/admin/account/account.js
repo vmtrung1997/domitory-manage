@@ -37,7 +37,7 @@ class Account extends Component{
 
 	getData = async () => {
 		await this.sleep(750)
-		this.setState({ loading: true})		
+		this.setState({ loading: true})
 		await refreshToken()
 		var secret = JSON.parse(localStorage.getItem('secret'))
 		axios({
@@ -78,19 +78,18 @@ class Account extends Component{
 			{value: 'AM', label: 'Quản lý'},
 			{value: 'BV', label: 'Bảo vệ'},
 			{value: 'ADCP', label: 'Quản lý chi phí'},
-			{value: 'GDN', label: 'Ghi chi phí'},
-			{value: 'DD', label: 'Điểm danh'},
-			{value: 'XNTT', label: 'Xác nhận thanh toán'}
+			{value: 'GDN', label: 'Ghi điện nước'},
+			{value: 'DD', label: 'Điểm danh'}
 		]
 	}
-	
+
 	render(){
 		var rule = this.getRule()
-		
+
 		return(
 			<React.Fragment>
 				<Loader loading={this.state.loading}/>
-				<AccountAdd 
+				<AccountAdd
 					show={this.state.showAdd}
 					handleClose={() => this.changeState('showAdd', false)}
 					handleSave={this.getData}
@@ -102,23 +101,23 @@ class Account extends Component{
 						<Row className={'m-b-10'}>
 							<Col>
 								<span> Tài khoản </span>
-								<Input 
-									placeholder={'Tìm kiếm'} 
+								<Input
+									placeholder={'Tìm kiếm'}
 									getValue={ (obj) => this.changeState('query', obj.value)}
 									onKeyPress={ e => {if(e.key === 'Enter') this.handleSearch(1)}}
 								/>
 							</Col>
 							<Col md={3} xs={12}>
 								<span> Phân quyền </span>
-								<Select 
-									options={rule} 
-									value={this.state.rule} 
-									selected={val => this.changeState('rule',val)} 
+								<Select
+									options={rule}
+									value={this.state.rule}
+									selected={val => this.changeState('rule',val)}
 								/>
 							</Col>
               				<Col md={2} xs={12}>
               					<div>&nbsp;</div>
-              					<Button 
+              					<Button
               						title={'Tìm kiếm'}
               						style={{padding: '7px 15px'}}
               						onClick={ e => this.handleSearch(1)}
@@ -126,14 +125,14 @@ class Account extends Component{
               						<i className="fas fa-search" />
               					</Button>
               				</Col>
-              			</Row>		
+              			</Row>
 						<div className='bts-header'>
-							<Button 
+							<Button
 								title={'Thêm mới'}
 								color={'warning'}
 								onClick={ e => this.changeState('showAdd', true)}
 								style={{padding: '5px 20px'}}
-							> 
+							>
 								<i className="fas fa-plus"/>
 							</Button>
 						</div>
@@ -146,9 +145,9 @@ class Account extends Component{
 			                <span>/{this.state.totalPages}</span>
 			            </div>
 						<div className={'is-pagination'}>
-							<MyPagination 
-								page={this.state.page} 
-								totalPages={this.state.totalPages} 
+							<MyPagination
+								page={this.state.page}
+								totalPages={this.state.totalPages}
 								clickPage={this.handleSearch}
 							/>
 		            	</div>

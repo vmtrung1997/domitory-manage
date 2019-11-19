@@ -29,7 +29,7 @@ class InfoActivity extends Component{
 		refresh: () => {}
 	}
 	handleDelete = (id) => {
-		this.setState({ 
+		this.setState({
 			showDelete: true,
 			id: id
 		})
@@ -87,10 +87,10 @@ class InfoActivity extends Component{
 	        }
 	        var byteArray = new Uint8Array(byteNumbers);
 	        var blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-	        
-	        saveAs(blob, res.data.filename) 
 
-	        this.setState({ loading: false }) 
+	        saveAs(blob, res.data.filename)
+
+	        this.setState({ loading: false })
         	ToastsStore.success("Xuất file báo cáo hoạt động thành công!");
 	    }).catch(err => {
 	    	this.setState({ loading: false })
@@ -121,13 +121,13 @@ class InfoActivity extends Component{
 					{row.batBuoc ? (
 						<td style={{textAlign: 'center', color: '#04C913'}}> <i className="fas fa-check"></i> </td>
 					):(
-						<td>  </td>
+						<td/>
 					)}
-					<td style={{textAlign: 'center', maxWidth: '210px'}}> 
+					<td style={{textAlign: 'center', maxWidth: '210px'}}>
 						<Button title={'Điểm danh'} color={'success'} onClick={(e) => {this.handleRollCall(row)}}>
 							<i className="fas fa-poll-h"></i>
 						</Button>
-						{curData > date || !isAdmin ? (
+						{!isAdmin ? (
 							<React.Fragment/>
 						):(
 							<>
@@ -140,8 +140,8 @@ class InfoActivity extends Component{
 							</>
 						)}
 						<Button title={'Xuất báo cáo'} onClick={() => this.handleExport(row)}  style={{margin: '0 5px'}}>
-            				<i className="fas fa-file-export"/>
-            			</Button>
+            	<i className="fas fa-file-export"/>
+            </Button>
 					</td>
 				</tr>
 			)
@@ -151,7 +151,7 @@ class InfoActivity extends Component{
 			<React.Fragment>
 		        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
 		        <Loader loading={this.state.loading}/>
-				<Confirm 
+				<Confirm
 					show={this.state.showDelete}
 					title={'Xóa hoạt động'}
 					content={'Bạn có muốn xóa hoạt động này !'}
@@ -159,19 +159,19 @@ class InfoActivity extends Component{
 					handleSave={() => this.handleSave()}
 				/>
 				{this.state.showEdit ?
-					<ActivityEdit 
+					<ActivityEdit
 						show={this.state.showEdit}
 						data={this.state.dataEdit}
-						handleClose={() => this.handleClose('showEdit')} 
+						handleClose={() => this.handleClose('showEdit')}
 						handleSave={() => this.handleSaveEdit('showEdit')}
 					/>
 					: <React.Fragment/>
 				}
 				{this.state.showRollCall ?
-					<ActivityRollCall 
+					<ActivityRollCall
 						show={this.state.showRollCall}
 						data={this.state.dataEdit}
-						handleClose={() => this.handleClose('showRollCall')} 
+						handleClose={() => this.handleClose('showRollCall')}
 						handleSave={() => this.handleClose('showRollCall')}
 					/>
 					: <React.Fragment/>
