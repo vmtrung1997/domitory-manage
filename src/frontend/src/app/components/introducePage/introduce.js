@@ -14,7 +14,8 @@ class Introduce extends React.Component {
               <div class="personnel-img-box">
                 <img src="./images/dao-tao.png" alt="" />
               </div>
-              <p>Anh Trần Vũ</p>
+              <p>ThS. Trần Vũ</p>
+              <p>ThS. Phạm Thị Bích Tuyền</p>
             </div>
 
             <div class="personnel-box">
@@ -22,7 +23,7 @@ class Introduce extends React.Component {
               <div class="personnel-img-box">
                 <img src="../images/khao-thi.png" alt="" />
               </div>
-              <p>TBP: ThS. Trần Văn Huy</p>
+              <p>ThS. Trần Văn Huy</p>
             </div>
 
             <div class="personnel-box">
@@ -30,7 +31,7 @@ class Introduce extends React.Component {
               <div class="personnel-img-box">
                 <img src="./images/dao-tao.png" alt="" />
               </div>
-              <p>Trương Thị Ánh Nhung</p>
+              <p>Cô Trương Thị Ánh Nhung</p>
             </div>
 
             <div class="personnel-box">
@@ -74,7 +75,7 @@ class Introduce extends React.Component {
             </div>
 
             <div class="contact-box">
-              <h3 class="contact-box-title">Bộ phần Quản lý Ký túc xá</h3>
+              <h3 class="contact-box-title">Bộ phận Quản lý Ký túc xá</h3>
               <div class="contact-img-box">
                 <img src="./images/ctsv.png" alt="" />
               </div>
@@ -87,8 +88,8 @@ class Introduce extends React.Component {
               <div class="contact-img-box">
                 <img src="./images/ctsv.png" alt="" />
               </div>
-              <p>0918 20 24 36</p>
-              <p>phanvanthanhktx@gmail.com</p>
+              <p>0983 071 252</p>
+              <p>ttanhung@hcmus.edu.vn</p>
             </div>
           </div>
         </section>

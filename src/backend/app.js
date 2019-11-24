@@ -28,7 +28,7 @@ app.use(cors());
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 // for parsing multipart/form-data
-app.use(upload.array()); 
+app.use(upload.array());
 
 var { verifyAccessToken, verifyAdmin, verifySecurity } = require('./public/repos/authRepo');
 
