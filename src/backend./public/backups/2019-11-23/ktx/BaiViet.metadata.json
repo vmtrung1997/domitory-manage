@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"ktx.BaiViet"},{"v":2,"key":{"_fts":"text","_ftsx":1},"name":"tieuDe_text","ns":"ktx.BaiViet","background":true,"weights":{"tieuDe":1},"default_language":"english","language_override":"language","textIndexVersion":3}],"uuid":"035618a3f4454ceaae18d4e1ed146d77"}

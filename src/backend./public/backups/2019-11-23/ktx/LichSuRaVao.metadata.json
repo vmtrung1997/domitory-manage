@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"ktx.LichSuRaVao"},{"v":2,"key":{"createAt":1},"name":"createAt_1","ns":"ktx.LichSuRaVao","expireAfterSeconds":2592000,"background":true}],"uuid":"e2fe113f6d754736851c2c192bf95071"}

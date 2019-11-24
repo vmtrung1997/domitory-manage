@@ -10,7 +10,7 @@ var dbOptions = {
     autoBackup: true,
     removeOldBackup: true,
     keepLastBackup: 4,
-    autoBackupPath: './public/backups/', // i.e. /var/database-backup/
+    autoBackupPath: __dirname + './public/backups/', // i.e. /var/database-backup/
     dayBackup: 6 // today is saturday
 };
 
