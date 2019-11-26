@@ -9,14 +9,14 @@ const Account = require('./../models/TaiKhoan');
 
 exports.get_list_activity = (req, res) => {
 	const option = {
-		options: { 
+		options: {
 			sort: { ngayBD: -1 }
 		},
 		page: req.query.page
 	}
 
 	var query = {}
-	if(req.body.search){ 
+	if(req.body.search){
 		query = {
 			$text: { $search: req.body.search }
 		}
@@ -30,8 +30,8 @@ exports.get_list_activity = (req, res) => {
 
 	if(req.body.require === 'true' || req.body.require === 'false'){
 		query.batBuoc = req.body.require === 'true' ? true : false
-	} 
-	                                            
+	}
+
 	Activity.paginate( {} , { sort: {ngayBD : 1}})
 	.then( last => {
 		if(last.docs){
@@ -53,7 +53,7 @@ exports.detail_activity = (req, res) => {
 	const id = req.query.id
 	resultActivity.find({ idHD: id })
 	.populate('idSV')
-	.then( data => 
+	.then( data =>
 		Activity.find({_id: id}).then( a =>
 		res.json({rs: data, hd: a})
 	))
@@ -142,7 +142,7 @@ exports.update_activity = (req, res) => {
 	}
 
 	if(tmp.batBuoc){
-		
+
 		var query = {
 			MSSV: {$ne: null},
 			ngayVaoO: { $lte: tmp.ngayBD},
@@ -216,7 +216,7 @@ exports.rollcall_activity = async (req, res) => {
 	} else {
 		data.sv = SV
 	}
-	
+
 	if(data.sv){
 		Account.findOne({idProfile: data.sv._id}, {isDelete: 0}, (err, acc) => {
 			if(err) { console.log("==background: ", err )}
@@ -309,7 +309,7 @@ exports.export_activity = async (req, res) => {
 				$lte: end
 			}
 		})
-		
+
 		const [student, activity] = await Promise.all([promiseStu, promiseAc])
 
 		var header = ['', '',`Điểm phong trào ktx Trần Hưng Đạo từ ${begin.toLocaleDateString('de-DE')} đến ${end.toLocaleDateString('de-DE')}`]
@@ -329,7 +329,7 @@ exports.export_activity = async (req, res) => {
 					var rs = await resultActivity
 						.findOne({ idHD: ac._id, idSV: stu._id})
 						.populate('idHD')
-						.catch( err => { 
+						.catch( err => {
 							console.log('==export_activity:', err)
 							res.status(500)
 						})
@@ -358,9 +358,9 @@ exports.export_activity = async (req, res) => {
 							return 0
 						}
 					}
-					
+
 				})
-				
+
 				var phong = ''
 				if(stu.idPhong)
 					phong = stu.idPhong.tenPhong
@@ -369,14 +369,14 @@ exports.export_activity = async (req, res) => {
 				sheet.push([stu.MSSV, stu.hoTen,  phong , sumPoint , ... arrPoint])
 			})
 		)
-		
+
 		var opts = { row: 1 + activity.length, col: 2 + student.length}
 		var xlsx = writeXlsx.save(sheet, opts);
 		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		res.status(200).json({ filename: 'Bao-cao-hoat-dong.xlsx', file: xlsx });
 	} else {
 		res.status(404).json({ err: 'Not found'});
-	}	
+	}
 };
 
 exports.export_detail_activity = async (req,res) => {
@@ -391,8 +391,8 @@ exports.export_detail_activity = async (req,res) => {
 					 ['', 'Ngày diển ra', strDate],
 					 ['', 'Điểm', activity.diem],
 					 [''],
-					 ['STT', 'HỌ VÀ TÊN', 'MSSV', 'PHÒNG', 'ĐĂNG KÝ', 'THAM GIA']]
-		
+					 ['STT', 'MSSV', 'HỌ VÀ TÊN', 'PHÒNG', 'ĐĂNG KÝ', 'THAM GIA']]
+
 		await resultActivity.find({idHD: activity._id})
 				.populate({
 					path : 'idSV',
@@ -400,7 +400,7 @@ exports.export_detail_activity = async (req,res) => {
 				     	path : 'idPhong'
 				    }
 				})
-				.then( result => { 
+				.then( result => {
 					var i = 1
 					var sumDK = 0
 					var sumTG = 0
@@ -408,12 +408,12 @@ exports.export_detail_activity = async (req,res) => {
 						item.isTG ? sumTG++ : sumTG
 						item.isDK ? sumDK++ : sumDK
 						var p = item.idSV.idPhong ? item.idSV.idPhong.tenPhong : ''
-						sheet.push([i++, item.idSV.hoTen || '', item.idSV.MSSV || '', p, item.isDK ? 'X' : '', item.isTG ? 'X' : '' ])
+						sheet.push([i++, item.idSV.MSSV || '', item.idSV.hoTen || '', p, item.isDK ? 'X' : '', item.isTG ? 'X' : '' ])
 					})
 
 					sheet.push([,,,'Tổng', sumDK, sumTG])
 				})
-		
+
 		var opts = { row: 6, col: sheet.length}
 		var xlsx = writeXlsx.save(sheet, opts);
 		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -422,4 +422,3 @@ exports.export_detail_activity = async (req,res) => {
 		res.status(404).json({ err: 'Not found'});
 	}
 };
-

@@ -20,7 +20,7 @@ class AccountDetail extends Component{
 	    axios.get('/manager/getElement/truong',  {
 	      headers: { 'x-access-token': secret.access_token }
 	    }).then(result => {
-	      this.setState({ 
+	      this.setState({
 	        listSchool: result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }))
 	      })
 
@@ -44,13 +44,11 @@ class AccountDetail extends Component{
 				rule = 'Quản lý chi phí'
 				break
 			case 'GDN':
-				rule = 'Ghi chi phí'
+				rule = 'Ghi điện nước'
 				break
 			case 'DD':
 				rule = 'Điểm danh'
 				break
-			case 'XNTT':
-				rule = 'Xác nhận thanh toán'
 			default:
 				break
 		}

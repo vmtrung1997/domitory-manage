@@ -5,6 +5,7 @@ import { ToastsContainer, ToastsContainerPosition, ToastsStore } from "react-toa
 import axios from './../../../config'
 
 import './accountTable.css'
+import jwt_decode from 'jwt-decode';
 import Confirm from './../../../components/confirm/confirm'
 import refreshToken from './../../../../utils/refresh_token'
 import Button from './../../../components/button/button'
@@ -26,8 +27,9 @@ class AccountTable extends Component{
 	static defaultProps = {
 		refresh: () => {}
 	}
+
 	handleDelete = (id) => {
-		this.setState({ 
+		this.setState({
 			showDelete: true,
 			id: id
 		})
@@ -39,7 +41,7 @@ class AccountTable extends Component{
 		})
 	}
 	handleDetail = (data) => {
-		this.setState({ 
+		this.setState({
 			showDetail: true,
 			dataDetail: data
 		})
@@ -50,7 +52,7 @@ class AccountTable extends Component{
 	}
 	handleSaveDelete = async () => {
 		await refreshToken()
-    	var secret = JSON.parse(localStorage.getItem('secret'))
+    var secret = JSON.parse(localStorage.getItem('secret'))
 		axios({
 	      	method: 'post',
 	      	url: `/manager/account/delete_account?id=${this.state.id}`,
@@ -60,15 +62,19 @@ class AccountTable extends Component{
 	    }).catch(err => {
 	    	ToastsStore.error("Xóa tài khoản không thành công!");
 	    })
-	    this.setState({ showDelete: false })
+	  this.setState({ showDelete: false })
 		this.props.refresh()
 	}
 	handleClose = (state) => {
 		this.setState({ [state]: false })
 	}
-	
+
 	render(){
+		const token = JSON.parse(localStorage.getItem('secret'));
+		const decode = jwt_decode(token.access_token)
+		const userId = decode.user.userEntity ? decode.user.userEntity.id : ""
 		const table = this.props.data.map((row, index) => {
+			console.log(row)
 			var rule = ''
 			switch(row.loai){
 				case 'SA':
@@ -84,13 +90,11 @@ class AccountTable extends Component{
 					rule = 'Quản lý chi phí'
 					break
 				case 'GDN':
-					rule = 'Ghi chi phí'
+					rule = 'Ghi điện nước'
 					break
 				case 'DD':
 					rule = 'Điểm danh'
 					break
-				case 'XNTT':
-					rule = 'Xác nhận thanh toán'
 				default:
 					break
 			}
@@ -98,22 +102,26 @@ class AccountTable extends Component{
 				<tr key={index} >
 					<td>{index + 1}</td>
 					<td className="lb-username" onClick={(e) => {this.handleDetail(row)}}>
-						{row.username}						
+						{row.username}
 					</td>
-					{ row.idProfile ? 
+					{ row.idProfile ?
 						<td>{row.idProfile.hoTen}</td>
 						:
 						<td></td>
 					}
 					<td>{rule}</td>
-					<td style={{textAlign: 'center'}}> 
-						<Button title={'Chỉnh sửa'} color={'warning'} style={{margin: '0 5px'}} onClick={(e) => {this.handleEdit(row)}}>
-							<i className="fas fa-edit"></i>
-						</Button>
-						<Button title={'Xóa'} color={'danger'} onClick={(e) => {this.handleDelete(row._id)}}>
-							<i className=" fas fa-trash-alt"></i>
-						</Button>
-					</td>
+					{userId !== row._id && row.isDelete === 0 ? (
+						<td style={{textAlign: 'center'}}>
+							<Button title={'Chỉnh sửa'} color={'warning'} style={{margin: '0 5px'}} onClick={(e) => {this.handleEdit(row)}}>
+								<i className="fas fa-edit"></i>
+							</Button>
+							<Button title={'Xóa'} color={'danger'} onClick={(e) => {this.handleDelete(row._id)}}>
+								<i className=" fas fa-trash-alt"></i>
+							</Button>
+						</td>
+					) : (
+						<td style={{textAlign: "center"}}> {row.isDelete === 1 ? 'Đã xoá': ''} </td>
+					)}
 				</tr>
 			)
 		})
@@ -121,7 +129,7 @@ class AccountTable extends Component{
 		return(
 			<React.Fragment>
 		        <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
-				<Confirm 
+				<Confirm
 					show={this.state.showDelete}
 					title={'Xóa tài khoản'}
 					content={'Bạn có muốn xóa tài khoản này !'}
@@ -129,19 +137,19 @@ class AccountTable extends Component{
 					handleSave={() => this.handleSaveDelete()}
 				/>
 				{this.state.showEdit ?
-					<AccountEdit 
+					<AccountEdit
 						show={this.state.showEdit}
 						data={this.state.dataEdit}
-						handleClose={() => this.handleClose('showEdit')} 
+						handleClose={() => this.handleClose('showEdit')}
 						handleSave={() => this.handleSaveEdit('showEdit')}
 					/>
 					: <React.Fragment/>
 				}
 				{this.state.showDetail ?
-					<AccountDetail 
+					<AccountDetail
 						show={this.state.showDetail}
 						data={this.state.dataDetail}
-						handleClose={() => this.handleClose('showDetail')} 
+						handleClose={() => this.handleClose('showDetail')}
 					/>
 					: <React.Fragment/>
 				}
