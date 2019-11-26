@@ -198,10 +198,10 @@ class HeaderHomepage extends Component {
             <Link to="/" className="list-item-menu">
               Trang chủ
             </Link>
-            <Link to="/news" className="list-item-menu">
+            <Link to="/tin-tuc" className="list-item-menu">
               Tin tức
             </Link>
-            <Link to="/introduce" className="list-item-menu">
+            <Link to="/gioi-thieu" className="list-item-menu">
               Giới thiệu
             </Link>
           </Nav>
@@ -225,7 +225,7 @@ class HeaderHomepage extends Component {
                 onClick={this.showHamburgerMenu}
                 className={this.state.isShowMenu ? "animation-menu" : "mobile"}
               >
-                <Link to="/news" className="list-item-menu">
+                <Link to="/tin-tuc" className="list-item-menu">
                   Tin tức
                 </Link>
               </li>
@@ -233,7 +233,7 @@ class HeaderHomepage extends Component {
                 onClick={this.showHamburgerMenu}
                 className={this.state.isShowMenu ? "animation-menu" : "mobile"}
               >
-                <Link to="/introduce" className="list-item-menu">
+                <Link to="/gioi-thieu" className="list-item-menu">
                   Giới thiệu
                 </Link>
               </li>

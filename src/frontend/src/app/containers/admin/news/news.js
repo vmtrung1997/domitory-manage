@@ -63,7 +63,7 @@ class News extends Component {
 
   onViewDetail = id => {
     // window.alert(id);
-    var address = "/news/detail?id=" + id;
+    var address = "/tin-tuc/chi-tiet?id=" + id;
     //console.log(address);
     window.open(address,'_blank');
   };

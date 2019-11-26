@@ -17,7 +17,7 @@ class NewsContent extends React.Component {
       //--TODO-- Redirect sang trang tin tức
     } else {
       var req =
-        this.props.location.pathname +
+        "/news/detail"  +// this.props.location.pathname +
         this.props.location.search;
 
       axios.get(req).then(rs => {
