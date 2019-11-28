@@ -17,8 +17,8 @@ exports.quan_ly_dien_nuoc = (req, res, next) => {
 };
 exports.get_room_option = (req, res) => {
 	phongRepo.get_room().then(result => {
-		ChiPhiPhong.find({thang: req.body.month, nam: req.body.year}).then(cpPhongs => {
-			if (cpPhongs.length>0){
+		ChiPhiPhong.find({ thang: req.body.month, nam: req.body.year }).then(cpPhongs => {
+			if (cpPhongs.length > 0) {
 				var rs = [];
 				result.forEach(phong => {
 					let find = cpPhongs.find(item => item.idPhong === phong._id.toString());
@@ -30,13 +30,13 @@ exports.get_room_option = (req, res) => {
 					result: rs
 				})
 			}
-			else 
-			res.json({
-				status: 'success',
-				result: result
-			})
+			else
+				res.json({
+					status: 'success',
+					result: result
+				})
 		})
-		
+
 	})
 }
 exports.get_year = (req, res) => {
@@ -177,7 +177,7 @@ function toMoneyString(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 function ceilMoney(number) {
-	return Math.ceil((number-101) / 1000) * 1000;
+	return Math.ceil((number - 101) / 1000) * 1000;
 }
 
 function CalculationTest(phong, soDienCu, soNuocCu) {
@@ -268,33 +268,33 @@ function Calculation(phong, soDienCu, soNuocCu) {
 				row.tienRac = loaiPhong.tienRac;
 				if (loaiPhong.dien || loaiPhong.nuoc) {
 					ThongSoLoaiPhong.find({ idLoaiPhong: loaiPhong._id }).sort({ id: 1 }).then(async arrThongSo => {
-							var arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0) || [];
-							var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1) || [];
-							if (phong.isResetDien) {
-								row.thayDien = { dienCu: phong.soDienResetDau, dienMoi: phong.soDienResetCuoi }
-								if (arrDien.length > 0) {
-									row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu + phong.soDienResetCuoi - phong.soDienResetDau));
-								}
-							} else {
-								row.thayDien = null;
-								if (arrDien.length > 0) {
-									row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu));
-								}
+						var arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0) || [];
+						var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1) || [];
+						if (phong.isResetDien) {
+							row.thayDien = { dienCu: phong.soDienResetDau, dienMoi: phong.soDienResetCuoi }
+							if (arrDien.length > 0) {
+								row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu + phong.soDienResetCuoi - phong.soDienResetDau));
 							}
-							if (phong.isResetNuoc) {
-								row.thayNuoc = { nuocCu: phong.soNuocResetDau, nuocMoi: phong.soNuocResetCuoi }
-								if (arrNuoc.length > 0) {
-									row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu + phong.soNuocResetCuoi - phong.soNuocResetDau, row.songuoi));
-								}
-							} else {
-								row.thayNuoc = null
-								if (arrNuoc.length > 0) {
-									row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, row.songuoi));
-								}
+						} else {
+							row.thayDien = null;
+							if (arrDien.length > 0) {
+								row.tienDien = Math.round(TinhTienDien(arrDien, phong.soDien - soDienCu));
 							}
-							row.tongTien = ceilMoney(row.tienDien + row.tienNuoc + row.tienRac)
-							row.tongTienChu = toMoneyString(NumberReader.read(row.tongTien));
-							resolve(row);
+						}
+						if (phong.isResetNuoc) {
+							row.thayNuoc = { nuocCu: phong.soNuocResetDau, nuocMoi: phong.soNuocResetCuoi }
+							if (arrNuoc.length > 0) {
+								row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu + phong.soNuocResetCuoi - phong.soNuocResetDau, row.songuoi));
+							}
+						} else {
+							row.thayNuoc = null
+							if (arrNuoc.length > 0) {
+								row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu, row.songuoi));
+							}
+						}
+						row.tongTien = ceilMoney(row.tienDien + row.tienNuoc + row.tienRac)
+						row.tongTienChu = toMoneyString(NumberReader.read(row.tongTien));
+						resolve(row);
 					})
 				} else {
 					resolve(row);
@@ -309,7 +309,7 @@ exports.add_data = (req, res) => {
 	var arrId = table.map(val => { return val.phong.value })
 	ChiPhiHienTai.find({ idPhong: { $in: arrId } }).then(async vals => {
 		if (vals.length > 0) {
-			for (let i=0; i< table.length;i++){
+			for (let i = 0; i < table.length; i++) {
 				var row = table[i];
 				var obj = vals.find((val) => val.idPhong === row.phong.value)
 				if (obj) {
@@ -405,8 +405,7 @@ exports.update_expense = async (req, res) => {
 								var arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0).sort((a, b) => { return a.id > b.id });
 								if (exp.thayDien)
 									exp.tienDien = Math.round(TinhTienDien(arrDien, exp.soDien - exp.soDienCu + exp.thayDien.dienMoi - exp.thayDien.dienCu));
-								else
-								{
+								else {
 									exp.thayDien = null;
 									exp.tienDien = Math.round(TinhTienDien(arrDien, exp.soDien - exp.soDienCu));
 								}
@@ -414,20 +413,19 @@ exports.update_expense = async (req, res) => {
 							if (loaiPhong.nuoc) {
 								var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id })
 								if (exp.thayNuoc)
-										exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, exp.soNguoi));
-									else
-										{
-											exp.thayNuoc = null;
-											exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, exp.soNguoi));
-										}
-									
+									exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, exp.soNguoi));
+								else {
+									exp.thayNuoc = null;
+									exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, exp.soNguoi));
+								}
+
 							}
 						})
 					}
 					exp.tongTien = ceilMoney(exp.tienRac + exp.tienDien + exp.tienNuoc);
 					exp.tongTienChu = toMoneyString(NumberReader.read(exp.tongTien));
-					exp.isUpdated = exp.trangThai === 2? false : true;
-					exp.trangThai = exp.trangThai === 2? 0: exp.trangThai;
+					exp.isUpdated = exp.trangThai === 2 ? false : true;
+					exp.trangThai = exp.trangThai === 2 ? 0 : exp.trangThai;
 					ChiPhiPhong.updateOne({ _id: id }, exp, async (err) => {
 						if (err) {
 							res.json({
@@ -461,9 +459,9 @@ exports.update_expense = async (req, res) => {
 							// 	})
 							// }
 							logsDb(req.headers['x-access-token'], 'Cập nhật chi phí', exp)
-								res.json({
-									rs: 'success'
-								})
+							res.json({
+								rs: 'success'
+							})
 						}
 					})
 				}
@@ -513,9 +511,7 @@ exports.report_expense = (req, res) => {
 					or.push({ nam: i })
 				}
 			}
-			query.$and = [{
-				$or: or
-			}]
+			query.$and = [{ $or: or }]
 			if (condition.room !== 0) {
 				query.$and.push({ idPhong: condition.room })
 			}
@@ -527,43 +523,27 @@ exports.report_expense = (req, res) => {
 		}
 	}
 	if (condition.soDien) {
-		options.push('soDien')
-		options.push('soDienCu')
-		header.push('Số điện trong tháng')
-		total.push(0)
+		options = [...options, 'soDien', 'soDienCu']
+		header = [...header, 'Số điện mới', 'Số điện cũ', 'Số điện tiêu thụ']
+		total = [...total, '', '', 0]
 	}
 	if (condition.soNuoc) {
-		options.push('soNuoc')
-		options.push('soNuocCu')
-
-		header.push('Số nước trong tháng')
-		total.push(0)
+		options = [...options, 'soNuoc', 'soNuocCu']
+		header = [...header, 'Số nước mới', 'Số nước cũ', 'Số nước tiêu thụ']
+		total = [...total, '', '', 0]
 	}
 	if (condition.tienRac) {
 		options.push('tienRac')
-
 		header.push('Tiền rác')
 		total.push(0)
 	}
 	if (condition.tongTien) {
-		options.push('tienDien')
-		options.push('tienNuoc')
-		options.push('tongTien')
-		options.push('tongTienChu');
-
-		header.push('Tiền điện');
-		header.push('Tiền nước')
-		header.push('Tổng tiền')
-		header.push('Tổng tiền chữ')
-
-		total.push(0)
-		total.push(0)
-		total.push(0)
-		total.push('')
+		options = [...options, 'tienDien','tienNuoc','tongTien','tongTienChu']
+		header = [...header, 'Tiền điện', 'Tiền nước', 'Tổng tiền', 'Tổng tiền chữ']
+		total = [...total, 0, 0, 0, '']
 	}
-	header.push('Trạng thái')
 	options.push('trangThai')
-	header.push('Ký tên')
+	header = [...header, 'Trạng thái', 'Ghi chú', 'Ký tên']
 	if (Object.keys(query).length) {
 		ChiPhiPhong.find(query)
 			.sort([['nam', 1], ['thang', 1]])
@@ -575,46 +555,91 @@ exports.report_expense = (req, res) => {
 			})
 			.then(result => {
 				if (result.length > 0) {
-					var array = []
+					var array = [],
+					totalDien = 0, 
+					totalNuoc = 0,
+					totalRac = 0,
+					tongTienDien = 0,
+					tongTienNuoc = 0,
+					tongTien = 0
 					array.push(header);
 					for (let item of result) {
-						var arr = []
-						arr.push(item.nam);
-						arr.push(item.thang);
-						arr.push(item.idPhong.tenPhong);
+						var arr = [item.nam, item.thang, item.idPhong.tenPhong]
+						var note = "";
 						if (options.indexOf('soDien') > 0) {
-							arr.push(item.thayDien.dienMoi > 0 ? item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu : (item.soDien > item.soDienCu ? item.soDien - item.soDienCu : 0));
-							total[header.indexOf('Số điện trong tháng')] = item.thayDien.dienMoi > 0 ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu :
-								(item.soDien > item.soDienCu ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu : total[header.indexOf('Số điện trong tháng')])
-							//totalObj.soDien = item.soDien > item.soDienCu ? totalObj.soDien + item.soDien - item.soDienCu : totalObj.soDien
+							if (item.thayDien.dienMoi > 0) {
+								let {thayDien} = item
+								arr = [
+									...arr, 
+									thayDien.dienMoi, 
+									thayDien.dienCu, 
+									item.soDien - item.soDienCu + thayDien.dienMoi - thayDien.dienCu
+								]
+								note = `Đã thay đồng hồ điện: Số cũ đầu = ${item.soDienCu}, Số cũ sau = ${item.soDien}`
+								if ( item.thayNuoc.nuocMoi >0)
+									note = note + "\n"
+								totalDien = totalDien + item.soDien - item.soDienCu + thayDien.dienMoi - thayDien.dienCu
+							} else {
+								arr = [
+									...arr,
+									item.soDien,
+									item.soDienCu,
+									item.soDien - item.soDienCu]
+								totalDien = totalDien + item.soDien - item.soDienCu
+							}
+							//arr.push(item.thayDien.dienMoi > 0 ? item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu : (item.soDien > item.soDienCu ? item.soDien - item.soDienCu : 0));
+							// total[header.indexOf('Số điện trong tháng')] = item.thayDien.dienMoi > 0 ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu + item.thayDien.dienMoi - item.thayDien.dienCu :
+							// 	(item.soDien > item.soDienCu ? total[header.indexOf('Số điện trong tháng')] + item.soDien - item.soDienCu : total[header.indexOf('Số điện trong tháng')])
 						}
 						if (options.indexOf('soNuoc') > 0) {
-							arr.push(item.thayNuoc.nuocMoi > 0 ? item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu + item.soNuoc - item.soNuocCu : (item.soNuoc > item.soNuocCu ? item.soNuoc - item.soNuocCu : 0));
-							total[header.indexOf('Số nước trong tháng')] = item.thayNuoc.nuocMoi > 0 ? total[header.indexOf('Số nước trong tháng')] + item.soNuoc - item.soNuocCu + item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu :
-								(item.soNuoc > item.soNuocCu ? total[header.indexOf('Số nước trong tháng')] + item.soNuoc - item.soNuocCu : total[header.indexOf('Số nước trong tháng')])
-							//totalObj.soNuoc = item.soNuoc > item.soNuocCu ? totalObj.soNuoc + item.soNuoc - item.soNuocCu : totalObj.soNuoc 
+							if (item.thayNuoc.nuocMoi > 0) {
+								let {thayNuoc} = item
+								arr = [...arr,
+									thayNuoc.nuocMoi,
+									thayNuoc.nuocCu,
+									item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu + item.soNuoc - item.soNuocCu]
+									note = `${note}Đã thay đồng hồ nước: Số cũ đầu = ${item.soNuocCu}, Số cũ sau = ${item.soNuoc}`
+								totalNuoc = totalNuoc + item.soNuoc - item.soNuocCu + item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu
+							} else {
+								arr = [...arr,
+									item.soNuoc,
+									item.soNuocCu,
+									item.soNuoc - item.soNuocCu]
+									totalNuoc = totalNuoc + item.soNuoc - item.soNuocCu 
+							}
+							// arr.push(item.thayNuoc.nuocMoi > 0 ? item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu + item.soNuoc - item.soNuocCu : (item.soNuoc > item.soNuocCu ? item.soNuoc - item.soNuocCu : 0));
+							// total[header.indexOf('Số nước trong tháng')] = item.thayNuoc.nuocMoi > 0 ? total[header.indexOf('Số nước trong tháng')] + item.soNuoc - item.soNuocCu + item.thayNuoc.nuocMoi - item.thayNuoc.nuocCu :
+							// 	(item.soNuoc > item.soNuocCu ? total[header.indexOf('Số nước trong tháng')] + item.soNuoc - item.soNuocCu : total[header.indexOf('Số nước trong tháng')])
 						}
 						if (options.indexOf('tienRac') > 0) {
 							arr.push(item.tienRac);
-							total[header.indexOf('Tiền rác')] = total[header.indexOf('Tiền rác')] + item.tienRac
-							//totalObj.tienRac = totalObj.tienRac + item.tienRac;
+							totalRac = totalRac + item.tienRac
 						}
 						if (options.indexOf('tongTien') > 0) {
-							arr.push(item.tienDien);
-							arr.push(item.tienNuoc);
-							arr.push(item.tongTien);
-							arr.push(item.tongTienChu);
-							total[header.indexOf('Tiền điện')] = total[header.indexOf('Tiền điện')] + item.tienDien
-							total[header.indexOf('Tiền nước')] = total[header.indexOf('Tiền nước')] + item.tienNuoc
-							total[header.indexOf('Tổng tiền')] = total[header.indexOf('Tổng tiền')] + item.tongTien
+							arr = [...arr, 
+								item.tienDien,
+								item.tienNuoc,
+								item.tongTien,
+								item.tongTienChu]
+							tongTienDien = tongTienDien + item.tienDien
+							tongTienNuoc = tongTienNuoc + item.tienNuoc
+							tongTien = tongTien + item.tongTien
 						}
-						arr.push(item.trangThai == 0?'Chưa thanh toán':item.trangThai==1?"Đã thanh toán":"Thiếu dữ liệu")
+						let trangThai = item.trangThai == 0 ? 'Chưa thanh toán' : item.trangThai == 1 ? "Đã thanh toán" : "Thiếu dữ liệu"
+						arr = [...arr, trangThai, note]
 						array.push(arr)
 					}
 					if (options.indexOf('tongTien') > 0) {
-						total[header.indexOf('Tổng tiền chữ')] = toMoneyString(NumberReader.read(total[header.indexOf('Tổng tiền')]))
+						total[header.indexOf('Tiền điện')] = tongTienDien
+						total[header.indexOf('Tiền nước')] = tongTienNuoc
+						total[header.indexOf('Tổng tiền')] = tongTien
+						total[header.indexOf('Tiền rác')] = totalRac
+						total[header.indexOf('Tổng tiền chữ')] = toMoneyString(NumberReader.read(tongTien))
 					}
-
+					if (options.indexOf('soDien') > 0)
+						total[header.indexOf('Số điện tiêu thụ')] = totalDien
+					if (options.indexOf('soNuoc') > 0)
+						total[header.indexOf('Số nước tiêu thụ')] = totalNuoc
 					array.push(total);
 					var opts = { row: result.length + 1, col: header.length }
 					var xlsx = writeXlsx.save(array, opts);
@@ -627,10 +652,13 @@ exports.report_expense = (req, res) => {
 				}
 
 			}).catch(err =>
-				res.json({
-					rs: 'fail',
-					msg: 'Có lỗi xảy ra'
-				}))
+				{
+					console.log(err)
+					res.json({
+						rs: 'fail',
+						msg: 'Có lỗi xảy ra'
+					})
+				})
 	} else {
 		res.json({
 			rs: 'fail',
