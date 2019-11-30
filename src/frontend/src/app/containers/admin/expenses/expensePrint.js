@@ -264,7 +264,7 @@ class Confirm extends Component {
             <li>Nếu có vấn đề liên quan đến việc cung cấp điện nước tại các phòng, yêu cầu sinh viên liên hệ tại VP.BPQLKTX để giải quyết.</li>
             <li>Đại diện phòng mang theo giấy báo đến VP đóng tiền</li>
             <li>Thời gian đóng tiền trước ngày <div className='bold-style' style={{ display: 'inline' }}>{this.dateToString(lastDay)}</div></li>
-            <li>Các phòng ghi sai số điện, nước tiêu thụ từ ngày <div className='bold-style' style={{ display: 'inline' }}>{this.dateToString(fromDay)}</div> đến ngày <div className='bold-style' style={{ display: 'inline' }}>{this.dateToString(toDay)}</div> yêu cầu đến liên hệ tại VP.BP QLKTX <div className='bold-style' style={{ display: 'inline' }}>{`(ông ${admin})`}</div> để chỉnh sửa, quá thời gian trên, VP.BP BPQLKTX sẽ không chỉnh sửa chỉ số điện nước</li>
+            <li>Các phòng ghi sai số điện, nước tiêu thụ từ ngày <div className='bold-style' style={{ display: 'inline' }}>{this.dateToString(fromDay)}</div> đến ngày <div className='bold-style' style={{ display: 'inline' }}>{this.dateToString(toDay)}</div> yêu cầu đến liên hệ tại VP.BP QLKTX <div className='bold-style' style={{ display: 'inline' }}>{`(bà ${admin})`}</div> để chỉnh sửa, quá thời gian trên, VP.BP BPQLKTX sẽ không chỉnh sửa chỉ số điện nước</li>
             <li>Sau ngày <div className='bold-style' style={{ display: 'inline' }}>{this.dateToString(lastDay)}</div> những phòng chưa đóng tiền điện, nước bộ phận Quản lý KTX sẽ tạm ngưng cung cấp điện</li>
           </ul>
         </Col>
