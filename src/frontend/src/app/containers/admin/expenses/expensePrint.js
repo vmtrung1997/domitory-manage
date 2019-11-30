@@ -34,7 +34,7 @@ class Confirm extends Component {
       toDay: new Date(today.getFullYear(),today.getMonth(),5),
       lastDay: new Date(today.getFullYear(),today.getMonth(),10),
       selectType: '',
-      admin: 'Phan Văn Thành'
+      admin: 'Trương Thị Ánh Nhung'
     }
   }
   getToday = () => {
@@ -67,7 +67,7 @@ class Confirm extends Component {
     this.setState({ show: false, 
       printComponent: (<div></div>),
       selectType: '',
-      admin: 'Phan Văn Thành'
+      admin: 'Trương Thị Ánh Nhung'
     })
   }
   handleShow = () => {
@@ -272,7 +272,7 @@ class Confirm extends Component {
         <Col xs={1}></Col>
         <Col xs={5} className={'text-center bold-style'}>
           <div>TP.HCM ngày {fromDay.getDate()} tháng {fromDay.getMonth()+1} năm {fromDay.getFullYear()}</div>
-          <div>PHÓ BỘ PHẬN QUẢN LÝ KÝ TÚC XÁ</div>
+          <div>BỘ PHẬN QUẢN LÝ KÝ TÚC XÁ</div>
           <p>&nbsp;</p>
           <p>&nbsp;</p>
           <p>&nbsp;</p>
