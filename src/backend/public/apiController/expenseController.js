@@ -284,6 +284,7 @@ function Calculation(phong, soDienCu, soNuocCu) {
 						if (phong.isResetNuoc) {
 							row.thayNuoc = { nuocCu: phong.soNuocResetDau, nuocMoi: phong.soNuocResetCuoi }
 							if (arrNuoc.length > 0) {
+								console.log(phong)
 								row.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, phong.soNuoc - soNuocCu + phong.soNuocResetCuoi - phong.soNuocResetDau, row.songuoi));
 							}
 						} else {
@@ -412,8 +413,9 @@ exports.update_expense = async (req, res) => {
 							}
 							if (loaiPhong.nuoc) {
 								var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id })
+								console.log(exp)
 								if (exp.thayNuoc)
-									exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocCu - exp.thayNuoc.nuocCu, exp.soNguoi));
+									exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu + exp.thayNuoc.nuocMoi - exp.thayNuoc.nuocCu, exp.soNguoi));
 								else {
 									exp.thayNuoc = null;
 									exp.tienNuoc = Math.round(TinhTienNuoc(arrNuoc, exp.soNuoc - exp.soNuocCu, exp.soNguoi));
