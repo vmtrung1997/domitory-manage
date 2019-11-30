@@ -33,6 +33,7 @@ class Confirm extends Component {
       fromDay: new Date(today.getFullYear(),today.getMonth(),1),
       toDay: new Date(today.getFullYear(),today.getMonth(),5),
       lastDay: new Date(today.getFullYear(),today.getMonth(),10),
+      todate: new Date(),
       selectType: '',
       admin: 'Trương Thị Ánh Nhung'
     }
@@ -174,7 +175,7 @@ class Confirm extends Component {
   printDetailStructure = (data) => {
     // let exp = data.detail
     let exp = data
-    let { fromDay, toDay, admin, lastDay } = this.state
+    let { fromDay, toDay, admin, lastDay, todate } = this.state
     return (<div className={'layout-print'}>
       <Row className='m-b-10'>
         <Col xs={6}>
@@ -270,7 +271,7 @@ class Confirm extends Component {
         </Col>
         <Col xs={1}></Col>
         <Col xs={5} className={'text-center bold-style'}>
-          <div>TP.HCM ngày {fromDay.getDate()} tháng {fromDay.getMonth()+1} năm {fromDay.getFullYear()}</div>
+          <div>TP.HCM ngày {todate.getDate()} tháng {todate.getMonth()+1} năm {todate.getFullYear()}</div>
           <div>BỘ PHẬN QUẢN LÝ KÝ TÚC XÁ</div>
           <p>&nbsp;</p>
           <p>&nbsp;</p>
