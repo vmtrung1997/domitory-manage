@@ -72,8 +72,7 @@ class Confirm extends Component {
   }
   handleShow = () => {
     this.setState({
-      show: true,
-      admin: 'Phan Văn Thành'
+      show: true
     })
   }
   getDataPrint = (type) => {
