@@ -1,6 +1,6 @@
 version: "2"
 services:
-    client:
+    frontend:
         container_name: ktx-frontend
         build:
             context: ./frontend/
@@ -28,14 +28,12 @@ services:
         networks:
             - webappnetwork
     mongodb:
+        image: mongo
         restart: always
-        container_name: mongodb
-        build:
-            context: ./database/
-            dockerfile: Dockerfile
+        container_name: db
         volumes:
-            - ./database/mongo-node:/data/db
-        command: mongod --noauth --bind_ip=127.0.0.1
+            - ./database/mongo-node:/home/data
+        command: mongod --noauth
         ports:
             - "27017:27017"
         networks:

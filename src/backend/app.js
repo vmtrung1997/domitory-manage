@@ -8,13 +8,29 @@ var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
 var { background } = require('./background')
 //mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao
-mongoose.connect('mongodb://127.0.0.1:27017/ktx',//mongodb://127.0.0.1:27017/ktx1',
-{ 
-  useNewUrlParser: true,
-  autoReconnect:true,
-  reconnectTries: Number.MAX_VALUE,
-  reconnectInterval: 1000,
-})
+const options = {
+    autoIndex: false, // Don't build indexes
+    reconnectTries: 30, // Retry up to 30 times
+    reconnectInterval: 500, // Reconnect every 500ms
+    poolSize: 10, // Maintain up to 10 socket connections
+    // If not connected, return errors immediately rather than waiting for reconnect
+    bufferMaxEntries: 0,
+    autoReconnect: true,
+  }
+
+const connectionURL = 'mongodb://db:27017/ktx'
+
+const connectWithRetry = () => {
+  console.log('MongoDB connection with retry')
+  mongoose.connect(connectionURL, options).then(()=>{
+    console.log('MongoDB is connected')
+  }).catch(err=>{
+    console.log('MongoDB connection unsuccessful, retry after 5 seconds.')
+    setTimeout(connectWithRetry, 5000)
+  })
+}
+
+connectWithRetry()
 
 require('./public/models/Phong')
 require('./public/models/ChiPhiPhong')
