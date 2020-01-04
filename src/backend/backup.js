@@ -1,5 +1,4 @@
 var fs = require('fs');
-var _ = require('lodash');
 var exec = require('child_process').exec;
 var dbOptions = {
     user: 'root',
@@ -30,7 +29,7 @@ exports.dbAutoBackUp = function () {
             if (!error) {
                 // check for remove old backup after keeping # of days given in configuration
                 if (dbOptions.removeOldBackup) {
-                    beforeDate = _.clone(currentDate);
+                    beforeDate = new Date(currentDate.getTime());
                     beforeDate.setDate(beforeDate.getDate() - dbOptions.keepLastBackup * 7); // Substract number of days to keep backup and remove old backup
                     oldBackupPath = dbOptions.autoBackupPath + beforeDate.getFullYear() + '-' + (beforeDate.getMonth() + 1) + '-' + beforeDate.getDate() // old backup(after keeping # of days)
                     if (fs.existsSync(oldBackupPath)) {

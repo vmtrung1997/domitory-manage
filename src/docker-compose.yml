@@ -1,0 +1,45 @@
+version: "2"
+services:
+    client:
+        container_name: ktx-frontend
+        build:
+            context: ./frontend/
+            dockerfile: Dockerfile
+        restart: always
+        ports:
+            - "9000:9000"
+        links:
+            - api
+        networks:
+            - webappnetwork
+    api:
+        container_name: ktx-backend
+        build:
+            context: ./backend/
+            dockerfile: Dockerfile
+        restart: always
+        ports:
+            - "4000:4000"
+        volumes:
+            - ./backend/data-source:/home/api
+            - /home/api/node_modules
+        depends_on:
+            - mongodb
+        networks:
+            - webappnetwork
+    mongodb:
+        restart: always
+        container_name: mongodb
+        build:
+            context: ./database/
+            dockerfile: Dockerfile
+        volumes:
+            - ./database/mongo-node:/data/db
+        command: mongod --noauth --bind_ip=127.0.0.1
+        ports:
+            - "27017:27017"
+        networks:
+            - webappnetwork
+networks:
+    webappnetwork:
+        driver: bridge
