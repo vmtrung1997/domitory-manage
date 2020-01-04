@@ -19,6 +19,10 @@ yarn-error.log*
 # database file
 /src/database/data
 
+# docker node
+/src/backend/data-source
+/src/database/mongo-node
+
 # Editor directories and files
 .idea
 .vscode
