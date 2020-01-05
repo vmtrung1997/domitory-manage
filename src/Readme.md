@@ -71,7 +71,7 @@ The following guide shows how to install this app with Docker in Ubuntu 18.04
 
 ## Usage
 
-- Open browser and check it at [localhost:9000](localhost:9000), another tab browser to check backend [localhost:4000](localhost:4000)
+- Open browser and check it at **[localhost:9000](localhost:9000)**, another tab browser to check backend **[localhost:4000](localhost:4000)**
 
 - Note that there are no database
 
