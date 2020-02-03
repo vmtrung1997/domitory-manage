@@ -45,7 +45,7 @@ function addOneStudent(data) {
                   idTaiKhoan: acc._id,
                   hoTen: data.hoTen,
                   MSSV: data.mssv,
-                  cmnd: data.cmnd,
+                  CMND: data.cmnd,
                   ngayHetHan: data.ngayHetHan,
                   hanDangKy: data.hanDangKy,
                   isActive: false,
