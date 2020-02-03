@@ -75,7 +75,7 @@ export class AddStudentModal extends Component{
       }
     })
   };
-	
+
 	render(){
 		return(
       <React.Fragment>
@@ -993,7 +993,6 @@ export class ChooseRoom extends Component{
     super(props);
     this.state = {
       show: this.props.show,
-      label: this.props.label,
       data: this.props.data,
       onChange: () => {},
       oldRoom: this.props.room,
@@ -1055,7 +1054,7 @@ export class ChooseRoom extends Component{
   render(){
     return(
       <React.Fragment>
-        <div>{this.state.label} &#160;
+        <div>{this.props.label.tenPhong} &#160;
         <Button
           disabled={this.props.disabled}
           style={{marginLeft: '2px'}}
