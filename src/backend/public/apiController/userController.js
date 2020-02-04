@@ -8,11 +8,7 @@ const auth = require("../repos/authRepo");
 const nodemailer = require("nodemailer");
 const sanitize = require("mongo-sanitize");
 require("../models/PhanQuyen");
-var handlebars = require('handlebars');
-var url = require('path');
 const fs = require("fs");
-const { promisify } = require("util");
-const readFile = promisify(fs.readFile);
 
 require("../models/PhanQuyen");
 const smtpTransport = nodemailer.createTransport({
