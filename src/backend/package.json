@@ -4,7 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon ./public/bin/www"
+    "start": "node ./public/bin/www",
+    "start:dev": "nodemon ./public/bin/www",
+    "prod": "node dist/api.bundle.js",
+    "build": "webpack ./public/bin/www"
   },
   "author": "",
   "license": "ISC",
@@ -34,6 +37,8 @@
     "xlsx": "^0.14.1"
   },
   "devDependencies": {
-    "nodemon": "^1.18.8"
+    "nodemon": "^1.19.4",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
   }
 }
