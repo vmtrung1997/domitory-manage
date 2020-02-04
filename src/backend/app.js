@@ -8,7 +8,7 @@ var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
 var { background } = require('./background')
 //mongodb://admin:123abc@ds227168.mlab.com:27168/ktxtranhungdao
-mongoose.connect('mongodb://127.0.0.1:27017/ktx3',//mongodb://127.0.0.1:27017/ktx1',
+mongoose.connect('mongodb://127.0.0.1:27017/ktx1',//mongodb://127.0.0.1:27017/ktx1',
 { 
   useNewUrlParser: true,
   autoReconnect:true,
@@ -41,7 +41,7 @@ app.use('/api/logout', require('./public/routes/logout'));
 
 app.get('/', (_, res) => {
     res.json({
-        msg: 'Hello from nodejs express api'
+        msg: 'The server of Dormitory Manager'
     })
 });
 
