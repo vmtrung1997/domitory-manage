@@ -14,13 +14,14 @@ var dbOptions = {
     dayBackup: 6 // today is saturday
 };
 
-// Auto backup script
-exports.dbAutoBackUp = function () {
+// Auto back
+backUp = function () {
     // check for auto backup is enabled or disabled
-    var currentDate = new Date();
+    var currentDate = 6;
     console.log('ready to backup')
-    if (dbOptions.autoBackup == true && currentDate.getDay() == dbOptions.dayBackup) {
+    if (dbOptions.autoBackup == true && currentDate == dbOptions.dayBackup) {
         var beforeDate, oldBackupPath;
+	currentDate = new Date()
         var newBackupDir = currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
         // check for remove old backup after keeping # of days given in configuration
         var cmd = 'mongodump --db ' + dbOptions.database + ' -o ' + dbOptions.autoBackupPath + newBackupDir; // Command for mongodb dump process
@@ -28,6 +29,7 @@ exports.dbAutoBackUp = function () {
         exec(cmd, function (error, stdout, stderr) {
             console.log('just backup')
             if (!error) {
+		console.log("no error")
                 // check for remove old backup after keeping # of days given in configuration
                 if (dbOptions.removeOldBackup) {
                     beforeDate = _.clone(currentDate);
@@ -46,3 +48,4 @@ exports.dbAutoBackUp = function () {
         });
     }
 }
+backUp()

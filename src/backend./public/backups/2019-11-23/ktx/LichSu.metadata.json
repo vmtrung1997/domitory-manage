@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"ktx.LichSu"},{"v":2,"key":{"createAt":1},"name":"createAt_1","ns":"ktx.LichSu","expireAfterSeconds":2592000,"background":true}],"uuid":"57a8f8d6918f4e938a686385958b5458"}
