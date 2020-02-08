@@ -22,7 +22,8 @@ class Security extends Component {
 				thoiGian: new Date(),
 				profile: {
 					hoTen: '',
-					idPhong: { tenPhong: '' }
+					idPhong: { tenPhong: '' },
+					diaChi:'',
 				},
 				imgFile: ''
 			},
@@ -174,6 +175,8 @@ class Security extends Component {
 										<Col md={12} className={'info'}>Trường: <span>{mainHis.profile.truong ? mainHis.profile.truong.tenTruong : 'Chưa cập nhật'}</span></Col>
 										<Col md={12} className={'info'}>Ngành: <span>{mainHis.profile.nganhHoc ? mainHis.profile.nganhHoc.tenNganh : 'Chưa cập nhật'}</span></Col>
 										<Col md={12} className={'info'}>Giờ vào: <span>{mainTime.toLocaleTimeString() + ' ' + mainTime.toLocaleDateString()}</span></Col>
+										<Col md={12} className={'info'}>Địa chỉ: <span>{mainHis.profile.diaChi ? mainHis.profile.diaChi : 'Chưa cập nhật'}</span></Col>
+										
 									</div> : <div>Chưa có dữ liệu</div> :
 										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>Không tìm thấy dữ liệu</span></Col>
 									}

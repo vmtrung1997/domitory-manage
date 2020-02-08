@@ -1054,13 +1054,13 @@ export class ChooseRoom extends Component{
   render(){
     return(
       <React.Fragment>
-        <div>{this.props.label.tenPhong} &#160;
-        <Button
+        <div>{this.props.label?this.props.label.tenPhong:undefined} &#160;
+         <Button
           disabled={this.props.disabled}
           style={{marginLeft: '2px'}}
           onClick={() => this.handlePopup(true)}
         >Thay đổi</Button>
-        </div>
+        </div> 
         <Modal show={this.state.show} onHide={() =>this.handlePopup(false)} size="lg">
           <Modal.Header closeButton>
             <Modal.Title>Chọn phòng</Modal.Title>

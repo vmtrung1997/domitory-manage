@@ -11,7 +11,7 @@ function find_history(type){
     limit(15).
     populate({
       path: 'profile',
-      select: 'hoTen idPhong truong nganhHoc img',
+      select: 'hoTen idPhong truong nganhHoc img diaChi',
       populate: [
         { path: 'idPhong', select: 'tenPhong'}, 
         {path: 'truong', select: 'tenTruong'},
