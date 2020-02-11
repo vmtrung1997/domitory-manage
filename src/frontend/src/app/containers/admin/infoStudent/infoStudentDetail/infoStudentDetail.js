@@ -423,7 +423,7 @@ class InfoStudentDetail extends Component {
             <Row>
               <Col md={2}>
                 <div className={'id-avt'}>
-                  <img alt='avater student' src={ensureProfile.imgFile} />
+                  <img alt='avatar student' src={ensureProfile.img} />
                 </div>
                 <div className="box">
                   <input
