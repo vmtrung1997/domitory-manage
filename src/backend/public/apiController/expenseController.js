@@ -267,9 +267,9 @@ function Calculation(phong, soDienCu, soNuocCu) {
 			if (loaiPhong) {
 				row.tienRac = loaiPhong.tienRac;
 				if (loaiPhong.dien || loaiPhong.nuoc) {
-					ThongSoLoaiPhong.find({ idLoaiPhong: loaiPhong._id }).sort({ id: 1 }).then(async arrThongSo => {
-						var arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0) || [];
-						var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1) || [];
+					ThongSoLoaiPhong.find({ idLoaiPhong: loaiPhong._id }).then(async arrThongSo => {
+						var arrDien = arrThongSo.filter(value => value.loaiChiPhi === 0).sort((a, b) => { return a.id > b.id }) || [];
+						var arrNuoc = arrThongSo.filter(value => value.loaiChiPhi === 1).sort((a, b) => { return a.id > b.id }) || [];
 						if (phong.isResetDien) {
 							row.thayDien = { dienCu: phong.soDienResetDau, dienMoi: phong.soDienResetCuoi }
 							if (arrDien.length > 0) {
