@@ -16,7 +16,7 @@ const initialState = {
   name: '',
   CMND: '',
   Email: '',
-  rule: 'SA', 
+  rule: 'SA',
 }
 
 class AccountAdd extends Component{
@@ -40,9 +40,8 @@ class AccountAdd extends Component{
       {value: 'AM', label: 'Quản lý'},
       {value: 'BV', label: 'Bảo vệ'},
       {value: 'ADCP', label: 'Quản lý chi phí'},
-      {value: 'GDN', label: 'Ghi chi phí'},
-      {value: 'DD', label: 'Điểm danh'},
-      {value: 'XNTT', label: 'Xác nhận thanh toán'}
+      {value: 'GDN', label: 'Ghi điện nước'},
+      {value: 'DD', label: 'Điểm danh'}
     ]
   }
 
@@ -59,7 +58,7 @@ class AccountAdd extends Component{
         axios({
           method: 'post',
           url: '/manager/account/add_account',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
             'x-access-token': secret.access_token
           },
@@ -78,14 +77,14 @@ class AccountAdd extends Component{
         })
         this.setState(initialState)
         this.props.handleSave()
-    } 
+    }
   }
 
   handleClose = () => {
     this.setState(initialState)
     this.props.handleClose()
   }
-  
+
 	render(){
     var rule = this.getRule()
 
@@ -133,10 +132,10 @@ class AccountAdd extends Component{
                       getValue={ (obj) => this.getValue(obj.name, obj.value)}
                       name='confirmPassword'
                     />
-                    <Select 
-                      options={rule} 
-                      value={this.state.rule} 
-                      selected={val => this.getValue('rule',val)} 
+                    <Select
+                      options={rule}
+                      value={this.state.rule}
+                      selected={val => this.getValue('rule',val)}
                     />
                   </div>
             		</Modal.Body>

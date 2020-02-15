@@ -28,16 +28,18 @@ class Example extends React.Component {
   componentDidMount() {
   }
   handleClose() {
-    this.setState({ show: false, 
-      edit: false, 
-      roomType: [], 
+    this.setState({
+      show: false,
+      edit: false,
+      roomType: [],
       selectedDetail: [],
       selectType: [],
       parameter: [],
       dienTable: [],
       nuocTable: [],
       selectedType: '',
-      tienRac: 0, });
+      tienRac: 0,
+    });
   }
   handleEdit = () => {
     this.setState({ edit: true })
@@ -54,14 +56,16 @@ class Example extends React.Component {
   }
   getDetailRoomType = (id) => {
     get_detail_room_type({ idLoaiPhong: id }).then(detail => {
-      if (detail.data){
+      if (detail.data) {
+        console.log(detail.data)
         var parameter = detail.data.data;
         var selectedDetail = this.state.roomType.find(p => p._id === id);
         this.setState({
+          edit:false,
           selectedType: id,
           selectedDetail: selectedDetail,
-          dienTable: selectedDetail.dien? parameter.filter(p => p.loaiChiPhi === 0):[],
-          nuocTable: selectedDetail.nuoc? parameter.filter(p => p.loaiChiPhi === 1):[],
+          dienTable: selectedDetail.dien ? parameter.filter(p => p.loaiChiPhi === 0) : [],
+          nuocTable: selectedDetail.nuoc ? parameter.filter(p => p.loaiChiPhi === 1) : [],
           tienRac: this.state.roomType.find(p => p._id === id).tienRac
         });
       }
@@ -69,31 +73,38 @@ class Example extends React.Component {
   }
   handleSubmit = () => {
     var { dienTable, nuocTable, selectedDetail } = this.state;
-    if (selectedDetail.dien){
+    if (selectedDetail.dien) {
       dienTable = dienTable.map((value, index) => {
-        value.id = index +1;
+        value.id = index + 1;
         return value;
       })
     }
-    if (selectedDetail.nuoc){
-      nuocTable = nuocTable.map((value,index) => {
-        value.id = index +1;
+    if (selectedDetail.nuoc) {
+      nuocTable = nuocTable.map((value, index) => {
+        value.id = index + 1;
         return value
       })
     }
     var table = dienTable.concat(nuocTable);
     update_detail_room_type({
-      idLoaiPhong: this.state.selectedType, 
+      idLoaiPhong: this.state.selectedType,
       table: table,
       tienRac: this.state.tienRac
-     }).then(result => {
-       if (result.data.rs === 'success'){
+    }).then(result => {
+      if (result.data.rs === 'success') {
         ToastsStore.success("Cập nhật thành công");
-        this.handleClose()
-       } else {
+        this.setState({
+          edit: false,
+          selectedDetail: {},
+          dienTable: [],
+          nuocTable: [],
+        })
+        this.getDetailRoomType(this.state.selectedType);
+      } else {
         ToastsStore.error("Cập nhật thất bại");
-       }
-     })
+        this.handleClose()
+      }
+    })
   }
   selectedType = (value) => {
     this.getDetailRoomType(value);
@@ -159,7 +170,7 @@ class Example extends React.Component {
                   {this.state.edit && <Input type='number' value={para.giaTriThuc} name={`${type}.giaTriThuc.${index}.number.float`} getValue={this.getValue} />}
                 </td>
                 {this.state.edit && <td className={'text-center'}>
-                  <Button color="danger" onClick={() => this.removeRow(type, index)}> - </Button>
+                  <Button color="danger" title="Xóa dòng" onClick={() => this.removeRow(type, index)}> - </Button>
                 </td>}
               </tr>
             )
@@ -216,20 +227,20 @@ class Example extends React.Component {
               </Col>
             </Row>
             {this.state.selectedDetail && this.state.selectedDetail.dien && <Row>
-              <Col style={{marginBottom: '10px'}} md={12}>Thông số điện {this.state.edit && <Button color="warning" onClick={() => this.addRow(0)}>+</Button>}</Col>
+              <Col style={{ marginBottom: '10px' }} md={12}>Thông số điện {this.state.edit && <Button color="warning" title="Thêm dòng" onClick={() => this.addRow(0)}>+</Button>}</Col>
               <Col md={12}>
                 {this.tableRender(dienTable, 0)}
               </Col>
             </Row>}
             {this.state.selectedDetail && this.state.selectedDetail.nuoc && <Row>
-              <Col style={{marginBottom: '10px'}} md={12}>Thông số nước {this.state.edit && <Button color="warning" onClick={() => this.addRow(1)}>+</Button>}</Col>
+              <Col style={{ marginBottom: '10px' }} md={12}>Thông số nước {this.state.edit && <Button color="warning" title="Thêm dòng" onClick={() => this.addRow(1)}>+</Button>}</Col>
               <Col md={12}>
                 {this.tableRender(nuocTable, 1)}
               </Col>
             </Row>}
             <Row>
               <Col>
-                Tiền rác: <Input type='number' value={this.state.tienRac} disabled={!this.state.edit} getValue={p => {this.setState({tienRac: parseInt(p.value)})}}></Input>
+                Tiền rác: <Input type='number' value={this.state.tienRac} disabled={!this.state.edit} getValue={p => { this.setState({ tienRac: parseInt(p.value) }) }}></Input>
               </Col>
             </Row>
           </Modal.Body>

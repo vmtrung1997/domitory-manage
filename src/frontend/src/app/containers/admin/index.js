@@ -14,6 +14,7 @@ import History from './securityHistory/history'
 import News from './news/news';
 import University from './university/university'
 import Registered from './registered/registered'
+import DatabaseLog from './databaseLog/databaseLog'
 import { Authorization } from './../../components/AuthenticationRoute/Authorization'
 import jwt_decode from 'jwt-decode';
 class Admin extends Component {
@@ -48,6 +49,7 @@ class Admin extends Component {
 				<Route exact path={`${this.props.match.url}/dormitory`} component={Authorization(roles)(InfoDormitory, 'KT01')} />
 				<Route exact path={`${this.props.match.url}/university`} component={Authorization(roles)(University, 'TN01')} />
 				<Route exact path={`${this.props.match.url}/registered`} component={Authorization(roles)(Registered, 'DK01')} />
+				<Route exact path={`${this.props.match.url}/logs`} component={Authorization(roles)(DatabaseLog, 'DL01')} />
 			</Layout>
 		)
 	}

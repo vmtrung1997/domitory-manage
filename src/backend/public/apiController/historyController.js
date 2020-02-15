@@ -27,7 +27,6 @@ exports.find_history = (req, res) => {
     }
   }
   query.type = type === 'in-dormitory'?0:1;
-  console.log(query);
   LichSu.paginate(query,
     {
       populate: {

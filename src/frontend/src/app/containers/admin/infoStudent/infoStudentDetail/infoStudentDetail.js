@@ -21,9 +21,12 @@ import Loader from '../../../../components/loader/loader';
 import { ChooseRoom } from './../infoStudentModal'
 import { get_info_Student_detail, get_activites_by_MSSV, get_floor_room } from './../infoStudentActions'
 import Checkbox from "../../../../components/checkbox/checkbox";
+import jwt_decode from 'jwt-decode';
 import Print from "../infoStudentPrint";
+import { ensureInfoStudentDetail } from '../infoStudentHelper';
 
 const nationOption = [
+  { value: "", label: "" },
   { value: "Kinh", label: "Kinh" },
   { value: "Chăm", label: "Chăm" },
   { value: "Dao", label: "Dao" },
@@ -35,8 +38,7 @@ const nationOption = [
   { value: "Mường", label: "Mường" },
   { value: "Nùng", label: "Nùng" },
   { value: "Sán Dìu", label: "Sán Dìu" },
-  { value: "Khác", label: "Khác" },
-  { value: "", label: "" }
+  { value: "Khác", label: "Khác" }
 ];
 
 const tonGiaoOption = [
@@ -48,52 +50,63 @@ const tonGiaoOption = [
   { value: "Không", label: "Không" }
 ];
 
+const genderOption = [{value: 0, label: 'nữ'}, {value: 1, label: 'nam'}];
+
 class InfoStudentDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
         profile: {
-          isActive: true,
-          gioiTinh: 0,
-          ngaySinh: new Date(),
-          ngayVaoO : new Date(),
-          ngayHetHan: new Date(),
-          hoTen: '',
-          MSSV: '',
-          CMND: '',
-          tonGiao: '',
-          email: '',
-          sdt: '',
-          sdtNguoiThan: '',
-          doanVien: false,
-          dangVien: false,
-          danToc: '',
-          maThe: '',
-          diaChi: '',
-          moTa: ''
+          // isActive: true,
+          // gioiTinh: 0,
+          // ngaySinh: new Date(),
+          // ngayVaoO : new Date(),
+          // ngayHetHan: new Date(),
+          // hoTen: '',
+          // MSSV: '',
+          // CMND: '',
+          // tonGiao: '',
+          // email: '',
+          // sdt: '',
+          // sdtNguoiThan: '',
+          // doanVien: false,
+          // dangVien: false,
+          // danToc: '',
+          // maThe: '',
+          // diaChi: '',
+          // moTa: ''
         },
-        activity: {},
+      //   activity: {},
       showPrint: false,
       dataPrint: undefined,
-      school: {},
-      room: {},
-      major: {},
-      genderOptions: [{value: 0, label: 'nữ'}, {value: 1, label: 'nam'}],
-      roomOptions: [],
-      schoolOptions: [],
-      majorOptions: [],
-      loading: false,
-      custom: false,
+      //
+      // room: {},
+      // major: {},
+      // roomOptions: [],
+      // schoolOptions: [],
+      // majorOptions: [],
+      // loading: false,
+      // custom: false,
       showRoomPopup: false,
-      roomData: {},
+      // roomData: {},
       isOld: true,
+      // loaiUser: 'SA',
+      // roles: []
     }
+    // this.genderOptions = ;
+    // this.school = {};
+    // this.room = {};
+    // this.major = {};
+    this.roles = [];
+    this.loaiUser = 'SA';
+
   }
 
   componentDidMount() {
     this.getData();
     this.getElement('room');
     this.getElement('school');
+    this.getRoles()
   }
 
   getData = () => {
@@ -101,26 +114,33 @@ class InfoStudentDetail extends Component {
       loading: true,
     });
     get_info_Student_detail(this.props.match.params.mssv)
-      .then(result => {
+      .then(async result => {
         let profile = result.data;
 
-        let school = {}, major = {};
-        //let major = {};
+        //let school = {}, major = {},
+        // let majorOptions = [];
+        let majorOptions = [];
+        // //let major = {};
         let isOld = true;
         if(profile.truong){
-          school = {
-            value: profile.truong._id,
-            label: profile.truong.tenTruong
-          };
+          // school = {
+          //   value: profile.truong._id,
+          //   label: profile.truong.tenTruong
+          // };
+          // this.setState({
+          //   majorOptions: await this.getMajorOptions(profile.truong._id)
+          // })
           this.getMajorOptions(profile.truong._id)
-        }
-        if(profile.nganhHoc){
-          major = {
-              value: profile.nganhHoc._id,
-              label: profile.nganhHoc.tenNganh
-            };
+          //console.log('=options', this.majorOptions, this.getMajorOptions(profile.truong._id))
 
         }
+        // if(profile.nganhHoc){
+        //   major = {
+        //       value: profile.nganhHoc._id,
+        //       label: profile.nganhHoc.tenNganh
+        //     };
+        //
+        // }
         if(profile.idTaiKhoan && !profile.idTaiKhoan.isDelete){
           isOld = false;
         }
@@ -128,13 +148,14 @@ class InfoStudentDetail extends Component {
         this.setState({
           profile: {
             ...result.data,
-            ngaySinh: new Date(profile.ngaySinh),
+            ngaySinh: profile.ngaySinh ? new Date(profile.ngaySinh) : new Date(),
             ngayVaoO: result.data.ngayVaoO ? new Date(result.data.ngayVaoO) : new Date(),
             ngayHetHan: new Date(result.data.ngayHetHan)
           },
+          majorOptions: majorOptions,
           isOld: isOld,
-          school: school,
-          major: major,
+          // school: school,
+          // major: major,
           loading: false,
         });
 
@@ -144,10 +165,10 @@ class InfoStudentDetail extends Component {
           loading: false
         })
       });
-      get_floor_room().then(result => {
-        this.setState({roomData: result.data})
-      }).catch(err => {
-    });
+    get_floor_room().then(result => {
+      // this.setState({roomData: result.data})
+      this.roomData = result.data;
+    }).catch(err => {});
     get_activites_by_MSSV(this.props.match.params.mssv).then(result => {
       this.setState({
         dataActivities: result.data
@@ -155,6 +176,20 @@ class InfoStudentDetail extends Component {
     }).catch(() => {
     })
   };
+
+  getRoles = () => {
+		let token = JSON.parse(localStorage.getItem('secret'));
+		let decode = jwt_decode(token.access_token)
+		if (decode && decode.user.userEntity.phanQuyen){
+			// this.setState({
+      //   roles: decode.user.userEntity.phanQuyen.quyen,
+			// 	loaiUser: decode.user.userEntity.loai
+			// })
+      this.roles = decode.user.userEntity.phanQuyen.quyen;
+      this.loaiUser = decode.user.userEntity.loai;
+
+		}
+	};
 
   getElement = async (name) => {
     await refreshToken();
@@ -166,17 +201,18 @@ class InfoStudentDetail extends Component {
       switch (name) {
         case 'room':
           const roomOptions = result.data.map(room => ({ value: room._id, label: room.tenPhong }));
-          this.setState({
-            roomOptions: roomOptions
-          });
+          this.roomOptions = roomOptions;
+          // this.setState({
+          //   roomOptions: roomOptions
+          // });
 
           break;
         case 'school':
           const schoolOptions = result.data.map(truong => ({ value: truong._id, label: truong.tenTruong }));
-
-          this.setState({
-            schoolOptions: schoolOptions
-          });
+          this.schoolOptions = schoolOptions;
+          // this.setState({
+          //   schoolOptions: schoolOptions
+          // });
           break;
 
         default:
@@ -248,18 +284,18 @@ class InfoStudentDetail extends Component {
   };
 
   handleSelectSchool = (selectedOption) => {
-    delete this.state.profile.nganhHoc;
+    //delete this.state.profile.nganhHoc;
     this.setState({
       profile: {
         ...this.state.profile,
         truong: {
           tenTruong: selectedOption.label,
           _id: selectedOption.value,
-          nganhHoc: {}
-        }
+        },
+        nganhHoc: {}
       },
-      school: selectedOption,
-      major: {}
+      // school: selectedOption,
+      // major: {}
     });
 
     this.getMajorOptions(selectedOption.value);
@@ -268,10 +304,13 @@ class InfoStudentDetail extends Component {
   getMajorOptions = (idSchool) => {
     getMajor({id: idSchool}).then(result =>{
       if (result.data.rs === 'success') {
-        let majorList = result.data.data.map(major => ({ value: major.idNganhHoc._id, label: major.idNganhHoc.tenNganh }));
+        const majorList =  result.data.data.map(major => ({ value: major.idNganhHoc._id, label: major.idNganhHoc.tenNganh }));
+        // let majorList = result.data.data.map(major => ({ value: major.idNganhHoc._id, label: major.idNganhHoc.tenNganh }));
         this.setState({
           majorOptions: majorList,
         })
+        //return majorList
+        //this.majorOptions = majorList;
       }
     })
   };
@@ -302,7 +341,7 @@ class InfoStudentDetail extends Component {
     if (!this.uploadFile.files.length)
       return;
     fileReader.readAsDataURL(this.uploadFile.files[0]);
-    
+
     fileReader.onload = (e) => {
       var data = e.target.result;
       var testImg = new Image();
@@ -313,7 +352,7 @@ class InfoStudentDetail extends Component {
           profile: {
             ...this.state.profile,
             img: e.target.result
-            
+
           }
         })
       };
@@ -339,22 +378,31 @@ class InfoStudentDetail extends Component {
   render() {
     let {
       profile,
-      genderOptions,
-      schoolOptions,
-      majorOptions,
-      school,
-      major,
+      // roomData,
+      // genderOptions,
+      // schoolOptions = [],
+      // majorOptions = [],
+      // school,
+      // major,
       dataActivities,
+      showRoomPopup,
       isOld,
+      // loaiUser,
+      // roles,
       dataPrint,
       showPrint,
-      profile: {isActive}
     } = this.state;
-    const { CMND, doanVien, dangVien, } = profile;
-    let imgFile = profile&&profile.img ? profile.img : defaultStudentImg;
-    let gender = this.state.profile && this.state.profile.gioiTinh ? this.state.profile.gioiTinh: 0;
-    let danToc = profile.danToc ? profile.danToc : '';
-    let tonGiao = profile.tonGiao ? profile.tonGiao : 'Không';
+    const ensureProfile = ensureInfoStudentDetail(profile);
+    console.log('=ensureProfile', ensureProfile)
+    let school = ensureProfile.truong && {label: ensureProfile.truong.tenTruong, value: ensureProfile.truong._id};
+    let major = ensureProfile.nganhHoc && {label: ensureProfile.nganhHoc.tenNganh, value: ensureProfile.nganhHoc._id};
+    // const { CMND, doanVien, dangVien, } = profile;
+    // const imgFile = profile && profile.img ? profile.img : defaultStudentImg;
+    // let gender = this.state.profile && this.state.profile.gioiTinh ? this.state.profile.gioiTinh: 0;
+    // let danToc = profile.danToc ? profile.danToc : '';
+    // let tonGiao = profile.tonGiao ? profile.tonGiao : 'Không';
+    let linkBack = this.loaiUser === 'BV' ? 'security' : 'admin';
+
     return (
       <div>
         <Loader loading={this.state.loading}/>
@@ -367,7 +415,7 @@ class InfoStudentDetail extends Component {
         <div className={'content-body'}>
           <div className={'infoDetail'}>
             <div className={'id-back'}>
-              <Link to={'/admin/student'}>
+              <Link to={`/${linkBack}/student`}>
                 <i className="fas fa-chevron-left" />
                 <span>Trở về</span>
               </Link>
@@ -375,7 +423,7 @@ class InfoStudentDetail extends Component {
             <Row>
               <Col md={2}>
                 <div className={'id-avt'}>
-                  <img alt='avater student' src={imgFile} />
+                  <img alt='avatar student' src={ensureProfile.img} />
                 </div>
                 <div className="box">
                   <input
@@ -395,7 +443,7 @@ class InfoStudentDetail extends Component {
                   <Button
                     title={'In thẻ'}
                     color={'success'}
-                    onClick={ () => {this.changeState('showPrint', true); this.changeState('dataPrint', profile) }}
+                    onClick={ () => {this.changeState('showPrint', true); this.changeState('dataPrint', ensureProfile) }}
                   >
                     In thẻ &#160;
                     <i className="fas fa-print"/>
@@ -404,6 +452,8 @@ class InfoStudentDetail extends Component {
               </Col>
               <Col md={10}>
                 <Tabs defaultActiveKey="infoPersonal" id="uncontrolled-tab-example">
+
+                  {/*-----------------------THONG TIN CA NHAN-----------------------*/}
                   <Tab eventKey="infoPersonal" title="Thông tin cá nhân">
                     <div className={'id-tab_frame'}>
                       <Row>
@@ -413,7 +463,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={ profile.hoTen ? profile.hoTen : ''}
+                            value={ ensureProfile.hoTen}
                             getValue={this.onChange}
                             name={'hoTen'} />
                         </Col>
@@ -421,7 +471,10 @@ class InfoStudentDetail extends Component {
                           MSSV:
                         </Col>
                         <Col md={4}>
-                          <Input value={profile.MSSV} disabled />
+                          <Input
+                            value={ensureProfile.MSSV}
+                            disabled
+                          />
                         </Col>
                       </Row>
 
@@ -433,7 +486,7 @@ class InfoStudentDetail extends Component {
                           <DatePicker
                             disabled={isOld}
                             dateFormat='dd/MM/yyyy'
-                            selected={this.state.profile.ngaySinh}
+                            selected={ensureProfile.ngaySinh}
                             onChange={(val) => this.getValue('ngaySinh', val)}
                             className='input-datepicker'
                           />
@@ -445,9 +498,9 @@ class InfoStudentDetail extends Component {
                           <Select
                             disabled={isOld}
                             placeholder={''}
-                            value={gender}
+                            value={ensureProfile.gioiTinh}
                             selected={this.handleSelectGender}
-                            options={genderOptions} />
+                            options={genderOption} />
 
                         </Col>
                       </Row>
@@ -459,7 +512,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={CMND ? CMND : ''}
+                            value={ensureProfile.CMND}
                             getValue={this.onChange}
                             name={'CMND'} />
                         </Col>
@@ -469,7 +522,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Select
                             disabled={isOld}
-                            value={tonGiao}
+                            value={ensureProfile.tonGiao}
                             selected={e => this.onChange({name: 'tonGiao', value: e})}
                             options={tonGiaoOption} />
                         </Col>
@@ -482,7 +535,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile.email ? profile.email : ''}
+                            value={ensureProfile.email}
                             getValue={this.onChange}
                             name={'email'} />
                         </Col>
@@ -494,7 +547,7 @@ class InfoStudentDetail extends Component {
                             name={'dangVien'}
                             isCheck={this.handleCheckBox}
                             checkmark={'check-mark-fix'}
-                            check={dangVien ? dangVien : false}/>
+                            check={ensureProfile.dangVien}/>
                         </Col>
                       </Row>
 
@@ -505,7 +558,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Select
                             disabled={isOld}
-                            value={danToc}
+                            value={ensureProfile.danToc}
                             selected={e => this.onChange({name: 'danToc', value: e})}
                             options={nationOption} />
                         </Col>
@@ -517,7 +570,7 @@ class InfoStudentDetail extends Component {
                             name={'doanVien'}
                             isCheck={this.handleCheckBox}
                             checkmark={'check-mark-fix'}
-                            check={doanVien ? doanVien : false}/>
+                            check={ensureProfile.doanVien}/>
                         </Col>
                       </Row>
 
@@ -528,7 +581,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile.sdt ? profile.sdt : ''}
+                            value={ensureProfile.sdt}
                             getValue={this.onChange}
                             name={'sdt'} />
                         </Col>
@@ -538,7 +591,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile.sdtNguoiThan ? profile.sdtNguoiThan : ''}
+                            value={ensureProfile.sdtNguoiThan}
                             getValue={this.onChange}
                             name={'sdtNguoiThan'} />
                         </Col>
@@ -551,14 +604,15 @@ class InfoStudentDetail extends Component {
                         <Col md={10}>
                           <Input
                             disabled={isOld}
-                            value={profile.diaChi ? profile.diaChi : ''}
+                            value={ensureProfile.diaChi}
                             getValue={this.onChange}
                             name={'diaChi'} />
                         </Col>
                       </Row>
-
                     </div>
                   </Tab>
+
+                  {/*-----------------------THONG TIN CHUNG-----------------------*/}
                   <Tab eventKey="infoGeneral" title="Thông tin chung">
                     <div className={'id-tab_frame'}>
                       <Row>
@@ -568,7 +622,7 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                           <Input
                             disabled={isOld}
-                            value={profile.maThe ? profile.maThe : ''}
+                            value={ensureProfile.maThe}
                             getValue={this.onChange}
                             name={'maThe'} />
                         </Col>
@@ -578,11 +632,11 @@ class InfoStudentDetail extends Component {
                         <Col md={4}>
                         <ChooseRoom
                           disabled={isOld}
-                          show={this.state.showRoomPopup}
-                          label={profile && profile.idPhong ? profile.idPhong.tenPhong : ''}
+                          show={showRoomPopup}
+                          label={ensureProfile.idPhong}
                           onChange={this.chooseRoom}
-                          room={profile ? profile.idPhong : {}}
-                          data={this.state.roomData}
+                          room={ensureProfile.idPhong}
+                          data={this.roomData}
                         />
                         </Col>
                       </Row>
@@ -595,7 +649,7 @@ class InfoStudentDetail extends Component {
                           <DatePicker
                             disabled
                             dateFormat='dd/MM/yyyy'
-                            selected={profile.ngayVaoO}
+                            selected={ensureProfile.ngayVaoO}
                             onChange={(val) => this.getValue('ngayVaoO', val)}
                             className='input-datepicker'
                           />
@@ -607,7 +661,7 @@ class InfoStudentDetail extends Component {
                           <DatePicker
                             disabled={isOld}
                             dateFormat='dd/MM/yyyy'
-                            selected={profile.ngayHetHan}
+                            selected={ensureProfile.ngayHetHan}
                             onChange={(val) => this.getValue('ngayHetHan', val)}
                             className='input-datepicker'
                           />
@@ -625,7 +679,7 @@ class InfoStudentDetail extends Component {
                             placeholder={''}
                             value={school}
                             onChange={this.handleSelectSchool}
-                            options={schoolOptions} />
+                            options={this.schoolOptions} />
                         </Col>
                       </Row>
 
@@ -640,7 +694,7 @@ class InfoStudentDetail extends Component {
                             placeholder={''}
                             value={major}
                             onChange={this.handleSelectMajor}
-                            options={majorOptions} />
+                            options={this.state.majorOptions} />
                         </Col>
                       </Row>
 
@@ -651,13 +705,14 @@ class InfoStudentDetail extends Component {
                         <Col md={10}>
                           <Input
                             disabled={isOld}
-                            value={ profile.moTa ? profile.moTa : ''}
+                            value={ ensureProfile.moTa}
                             getValue={this.onChange}
                             name={'moTa'} />
                         </Col>
                       </Row>
                     </div>
                   </Tab>
+
                   <Tab eventKey="infoActivities" title="Thông tin hoạt động">
                     <TabActivities
                       data={dataActivities}
@@ -670,28 +725,31 @@ class InfoStudentDetail extends Component {
             </Row>
 
           </div>
-          <Row className={'isc-footer-btn'}>
-            {!isOld &&
-              <Button
-                onClick={() => this.handleSaveChange()}
-              >
-                Lưu thay đổi
-              </Button>
-            }
-            {!isActive && !isOld &&
-            <Button
-              onClick={() => this.handleActiveAccount()}
-              color={'danger'}
-            >
-              Xác nhận lưu trú
-            </Button>
-            }
-          </Row>
+          {this.roles.includes('SV_CHANGE_DETAIL') &&
+            <Row className={'isc-footer-btn'}>
+              {!isOld &&
+                <Button
+                  onClick={() => this.handleSaveChange()}
+                >
+                  Lưu thay đổi
+                </Button>
+              }
+              {!ensureProfile.isActive && !isOld &&
+                <Button
+                  onClick={() => this.handleActiveAccount()}
+                  color={'danger'}
+                >
+                  Xác nhận lưu trú
+                </Button>
+              }
+            </Row>
+          }
         </div>
 
       </div>
 
     )
+
   }
 }
 

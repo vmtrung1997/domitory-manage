@@ -1,10 +1,17 @@
 import React, { Component } from 'react'
 import { Col, Row } from 'react-bootstrap'
-import { Link } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 import ReactDOM from 'react-dom'
 import './index.css'
 import { getHistoryList, inputCard, logout } from './indexAction'
 import RadioButton from '../../components/radioButton/radioButton';
+import Layout from '../admin/layout/layout';
+import { Authorization } from '../../components/AuthenticationRoute/Authorization';
+import infoStudent from '../admin/infoStudent/infoStudent';
+import InfoStudentDetail from '../admin/infoStudent/infoStudentDetail/infoStudentDetail';
+import History from '../admin/securityHistory/history'
+
+import jwt_decode from 'jwt-decode';
 class Security extends Component {
 	constructor(props) {
 		super(props)
@@ -15,7 +22,8 @@ class Security extends Component {
 				thoiGian: new Date(),
 				profile: {
 					hoTen: '',
-					idPhong: { tenPhong: '' }
+					idPhong: { tenPhong: '' },
+					diaChi:'',
 				},
 				imgFile: ''
 			},
@@ -24,7 +32,9 @@ class Security extends Component {
 			cardId: '',
 			notFound: false,
 			inputFocus: false,
-			type: 'in-dormitory'
+			type: 'in-dormitory',
+			isMusicPlaying: false,
+			mainScreen: 0
 		}
 	}
 	hideLichSu = () => {
@@ -32,10 +42,17 @@ class Security extends Component {
 
 	}
 	componentDidMount() {
-		document.addEventListener("keydown", this.onKeyDown);
+		document.addEventListener("keydown", this.onKeyDown, false);
 		this.onInitHistoryList(this.state.type);
+		let token = JSON.parse(localStorage.getItem('secret'));
+		let decode = jwt_decode(token.access_token)
+		if (decode && decode.user.userEntity.phanQuyen) {
+			this.setState({
+				roles: decode.user.userEntity.phanQuyen.quyen
+			})
+		}
 	}
-	onInitHistoryList(type){
+	onInitHistoryList(type) {
 		getHistoryList(type).then(result => {
 			if (result.data) {
 				var historyList = result.data.data;
@@ -54,7 +71,6 @@ class Security extends Component {
 			let input = this.state.cardId + String.fromCharCode(event.keyCode);
 			this.setState({ cardId: input })
 		}
-
 	}
 
 	onEnterInput = (e) => {
@@ -62,10 +78,12 @@ class Security extends Component {
 			return;
 		else this.onHandleInputCard()
 	}
+	alert = () => {
+		this.rap.play();
+	}
 	onHandleInputCard = () => {
-		//var startTime = new Date()
 		var { cardId, type } = this.state;
-		inputCard({ info: cardId, type: type}).then(result => {
+		inputCard({ info: cardId, type: type }).then(result => {
 			if (result.data.rs === 'success') {
 				var { history } = this.state;
 				var his = result.data.data;
@@ -75,28 +93,48 @@ class Security extends Component {
 				this.setState({ notFound: false, history: history, mainHis: history[0], cardId: '' })
 			} else if (result.data.rs === 'not found') {
 				this.setState({ notFound: true, cardId: '' })
+				this.alert();
 			}
 		}).catch(() => {
-			this.setState({ notFound: true, cardId: '' })
+			this.setState({ notFound: true, cardId: '' });
+			this.alert();
 		})
 	}
 	getInput = (target) => {
 		this.setState({ cardId: target.value })
 	}
 	radioCheck = (e) => {
-		this.setState({type: e.value})
+		this.setState({ type: e.value })
 		this.onInitHistoryList(e.value)
 	}
 	render() {
-		var { mainHis } = this.state
+		var { mainHis , roles, mainScreen} = this.state
 		var mainTime = mainHis ? new Date(mainHis.thoiGian) : ''
 		return (
 			<React.Fragment>
-				<div className='p-t-10 header-security'>
-				<div className='type-div'>
-						<RadioButton check={this.state.type === 'in-dormitory'} value={'in-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Vào ký túc xá'/>
-						<RadioButton check={this.state.type === 'out-dormitory'} value={'out-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Ra ký túc xá'/>
-				</div>
+				<div className={!mainScreen?'p-t-10 header-security':'p-t-10 header-security security-search'}>
+				<audio 
+				src="sound/error_beep.mp3"
+				ref={(element) => { this.rap = element; }}
+				controls
+				style={{display:'none'}}
+				/>
+					<div className='type-div'>
+						<RadioButton check={this.state.type === 'in-dormitory'} value={'in-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Vào ký túc xá' />
+						<RadioButton check={this.state.type === 'out-dormitory'} value={'out-dormitory'} isRadioChk={e => this.radioCheck(e)} className='type-radio-button' name='type' label='Ra ký túc xá' />
+						
+					</div>
+					<div>
+					
+					<Link to={mainScreen?'/security':'/security/student'} onClick={() => {
+						if (mainScreen)
+							document.addEventListener("keydown", this.onKeyDown, false)
+						else
+							document.removeEventListener("keydown", this.onKeyDown, false)
+						this.setState({mainScreen:!this.state.mainScreen})
+					}}>
+						<span className={"logout"}>{mainScreen? 'Bảo vệ' :'Tìm kiếm'}</span>
+					</Link>
 					<Link to="/signin-admin" onClick={() => {
 						document.removeEventListener("keydown", this.onKeyDown)
 						logout();
@@ -104,7 +142,9 @@ class Security extends Component {
 						<i className="fas fa-sign-out-alt" />
 						<span className={"logout"}>Đăng xuất </span>
 					</Link>
+					</div>
 				</div>
+				{!this.state.mainScreen? 
 				<div className={'content-body-security'}>
 					<Row>
 						<Col md={this.state.isHide ? 12 : 9}>
@@ -132,7 +172,11 @@ class Security extends Component {
 										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>{mainHis.profile.hoTen.toUpperCase()}</span></Col>
 										<Col md={12} className={'info'}>MSSV: <span>{mainHis.MSSV}</span></Col>
 										<Col md={12} className={'info'}>Phòng: <span>{mainHis.profile.idPhong ? mainHis.profile.idPhong.tenPhong : 'Chưa cập nhật'}</span></Col>
+										<Col md={12} className={'info'}>Trường: <span>{mainHis.profile.truong ? mainHis.profile.truong.tenTruong : 'Chưa cập nhật'}</span></Col>
+										<Col md={12} className={'info'}>Ngành: <span>{mainHis.profile.nganhHoc ? mainHis.profile.nganhHoc.tenNganh : 'Chưa cập nhật'}</span></Col>
 										<Col md={12} className={'info'}>Giờ vào: <span>{mainTime.toLocaleTimeString() + ' ' + mainTime.toLocaleDateString()}</span></Col>
+										<Col md={12} className={'info'}>Địa chỉ: <span>{mainHis.profile.diaChi ? mainHis.profile.diaChi : 'Chưa cập nhật'}</span></Col>
+										
 									</div> : <div>Chưa có dữ liệu</div> :
 										<Col md={12} className={'info'}><span style={{ fontSize: '1.5em', color: 'red' }}>Không tìm thấy dữ liệu</span></Col>
 									}
@@ -159,6 +203,13 @@ class Security extends Component {
 						</Col>}
 					</Row>
 				</div>
+				:<Layout>
+				<Route exact path={`${this.props.match.url}/student`} component={Authorization(roles)(infoStudent, 'SV01')} />
+				<Route exact path={`${this.props.match.url}/student/detail/:mssv`} component={Authorization(roles)(InfoStudentDetail, 'SV02')} />
+				<Route exact path={`${this.props.match.url}/history`} component={Authorization(roles)(History, 'LS01')} />
+
+			</Layout>}
+			
 			</React.Fragment>
 		)
 	}

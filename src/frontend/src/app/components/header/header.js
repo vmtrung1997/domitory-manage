@@ -19,7 +19,7 @@ export default class Header extends React.Component{
             headers: {
                 'x-refresh-token': secret.refresh_token
             }
-        }).then( res => localStorage.removeItem('secret') )
+        }).then( () => localStorage.removeItem('secret') )
             
     };
 
@@ -49,8 +49,8 @@ export default class Header extends React.Component{
                 </Button>
                 <div className={"header-right"}>
                 <Link to="/signin-admin" onClick={this.logout}>
-                    <i className="fas fa-sign-out-alt"/>
                     <span className={"logout"}> Đăng xuất </span>
+                    <i className="fas fa-sign-out-alt"/>
                 </Link>
                 </div>
             </div>

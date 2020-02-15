@@ -19,6 +19,7 @@ export const doanVienArr = [
 
 
 export const danTocArr = [
+  { value: "", label: "" },
   { value: "Kinh", label: "Kinh" },
   { value: "Chăm", label: "Chăm" },
   { value: "Dao", label: "Dao" },
@@ -30,5 +31,5 @@ export const danTocArr = [
   { value: "Mường", label: "Mường" },
   { value: "Nùng", label: "Nùng" },
   { value: "Sán Dìu", label: "Sán Dìu" },
-  { value: "Khác", label: "Khác" },
+  { value: "Khác", label: "Khác" }
 ]

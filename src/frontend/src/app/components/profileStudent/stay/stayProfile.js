@@ -212,14 +212,14 @@ class StayProfile extends React.Component {
                           />
                         </Col>
 
-                        <Col sm={6}>
+                        {/* <Col sm={6}>
                           <span className="label-font">Trạng thái</span>
                           <MyInput
                             getValue={this.getValue}
                             disabled={this.state.readOnly}
                             borderRadius="3px"
                           />
-                        </Col>
+                        </Col> */}
                       </Row>
                     </div>
                   </div>

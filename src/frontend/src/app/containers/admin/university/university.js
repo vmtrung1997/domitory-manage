@@ -282,7 +282,8 @@ class Security extends Component {
                   return (
                     <Col key={value._id} md={12}>
                       <Row className='school-item m-b-10'>
-                        <Col md={9}>{value.idNganhHoc.tenNganh}</Col>
+                        <Col md={6}>{value.idNganhHoc.tenNganh}</Col>
+                        <Col md={3}>Số SV: {value.count}</Col>
                         <Col md={3}>
                           <i className="fas fa-edit school-item-edit school-item-cursor" onClick={() => this.onUpdateMajorItem(value)}></i>&nbsp;
                           <i className="fas fa-trash-alt school-item-trash school-item-cursor" onClick={() => this.onDel('major', value.idNganhHoc._id, value.idNganhHoc.tenNganh)}></i>

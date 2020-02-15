@@ -7,7 +7,7 @@ const Account = require('./../models/TaiKhoan')
 
 exports.get_List = (req, res) => {
 	const options = {
-		option: { 
+		option: {
 			sort: { username: 1 }
 		},
 		populate: {
@@ -16,11 +16,10 @@ exports.get_List = (req, res) => {
 		page: req.query.page
 	}
 	var query = { 
-		isDelete: 0,
 		loai: {$ne: "SV"}
 	}
-	
-	if(req.body.search){ 
+
+	if(req.body.search){
 		query.username = { $regex: '.*' + req.body.search + '.*', $options: 'i' }
 	}
 
@@ -35,7 +34,7 @@ exports.get_List = (req, res) => {
 	}).catch(err => {
 		console.log('==get_account: ',err)
 		res.status(500)
-	})                             
+	})
 }
 
 exports.get_Detail = (req, res) => {
@@ -102,12 +101,12 @@ exports.add_Account = async (req, res) => {
 					ms: 'ok'
 				})
 
-			} 
+			}
 			if(val){
 				console.log('==add_account: profile already exist account')
 				res.status(402).json({
 					ms: 'Hồ sơ này đã cấp được cấp tài khoản'
-				})			
+				})
 			}
 		})
 	}
@@ -129,7 +128,7 @@ exports.update_Account = (req, res) => {
 				}
 			})
 		}
-	}	
+	}
 }
 
 exports.delete_Account = (req, res) =>{
@@ -145,4 +144,3 @@ exports.delete_Account = (req, res) =>{
 		}
 	})
 }
-

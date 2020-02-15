@@ -1,7 +1,8 @@
-const Truong = require('../models/Truong');
-const Nganh = require('../models/NganhHoc');
-const TruongNganh = require('../models/TruongNganh');
-const Profile =require('../models/Profile');
+const Truong = require('../models/Truong')
+const Nganh = require('../models/NganhHoc')
+const TruongNganh = require('../models/TruongNganh')
+const Profile =require('../models/Profile')
+const TaiKhoan = require('../models/TaiKhoan')
 
 exports.getSchoolList = (req, res) => {
   Truong.find().sort('tenTruong').then(value => {
@@ -86,22 +87,36 @@ exports.removeSchool = (req, res) => {
   })
 };
 
-exports.getMajor = (req, res) => {
-  const id = req.body.id;
-  if(id) {
-    TruongNganh.find({idTruong: id}).populate('idNganhHoc').then(value => {
-      res.status(200).json({
+exports.getMajor = async (req, res) => {
+  var id = req.body.id;
+  if (id){
+    const taiKhoan = await TaiKhoan.find({isDelete: 0,loai:"SV"}).select('_id');
+  const arrTaiKhoan = taiKhoan.map(v => v._id);
+  TruongNganh.find({idTruong: id}).populate('idNganhHoc').then(majorList => {
+    const data = majorList.map(major => {
+      return new Promise(async resolve => {
+          Profile.countDocuments({idTaiKhoan: {$in: arrTaiKhoan}, nganhHoc: major.idNganhHoc._id}).then(count => {
+            var mj = JSON.parse(JSON.stringify(major));
+            mj.count = count
+            resolve(mj)
+          })
+        })
+    })
+    Promise.all(data).then(result => {
+      res.json({
         rs: 'success',
-        data: value
+        data: result
       })
-    }).catch(err => res.json({rs: 'fail'}))
+    })
+    
+  }).catch(err => res.json({rs: 'fail'}))
   } else {
-
     Nganh.find().then(result => {
       res.status(200).json({rs: 'success', data:result})
     }).catch(err => res.status(400).json({rs: 'fail'}))
   }
-};
+  
+}
 
 exports.insertMajor = (req, res) => {
   var nganh = new Nganh({

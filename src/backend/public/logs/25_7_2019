@@ -1,0 +1,12 @@
+
+*	Thời gian: 23:08:10 2019-7-25
+*	Người dùng: ketoan
+*	Nội dung: Cập nhật chi phí
+*	Dữ liệu: 
+*	      {"thayDien":null,"thayNuoc":null,"_id":"5d18cce9d04a9c3f7cf84676","idPhong":{"_id":"5d007eaa77932279dd7f4be1","tenPhong":"103"},"thang":8,"nam":2019,"soDien":16750,"soNuoc":4545,"soDienCu":16740,"soNuocCu":4539,"tienDien":12340,"tienNuoc":0,"tongTien":42500,"tienRac":30000,"tongTienChu":"Bốn mươi hai nghìn năm trăm","trangThai":0,"__v":0,"check":false}
+
+*	Thời gian: 23:31:18 2019-7-25
+*	Người dùng: ketoan
+*	Nội dung: Cập nhật chi phí
+*	Dữ liệu: 
+*	      {"thayDien":{"dienCu":0,"dienMoi":17},"thayNuoc":null,"_id":"5d269d6edcb4543628137cc7","idPhong":{"_id":"5cf62c76acf0d9528d164b9e","tenPhong":"100"},"thang":8,"nam":2019,"soDien":20,"soNuoc":3750,"soDienCu":10,"soNuocCu":3741,"tienDien":0,"tienNuoc":0,"tongTien":0,"tienRac":0,"tongTienChu":"Không","trangThai":0,"__v":0,"check":false}

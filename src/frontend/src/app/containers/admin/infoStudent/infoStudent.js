@@ -17,6 +17,7 @@ import Loader from "../../../components/loader/loader";
 import Print from './infoStudentPrint';
 import { get_element, get_list_student_by_page } from './infoStudentActions'
 import { AddStudentModal, ConvertStudentModal, ImportDataModal, ExportDataModal } from './infoStudentModal';
+import jwt_decode from 'jwt-decode';
 import {getMajor} from "../university/universityAction";
 
 const PRESENT = 0, OLD = 1, PROCESSING = 2;
@@ -29,7 +30,7 @@ class InfoStudent extends Component{
       totalpages: 1,
       infoList: [],
       checkedAll: false,
-
+      roles: [],
       searchValues: {
         name: '',
         studentNumber: '',
@@ -113,7 +114,7 @@ class InfoStudent extends Component{
 
   onViewDetail = (mssv) => {
     this.props.history.push({
-      pathname: '/admin/student/detail/'+ mssv,
+      pathname: `${this.props.match.url}/detail/${mssv}`//'/admin/student/detail/'+ mssv,
       //state: { info: info }
     });
   };
@@ -127,8 +128,18 @@ class InfoStudent extends Component{
     this.getYear()
 
     // this.modifyData();
+    this.getRoles()
   }
+  getRoles = () => {
+		let token = JSON.parse(localStorage.getItem('secret'));
+		let decode = jwt_decode(token.access_token)
+		if (decode && decode.user.userEntity.phanQuyen){
+			this.setState({
+				roles: decode.user.userEntity.phanQuyen.quyen
+			})
 
+		}
+	}
   getElement = (name) => {
     get_element(name).then(result => {
       switch (name) {
@@ -180,9 +191,11 @@ class InfoStudent extends Component{
 
   getMajorOptions = () => {
     getMajor().then(result =>{
+      console.log(`major ${result}`)
       if (result.data.rs === 'success') {
         let majorList = result.data.data.map(major => ({ value: major._id, label: major.tenNganh }));
         majorList.unshift({ value: -1, label: 'Chưa xác định' });
+        majorList.unshift({ value: 0, label: 'Tất cả' });
         this.setState({
           majorOptions: majorList,
         })
@@ -365,7 +378,9 @@ class InfoStudent extends Component{
       infoList,
       floorOptions,
       roomHistory,
+      roles
     } = this.state;
+
     let i = pageActive*limit - 10;
     return(
       <div>
@@ -378,34 +393,75 @@ class InfoStudent extends Component{
 
           <div className={'is-header'}>
             <form onSubmit={e => this.handleSearch(e)}>
+
               <Row>
-                <Col md={1}>
-                  MSSV
+                <Col sm={2}>
+                  <div>
+                    <span className={'label'}>MSSV</span>
+                    <Input
+                      getValue={this.onChange}
+                      name={'studentNumber'}
+                      value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}
+                    />
+                  </div>
                 </Col>
-                <Col md={3}>
-                  <Input
-                    getValue={this.onChange}
-                    name={'studentNumber'}
-                    value={this.state.searchValues ? this.state.searchValues.studentNumber : ''}
-                  />
+                <Col sm={3}>
+                  <div>
+                    <span className={'label'}>Họ tên</span>
+                    <Input
+                      getValue={this.onChange}
+                      name={'name'}
+                      value={this.state.searchValues.name}/>
+                  </div>
                 </Col>
+                <Col sm={3}>
+                  <div>
+                    <span className={'label'}>Trường</span>
+                    <SearchSelect
+                      isSearchable={true}
+                      value={this.state.searchValues.schoolSelected}
+                      onChange={(selectedOption) => this.handleSelected('schoolSelected',selectedOption)}
+                      options={this.state.schoolOptions}
+                    />
+                  </div>
+                </Col>
+                <Col sm={2}>
+                  <div>
+                    <span className={'label'}>Phòng</span>
+                    <SearchSelect
+                      isSearchable={true}
+                      placeholder={''}
+                      value={this.state.searchValues.roomSelected}
+                      onChange={this.handleSelectRoom}
+                      options={this.state.roomOptions}
+                    />
+                  </div>
+                </Col>
+                <Col sm={2}>
+                  <div>
+                    <span className={'label'}>Lầu</span>
+                    <SearchSelect
+                      isSearchable={true}
+                      value={this.state.searchValues.floorSelected}
+                      onChange={(selectedOption) => this.handleSelected('floorSelected',selectedOption)}
+                      options={floorOptions}
+                    />
+                  </div>
+                </Col>
+              </Row>
 
-                <Col md={1}>
-                  Trường
-                </Col>
-                <Col md={3}>
+              <Row>
+                <Col md={2}>
+                  <span className={'label'}>Năm</span>
                   <SearchSelect
-                    isSearchable={true}
-                    value={this.state.searchValues.schoolSelected}
-                    onChange={(selectedOption) => this.handleSelected('schoolSelected',selectedOption)}
-                    options={this.state.schoolOptions}
+                  isSearchable={true}
+                  value={this.state.searchValues.yearSelected}
+                  onChange={(selectedOption) => this.handleSelected('yearSelected',selectedOption)}
+                  options={this.state.yearOptions}
                   />
                 </Col>
-
-                <Col md={1}>
-                  Khoa
-                </Col>
                 <Col md={3}>
+                  <span className={'label'}>Khoa</span>
                   <SearchSelect
                     isSearchable={true}
                     value={this.state.searchValues.majorSelected}
@@ -413,69 +469,18 @@ class InfoStudent extends Component{
                     options={this.state.majorOptions}
                   />
                 </Col>
-              </Row>
-              <Row>
-                <Col md={1}>
-                  Họ tên
-                </Col>
-                <Col md={3}>
-                  <Input
-                    getValue={this.onChange}
-                    name={'name'}
-                    value={this.state.searchValues.name}/>
-                </Col>
-
-                {/*<Col md={1}>*/}
-                  {/*Năm*/}
-                {/*</Col>*/}
-                {/*<Col md={2}>*/}
-                  {/*<SearchSelect*/}
-                    {/*isSearchable={true}*/}
-                    {/*value={this.state.searchValues.yearSelected}*/}
-                    {/*onChange={(selectedOption) => this.handleSelected('yearSelected',selectedOption)}*/}
-                    {/*options={this.state.yearOptions}*/}
-                  {/*/>*/}
-                {/*</Col>*/}
-
-                <Col md={1}>
-                  Phòng
-                </Col>
-                <Col md={3}>
-                  <SearchSelect
-                    isSearchable={true}
-                    placeholder={''}
-                    value={this.state.searchValues.roomSelected}
-                    onChange={this.handleSelectRoom}
-                    options={this.state.roomOptions}
-                  />
-                </Col>
-
-                <Col md={1}>
-                  Lầu
-                </Col>
-                <Col md={3}>
-                  <SearchSelect
-                    isSearchable={true}
-                    value={this.state.searchValues.floorSelected}
-                    onChange={(selectedOption) => this.handleSelected('floorSelected',selectedOption)}
-                    options={floorOptions}
-                  />
-                </Col>
-              </Row>
-
-              {/*search*/}
-              <Row style={{display: 'flex', justifyContent: 'center', margin: '15px 0'}}>
-                <Col sm={3} className={'btn-search'}>
+                <Col sm={1} className={'btn-search'}>
+                  <br/>
                   <Button
                     type={'submit'}
                     size={'md'}
                     fullWidth
                   >
                     <i className="fas fa-search"/>
-                    Tìm kiếm
                   </Button>
                 </Col>
                 <Col sm={1} >
+                  <br/>
                   <Button
                     title={'Làm mới tìm kiếm'}
                     type={'submit'}
@@ -488,7 +493,12 @@ class InfoStudent extends Component{
                   </Button>
                 </Col>
               </Row>
+
+              {/*search*/}
+              {/*<Row style={{display: 'flex', justifyContent: 'center', margin: '15px 0'}}>                */}
+              {/*</Row>*/}
             </form>
+            {roles.includes('SV_DASHBOARD') && 
             <Row className={'group-btn'}>
                 <div className={'is-manipulation'}>
                   <ImportDataModal
@@ -523,6 +533,7 @@ class InfoStudent extends Component{
                   />
                 </div>
             </Row>
+            }
           </div>
           <ToastsContainer store={ToastsStore} position={ToastsContainerPosition.TOP_CENTER} lightBackground/>
           {/*end modal*/}
@@ -579,6 +590,7 @@ class InfoStudent extends Component{
                 >
                   Sinh viên hiện tại
                 </Button>
+                {roles.includes('SV_DASHBOARD') && 
                 <Button
                   classCustom={'info-student-tab-btn'}
                   color={'default'}
@@ -587,7 +599,8 @@ class InfoStudent extends Component{
                   onClick={() => this.handleChooseOption(OLD)}
                 >
                   Sinh viên cũ
-                </Button>
+                </Button>}
+                {roles.includes('SV_DASHBOARD') && 
                 <Button
                   classCustom={'info-student-tab-btn'}
                   actived={!!(!isOld && !isActive)}
@@ -597,6 +610,7 @@ class InfoStudent extends Component{
                 >
                   Đang chờ xử lý
                 </Button>
+              }
               </Col>
             </Row>
 
@@ -609,7 +623,7 @@ class InfoStudent extends Component{
                 <th>Trường</th>
                 <th>Khoa</th>
                 <th>Phòng</th>
-                <th>
+                {roles.includes('SV_DASHBOARD') && <th>
                   Thao tác
                   <span style={{display: 'inline-block', marginLeft: '20px'}}>
                     {(isActive || isOld) ?
@@ -622,7 +636,7 @@ class InfoStudent extends Component{
                       : ''
                     }
                   </span>
-                </th>
+                </th>}
               </tr>
               </thead>
               <tbody>
@@ -652,7 +666,7 @@ class InfoStudent extends Component{
                       </Button>
                       </div>
                       </td>
-                    <td style={{display: 'flex', justifyContent: 'center'}}>
+                      {roles.includes('SV_DASHBOARD') && <td style={{display: 'flex', justifyContent: 'center'}}>
                        <Button
                           title={'In thẻ'}
                           color={'success'}
@@ -677,7 +691,7 @@ class InfoStudent extends Component{
                           check={this.handleValueCheck(info.MSSV)}
                         /> : ''
                       }
-                    </td>
+                    </td>}
                   </tr>
                 )
               })}

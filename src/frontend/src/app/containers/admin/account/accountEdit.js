@@ -42,9 +42,8 @@ class AccountEdit extends Component{
       {value: 'AM', label: 'Quản lý'},
       {value: 'BV', label: 'Bảo vệ'},
       {value: 'ADCP', label: 'Quản lý chi phí'},
-      {value: 'GDN', label: 'Ghi chi phí'},
-      {value: 'DD', label: 'Điểm danh'},
-      {value: 'XNTT', label: 'Xác nhận thanh toán'}
+      {value: 'GDN', label: 'Ghi điện nước'},
+      {value: 'DD', label: 'Điểm danh'}
     ]
   }
 
@@ -54,7 +53,7 @@ class AccountEdit extends Component{
     axios({
       method: 'post',
       url: `/manager/account/update_account?id=${this.props.data._id}`,
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         'x-access-token': secret.access_token
       },
@@ -97,12 +96,12 @@ class AccountEdit extends Component{
             			</div>
                   <div>
                     <span> Tài khoản </span>
-              			<Select 
-                      options={rule} 
-                      value={this.state.rule} 
-                      selected={val => this.getValue('rule',val)} 
+              			<Select
+                      options={rule}
+                      value={this.state.rule}
+                      selected={val => this.getValue('rule',val)}
                     />
-            			</div>              
+            			</div>
             		</Modal.Body>
             		<Modal.Footer>
   	            	<Button variant='default' color='default' onClick={this.handleClose}>

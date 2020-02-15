@@ -10,7 +10,7 @@ import Checkbox from "../../../components/checkbox/checkbox";
 import Loader from "../../../components/loader/loader";
 import ListRoom from '../../../components/listRoom/listroom'
 import { dateToString } from '../../../function/dateFunction'
-import SSF from 'ssf'
+// import SSF from 'ssf'
 export class AddStudentModal extends Component{
   constructor(props) {
     super(props);
@@ -21,7 +21,7 @@ export class AddStudentModal extends Component{
       infoAdded: {
         name: '',
         studentNumber: '',
-        birthDay: today,
+        cmnd: '',
         regisExpiredDate: new Date(today.getFullYear(), 6, 31 ),
         expiredDate: new Date(today.getFullYear()+1, 6, 31 ),
 			},
@@ -48,8 +48,8 @@ export class AddStudentModal extends Component{
 	};
 
   handleSubmitAddStudent = () => {
-    const { infoAdded, infoAdded: {name, studentNumber, birthDay, regisExpiredDate, expiredDate} } = this.state;
-    if(!name || !studentNumber || !birthDay || !regisExpiredDate || !expiredDate )
+    const { infoAdded, infoAdded: {name, studentNumber, cmnd, regisExpiredDate, expiredDate} } = this.state;
+    if(!name || !studentNumber || !cmnd || !regisExpiredDate || !expiredDate )
     {
       this.setState({
         message: 'Vui lòng điền đầy đủ thông tin!!'
@@ -75,7 +75,7 @@ export class AddStudentModal extends Component{
       }
     })
   };
-	
+
 	render(){
 		return(
       <React.Fragment>
@@ -111,15 +111,10 @@ export class AddStudentModal extends Component{
 
 						<Row>
 							<Col md={4}>
-								Ngày sinh:
+								CMND:
 							</Col>
 							<Col md={8}>
-								<DatePicker
-									dateFormat='dd/MM/yyyy'
-									selected={this.state.infoAdded.birthDay}
-									onChange={(val) => this.getValueDate('birthDay', val)}
-									className='input-datepicker'
-								/>
+                <Input getValue={this.onChangeInput} name={'cmnd'} />
 							</Col>
 						</Row>
 
@@ -334,8 +329,8 @@ export class ImportDataModal extends Component{
 
   downloadTemplate = () => {
     const data = [
-      {stt: "STT", mssv: "MSSV", hoTen: "Họ và tên", ngaySinh: "Ngày sinh"},
-      {stt: "1", mssv: "1512519", hoTen: "Nguyễn Văn A", ngaySinh: "29/10/1997"}
+      {stt: "STT", mssv: "MSSV", hoTen: "Họ và tên", cmnd: "Cmnd"},
+      {stt: "1", mssv: "1512519", hoTen: "Nguyễn Văn A", cmnd: "123456"}
     ];
     var ws = XLSX.utils.json_to_sheet(data, {skipHeader:true});
 
@@ -362,15 +357,15 @@ export class ImportDataModal extends Component{
         let workbook = XLSX.read(data, {type: 'array'});
 
         let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","ngaySinh"]});
-        listNewStudent = listNewStudent.map((st) => {
-          if (st.ngaySinh && typeof(st.ngaySinh) === 'number'){
-            let date = SSF.parse_date_code(st.ngaySinh,{date1904:false});
-            st.ngaySinh=`${date.d}/${date.m}/${date.y}`
-          }
-          return st
-
-        });
+        let listNewStudent = XLSX.utils.sheet_to_json(worksheet, {header:["stt","mssv","hoTen","cmnd"]});
+        // listNewStudent = listNewStudent.map((st) => {
+        //   if (st.ngaySinh && typeof(st.ngaySinh) === 'number'){
+        //     let date = SSF.parse_date_code(st.ngaySinh,{date1904:false});
+        //     st.ngaySinh=`${date.d}/${date.m}/${date.y}`
+        //   }
+        //   return st
+        //
+        // });
         resolve(listNewStudent)
       };
       reader.readAsArrayBuffer(file);
@@ -389,6 +384,9 @@ export class ImportDataModal extends Component{
   };
 
   handleImportData = async() => {
+    this.setState({
+      listExpired: undefined,
+    });
     if (!this.state.hasOwnProperty('fileImport')) {
       this.setState({
         justFileServiceResponse: 'Vui lòng chọn 1 file!!'
@@ -401,9 +399,9 @@ export class ImportDataModal extends Component{
         });
         this.convertData(this.state.fileImport).then(async(resolve) => {
           const headers = resolve[0];
-          if(!(headers.mssv.toLowerCase() === 'mssv') ||
-            !((headers.hoTen.toLowerCase() === 'họ và tên') || (headers.hoTen.toLowerCase() === 'họ tên')) ||
-            !(headers.ngaySinh.toLowerCase() === 'ngày sinh'))
+          if(!(headers.mssv.trim().toLowerCase() === 'mssv') ||
+            !((headers.hoTen.trim().toLowerCase() === 'họ và tên') || (headers.hoTen.toLowerCase() === 'họ tên')) ||
+            !(headers.cmnd.trim().toLowerCase() === 'cmnd'))
             this.setState({
               justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!',
               loading: false,
@@ -425,6 +423,12 @@ export class ImportDataModal extends Component{
                 });
             })
           }
+
+
+        }).catch(() => {
+          this.setState({
+            justFileServiceResponse: 'Dữ liệu không đúng yêu cầu!'
+          });
         })
       } else {
         this.setState({
@@ -525,7 +529,7 @@ export class ImportDataModal extends Component{
                 <Table responsive hover bordered size="sm">
                   <thead className="title-excel">
                   <tr>
-                    <td></td>
+                    <td/>
                     <td>A</td>
                     <td>B</td>
                     <td>C</td>
@@ -540,8 +544,8 @@ export class ImportDataModal extends Component{
                     <td>STT</td>
                     <td>MSSV</td>
                     <td>Họ Tên</td>
-                    <td>Ngày sinh</td>
-                    <td></td>
+                    <td>Cmnd</td>
+                    <td/>
                   </tr>
 
                   <tr key={1}>
@@ -549,8 +553,8 @@ export class ImportDataModal extends Component{
                     <td>1</td>
                     <td>1512519</td>
                     <td>Nguyễn Văn A</td>
-                    <td>29/10/1997</td>
-                    <td></td>
+                    <td>123456</td>
+                    <td/>
                   </tr>
 
                   <tr key={2}>
@@ -558,17 +562,17 @@ export class ImportDataModal extends Component{
                     <td>2</td>
                     <td>1512510</td>
                     <td>Nguyễn Văn B</td>
-                    <td>01/11/1997</td>
-                    <td></td>
+                    <td>123123</td>
+                    <td/>
                   </tr>
 
                   <tr key={3}>
                     <td className="title-excel">4</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td/>
+                    <td/>
+                    <td/>
+                    <td/>
+                    <td/>
                   </tr>
 
                   </tbody>
@@ -616,6 +620,8 @@ export class ExportDataModal extends Component{
         major: false,
         activityPoint: false,
         religion: false,
+        dangVien: false,
+        doanVien: false,
         note: false,
       }
     }
@@ -665,6 +671,8 @@ export class ExportDataModal extends Component{
         major,
         activityPoint,
         religion,
+        dangVien,
+        doanVien,
         note,
       },
       //note: false
@@ -703,6 +711,10 @@ export class ExportDataModal extends Component{
       header.truong = "Trường";
     if(major)
       header.nganhHoc = "Ngành học";
+    if(dangVien)
+      header.dangVien = "Đảng viên";
+    if(doanVien)
+      header.doanVien = "Đoàn viên";
     if(note)
       header.ghiChu = "Ghi chú";
     if(activityPoint){
@@ -713,7 +725,9 @@ export class ExportDataModal extends Component{
     get_list_student(searchValues, activityPoint).then(result => {
 
       let data = result.data && result.data.map((record, index) => {
-        let genderString = record.gioiTinh ? "nam" : "nữ";
+        const genderString = record.gioiTinh ? "nam" : "nữ";
+        const dandVienStr = record && record.dangVien ? "có" : "không";
+        const doanVienStr = record && record.doanVien ? "có" : "không";
         return({
           STT: index + 1,
           MSSV : studentNumber ? record.MSSV : undefined,
@@ -733,6 +747,8 @@ export class ExportDataModal extends Component{
           phong : room && record.idPhong ? record.idPhong.tenPhong : undefined,
           truong : school && record.truong ? record.truong.tenTruong : undefined,
           nganhHoc : major && record.nganhHoc ? record.nganhHoc.tenNganh : undefined,
+          dangVien: dangVien ? dandVienStr : undefined,
+          doanVien: doanVien ? doanVienStr : undefined,
           ghiChu : note ? record.moTa : undefined
         })});
 
@@ -773,6 +789,8 @@ export class ExportDataModal extends Component{
         school,
         activityPoint,
         religion,
+        dangVien,
+        doanVien,
         note
       }
 		} = this.state;
@@ -794,12 +812,154 @@ export class ExportDataModal extends Component{
             <Modal.Title>Xuất file</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Row>
+            <Row style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap'}}>
               <Col md={6}>
                 <Checkbox
                   check={studentNumber}
                   label={'MSSV'}
                   name={'studentNumber'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={dangVien}
+                  label={'Đảng viên'}
+                  name={'dangVien'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={name}
+                  label={'Họ và tên'}
+                  name={'name'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={doanVien}
+                  label={'Đoàn viên'}
+                  name={'doanVien'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={birthday}
+                  label={'Ngày sinh'}
+                  name={'birthday'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={dayIn}
+                  label={'Ngày vào'}
+                  name={'dayIn'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={gender}
+                  label={'Giới tính'}
+                  name={'gender'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={dayOut}
+                  label={'Ngày hết hạn'}
+                  name={'dayOut'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={address}
+                  label={'Địa chỉ'}
+                  name={'address'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={activityPoint}
+                  label={'Điểm hoạt động'}
+                  name={'activityPoint'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={email}
+                  label={'Email'}
+                  name={'email'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={phone}
+                  label={'Số điện thoại'}
+                  name={'phone'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={room}
+                  label={'Phòng'}
+                  name={'room'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={relativesPhone}
+                  label={'Số điện thoại người thân'}
+                  name={'relativesPhone'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={school}
+                  label={'Trường'}
+                  name={'school'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Checkbox
+                  check={religion}
+                  label={'Tôn giáo'}
+                  name={'religion'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={major}
+                  label={'Ngành học'}
+                  name={'major'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={note}
+                  label={'Ghi chú'}
+                  name={'note'}
                   isCheck={this.handleCheckValueExport}
                 />
               </Col>
@@ -812,143 +972,6 @@ export class ExportDataModal extends Component{
                 />
               </Col>
             </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={name}
-                  label={'Họ và tên'}
-                  name={'name'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={dayIn}
-                  label={'Ngày vào'}
-                  name={'dayIn'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={birthday}
-                  label={'Ngày sinh'}
-                  name={'birthday'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={dayOut}
-                  label={'Ngày hết hạn'}
-                  name={'dayOut'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={gender}
-                  label={'Giới tính'}
-                  name={'gender'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={activityPoint}
-                  label={'Điểm hoạt động'}
-                  name={'activityPoint'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={address}
-                  label={'Địa chỉ'}
-                  name={'address'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={room}
-                  label={'Phòng'}
-                  name={'room'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={email}
-                  label={'Email'}
-                  name={'email'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={school}
-                  label={'Trường'}
-                  name={'school'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={phone}
-                  label={'Số điện thoại'}
-                  name={'phone'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={major}
-                  label={'Ngành học'}
-                  name={'major'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={relativesPhone}
-                  label={'Số điện thoại người thân'}
-                  name={'relativesPhone'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-              <Col md={6}>
-                <Checkbox
-                  check={note}
-                  label={'Ghi chú'}
-                  name={'note'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Checkbox
-                  check={religion}
-                  label={'Tôn giáo'}
-                  name={'religion'}
-                  isCheck={this.handleCheckValueExport}
-                />
-              </Col>
-            </Row>
-
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline" onClick={() =>this.handlePopup(false)}>
@@ -970,7 +993,6 @@ export class ChooseRoom extends Component{
     super(props);
     this.state = {
       show: this.props.show,
-      label: this.props.label,
       data: this.props.data,
       onChange: () => {},
       oldRoom: this.props.room,
@@ -1032,13 +1054,13 @@ export class ChooseRoom extends Component{
   render(){
     return(
       <React.Fragment>
-        <div>{this.state.label} &#160;
-        <Button
+        <div>{this.props.label?this.props.label.tenPhong:undefined} &#160;
+         <Button
           disabled={this.props.disabled}
           style={{marginLeft: '2px'}}
           onClick={() => this.handlePopup(true)}
         >Thay đổi</Button>
-        </div>
+        </div> 
         <Modal show={this.state.show} onHide={() =>this.handlePopup(false)} size="lg">
           <Modal.Header closeButton>
             <Modal.Title>Chọn phòng</Modal.Title>

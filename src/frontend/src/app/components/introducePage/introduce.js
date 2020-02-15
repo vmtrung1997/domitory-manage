@@ -12,34 +12,32 @@ class Introduce extends React.Component {
             <div class="personnel-box">
               <h3 class="personnel-box-title">Phòng Công tác sinh viên</h3>
               <div class="personnel-img-box">
-                <img src="./images/dao-tao.png" alt="" />
+                <img src="./images/ctsv1.png" alt="" />
               </div>
-              <p>TP: ThS. Văn Chí Nam</p>
-              <p>PTP: ThS. Phạm Nguyễn Thùy Dương</p>
+              <p>ThS. Trần Vũ</p>
+              <p>ThS. Phạm Thị Bích Tuyền</p>
             </div>
 
             <div class="personnel-box">
-              <h3 class="personnel-box-title">Bộ phận Quản lý Ký túc xá</h3>
+              <h3 class="personnel-box-title">Trưởng Bộ phận Quản lý Ký túc xá</h3>
               <div class="personnel-img-box">
-                <img src="../images/khao-thi.png" alt="" />
+                <img src="../images/quanly.png" alt="" />
               </div>
-              <p>TBP: ThS. Trần Văn Huy</p>
-              <p>PBP: Ông Phan Văn Thành</p>
+              <p>ThS. Trần Văn Huy</p>
             </div>
 
             <div class="personnel-box">
-              <h3 class="personnel-box-title">Tổ Quản lý sinh viên</h3>
+              <h3 class="personnel-box-title">Quản lý sinh viên</h3>
               <div class="personnel-img-box">
-                <img src="./images/dao-tao.png" alt="" />
+                <img src="./images/quanlysv.png" alt="" />
               </div>
-              <p>Ông Phan Văn Thành</p>
-              <p>Bà Trương Thị Ánh Nhung</p>
+              <p>Cô Trương Thị Ánh Nhung</p>
             </div>
 
             <div class="personnel-box">
               <h3 class="personnel-box-title">Tổ Bảo vệ</h3>
               <div class="personnel-img-box">
-                <img src="./images/khao-thi.png" alt="" />
+                <img src="./images/baove.png" alt="" />
               </div>
               <p>Ông Cao Văn Nhã</p>
               <p>Ông Bùi Văn Lộc</p>
@@ -49,7 +47,7 @@ class Introduce extends React.Component {
             <div class="personnel-box">
               <h3 class="personnel-box-title">Tổ sửa chữa điện nước</h3>
               <div class="personnel-img-box">
-                <img src="./images/khac.png" alt="" />
+                <img src="./images/vesinh.png" alt="" />
               </div>
               <p>Ông Bùi Văn Lộc</p>
             </div>
@@ -71,15 +69,15 @@ class Introduce extends React.Component {
             <div class="contact-box">
               <h3 class="contact-box-title">Phòng Công tác sinh viên</h3>
               <div class="contact-img-box">
-                <img src="./images/ctsv.png" alt="" />
+                <img src="./images/ctsv1.png" alt="" />
               </div>
               <p>congtacsinhvien@hcmus.edu.vn</p>
             </div>
 
             <div class="contact-box">
-              <h3 class="contact-box-title">Bộ phần Quản lý Ký túc xá</h3>
+              <h3 class="contact-box-title">Bộ phận Quản lý Ký túc xá</h3>
               <div class="contact-img-box">
-                <img src="./images/ctsv.png" alt="" />
+                <img src="./images/quanly.png" alt="" />
               </div>
               <p>(08) 38 36 86 70</p>
               <p>hopthuktx135b@gmail.com</p>
@@ -90,8 +88,8 @@ class Introduce extends React.Component {
               <div class="contact-img-box">
                 <img src="./images/ctsv.png" alt="" />
               </div>
-              <p>0918 20 24 36</p>
-              <p>phanvanthanhktx@gmail.com</p>
+              <p>0983 071 252</p>
+              <p>ttanhung@hcmus.edu.vn</p>
             </div>
           </div>
         </section>
@@ -102,7 +100,7 @@ class Introduce extends React.Component {
           <div class="condition-box-content">
             <div class="condition-box-first">
               <div class="condition-first-img">
-                <img src="./images/note_1.png" alt="" />
+                <img src="./images/note1.png" alt="" />
               </div>
               <div class="condition-first-content">
                 Khi có thông báo tiếp nhận sinh viên vào lưu trú (đối với sinh
@@ -137,7 +135,7 @@ class Introduce extends React.Component {
             <div class="service-box-one">
               <div class="img-box">
                 <div class="service-img">
-                  <img src="./images/motorcycle.png" alt="" />
+                  <img src="./images/bike.png" alt="" />
                 </div>
                 <p className="name-serice">Dịch vụ giữ xe</p>
               </div>
@@ -180,7 +178,7 @@ class Introduce extends React.Component {
 
               <div class="img-box-small">
                 <div class="service-img">
-                  <img src="./images/smartphone.png" alt="" />
+                  <img src="./images/wifi.png" alt="" />
                 </div>
                 <p className="name-serice">Dịch vụ internet</p>
               </div>
@@ -190,7 +188,7 @@ class Introduce extends React.Component {
             <div  class="service-box-one column">
               <div class="img-box-small">
                 <div class="service-img">
-                  <img src="./images/doodle.png" alt="" />
+                  <img src="./images/O4WHN41.png" alt="" />
                 </div>
                 <p className="name-serice">Dịch vụ ăn uống</p>
               </div>
@@ -217,7 +215,7 @@ class Introduce extends React.Component {
               như Chủ Nhật Xanh, Hiến máu nhân đạo, tuyên truyền...
             </div>
             <div class="activity-img-box">
-              <img src="./images/lovetree.png" alt="" />
+              <img src="./images/2912194.png" alt="" />
             </div>
           </div>
         </section>
