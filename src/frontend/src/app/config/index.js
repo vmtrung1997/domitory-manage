@@ -1,5 +1,5 @@
 import axios from 'axios'
-axios.defaults.baseURL =  'http://localhost:4000/api' // 'http://35.247.132.2:4001/api' //
+axios.defaults.baseURL =  'http://localhost:4001/api' // 'http://35.247.132.2:4001/api' //
 axios.interceptors.response.use(function (response) {
   return response;
 }, function(error) {
