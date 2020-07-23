@@ -623,6 +623,7 @@ export class ExportDataModal extends Component{
         dangVien: false,
         doanVien: false,
         note: false,
+        CMND: false
       }
     }
   }
@@ -674,17 +675,20 @@ export class ExportDataModal extends Component{
         dangVien,
         doanVien,
         note,
+        CMND
       },
       //note: false
       searchValues,
     } = this.state;
 
     let header = {STT: 'STT'};
-
+    console.log("state: ", this.state)
     if(studentNumber)
       header.MSSV = "MSSV";
     if(name)
       header.hoTen = "Họ tên";
+    if(CMND)
+      header.CMND = "CMND"
     if(birthday)
       header.ngaySinh = "Ngày sinh";
     if(gender)
@@ -732,6 +736,7 @@ export class ExportDataModal extends Component{
           STT: index + 1,
           MSSV : studentNumber ? record.MSSV : undefined,
           hoTen : name ? record.hoTen : undefined,
+          CMND: CMND ? record.CMND : undefined,
           ngaySinh : birthday && record.ngaySinh ? dateToString(record.ngaySinh) : undefined,
           gioiTinh : gender ? genderString : undefined,
           diaChi : address ? record.diaChi : undefined,
@@ -791,7 +796,8 @@ export class ExportDataModal extends Component{
         religion,
         dangVien,
         doanVien,
-        note
+        note,
+        CMND
       }
 		} = this.state;
     return(
@@ -834,6 +840,14 @@ export class ExportDataModal extends Component{
                   check={name}
                   label={'Họ và tên'}
                   name={'name'}
+                  isCheck={this.handleCheckValueExport}
+                />
+              </Col>
+              <Col md={6}>
+                <Checkbox
+                  check={CMND}
+                  label={'CMND'}
+                  name={'CMND'}
                   isCheck={this.handleCheckValueExport}
                 />
               </Col>
