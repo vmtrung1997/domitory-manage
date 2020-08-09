@@ -121,7 +121,7 @@ export const get_list_student_by_page = async(params) => {
 export const get_list_student = async(searchValues, activityPoint) => {
   const headers = await get_headers();
 
-  const { studentNumber, name, roomSelected, schoolSelected, majorSelected, yearSelected, floorSelected, isOld, isActive } = searchValues;
+  const { studentNumber, name, roomSelected, schoolSelected, majorSelected, yearSelected, floorSelected, isOld, isActive, CMND } = searchValues;
   const idPhong = roomSelected.value === '0' ? '' : roomSelected.value;
   const idTruong = schoolSelected.value === '0' ? '' : schoolSelected.value;
   const idNganhHoc = majorSelected.value === '0' ? '' : majorSelected.value;
@@ -139,6 +139,7 @@ export const get_list_student = async(searchValues, activityPoint) => {
         lau: floorSelected.value,
         nam: yearSelected.value,
         getPoint: activityPoint,
+        CMND: CMND
       }, headers
     ).then(result => {
       resolve(result);
