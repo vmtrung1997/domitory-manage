@@ -240,19 +240,14 @@ class Security extends Component {
                               <div
                                 style={{ fontSize: '24px', fontWeight: '400' }}
                               >
-                                {mainHis.MSSV}
+                                {mainHis.MSSV} -{' '}
+                                {mainHis.profile.idPhong
+                                  ? mainHis.profile.idPhong.tenPhong
+                                  : 'Chưa cập nhật phòng'}
                               </div>
                             </div>
                           </Col>
                           <div className="card-body-content">
-                            <Col md={12} className={'info'}>
-                              Phòng:{' '}
-                              <span>
-                                {mainHis.profile.idPhong
-                                  ? mainHis.profile.idPhong.tenPhong
-                                  : 'Chưa cập nhật'}
-                              </span>
-                            </Col>
                             <Col md={12} className={'info'}>
                               Trường:{' '}
                               <span>
@@ -270,19 +265,23 @@ class Security extends Component {
                               </span>
                             </Col>
                             <Col md={12} className={'info'}>
-                              Giờ vào:{' '}
-                              <span>
-                                {mainTime.toLocaleTimeString() +
-                                  ' ' +
-                                  mainTime.toLocaleDateString()}
-                              </span>
-                            </Col>
-                            <Col md={12} className={'info'}>
                               Địa chỉ:{' '}
                               <span>
                                 {mainHis.profile.diaChi
                                   ? mainHis.profile.diaChi
                                   : 'Chưa cập nhật'}
+                              </span>
+                            </Col>
+                            <Col
+                              md={12}
+                              className={'info'}
+                              style={{ paddingTop: '20px' }}
+                            >
+                              Giờ vào:{' '}
+                              <span>
+                                {mainTime.toLocaleTimeString() +
+                                  ' ' +
+                                  mainTime.toLocaleDateString()}
                               </span>
                             </Col>
                           </div>
