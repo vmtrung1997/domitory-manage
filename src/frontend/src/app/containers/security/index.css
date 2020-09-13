@@ -132,7 +132,8 @@
 
 .content-body-security .card-large .card-content .card-title {
   border-bottom: 1px solid;
-  color: #71a59f !important;
+  color: #02488e !important;
+  font-size: 35px;
   font-weight: 600;
   padding: 50px 0;
   letter-spacing: 3px;

@@ -238,9 +238,8 @@ class Security extends Component {
                             <div className="card-title">
                               {mainHis.profile.hoTen.toUpperCase()}
                               <div
-                                style={{ fontSize: '24px', fontWeight: '400' }}
+                              // style={{ fontSize: '24px', fontWeight: '400' }}
                               >
-                                {mainHis.MSSV} -{' '}
                                 {mainHis.profile.idPhong
                                   ? mainHis.profile.idPhong.tenPhong
                                   : 'Chưa cập nhật phòng'}
@@ -263,6 +262,9 @@ class Security extends Component {
                                   ? mainHis.profile.nganhHoc.tenNganh
                                   : 'Chưa cập nhật'}
                               </span>
+                            </Col>
+                            <Col md={12} className={'info'}>
+                              MSSV: <span>{mainHis.MSSV}</span>
                             </Col>
                             <Col md={12} className={'info'}>
                               Địa chỉ:{' '}
