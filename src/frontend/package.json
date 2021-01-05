@@ -10,7 +10,7 @@
     "@fortawesome/react-fontawesome": "^0.1.4",
     "@fullpage/react-fullpage": "^0.1.14",
     "autoscroll-react": "^3.2.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "base32": "0.0.6",
     "bootstrap": "^4.3.1",
     "draft-js": "^0.10.5",
